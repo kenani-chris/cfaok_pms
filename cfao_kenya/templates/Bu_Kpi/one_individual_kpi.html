@@ -1,0 +1,90 @@
+{% extends "Bu_Kpi/default.html" %}
+{% block pagetitle %}View KPI{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">View KPI</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        {% if bu_kpi %}
+
+          <table id="example1" class="table table-bordered table-striped">
+            <tbody>
+              <tr>
+                <th>
+                  KPI
+                </th>
+                <td colspan="3">
+                  {{ bu_kpi.bu_kpi_title }}
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Description
+                </th>
+                <td colspan="3">
+                  {{ bu_kpi.bu_kpi_details }}
+                </td>
+              </tr>
+              <tr class="bg-info">
+                <th>
+                  Function
+                </th>
+                <th>
+                  Target
+                </th>
+                <th>
+                  Status
+                </th>
+                <th>
+                  Submit Date
+                </th>
+              </tr>
+              <tr>
+                <td>
+                  {{ bu_kpi.bu_kpi_function }}
+                </td>
+                <td>
+                  {{ bu_kpi.bu_kpi_target }}
+                </td>
+                <td>
+                  {{ bu_kpi.bu_kpi_status }}
+                </td>
+                <td>
+                  {{ bu_kpi.bu_kpi_submit_date }}
+                </td>
+              </tr>
+              <tr class="bg-info">
+                <th colspan="4">
+                  Approvals
+                </th>
+              </tr>
+              <tr>
+                <th>
+                  1st Approver
+                </th>
+                <td>
+                  {{ bu_kpi.bu_kpi_team_leader_approval }}
+                </td>
+                <td>
+                  {{ bu_kpi.bu_kpi_approval_date }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        {% else %}
+          <div class="alert alert-warning">
+            <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
+            It Appears you've not submitted any KPIs. Or all of them have been declined
+          </div>
+        {% endif %}
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}

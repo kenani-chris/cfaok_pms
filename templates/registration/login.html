@@ -1,0 +1,68 @@
+{% extends "registration/login_out.html" %}
+  {% block content %}
+    <div class="login-logo" style="margin-top: -100px">
+      <hr>
+      <strong>Online</strong> PMS
+      <hr>
+    </div>
+    <p class="login-box-msg">Sign in to start your session</p>
+    {% if form.errors %}
+        <p class="bg-danger text-center" style="padding:10px">Username or Password Incorrect</p>
+    {% endif %}
+
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p class="bg-danger">Your account doesn't have access to this page. To proceed,
+            please login with an account that has access.</p>
+        {% else %}
+        {% endif %}
+    {% endif %}
+    <form action="{% url 'login' %}" method="post">
+      {% csrf_token %}
+      <div class="input-group mb-3">
+          <input type="email" class="form-control" id="id_username" name="username" placeholder="Email">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" class="form-control" id="id_password" name="password" type="password" placeholder="Password">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+      <!--<div class="input-group mb-3">
+          {{ form.username }}
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <span class="fas fa-user"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group mb-3">
+          {{ form.password }}
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <span class="fas fa-lock"></span>
+          </div>
+        </div>
+      </div>
+      -->
+      <div class="row">
+        <!-- /.col -->
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary btn-block" value="login">Sign In</button><input type="hidden" name="next" value="{{ next }}" />
+            <input type="hidden" name="next" value="{{ next }}" />
+        </div>
+
+        <!-- /.col -->
+      </div>
+    </form>
+<hr>
+    <!-- /.social-auth-links -->
+  {% endblock %}
