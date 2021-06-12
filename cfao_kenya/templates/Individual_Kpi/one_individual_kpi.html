@@ -6,6 +6,17 @@
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">View KPI</h3>
+          <div class="float-right">
+              {% if individual_kpi %}
+                  {% if individual_kpi.individual_kpi_status == 'Pending' or individual_kpi.individual_kpi_status == 'Rejected 1' or individual_kpi.individual_kpi_status == 'Edit'%}
+                    <a href="{% url 'Individual_Kpi-Edit_One' individual_kpi.individual_kpi_id %}"><button class="btn btn-info"><i class="fa fa-edit" style="">Edit</i></button></a>
+                    <a href=""><button class="btn btn-danger">Delete</button></a>
+                  {% endif %}
+                  {% if individual_kpi.individual_kpi_status == "Approved 2" %}
+                    <a href="{% url 'Individual_Kpi_Result_Update' individual_kpi.individual_kpi_id%}"><button class="btn btn-info">Results</button></a>
+                    {% endif %}
+              {% endif %}
+          </div>
       </div>
       <!-- /.card-header -->
       <div class="card-body">
@@ -17,7 +28,7 @@
                 <th>
                   KPI
                 </th>
-                <td colspan="3">
+                <td colspan="5">
                   {{ individual_kpi.individual_kpi_title }}
                 </td>
               </tr>
@@ -25,7 +36,7 @@
                 <th>
                   Description
                 </th>
-                <td colspan="3">
+                <td colspan="5">
                   {{ individual_kpi.individual_kpi_details }}
                 </td>
               </tr>
@@ -33,7 +44,7 @@
                 <th>
                   Criteria
                 </th>
-                <td colspan="3">
+                <td colspan="5">
                   {{ individual_kpi.individual_kpi_criteria }}
                 </td>
               </tr>
@@ -43,6 +54,12 @@
                 </th>
                 <th>
                   Target
+                </th>
+                <th>
+                  Calculation
+                </th>
+                <th>
+                  Weight
                 </th>
                 <th>
                   Status
@@ -59,6 +76,12 @@
                   {{ individual_kpi.individual_kpi_target }}
                 </td>
                 <td>
+                  {{ individual_kpi.individual_kpi_type }}
+                </td>
+                <td>
+                  {{ individual_kpi.individual_kpi_weight }}
+                </td>
+                <td>
                   {{ individual_kpi.individual_kpi_status }}
                 </td>
                 <td>
@@ -66,7 +89,7 @@
                 </td>
               </tr>
               <tr class="bg-info">
-                <th colspan="4">
+                <th colspan="6">
                   Approvals
                 </th>
               </tr>

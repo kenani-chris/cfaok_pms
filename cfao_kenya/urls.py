@@ -7,14 +7,13 @@ urlpatterns = [
     path('No_Active_Pms', NoActivePmsView.as_view(), name='ck_no_active_pms'),
 
     # Individual Kpi Links
-    path('Individual-Kpi/', views.mykpi, name='Individual_Kpi_Dashboard'),
-    path('Individual-Kpi/Submit-Kpi/', views.submitkpi, name='Individual_Kpi_Submit'),
-    path('Individual-Kpi/Track-Kpi/', views.trackkpi, name='Individual_Kpi_Detail1'),
-    path('Individual-Kpi/Track-Kpi/<uuid:pk>', views.KpiDetailView.as_view(template_name='Individual_Kpi/one_individual_kpi.html'), name='kpi-detail'),
-    path('Individual-Kpi/Edit-Kpi/', views.editkpi, name='Individual_Kpi_Edit'),
+    path('Individual-Kpi/', IndividualKpiView.as_view(), name='Individual_Kpi_Dashboard'),
+    path('Individual-Kpi/Submit-Kpi/', SubmitKpiView.as_view(), name='Individual_Kpi_Submit'),
+    path('Individual-Kpi/Track-Kpi/', TrackKpiView.as_view(), name='Individual_Kpi_Detail1'),
+    path('Individual-Kpi/Track-Kpi/<uuid:pk>', DetailKpiView.as_view(), name='kpi-detail'),
     path('Individual-Kpi/Edit-Kpi/<uuid:pk>', views.EditKpiView.as_view(), name='Individual_Kpi-Edit_One'),
-    path('Individual-Kpi/Kpi-Results/', views.kpiresult, name='Individual_Kpi_Result'),
-    path('Individual-Kpi/Kpi-Results/<uuid:pk>', views.KpiResultUpdate.as_view(), name='Individual_Kpi_Result_Update'),
+    path('Individual-Kpi/Kpi-Results/', KpiResultView.as_view(), name='Individual_Kpi_Result'),
+    path('Individual-Kpi/Kpi-Results/<uuid:pk>', KpiResultUpdateView.as_view(), name='Individual_Kpi_Result_Update'),
 
     # Staff Kpi Links
     # path('Staff-Kpi/', views.staffkpi, name='Staff_Kpi_Dashboard'),

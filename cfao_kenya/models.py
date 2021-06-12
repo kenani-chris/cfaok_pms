@@ -15,7 +15,8 @@ class staff(models.Model):
                                          related_name="cfao_kenya_belongs_to_dept")
     staff_branch = models.ForeignKey('branch', on_delete=models.RESTRICT, null=True, blank=True,
                                      related_name="cfao_kenya_belongs_to_branch")
-    staff_bu = models.ForeignKey('bu', on_delete=models.RESTRICT, null=True, blank=True, related_name="cfao_kenya_belongs_to_bu")
+    staff_bu = models.ForeignKey('bu', on_delete=models.RESTRICT, null=True, blank=True,
+                                 related_name="cfao_kenya_belongs_to_bu")
     staff_team = models.ForeignKey('team', on_delete=models.RESTRICT, null=True, blank=True,
                                    related_name="cfao_kenya_belongs_to_team")
 
@@ -24,7 +25,8 @@ class staff(models.Model):
                                               related_name="cfao_kenya_is_head_dept")
     staff_head_branch = models.ForeignKey('branch', on_delete=models.RESTRICT, null=True, blank=True,
                                           related_name="cfao_kenya_is_head_branch")
-    staff_head_bu = models.ForeignKey('bu', on_delete=models.RESTRICT, null=True, blank=True, related_name="cfao_kenya_is_head_bu")
+    staff_head_bu = models.ForeignKey('bu', on_delete=models.RESTRICT, null=True, blank=True,
+                                      related_name="cfao_kenya_is_head_bu")
     staff_head_team = models.ForeignKey('team', on_delete=models.RESTRICT, null=True, blank=True,
                                         related_name="cfao_kenya_is_head_team")
 
@@ -75,16 +77,19 @@ class pms(models.Model):
     pms_individual_kpi_number = models.IntegerField(help_text='Number Of KPIs to be submitted by an individual')
     pms_individual_submit_start_date = models.DateField(auto_now=False, auto_now_add=False)
     pms_individual_submit_end_date = models.DateField(auto_now=False, auto_now_add=False)
+    pms_individual_submit_results_date = models.FloatField(default=15)
 
     # Bu KPI Config
     bu_individual_kpi_number = models.IntegerField(help_text='Number Of KPIs to be submitted by a BU')
     bu_individual_submit_start_date = models.DateField(auto_now=False, auto_now_add=False)
     bu_individual_submit_end_date = models.DateField(auto_now=False, auto_now_add=False)
+    bu_individual_submit_result_date = models.FloatField(default=15)
 
     # Company Config
     company_individual_kpi_number = models.IntegerField(help_text='Number Of KPIs to be submitted by the company')
     company_individual_submit_start_date = models.DateField(auto_now=False, auto_now_add=False)
     company_individual_submit_end_date = models.DateField(auto_now=False, auto_now_add=False)
+    company_individual_submit_result_date = models.FloatField(default=15)
 
     checkin_number = models.IntegerField(help_text='Number Of Checkins to be submitted by the user', default=12)
     assessment_number = models.IntegerField(help_text='Number Of assessment to be done in the year', default=3)
@@ -116,7 +121,8 @@ class checkIn(models.Model):
     checkIn_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique identifier evaluations")
     checkIn_pms = models.ForeignKey('pms', on_delete=models.RESTRICT)
     checkIn_staff = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_individual_user")
-    checkIn_team_leader = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_team_leader", null=True,
+    checkIn_team_leader = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_team_leader",
+                                            null=True,
                                             blank=True)
     checkIn_submit_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     checkIn_confirm_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
@@ -184,19 +190,26 @@ class done_staff_evaluates_tl(models.Model):
         ('Strongly Disagree', 'Strongly Disagree'),
     )
 
-    done_q1 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q1", blank=True,
+    done_q1 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q1",
+                                blank=True,
                                 default=None, null=True)
-    done_q2 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q2", blank=True,
+    done_q2 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q2",
+                                blank=True,
                                 default=None, null=True)
-    done_q3 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q3", blank=True,
+    done_q3 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q3",
+                                blank=True,
                                 default=None, null=True)
-    done_q4 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q4", blank=True,
+    done_q4 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q4",
+                                blank=True,
                                 default=None, null=True)
-    done_q5 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q5", blank=True,
+    done_q5 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q5",
+                                blank=True,
                                 default=None, null=True)
-    done_q6 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q6", blank=True,
+    done_q6 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q6",
+                                blank=True,
                                 default=None, null=True)
-    done_q7 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q7", blank=True,
+    done_q7 = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT, related_name="cfao_kenya_q7",
+                                blank=True,
                                 default=None, null=True)
 
     score_q1 = models.CharField(max_length=20, choices=results, blank=True, default=None, null=True)
@@ -229,19 +242,26 @@ class done_tl_evaluates_staff(models.Model):
         ('Strongly Disagree', 'Strongly Disagree'),
     )
 
-    done_q1 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q1", blank=True,
+    done_q1 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q1",
+                                blank=True,
                                 default=None, null=True)
-    done_q2 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q2", blank=True,
+    done_q2 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q2",
+                                blank=True,
                                 default=None, null=True)
-    done_q3 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q3", blank=True,
+    done_q3 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q3",
+                                blank=True,
                                 default=None, null=True)
-    done_q4 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q4", blank=True,
+    done_q4 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q4",
+                                blank=True,
                                 default=None, null=True)
-    done_q5 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q5", blank=True,
+    done_q5 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q5",
+                                blank=True,
                                 default=None, null=True)
-    done_q6 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q6", blank=True,
+    done_q6 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q6",
+                                blank=True,
                                 default=None, null=True)
-    done_q7 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q7", blank=True,
+    done_q7 = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT, related_name="cfao_kenya_q7",
+                                blank=True,
                                 default=None, null=True)
 
     score_q1 = models.CharField(max_length=20, choices=results, blank=True, default=None, null=True)
@@ -265,7 +285,8 @@ class responses_staff_evaluate_tl(models.Model):
     response_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique identifier for responses")
     response_question = models.ForeignKey('question_staff_evaluate_tl', on_delete=models.RESTRICT)
     response_staff = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_responding_staff")
-    response_team_leader = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_responded_team_leader")
+    response_team_leader = models.ForeignKey(User, on_delete=models.RESTRICT,
+                                             related_name="cfao_kenya_responded_team_leader")
     response_score = models.IntegerField()
     response_comment = models.TextField()
 
@@ -273,7 +294,8 @@ class responses_staff_evaluate_tl(models.Model):
 class responses_tl_evaluate_staff(models.Model):
     response_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique identifier for responses")
     response_question = models.ForeignKey('question_tl_evaluate_staff', on_delete=models.RESTRICT)
-    response_team_leader = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_responding_team_leader")
+    response_team_leader = models.ForeignKey(User, on_delete=models.RESTRICT,
+                                             related_name="cfao_kenya_responding_team_leader")
     response_staff = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_responded_staff")
     response_score = models.IntegerField()
     response_comment = models.TextField()
@@ -335,15 +357,18 @@ class individual_Kpi(models.Model):
 
     # Approvals
     individual_kpi_team_leader_approval = models.ForeignKey(User, on_delete=models.RESTRICT,
-                                                            related_name="cfao_kenya_team_leader_approval", null=True, blank=True)
+                                                            related_name="cfao_kenya_team_leader_approval", null=True,
+                                                            blank=True)
     individual_kpi_bu_leader_approval = models.ForeignKey(User, on_delete=models.RESTRICT,
-                                                          related_name="cfao_kenya_bu_leader_approval", null=True, blank=True)
+                                                          related_name="cfao_kenya_bu_leader_approval", null=True,
+                                                          blank=True)
     # end approvals
 
     individual_kpi_title = models.CharField(max_length=200)
     individual_kpi_details = models.TextField(null=True, blank=True)
     individual_kpi_criteria = models.CharField(max_length=100)
     individual_kpi_target = models.FloatField()
+    individual_kpi_weight = models.FloatField(default=20)
     individual_kpi_units = models.CharField(max_length=5, null=True, blank=True)
 
     function = (
@@ -365,6 +390,35 @@ class individual_Kpi(models.Model):
     individual_kpi_february_score = models.FloatField(null=True, blank=True)
     individual_kpi_march_score = models.FloatField(null=True, blank=True)
 
+    approve = (
+        ('Approved', 'Approved'),
+        ('Not Approved', 'Not Approved'),
+    )
+    individual_kpi_april_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                          default='Not Approved', )
+    individual_kpi_may_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                        default='Not Approved', )
+    individual_kpi_june_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                         default='Not Approved', )
+    individual_kpi_july_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                         default='Not Approved', )
+    individual_kpi_august_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                           default='Not Approved', )
+    individual_kpi_september_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                              default='Not Approved', )
+    individual_kpi_october_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                            default='Not Approved', )
+    individual_kpi_november_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                             default='Not Approved', )
+    individual_kpi_december_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                             default='Not Approved', )
+    individual_kpi_january_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                            default='Not Approved', )
+    individual_kpi_february_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                             default='Not Approved', )
+    individual_kpi_march_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                          default='Not Approved', )
+
     individual_kpi_submit_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     individual_kpi_approval1_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     individual_kpi_approval2_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
@@ -380,10 +434,12 @@ class individual_Kpi(models.Model):
     individual_kpi_status = models.CharField(max_length=40, choices=status, blank=True, default='Pending',
                                              help_text='KPI categorize function')
     type = (
-        ('cumulative', 'cumulative'),
+        ('', ''),
+        ('Addition', 'Addition'),
+        ('Average', 'Average'),
         ('YTD', 'YTD'),
     )
-    individual_kpi_type = models.CharField(max_length=10, choices=type, blank=True, default='cumulative', )
+    individual_kpi_type = models.CharField(max_length=10, choices=type, blank=True, default='Average', )
 
     def get_absolute_url(self):
         return reverse('kpi-detail', args=[self.individual_kpi_id])
@@ -397,10 +453,12 @@ class bu_kpi(models.Model):
     bu_kpi_pms_id = models.ForeignKey('pms', on_delete=models.RESTRICT)
     bu_kpi_bu = models.ForeignKey('bu', on_delete=models.RESTRICT, related_name="cfao_kenya_Bu_identity")
     # Approvals
-    bu_kpi_bu_user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_Bu_submitting", null=True,
+    bu_kpi_bu_user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_Bu_submitting",
+                                       null=True,
                                        blank=True)
     bu_kpi_team_leader_approval = models.ForeignKey(User, on_delete=models.RESTRICT,
-                                                    related_name="cfao_kenya_bu_team_leader_approval", null=True, blank=True)
+                                                    related_name="cfao_kenya_bu_team_leader_approval", null=True,
+                                                    blank=True)
     # end approvals
 
     bu_kpi_title = models.CharField(max_length=200)
@@ -455,7 +513,8 @@ class company_kpi(models.Model):
     company_kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                                       help_text="Unique Identifier for company KPI")
     company_kpi_pms_id = models.ForeignKey('pms', on_delete=models.RESTRICT)
-    company_kpi_user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_person_submitting", null=True,
+    company_kpi_user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_person_submitting",
+                                         null=True,
                                          blank=True)
     company_kpi_title = models.CharField(max_length=200)
     company_kpi_details = models.TextField()
@@ -503,8 +562,10 @@ class company_kpi(models.Model):
 class notification(models.Model):
     notification_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     notification_type = models.CharField(max_length=10)
-    notification_sender = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_notification_Sender")
-    notification_receiver = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_notification_receiver")
+    notification_sender = models.ForeignKey(User, on_delete=models.RESTRICT,
+                                            related_name="cfao_kenya_notification_Sender")
+    notification_receiver = models.ForeignKey(User, on_delete=models.RESTRICT,
+                                              related_name="cfao_kenya_notification_receiver")
     notification_title = models.CharField(max_length=15)
     notification_message = models.TextField()
     notification_date = models.DateField(auto_now=False, auto_now_add=False)
