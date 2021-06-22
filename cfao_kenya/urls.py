@@ -16,14 +16,15 @@ urlpatterns = [
     path('Individual-Kpi/Kpi-Results/<uuid:pk>', KpiResultUpdateView.as_view(), name='Individual_Kpi_Result_Update'),
 
     # Staff Kpi Links
-    # path('Staff-Kpi/', views.staffkpi, name='Staff_Kpi_Dashboard'),
-    path('Staff-Kpi/Approve-Kpi', views.approvekpi, name='Staff_Approve_Kpi'),
-    path('Staff-Kpi/Approve-Kpi/<int:pk>', views.ApproveKpiView.as_view(), name='Staff_Approve_Kpi_Detail'),
+    path('Staff-Kpi/', StaffKpiListView.as_view(), name='Staff_Kpi_Dashboard'),
+    path('Staff-Kpi/Approve-Kpi', StaffKpiPendingListView.as_view(), name='Staff_Approve_Kpi'),
+    path('Staff-Kpi/Approve-Kpi/<int:pk>', StaffKpiApproveView.as_view(), name='Staff_Approve_Kpi_Detail'),
     path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>', views.approve_individual_kpi, name='Staff_Approve_Individual_Kpi'),
     path('Staff-Kpi/Approve-Kpi/Reject/<int:pk>/<uuid:kpi_id>', views.reject_individual_kpi, name='Staff_Reject_Individual_Kpi'),
-    path('Staff-Kpi/Track-Kpi', views.staff_trackkpi, name='Staff_Track_Kpi'),
-    path('Staff-Kpi/Track-Kpi/<int:pk>', views.staff_trackkpi_staff, name='Staff_Track_Kpi_Staff'),
-    path('Staff-Kpi/Track-Kpi/<int:pk>/<uuid:kpi_id>', views.staff_trackkpi_staff_one, name='Staff_Track_Kpi_Staff_One'),
+    path('Staff-Kpi/Track-Kpi', StaffTrackKpiListView.as_view(), name='Staff_Track_Kpi'),
+    path('Staff-Kpi/Track-Kpi/<int:pk>', StaffTrackKpiOneListView.as_view(), name='Staff_Track_Kpi_Staff'),
+    path('Staff-Kpi/Track-Kpi/<int:pk>/<uuid:kpi_id>', StaffKpiTrackOneView.as_view(), name='Staff_Track_Kpi_Staff_One'),
+    path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>/<int:month>', views.approve_individual_kpi, name='Staff_Approve_Kpi_score'),
     path('Staff-Kpi/Kpi-Results', views.staff_kpiresults, name='Staff_Kpi_Results'),
     
     # BU Kpi Links

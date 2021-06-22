@@ -1,5 +1,5 @@
-{% extends "Individual_Kpi/default.html" %}
-{% block pagetitle %}View KPI{% endblock %}
+{% extends "Staff_Kpi/default.html" %}
+{% block pagetitle %}Approve KPI{% endblock %}
 {% block kpicontent %}
 
   <div class="col-md-10">
@@ -52,7 +52,7 @@
               </tr>
               <tr>
                 <th>
-                  Statusu
+                  Status
                 </th>
                 <td colspan="3">
                   {{ kpi.individual_kpi_status }}
@@ -74,14 +74,6 @@
           <div class="alert alert-warning">
             <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
             It Appears {{ staff.get_full_name }} has no pending KPIs
-          </div>
-        {% endif %}
-        {% if individual_kpi %}
-
-        {% else %}
-          <div class="alert alert-warning">
-            <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
-            It Appears you've not submitted any KPIs. Or all of them have been declined
           </div>
         {% endif %}
       </div>
