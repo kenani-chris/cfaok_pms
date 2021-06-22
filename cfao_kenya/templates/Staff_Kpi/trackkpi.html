@@ -14,20 +14,23 @@
               <thead>
               <tr>
                 <th>Staff</th>
-                <th>Mail</th>
                 <th>PF</th>
                 <th>Approved 2</th>
                 <th>Approved 1</th>
                 <th>Pending</th>
+                <th>Rejected</th>
                 <th>Total</th>
               </tr>
               </thead>
               <tbody>
-            {% for member in staff_n_kpi %}
+            {% for member in team_members_kpi %}
               {% if member is not None %}
                 <tr>
                   <td>
-                    <a href="{% url 'Staff_Track_Kpi_Staff' member.0 %}" >{{ member.1 }}</a>
+                    <a href="{% url 'Staff_Track_Kpi_Staff' member.0.staff_person.id %}" >{{ member.0.staff_person.get_full_name }}</a>
+                  </td>
+                  <td>
+                    {{ member.1 }}
                   </td>
                   <td>
                     {{ member.2 }}
@@ -43,9 +46,6 @@
                   </td>
                   <td>
                     {{ member.6 }}
-                  </td>
-                  <td>
-                    {{ member.7 }}
                   </td>
                 </tr>
               {% endif %}

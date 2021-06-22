@@ -11,35 +11,46 @@
       <div class="card-body">
         <div style="overflow-x:scroll">
           {% if team_members %}
-            {% if kpi_pending_count > 0 %}
+            {% if team_pending > 0 %}
               <table class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>Staff</th>
-                  <th>PF</th>
-                  <th>Pending KPI</th>
-                  <th>Total KPI</th>
+                    <th>Staff</th>
+                    <th>PF</th>
+                    <th>Approved 2</th>
+                    <th>Approved 1</th>
+                    <th>Pending</th>
+                    <th>Rejected</th>
+                    <th>Total</th>
                 </tr>
                 </thead>
                 <tbody>
-              {% for member in staff_n_kpi %}
+                {% for member in team_members_kpi %}
                 {% if member is not None %}
-                  {% if member.5 > 0 %}
-                    <tr>
-                      <td>
-                        <a href="{% url 'Staff_Approve_Kpi_Detail' member.0.staff_person.id %}">{{ member.0.staff_person.get_full_name }}</a>
-                      </td>
-                      <td>
-                        {{ member.2 }}
-                      </td>
-                      </td>
-                      <td>
-                        {{ member.5 }}
-                      </td>
-                      <td>
-                        {{ member.6 }}
-                      </td>
-                    </tr>
+                  {% if member.4 > 0 %}
+                      <tr>
+                          <td>
+                            <a href="{% url 'Staff_Approve_Kpi_Detail' member.0.staff_person.id %}">{{ member.0.staff_person.get_full_name }}</a>
+                          </td>
+                          <td>
+                            {{ member.1 }}
+                          </td>
+                          <td>
+                            {{ member.2 }}
+                          </td>
+                          <td>
+                            {{ member.3 }}
+                          </td>
+                          <td class="bg-info">
+                            {{ member.4 }}
+                          </td>
+                          <td>
+                            {{ member.5 }}
+                          </td>
+                          <td>
+                            {{ member.6 }}
+                          </td>
+                        </tr>
                   {% endif %}
                 {% endif %}
               {% endfor %}
