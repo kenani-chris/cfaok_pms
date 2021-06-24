@@ -117,7 +117,7 @@ class IndividualKpiResultsForm(forms.ModelForm):
 # =============================================================================================================
 
 
-class submit_bu_kpi_form(forms.ModelForm):
+class SubmitBuKpiForm(forms.ModelForm):
     class Meta:
         model = bu_kpi
         fields = ['bu_kpi_title', 'bu_kpi_function', 'bu_kpi_details', 'bu_kpi_target']
@@ -130,7 +130,7 @@ class submit_bu_kpi_form(forms.ModelForm):
     bu_kpi_target = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}), required=True)
 
     def clean(self):
-        cleaned_data = super(submit_bu_kpi_form, self).clean()
+        cleaned_data = super(SubmitBuKpiForm, self).clean()
         title = cleaned_data.get('bu_kpi_title')
         function = cleaned_data.get('bu_kpi_function')
         details = cleaned_data.get('bu_kpi_details')

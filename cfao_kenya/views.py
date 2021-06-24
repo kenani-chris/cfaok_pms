@@ -1,3 +1,4 @@
+import calendar
 import os
 from email.mime.image import MIMEImage
 from pathlib import Path
@@ -1054,20 +1055,82 @@ class StaffTrackKpiOneListView(ListView):
             context['pending_count'] = context['pending_kpi'].count() + context['rejected1_kpi'].count() + \
                                        context['edit_kpi'].count()
 
+        tl = context['user_is_tl']
+        team_approved = 0
+        team_pending = 0
+        team_zero = 0
+        if tl is not None:
+            team_members = staff.objects.filter(staff_team=tl).exclude(staff_person=self.request.user)
+            team_members_kpi = []
+
+            for member in team_members:
+                kpi = individual_Kpi.objects.filter(individual_kpi_user=member.staff_person,
+                                                    individual_kpi_pms=active_pms)
+                approved1_kpi = kpi.filter(individual_kpi_status='Approved 1')
+                approved2_kpi = kpi.filter(individual_kpi_status='Approved 2')
+                pending_kpi = kpi.filter(individual_kpi_status='Pending')
+                edit_kpi = kpi.filter(individual_kpi_status='Edit')
+                rejected1_kpi = kpi.filter(individual_kpi_status='Rejected 1')
+                rejected2_kpi = kpi.filter(individual_kpi_status='Rejected 2')
+
+                required_count = pms.pms_individual_kpi_number
+                submitted_count = approved1_kpi.count() + approved2_kpi.count() + pending_kpi.count() + \
+                                  edit_kpi.count() + rejected1_kpi.count()
+                rejected_count = rejected2_kpi.count()
+                pending_count = pending_kpi.count() + rejected1_kpi.count() + edit_kpi.count()
+
+                team_members_kpi.append([member.staff_person.get_full_name(), member.staff_Pf_Number,
+                                         approved2_kpi.count, approved1_kpi.count, pending_count, rejected_count,
+                                         submitted_count])
+
+                if approved2_kpi.count() > 0:
+                    team_approved = team_approved + 1
+
+                if pending_count > 0:
+                    team_pending = team_pending + 1
+
+                if submitted_count < 1:
+                    team_zero = team_zero + 1
+
+            context['team_members'] = team_members
+            context['team_members_kpi'] = team_members_kpi
+        else:
+            team_members = None
+            context['team_members'] = team_members
+            context['team_members_kpi'] = None
+
+        context['team_approved'] = team_approved
+        context['team_pending'] = team_pending
+        context['team_zero'] = team_zero
+
         return context
 
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
-class StaffKpiTrackOneView(DetailView):
-    model = User
+class StaffKpiTrackOneView(UpdateView):
+    form_class = IndividualKpiResultsForm
     template_name = 'Staff_Kpi/trackkpi_staff_one.html'
     active_pms = pms
     context_object_name = 'staff'
+    pk_url_kwarg = 'kpi_id'
+    model = individual_Kpi
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Staff_Track_Kpi_Staff_One', kwargs={"pk": self.kwargs["pk"],
+                                                                        "kpi_id": self.kwargs["kpi_id"]}))
+
+    def form_valid(self, form):
+        super(StaffKpiTrackOneView, self).form_valid(form)
+        messages.success(self.request, 'KPI Update successful')
+        return HttpResponseRedirect(reverse('Staff_Track_Kpi_Staff_One', kwargs={"pk": self.kwargs["pk"],
+                                                                        "kpi_id": self.kwargs["kpi_id"]}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['the_kpi'] = get_object_or_404(individual_Kpi, individual_kpi_id=self.kwargs.get('kpi_id'))
         staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['staff'] = User.objects.get(pk=self.kwargs['pk'])
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1077,6 +1140,101 @@ class StaffKpiTrackOneView(DetailView):
         if pms.objects.filter(pms_status='Active').count() != 1:
             context['pms'] = None
         else:
+            today = datetime.date.today()
+            day = int(today.strftime('%d'))
+            month = int(today.strftime('%-m'))
+            if month == 1:
+                month = 13
+            elif month == 2:
+                month = 14
+            elif month == 3:
+                month = 15
+
+            context['current_month'] = month
+
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+            submit_date = int(active_pms.pms_individual_submit_results_date)
+
+            result_kpi = get_object_or_404(individual_Kpi, pk=self.kwargs['kpi_id'])
+
+            months = {'april': 1, 'may': 2, 'june': 3, 'july': 4, 'august': 5, 'september': 6, 'october': 7,
+                      'november': 8,
+                      'december': 9, 'january': 10, 'february': 11, 'march': 12}
+
+            if result_kpi.individual_kpi_april_score_approve == 'Approved':
+                april = 'hidden'
+            else:
+                april = 'reveal'
+
+            if result_kpi.individual_kpi_may_score_approve == 'Approved':
+                may = 'hidden'
+            else:
+                may = 'reveal'
+
+            if result_kpi.individual_kpi_june_score_approve == 'Approved':
+                june = 'hidden'
+            else:
+                june = 'reveal'
+
+            if result_kpi.individual_kpi_july_score_approve == 'Approved':
+                july = 'hidden'
+            else:
+                july = 'reveal'
+
+            if result_kpi.individual_kpi_august_score_approve == 'Approved':
+                august = 'hidden'
+            else:
+                august = 'reveal'
+
+            if result_kpi.individual_kpi_september_score_approve == 'Approved':
+                september = 'hidden'
+            else:
+                september = 'reveal'
+
+            if result_kpi.individual_kpi_october_score_approve == 'Approved':
+                october = 'hidden'
+            else:
+                october = 'reveal'
+
+            if result_kpi.individual_kpi_november_score_approve == 'Approved':
+                november = 'hidden'
+            else:
+                november = 'reveal'
+
+            if result_kpi.individual_kpi_december_score_approve == 'Approved':
+                december = 'hidden'
+            else:
+                december = 'reveal'
+
+            if result_kpi.individual_kpi_january_score_approve == 'Approved':
+                january = 'hidden'
+            else:
+                january = 'reveal'
+
+            if result_kpi.individual_kpi_february_score_approve == 'Approved':
+                february = 'hidden'
+            else:
+                february = 'reveal'
+
+            if result_kpi.individual_kpi_march_score_approve == 'Approved':
+                march = 'hidden'
+            else:
+                march = 'reveal'
+
+            context['april'] = april
+            context['may'] = may
+            context['june'] = june
+            context['july'] = july
+            context['august'] = august
+            context['september'] = september
+            context['october'] = october
+            context['november'] = november
+            context['december'] = december
+            context['january'] = january
+            context['february'] = february
+            context['march'] = march
+
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
 
@@ -1098,342 +1256,339 @@ class StaffKpiTrackOneView(DetailView):
             context['pending_count'] = context['pending_kpi'].count() + context['rejected1_kpi'].count() + \
                                        context['edit_kpi'].count()
             context['now'] = datetime.date.today()
+
+        tl = context['user_is_tl']
+        team_approved = 0
+        team_pending = 0
+        team_zero = 0
+        if tl is not None:
+            team_members = staff.objects.filter(staff_team=tl).exclude(staff_person=self.request.user)
+            team_members_kpi = []
+
+            for member in team_members:
+                kpi = individual_Kpi.objects.filter(individual_kpi_user=member.staff_person,
+                                                    individual_kpi_pms=active_pms)
+                approved1_kpi = kpi.filter(individual_kpi_status='Approved 1')
+                approved2_kpi = kpi.filter(individual_kpi_status='Approved 2')
+                pending_kpi = kpi.filter(individual_kpi_status='Pending')
+                edit_kpi = kpi.filter(individual_kpi_status='Edit')
+                rejected1_kpi = kpi.filter(individual_kpi_status='Rejected 1')
+                rejected2_kpi = kpi.filter(individual_kpi_status='Rejected 2')
+
+                required_count = pms.pms_individual_kpi_number
+                submitted_count = approved1_kpi.count() + approved2_kpi.count() + pending_kpi.count() + \
+                                  edit_kpi.count() + rejected1_kpi.count()
+                rejected_count = rejected2_kpi.count()
+                pending_count = pending_kpi.count() + rejected1_kpi.count() + edit_kpi.count()
+
+                team_members_kpi.append([member.staff_person.get_full_name(), member.staff_Pf_Number,
+                                         approved2_kpi.count, approved1_kpi.count, pending_count, rejected_count,
+                                         submitted_count])
+
+                if approved2_kpi.count() > 0:
+                    team_approved = team_approved + 1
+
+                if pending_count > 0:
+                    team_pending = team_pending + 1
+
+                if submitted_count < 1:
+                    team_zero = team_zero + 1
+
+            context['team_members'] = team_members
+            context['team_members_kpi'] = team_members_kpi
+        else:
+            team_members = None
+            context['team_members'] = team_members
+            context['team_members_kpi'] = None
+
+        context['team_approved'] = team_approved
+        context['team_pending'] = team_pending
+        context['team_zero'] = team_zero
         return context
 
 
 @login_required
-def staff_trackkpi(request):
-    # Check Level
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
+def approve_individual_kpi_score(request, pk, kpi_id, month):
+    staff_person = get_object_or_404(staff, id=request.user.id)
+    kpi = get_object_or_404(individual_Kpi, individual_kpi_id=kpi_id)
+    if month == 4:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_april_score_approve="Approved"
+        )
+    elif month == 5:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_may_score_approve="Approved"
+        )
+    elif month == 6:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_june_score_approve="Approved"
+        )
+    elif month == 7:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_july_score_approve="Approved"
+        )
+    elif month == 8:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_august_score_approve="Approved"
+        )
+    elif month == 9:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_september_score_approve="Approved"
+        )
+    elif month == 10:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_october_score_approve="Approved"
+        )
+    elif month == 11:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_november_score_approve="Approved"
+        )
+    elif month == 12:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_december_score_approve="Approved"
+        )
+    elif month == 1:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_january_score_approve="Approved"
+        )
+    elif month == 2:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_february_score_approve="Approved"
+        )
+    elif month == 3:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_march_score_approve="Approved"
+        )
+    messages.success(request, 'KPI score approved successful')
+    message = "KPI <b>" + kpi.individual_kpi_title + "</b> has been approved"
+    send_email_pms('KPI Approved', User.objects.get(id=pk), request.user, message)
 
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
-
-    if user_is_tl is not None:
-        team_members = staff.objects.filter(staff_team=user_is_tl).exclude(staff_person=request.user)
-        kpi_approved_count = 0
-        kpi_pending_count = 0
-        kpi_zero_count = 0
-        staff_n_kpi = None
-        if team_members is not None:
-            for member in team_members:
-                staff_approved1_kpi = individual_Kpi.objects.filter(individual_kpi_user=member.id,
-                                                                    individual_kpi_pms=active_pms,
-                                                                    individual_kpi_status='Approved 1').count()
-                staff_approved2_kpi = individual_Kpi.objects.filter(individual_kpi_user=member.id,
-                                                                    individual_kpi_pms=active_pms,
-                                                                    individual_kpi_status='Approved 2').count()
-                staff_pending_kpi = individual_Kpi.objects.filter(individual_kpi_user=member.id,
-                                                                  individual_kpi_pms=active_pms,
-                                                                  individual_kpi_status='Pending').count()
-                total_kpi = staff_approved1_kpi + staff_approved2_kpi + staff_pending_kpi
-
-                staff_n_kpi = [staff_n_kpi,
-                               [member.staff_person.id, member.staff_person.get_full_name, member.staff_person.email,
-                                member.staff_Pf_Number, staff_approved1_kpi, staff_approved2_kpi, staff_pending_kpi,
-                                total_kpi]]
-
-                if staff_approved2_kpi > 0:
-                    kpi_approved_count = + 1
-
-                if staff_pending_kpi > 0:
-                    kpi_pending_count = + 1
-
-                if total_kpi < 1:
-                    kpi_zero_count = + 1
-        else:
-            staff_n_kpi = None
-    else:
-        team_members = None
-
-    no_of_bu = bu.objects.all().count()
-
-    if active_pms is not None:
-        all_kpi = individual_Kpi.objects.filter(individual_kpi_user=request.user, individual_kpi_pms=active_pms)
-        if all_kpi is not None:
-            approved1_kpi = all_kpi.filter(individual_kpi_user=request.user, individual_kpi_status='Approved 1')
-            approved2_kpi = all_kpi.filter(individual_kpi_user=request.user, individual_kpi_status='Approved 2')
-            pending_kpi = all_kpi.filter(individual_kpi_user=request.user, individual_kpi_status="Pending")
-            edit_kpi = all_kpi.filter(individual_kpi_user=request.user, individual_kpi_status="Edit")
-            rejected1_kpi = all_kpi.filter(individual_kpi_user=request.user, individual_kpi_status="Rejected 1")
-            rejected2_kpi = all_kpi.filter(individual_kpi_user=request.user, individual_kpi_status="Rejected 2")
-            total_submitted = approved1_kpi.count() + approved2_kpi.count() + pending_kpi.count() + edit_kpi.count()
-            total_pending = approved1_kpi.count() + pending_kpi.count()
-            total_rejected = rejected1_kpi.count() + rejected2_kpi.count()
-            percent_submitted = total_submitted / active_pms.pms_individual_kpi_number * 100
-        else:
-            approved1_kpi = approved2_kpi = pending_kpi = edit_kpi = rejected1_kpi = rejected2_kpi = total_submitted = total_pending = total_rejected = percent_submitted = None
-    else:
-        all_kpi = approved1_kpi = approved2_kpi = pending_kpi = edit_kpi = rejected1_kpi = rejected2_kpi = total_submitted = total_pending = total_rejected = percent_submitted = None
-
-    # Get team Leader
-    user_team = request.user.staff_person.staff_team
-    if user_team is not None:
-        team_leader = staff.objects.filter(staff_head_team=user_team)
-        if team_leader:
-            team_leader = team_leader.get()
-        else:
-            team_leader = None
-    else:
-        team_leader = None
-
-    context = {
-        'my_kpi': all_kpi,
-        'staff_n_kpi': staff_n_kpi,
-        'team_members': team_members,
-        'active_pms': active_pms,
-        'approved1_kpi': approved1_kpi,
-        'approved2_kpi': approved2_kpi,
-        'pending_kpi': pending_kpi,
-        'edit_kpi': edit_kpi,
-        'rejected1_kpi': rejected1_kpi,
-        'rejected2_kpi': rejected2_kpi,
-        'total_submitted': total_submitted,
-        'percent_submitted': percent_submitted,
-        'total_pending': total_pending,
-        'total_rejected': total_rejected,
-        'team_leader': team_leader,
-        'user_is_md': user_is_md,
-        'user_is_bu_head': user_is_bu_head,
-        'user_is_tl': user_is_tl,
-        'no_of_bu': no_of_bu,
-        'user_bu': user_bu,
-    }
-    return render(request, 'Staff_Kpi/trackkpi.html', context)
+    return HttpResponseRedirect(reverse("Staff_Track_Kpi_Staff_One", kwargs={'pk': pk, 'kpi_id': kpi_id}))
 
 
 @login_required
-def staff_trackkpi_staff(request, pk):
-    # Check Level
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
+def approve_individual_kpi_score_dashboard(request, pk, kpi_id, month):
+    staff_person = get_object_or_404(staff, id=request.user.id)
+    kpi = get_object_or_404(individual_Kpi, individual_kpi_id=kpi_id)
+    if month == 4:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_april_score_approve="Approved"
+        )
+    elif month == 5:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_may_score_approve="Approved"
+        )
+    elif month == 6:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_june_score_approve="Approved"
+        )
+    elif month == 7:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_july_score_approve="Approved"
+        )
+    elif month == 8:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_august_score_approve="Approved"
+        )
+    elif month == 9:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_september_score_approve="Approved"
+        )
+    elif month == 10:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_october_score_approve="Approved"
+        )
+    elif month == 11:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_november_score_approve="Approved"
+        )
+    elif month == 12:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_december_score_approve="Approved"
+        )
+    elif month == 1:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_january_score_approve="Approved"
+        )
+    elif month == 2:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_february_score_approve="Approved"
+        )
+    elif month == 3:
+        individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
+            individual_kpi_march_score_approve="Approved"
+        )
+    messages.success(request, 'KPI score approved successful')
+    message = "KPI <b>" + kpi.individual_kpi_title + "</b> has been approved"
+    send_email_pms('KPI Approved', User.objects.get(id=pk), request.user, message)
 
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
-
-    if user_is_tl is not None:
-        team_members = staff.objects.filter(staff_team=user_is_tl).exclude(staff_person=request.user)
-        kpi_approved_count = 0
-        kpi_pending_count = 0
-        kpi_zero_count = 0
-        staff_n_kpi = None
-        if team_members is not None:
-            for member in team_members:
-                staff_approved1_kpi = individual_Kpi.objects.filter(individual_kpi_user=member.id,
-                                                                    individual_kpi_pms=active_pms,
-                                                                    individual_kpi_status='Approved 1').count()
-                staff_approved2_kpi = individual_Kpi.objects.filter(individual_kpi_user=member.id,
-                                                                    individual_kpi_pms=active_pms,
-                                                                    individual_kpi_status='Approved 2').count()
-                staff_pending_kpi = individual_Kpi.objects.filter(individual_kpi_user=member.id,
-                                                                  individual_kpi_pms=active_pms,
-                                                                  individual_kpi_status='Pending').count()
-                total_kpi = staff_approved1_kpi + staff_approved2_kpi + staff_pending_kpi
-
-                staff_n_kpi = [staff_n_kpi,
-                               [member.staff_person.id, member.staff_person.get_full_name, member.staff_person.email,
-                                member.staff_Pf_Number, staff_approved1_kpi, staff_approved2_kpi, staff_pending_kpi,
-                                total_kpi]]
-
-                if staff_approved2_kpi > 0:
-                    kpi_approved_count = + 1
-
-                if staff_pending_kpi > 0:
-                    kpi_pending_count = + 1
-
-                if total_kpi < 1:
-                    kpi_zero_count = + 1
-        else:
-            staff_n_kpi = None
-    else:
-        team_members = None
-
-    no_of_bu = bu.objects.all().count()
-
-    if active_pms is not None:
-        all_kpi = individual_Kpi.objects.filter(individual_kpi_user=pk, individual_kpi_pms=active_pms)
-        if all_kpi is not None:
-            approved1_kpi = all_kpi.filter(individual_kpi_status='Approved 1')
-            approved2_kpi = all_kpi.filter(individual_kpi_status='Approved 2')
-            pending_kpi = all_kpi.filter(individual_kpi_status="Pending")
-            edit_kpi = all_kpi.filter(individual_kpi_status="Edit")
-            rejected1_kpi = all_kpi.filter(individual_kpi_status="Rejected 1")
-            rejected2_kpi = all_kpi.filter(individual_kpi_status="Rejected 2")
-            total_submitted = approved1_kpi.count() + approved2_kpi.count() + pending_kpi.count() + edit_kpi.count()
-            total_pending = approved1_kpi.count() + pending_kpi.count()
-            total_rejected = rejected1_kpi.count() + rejected2_kpi.count()
-            percent_submitted = total_submitted / active_pms.pms_individual_kpi_number * 100
-            required_kpi = active_pms.pms_individual_kpi_number
-        else:
-            approved1_kpi = approved2_kpi = pending_kpi = edit_kpi = rejected1_kpi = rejected2_kpi = total_submitted = total_pending = total_rejected = percent_submitted = None
-    else:
-        all_kpi = approved1_kpi = approved2_kpi = pending_kpi = edit_kpi = rejected1_kpi = rejected2_kpi = total_submitted = total_pending = total_rejected = percent_submitted = None
-
-    # Get team Leader
-    user_team = request.user.staff_person.staff_team
-    if user_team is not None:
-        team_leader = staff.objects.filter(staff_head_team=user_team)
-        if team_leader:
-            team_leader = team_leader.get()
-        else:
-            team_leader = None
-    else:
-        team_leader = None
-
-    staffp = User.objects.filter(id=pk).get()
-
-    context = {
-        'staff': staffp,
-        'my_kpi': all_kpi,
-        'required_kpi': required_kpi,
-        'staff_n_kpi': staff_n_kpi,
-        'team_members': team_members,
-        'active_pms': active_pms,
-        'approved1_kpi': approved1_kpi,
-        'approved2_kpi': approved2_kpi,
-        'pending_kpi': pending_kpi,
-        'edit_kpi': edit_kpi,
-        'rejected1_kpi': rejected1_kpi,
-        'rejected2_kpi': rejected2_kpi,
-        'total_submitted': total_submitted,
-        'percent_submitted': percent_submitted,
-        'total_pending': total_pending,
-        'total_rejected': total_rejected,
-        'team_leader': team_leader,
-        'user_is_md': user_is_md,
-        'user_is_bu_head': user_is_bu_head,
-        'user_is_tl': user_is_tl,
-        'no_of_bu': no_of_bu,
-        'user_bu': user_bu,
-    }
-    return render(request, 'Staff_Kpi/trackkpi_staff.html', context)
-
-
-@login_required
-def staff_trackkpi_staff_one(request, pk, kpi_id):
-    # Check Level
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
-
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
-
-    if active_pms is not None:
-        all_kpi = individual_Kpi.objects.filter(individual_kpi_id=kpi_id)
-    else:
-        all_kpi = None
-
-    staffp = User.objects.filter(id=pk).get()
-
-    context = {
-        'staff': staffp,
-        'my_kpi': all_kpi,
-        'user_is_md': user_is_md,
-        'user_is_bu_head': user_is_bu_head,
-        'user_is_tl': user_is_tl,
-        'user_bu': user_bu,
-        'no_of_bu': no_of_bu,
-    }
-    return render(request, 'Staff_Kpi/trackkpi_staff_one.html', context)
-
-
-@login_required
-def staff_kpiresults(request):
-    # Check Level
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
-
-    if user_is_tl is not None:
-        team_members = staff.objects.filter(staff_team=user_is_tl).exclude(staff_person=request.user)
-        kpi_approved_count = 0
-        kpi_pending_count = 0
-        kpi_zero_count = 0
-        staff_n_kpi = None
-        if team_members is not None:
-            for member in team_members:
-                staff_approved2_kpi = individual_Kpi.objects.filter(individual_kpi_user=member.id,
-                                                                    individual_kpi_pms=active_pms,
-                                                                    individual_kpi_status='Approved 2')
-                staff_n_kpi = [staff_n_kpi,
-                               [member.staff_person.id, member.staff_person.get_full_name, member.staff_person.email,
-                                member.staff_Pf_Number, staff_approved2_kpi]]
-        else:
-            staff_n_kpi = None
-    else:
-        team_members = None
-
-    no_of_bu = bu.objects.all().count()
-
-    if active_pms is not None:
-        all_kpi = individual_Kpi.objects.filter(individual_kpi_user=request.user, individual_kpi_pms=active_pms)
-        if all_kpi is not None:
-            approved1_kpi = all_kpi.filter(individual_kpi_user=request.user, individual_kpi_status='Approved 1')
-            approved2_kpi = all_kpi.filter(individual_kpi_user=request.user, individual_kpi_status='Approved 2')
-            pending_kpi = all_kpi.filter(individual_kpi_user=request.user, individual_kpi_status="Pending")
-            edit_kpi = all_kpi.filter(individual_kpi_user=request.user, individual_kpi_status="Edit")
-            rejected1_kpi = all_kpi.filter(individual_kpi_user=request.user, individual_kpi_status="Rejected 1")
-            rejected2_kpi = all_kpi.filter(individual_kpi_user=request.user, individual_kpi_status="Rejected 2")
-            total_submitted = approved1_kpi.count() + approved2_kpi.count() + pending_kpi.count() + edit_kpi.count()
-            total_pending = approved1_kpi.count() + pending_kpi.count()
-            total_rejected = rejected1_kpi.count() + rejected2_kpi.count()
-            percent_submitted = total_submitted / active_pms.pms_individual_kpi_number * 100
-        else:
-            approved1_kpi = approved2_kpi = pending_kpi = edit_kpi = rejected1_kpi = rejected2_kpi = total_submitted = total_pending = total_rejected = percent_submitted = None
-    else:
-        all_kpi = approved1_kpi = approved2_kpi = pending_kpi = edit_kpi = rejected1_kpi = rejected2_kpi = total_submitted = total_pending = total_rejected = percent_submitted = None
-
-    # Get team Leader
-    user_team = request.user.staff_person.staff_team
-    if user_team is not None:
-        team_leader = staff.objects.filter(staff_head_team=user_team)
-        if team_leader:
-            team_leader = team_leader.get()
-        else:
-            team_leader = None
-    else:
-        team_leader = None
-
-    context = {
-        'my_kpi': all_kpi,
-        'staff_n_kpi': staff_n_kpi,
-        'team_members': team_members,
-        'active_pms': active_pms,
-        'approved1_kpi': approved1_kpi,
-        'approved2_kpi': approved2_kpi,
-        'pending_kpi': pending_kpi,
-        'edit_kpi': edit_kpi,
-        'rejected1_kpi': rejected1_kpi,
-        'rejected2_kpi': rejected2_kpi,
-        'total_submitted': total_submitted,
-        'percent_submitted': percent_submitted,
-        'total_pending': total_pending,
-        'total_rejected': total_rejected,
-        'team_leader': team_leader,
-        'user_is_md': user_is_md,
-        'user_is_bu_head': user_is_bu_head,
-        'user_is_tl': user_is_tl,
-        'no_of_bu': no_of_bu,
-        'user_bu': user_bu,
-    }
-    return render(request, 'Staff_Kpi/kpiresults.html', context)
+    return HttpResponseRedirect(reverse("Staff_Track_Kpi_Staff", kwargs={'pk': pk}))
 
 
 # =====================================================================================================================
 #                                                 BU KPI
 # =====================================================================================================================
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class BuKpiDashboard(TemplateView):
+    template_name = 'Bu_Kpi/budashboard.html'
+    model = bu_kpi
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            kpi = individual_Kpi.objects.filter(individual_kpi_user=self.request.user,
+                                                individual_kpi_pms=active_pms)
+            context['my_kpi'] = kpi
+            context['approved1_kpi'] = kpi.filter(individual_kpi_status='Approved 1')
+            context['approved2_kpi'] = kpi.filter(individual_kpi_status='Approved 2')
+            context['pending_kpi'] = kpi.filter(individual_kpi_status='Pending')
+            context['edit_kpi'] = kpi.filter(individual_kpi_status='Edit')
+            context['rejected1_kpi'] = kpi.filter(individual_kpi_status='Rejected 1')
+            context['rejected2_kpi'] = kpi.filter(individual_kpi_status='Rejected 2')
+
+            context['required_count'] = pms.pms_individual_kpi_number
+            context['submitted_count'] = context['approved1_kpi'].count() + context['approved2_kpi'].count() + \
+                                         context['pending_kpi'].count() + context['edit_kpi'].count() + \
+                                         context['rejected1_kpi'].count()
+            context['rejected_count'] = context['rejected2_kpi'].count()
+            context['pending_count'] = context['pending_kpi'].count() + context['rejected1_kpi'].count() + \
+                                       context['edit_kpi'].count()
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class BuKpi(TemplateView):
+    template_name = 'Bu_Kpi/bukpi.html'
+    model = bu_kpi
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            kpi = individual_Kpi.objects.filter(individual_kpi_user=self.request.user,
+                                                individual_kpi_pms=active_pms)
+            context['my_kpi'] = kpi
+            context['approved1_kpi'] = kpi.filter(individual_kpi_status='Approved 1')
+            context['approved2_kpi'] = kpi.filter(individual_kpi_status='Approved 2')
+            context['pending_kpi'] = kpi.filter(individual_kpi_status='Pending')
+            context['edit_kpi'] = kpi.filter(individual_kpi_status='Edit')
+            context['rejected1_kpi'] = kpi.filter(individual_kpi_status='Rejected 1')
+            context['rejected2_kpi'] = kpi.filter(individual_kpi_status='Rejected 2')
+
+            context['required_count'] = pms.pms_individual_kpi_number
+            context['submitted_count'] = context['approved1_kpi'].count() + context['approved2_kpi'].count() + \
+                                         context['pending_kpi'].count() + context['edit_kpi'].count() + \
+                                         context['rejected1_kpi'].count()
+            context['rejected_count'] = context['rejected2_kpi'].count()
+            context['pending_count'] = context['pending_kpi'].count() + context['rejected1_kpi'].count() + \
+                                       context['edit_kpi'].count()
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class SubmitBuKpiView(CreateView):
+    form_class = SubmitBuKpiForm
+    template_name = 'Individual_Kpi/submitkpi.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            kpi = individual_Kpi.objects.filter(individual_kpi_user=self.request.user, individual_kpi_pms=active_pms)
+            context['my_kpi'] = kpi
+            context['approved1_kpi'] = kpi.filter(individual_kpi_status='Approved 1')
+            context['approved2_kpi'] = kpi.filter(individual_kpi_status='Approved 2')
+            context['pending_kpi'] = kpi.filter(individual_kpi_status='Pending')
+            context['edit_kpi'] = kpi.filter(individual_kpi_status='Edit')
+            context['rejected1_kpi'] = kpi.filter(individual_kpi_status='Rejected 1')
+            context['rejected2_kpi'] = kpi.filter(individual_kpi_status='Rejected 2')
+
+            context['required_count'] = pms.pms_individual_kpi_number
+            context['submitted_count'] = context['approved1_kpi'].count() + context['approved2_kpi'].count() + \
+                                         context['pending_kpi'].count() + context['edit_kpi'].count() + \
+                                         context['rejected1_kpi'].count()
+            context['rejected_count'] = context['rejected2_kpi'].count()
+            context['pending_count'] = context['pending_kpi'].count() + context['rejected1_kpi'].count() + \
+                                       context['edit_kpi'].count()
+            context['now'] = datetime.date.today()
+        return context
+
+    def get_initial(self):
+        initial = super(SubmitKpiView, self).get_initial()
+        initial['individual_kpi_pms'] = pms.objects.get(pms_status='Active')
+        initial['individual_kpi_user'] = self.request.user
+        initial['individual_kpi_submit_date'] = datetime.date.today()
+        initial['individual_kpi_last_edit'] = datetime.date.today()
+        initial['individual_kpi_status'] = 'Pending'
+        return initial
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Individual_Kpi_Submit'))
+
+    def form_valid(self, form):
+        super(SubmitKpiView, self).form_valid(form)
+        user_team = get_object_or_404(staff, pk=self.request.user.id)
+        user_team = user_team.staff_team
+        e_message = ""
+        if user_team is not None:
+            team_leader = staff.objects.filter(staff_head_team=user_team)
+            if team_leader:
+                team_leader = team_leader.get()
+                e_message = 'you have one KPI from ' + self.request.user.get_full_name() + ' that requires your approval'
+            else:
+                team_leader = None
+                e_message = 'Your KPI has been submitted successfully but i keep on failing contacting your immediate ' \
+                          'supervisor.<br>Please raise the issue with HR for support'
+        else:
+            team_leader = None
+            e_message = 'Your KPI has been submitted successfully but i keep on failing contacting your immediate ' \
+                      'supervisor.<br>Please raise the issue with HR for support'
+
+        send_email_pms('KPI Approval', team_leader, self.request.user, e_message)
+
+        messages.success(self.request, 'KPI submit successful')
+
+        return HttpResponseRedirect(reverse('Individual_Kpi_Submit'))
+
+
 @login_required
 def bu_Kpi(request):
     user_is_md = request.user.staff_person.staff_md
