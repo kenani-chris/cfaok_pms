@@ -120,22 +120,31 @@ class IndividualKpiResultsForm(forms.ModelForm):
 class SubmitBuKpiForm(forms.ModelForm):
     class Meta:
         model = bu_kpi
-        fields = ['bu_kpi_title', 'bu_kpi_function', 'bu_kpi_details', 'bu_kpi_target']
+        fields = ['bu_kpi_bu', 'bu_kpi_title', 'bu_kpi_criteria', 'bu_kpi_function', 'bu_kpi_details',
+                  'bu_kpi_target', 'bu_kpi_weight', 'bu_kpi_type', 'bu_kpi_pms', 'bu_kpi_user', 'bu_kpi_submit_date',
+                  'bu_kpi_last_edit', 'bu_kpi_status']
 
     bu_kpi_title = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}),
-                                   required=True)
+                                           required=True)
+    bu_kpi_criteria = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                              required=True)
     bu_kpi_function = forms.ChoiceField(choices=bu_kpi.function, widget=forms.Select(attrs={'class': 'form-control'}))
-    bu_kpi_details = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 80px'}),
-                                     required=True)
+    bu_kpi_type = forms.ChoiceField(choices=bu_kpi.type, widget=forms.Select(attrs={'class': 'form-control'}))
+    bu_kpi_details = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 80px'}), required=True)
     bu_kpi_target = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}), required=True)
+    bu_kpi_weight = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}), required=True)
 
     def clean(self):
         cleaned_data = super(SubmitBuKpiForm, self).clean()
         title = cleaned_data.get('bu_kpi_title')
+        criteria = cleaned_data.get('bu_kpi_criteria')
         function = cleaned_data.get('bu_kpi_function')
         details = cleaned_data.get('bu_kpi_details')
         target = cleaned_data.get('bu_kpi_target')
-        if not title and not function and not details and not target:
+        k_type = cleaned_data.get('bu_kpi_type')
+        weight = cleaned_data.get('bu_kpi_weight')
+        if not title or not criteria or not function or not details or not target or not weight or not k_type:
             raise forms.ValidationError('You have some blank fields')
 
 

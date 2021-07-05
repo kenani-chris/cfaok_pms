@@ -35,11 +35,10 @@ urlpatterns = [
     # BU Kpi Links
     path('BU/', BuKpiDashboard.as_view(), name='BU_Dashboard'),
     path('BU-Kpi/', BuKpi.as_view(), name='BU_Kpi_Dashboard'),
-    path('BU-Kpi/Submit-Kpi/', views.bu_Submit_Kpi, name='BU_Kpi_Submit'),
-    path('BU-Kpi/Track-Kpi/', views.bu_track_kpi, name='BU_Kpi_Detail1'),
-    path('BU-Kpi/Track-Kpi/<uuid:pk>', views.BU_Kpi_Detail_View.as_view(), name='BU_kpi-detail'),
-    path('BU-Kpi/Edit-Kpi/', views.bu_edit_kpi, name='BU_Kpi_Edit'),
-    path('BU-Kpi/Edit-Kpi/<uuid:pk>', views.BU_Edit_Kpi_View.as_view(), name='BU_Kpi_Edit_One'),
+    path('BU-Kpi/Submit-Kpi/', SubmitBuKpiView.as_view(), name='BU_Kpi_Submit'),
+    path('BU-Kpi/Track-Kpi/', TrackBuKpiView.as_view(), name='BU_Kpi_Detail1'),
+    path('BU-Kpi/Track-Kpi/<uuid:pk>', TrackBuKpiDetailView.as_view(), name='BU_kpi-detail'),
+    path('BU-Kpi/Edit-Kpi/<uuid:pk>', TrackBuKpiEditlView.as_view(), name='BU_Kpi_Edit_One'),
     path('BU-Kpi/Kpi-Results/', views.bu_kpi_result, name='BU_Kpi_Result'),
     path('BU-Kpi/Kpi-Results/<uuid:pk>', views.BU_Kpi_Result_Update.as_view(), name='BU_Kpi_Result_Update'),
 

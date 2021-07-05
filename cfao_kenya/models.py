@@ -80,16 +80,16 @@ class pms(models.Model):
     pms_individual_submit_results_date = models.FloatField(default=15)
 
     # Bu KPI Config
-    bu_individual_kpi_number = models.IntegerField(help_text='Number Of KPIs to be submitted by a BU')
-    bu_individual_submit_start_date = models.DateField(auto_now=False, auto_now_add=False)
-    bu_individual_submit_end_date = models.DateField(auto_now=False, auto_now_add=False)
-    bu_individual_submit_result_date = models.FloatField(default=15)
+    pms_bu_kpi_number = models.IntegerField(help_text='Number Of KPIs to be submitted by a BU')
+    pms_bu_submit_start_date = models.DateField(auto_now=False, auto_now_add=False)
+    pms_bu_submit_end_date = models.DateField(auto_now=False, auto_now_add=False)
+    pms_bu_submit_result_date = models.FloatField(default=15)
 
     # Company Config
-    company_individual_kpi_number = models.IntegerField(help_text='Number Of KPIs to be submitted by the company')
-    company_individual_submit_start_date = models.DateField(auto_now=False, auto_now_add=False)
-    company_individual_submit_end_date = models.DateField(auto_now=False, auto_now_add=False)
-    company_individual_submit_result_date = models.FloatField(default=15)
+    pms_company_kpi_number = models.IntegerField(help_text='Number Of KPIs to be submitted by the company')
+    pms_company_submit_start_date = models.DateField(auto_now=False, auto_now_add=False)
+    pms_company_submit_end_date = models.DateField(auto_now=False, auto_now_add=False)
+    pms_company_submit_result_date = models.FloatField(default=15)
 
     checkin_number = models.IntegerField(help_text='Number Of Checkins to be submitted by the user', default=12)
     assessment_number = models.IntegerField(help_text='Number Of assessment to be done in the year', default=3)
@@ -450,12 +450,13 @@ class individual_Kpi(models.Model):
 
 class bu_kpi(models.Model):
     bu_kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique Identifier for BU KPI")
-    bu_kpi_pms_id = models.ForeignKey('pms', on_delete=models.RESTRICT)
+    bu_kpi_pms = models.ForeignKey('pms', on_delete=models.RESTRICT)
     bu_kpi_bu = models.ForeignKey('bu', on_delete=models.RESTRICT, related_name="cfao_kenya_Bu_identity")
     # Approvals
-    bu_kpi_bu_user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_Bu_submitting",
+    bu_kpi_user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_Bu_submitting",
                                        null=True,
                                        blank=True)
+    bu_kpi_criteria = models.CharField(max_length=100, null=True, blank=True)
     bu_kpi_team_leader_approval = models.ForeignKey(User, on_delete=models.RESTRICT,
                                                     related_name="cfao_kenya_bu_team_leader_approval", null=True,
                                                     blank=True)
@@ -500,6 +501,8 @@ class bu_kpi(models.Model):
                                      help_text='KPI status')
 
     type = (
+        ('', ''),
+        ('Addition', 'Addition'),
         ('cumulative', 'cumulative'),
         ('YTD', 'YTD'),
     )
