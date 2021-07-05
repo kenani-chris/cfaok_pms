@@ -55,9 +55,8 @@ class staff(models.Model):
     }
     staff_company = models.CharField(max_length=15, choices=company, blank=True, help_text='user grade')
 
-
-def __str__(self):
-    return self.staff_person.get_full_name
+    def __str__(self):
+        return self.staff_person.username
 
 
 # PMS & Config ========================================================================================================
@@ -487,6 +486,35 @@ class bu_kpi(models.Model):
     bu_kpi_february_score = models.FloatField(null=True, blank=True)
     bu_kpi_march_score = models.FloatField(null=True, blank=True)
 
+    approve = (
+        ('Approved', 'Approved'),
+        ('Not Approved', 'Not Approved'),
+    )
+    bu_kpi_april_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                          default='Not Approved', )
+    bu_kpi_may_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                        default='Not Approved', )
+    bu_kpi_june_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                         default='Not Approved', )
+    bu_kpi_july_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                         default='Not Approved', )
+    bu_kpi_august_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                           default='Not Approved', )
+    bu_kpi_september_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                              default='Not Approved', )
+    bu_kpi_october_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                            default='Not Approved', )
+    bu_kpi_november_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                             default='Not Approved', )
+    bu_kpi_december_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                             default='Not Approved', )
+    bu_kpi_january_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                            default='Not Approved', )
+    bu_kpi_february_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                             default='Not Approved', )
+    bu_kpi_march_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
+                                                          default='Not Approved', )    
+
     bu_kpi_submit_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     bu_kpi_approval_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     bu_kpi_last_edit = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
@@ -515,12 +543,13 @@ class bu_kpi(models.Model):
 class company_kpi(models.Model):
     company_kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                                       help_text="Unique Identifier for company KPI")
-    company_kpi_pms_id = models.ForeignKey('pms', on_delete=models.RESTRICT)
+    company_kpi_pms = models.ForeignKey('pms', on_delete=models.RESTRICT)
     company_kpi_user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_person_submitting",
                                          null=True,
                                          blank=True)
     company_kpi_title = models.CharField(max_length=200)
     company_kpi_details = models.TextField()
+    company_kpi_criteria = models.CharField(max_length=100, null=True, blank=True)
     company_kpi_target = models.FloatField()
     company_kpi_weight = models.FloatField(null=True, blank=True)
     company_kpi_units = models.CharField(max_length=5, null=True, blank=True)

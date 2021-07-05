@@ -33,7 +33,7 @@
 
             <div class="info-box-content">
               <span class="info-box-text">Required</span>
-              <span class="info-box-number">{{ active_pms.bu_individual_kpi_number }} KPIs</span>
+              <span class="info-box-number">{{ pms.pms_bu_kpi_number }} KPIs</span>
 
               <div class="progress">
                 <div class="progress-bar" style="width: 100%"></div>
@@ -54,7 +54,7 @@
             <span class="info-box-icon"><i class="far fa-thumbs-up"></i></span>
             <div class="info-box-content">
               <span class="info-box-text">Approved</span>
-              <span class="info-box-number">{{ approved_kpi.count }} KPIs</span>
+              <span class="info-box-number">{{ approved.count }} KPIs</span>
 
               <div class="progress">
                 <div class="progress-bar" style="width:100%"></div>
@@ -76,7 +76,7 @@
 
             <div class="info-box-content">
               <span class="info-box-text">Pending</span>
-              <span class="info-box-number">{{ total_pending }} KPIs</span>
+              <span class="info-box-number">{{ pending_count }} KPIs</span>
 
               <div class="progress">
                 <div class="progress-bar" style="width: 100%"></div>
@@ -98,7 +98,7 @@
 
             <div class="info-box-content">
               <span class="info-box-text">Rejected</span>
-              <span class="info-box-number">{{ total_rejected }} KPIs</span>
+              <span class="info-box-number">{{ rejected_count }} KPIs</span>
 
               <div class="progress">
                 <div class="progress-bar" style="width: 100%"></div>

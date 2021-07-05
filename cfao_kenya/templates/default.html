@@ -188,6 +188,14 @@
               </a>
             </li>
           {% endif %}
+          {% if user_is_md == "Yes" %}
+            <li class="nav-item">
+              <a href="./index2.html" class="nav-link">
+                <i class="fa fa-users nav-icon"></i>
+                <p>BUs KPI</p>
+              </a>
+            </li>
+          {% endif %}
           {% if user_is_bu_head != None %}
             <li class="nav-item">
               <a href="{% url 'BU_Kpi_Dashboard' %}" class="nav-link">

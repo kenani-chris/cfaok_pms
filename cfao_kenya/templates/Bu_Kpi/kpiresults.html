@@ -5,15 +5,15 @@
   <div class="col-md-10">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">Populate KPI results for approed KPIs</h3>
+        <h3 class="card-title">Populate KPI results for approved KPIs</h3>
       </div>
       <!-- /.card-header -->
       <div class="card-body">
-        {% if approved_kpi %}
+        {% if approved %}
             <table id="exampl1" class="table table-bordered table-striped">
               <thead>
               <tr>
-                <th>KPI<small>(click on KPI title)</small></th>
+                <th>KPI</th>
                 <th>Apr</th>
                 <th>May</th>
                 <th>Jun</th>
@@ -29,7 +29,7 @@
               </tr>
               </thead>
               <tbody>
-            {% for kpi in approved_kpi %}
+            {% for kpi in approved %}
                 <tr>
                   <td>
                     <a href="{% url 'BU_Kpi_Result_Update' kpi.bu_kpi_id %}"><span class="fa fa-clipboard-check"></span> {{ kpi.bu_kpi_title }}</a>
@@ -80,7 +80,7 @@
           {% else %}
             <div class="alert alert-warning">
               <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
-              It Appears you've not submitted any KPIs. Or all of them have been declined
+              It Appears you do not have any approved KPIs.
             </div>
           {% endif %}
 

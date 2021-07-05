@@ -39,20 +39,20 @@ urlpatterns = [
     path('BU-Kpi/Track-Kpi/', TrackBuKpiView.as_view(), name='BU_Kpi_Detail1'),
     path('BU-Kpi/Track-Kpi/<uuid:pk>', TrackBuKpiDetailView.as_view(), name='BU_kpi-detail'),
     path('BU-Kpi/Edit-Kpi/<uuid:pk>', TrackBuKpiEditlView.as_view(), name='BU_Kpi_Edit_One'),
-    path('BU-Kpi/Kpi-Results/', views.bu_kpi_result, name='BU_Kpi_Result'),
-    path('BU-Kpi/Kpi-Results/<uuid:pk>', views.BU_Kpi_Result_Update.as_view(), name='BU_Kpi_Result_Update'),
+    path('BU-Kpi/Kpi-Results/', BuKpiResultListView.as_view(), name='BU_Kpi_Result'),
+    path('BU-Kpi/Kpi-Results/<uuid:pk>', views.BuKpiResultUpdateView.as_view(), name='BU_Kpi_Result_Update'),
 
 
     # Company Kpi Links
     # path('Company/', views.company, name='Company_Dashboard'),
-    path('Company-Kpi/', views.company_Kpi, name='Company_Kpi_Dashboard'),
-    path('Company-Kpi/Submit-Kpi/', views.company_Submit_Kpi, name='Company_Kpi_Submit'),
+    path('Company-Kpi/', CompanyKpi.as_view(), name='Company_Kpi_Dashboard'),
+    path('Company-Kpi/Submit-Kpi/', SubmitCompanyKpiView.as_view(), name='Company_Kpi_Submit'),
     path('Company-Kpi/Track-Kpi/', views.company_track_kpi, name='Company_Kpi_Detail1'),
     path('Company-Kpi/Track-Kpi/<uuid:pk>', views.Company_Kpi_Detail_View.as_view(), name='Company_Kpi_Detail'),
-    path('Company-Kpi/Edit-Kpi/', views.company_edit_kpi, name='Company_Kpi_Edit'),
-    path('Company-Kpi/Edit-Kpi/<uuid:pk>', views.Company_Edit_Kpi_View.as_view(), name='Company_Kpi_Edit_One'),
-    path('Company-Kpi/Kpi-Results/', views.company_kpi_result, name='Company_Kpi_Result'),
-    path('Company-Kpi/Kpi-Results/<uuid:pk>', views.Company_Kpi_Result_Update.as_view(), name='Company_Kpi_Result_Update'),
+    path('Company-Kpi/Edit-Kpi/', EditCompanyKpiView.as_view(), name='Company_Kpi_Edit'),
+    path('Company-Kpi/Edit-Kpi/<uuid:pk>', EditCompanyKpiUpdateView.as_view(), name='Company_Kpi_Edit_One'),
+    path('Company-Kpi/Kpi-Results/', CompanyKpiResultListView.as_view(), name='Company_Kpi_Result'),
+    path('Company-Kpi/Kpi-Results/<uuid:pk>', CompanyKpiResultUpdateView.as_view(), name='Company_Kpi_Result_Update'),
 
 
     # My Checkin Kpi Links
