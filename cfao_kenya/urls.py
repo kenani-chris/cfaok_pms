@@ -47,12 +47,26 @@ urlpatterns = [
     # path('Company/', views.company, name='Company_Dashboard'),
     path('Company-Kpi/', CompanyKpi.as_view(), name='Company_Kpi_Dashboard'),
     path('Company-Kpi/Submit-Kpi/', SubmitCompanyKpiView.as_view(), name='Company_Kpi_Submit'),
-    path('Company-Kpi/Track-Kpi/', views.company_track_kpi, name='Company_Kpi_Detail1'),
-    path('Company-Kpi/Track-Kpi/<uuid:pk>', views.Company_Kpi_Detail_View.as_view(), name='Company_Kpi_Detail'),
     path('Company-Kpi/Edit-Kpi/', EditCompanyKpiView.as_view(), name='Company_Kpi_Edit'),
     path('Company-Kpi/Edit-Kpi/<uuid:pk>', EditCompanyKpiUpdateView.as_view(), name='Company_Kpi_Edit_One'),
     path('Company-Kpi/Kpi-Results/', CompanyKpiResultListView.as_view(), name='Company_Kpi_Result'),
     path('Company-Kpi/Kpi-Results/<uuid:pk>', CompanyKpiResultUpdateView.as_view(), name='Company_Kpi_Result_Update'),
+    
+    
+    # Staff BU Kpi Links
+    path('BUs-Kpi/', BUsKpiListView.as_view(), name='BUs_Kpi_Dashboard'),
+    path('BUs-Kpi/Approve-Kpi', BUsKpiPendingListView.as_view(), name='BUs_Approve_Kpi'),
+    path('BUs-Kpi/Approve-Kpi/<uuid:pk>', BUsKpiApproveView.as_view(), name='BUs_Approve_Kpi_Detail'),
+    path('BUs-Kpi/Approve-Kpi/Approve/<uuid:pk>/<uuid:kpi_id>', approve_bu_kpi, name='BUs_Approve_Kpi'),
+    path('BUs-Kpi/Approve-Kpi/Reject/<uuid:pk>/<uuid:kpi_id>', reject_bu_kpi, name='BUs_Reject_Kpi'),
+    path('BUs-Kpi/Track-Kpi', BUsTrackKpiListView.as_view(), name='BUs_Track_Kpi'),
+    path('BUs-Kpi/Track-Kpi/<uuid:pk>', BUsTrackKpiOneListView.as_view(), name='BUs_Track_Kpi_BUs'),
+    path('BUs-Kpi/Track-Kpi/<uuid:pk>/<uuid:kpi_id>', BUsKpiTrackOneView.as_view(), name='BUs_Track_Kpi_BUs_One'),
+    path('BUs-Kpi/Approve-Kpi/Approve/<uuid:pk>/<uuid:kpi_id>/<int:month>', approve_bu_kpi_score,
+         name='BUs_Approve_Kpi_score'),
+    path('BUs-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>/<int:month>', approve_bu_kpi_score_dashboard,
+         name='BUs_Approve_Kpi_score_dashboard'),
+
 
 
     # My Checkin Kpi Links

@@ -1,11 +1,11 @@
-{% extends "Staff_Kpi/default.html" %}
+{% extends "Bus_Kpi/default.html" %}
 {% block pagetitle %}View KPI{% endblock %}
 {% block kpicontent %}
 
   <div class="col-md-10">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">{{ staff.get_full_name }}'s one KPI</h3>
+        <h3 class="card-title">{{ bu.bu_name }}'s one KPI</h3>
       </div>
       <!-- /.card-header -->
       <div class="card-body">
@@ -13,12 +13,12 @@
         {% now "j" as current_date %}
 
         {% if the_kpi %}
-            {% if the_kpi.individual_kpi_status == "Pending" %}
+            {% if the_kpi.bu_kpi_status == "Pending" %}
               <table id="example1" class="table table-bordered table-striped">
               <tbody>
                 <tr class="bg-info">
                   <td colspan="4">
-                    {{ the_kpi.individual_kpi_title }}
+                    {{ the_kpi.bu_kpi_title }}
                   </td>
                 </tr>
                 <tr>
@@ -26,7 +26,7 @@
                     Description
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_details }}
+                    {{ the_kpi.bu_kpi_details }}
                   </td>
                 </tr>
                 <tr>
@@ -34,7 +34,7 @@
                     Criteria
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_criteria }}
+                    {{ the_kpi.bu_kpi_criteria }}
                   </td>
                 </tr>
                 <tr>
@@ -42,7 +42,7 @@
                     Function
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_function }}
+                    {{ the_kpi.bu_kpi_function }}
                   </td>
                 </tr>
                 <tr>
@@ -50,7 +50,7 @@
                     Target
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_target }}
+                    {{ the_kpi.bu_kpi_target }}
                   </td>
                 </tr>
                 <tr>
@@ -58,25 +58,25 @@
                     Status
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_status }}
+                    {{ the_kpi.bu_kpi_status }}
                   </td>
                 </tr>
               </tbody>
             </table>
             <div class="card-footer">
               <div class="float-right" style="margin:5px">
-                <a href="{% url 'Staff_Reject_Individual_Kpi' staff.id  the_kpi.individual_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
+                <a href="{% url 'Staff_Reject_Individual_Kpi' staff.id  the_kpi.bu_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
               </div>
               <div class="float-right" style="margin:5px">
-                <a href="{% url 'Staff_Approve_Individual_Kpi' staff.id  the_kpi.individual_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
+                <a href="{% url 'Staff_Approve_Individual_Kpi' staff.id  the_kpi.bu_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
               </div>
             </div>
-            {% elif the_kpi.individual_kpi_status == "Rejected 1" or the_kpi.individual_kpi_status == "Rejected 2" %}
+            {% elif the_kpi.bu_kpi_status == "Rejected 1" or the_kpi.bu_kpi_status == "Rejected 2" %}
               <table id="example1" class="table table-bordered table-striped">
               <tbody>
                 <tr class="bg-info">
                   <td colspan="4">
-                    {{ the_kpi.individual_kpi_title }}
+                    {{ the_kpi.bu_kpi_title }}
                   </td>
                 </tr>
                 <tr>
@@ -84,7 +84,7 @@
                     Description
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_details }}
+                    {{ the_kpi.bu_kpi_details }}
                   </td>
                 </tr>
                 <tr>
@@ -92,7 +92,7 @@
                     Criteria
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_criteria }}
+                    {{ the_kpi.bu_kpi_criteria }}
                   </td>
                 </tr>
                 <tr>
@@ -100,7 +100,7 @@
                     Function
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_function }}
+                    {{ the_kpi.bu_kpi_function }}
                   </td>
                 </tr>
                 <tr>
@@ -108,7 +108,7 @@
                     Target
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_target }}
+                    {{ the_kpi.bu_kpi_target }}
                   </td>
                 </tr>
                 <tr>
@@ -116,17 +116,17 @@
                     Status
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_status }}
+                    {{ the_kpi.bu_kpi_status }}
                   </td>
                 </tr>
               </tbody>
             </table>
-            {% elif the_kpi.individual_kpi_status == "Approved 1" %}
+            {% elif the_kpi.bu_kpi_status == "Approved 1" %}
               <table id="example1" class="table table-bordered table-striped">
               <tbody>
                 <tr class="bg-info">
                   <td colspan="4">
-                    {{ the_kpi.individual_kpi_title }}
+                    {{ the_kpi.bu_kpi_title }}
                   </td>
                 </tr>
                 <tr>
@@ -134,7 +134,7 @@
                     Description
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_details }}
+                    {{ the_kpi.bu_kpi_details }}
                   </td>
                 </tr>
                 <tr>
@@ -142,7 +142,7 @@
                     Criteria
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_criteria }}
+                    {{ the_kpi.bu_kpi_criteria }}
                   </td>
                 </tr>
                 <tr>
@@ -150,7 +150,7 @@
                     Function
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_function }}
+                    {{ the_kpi.bu_kpi_function }}
                   </td>
                 </tr>
                 <tr>
@@ -158,7 +158,7 @@
                     Target
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_target }}
+                    {{ the_kpi.bu_kpi_target }}
                   </td>
                 </tr>
                 <tr>
@@ -166,7 +166,7 @@
                     Status
                   </th>
                   <td colspan="3">
-                    {{ the_kpi.individual_kpi_status }}
+                    {{ the_kpi.bu_kpi_status }}
                   </td>
                 </tr>
               </tbody>
@@ -174,10 +174,10 @@
             {% if user_is_bu_head is not None or user_is_md is not None%}
             <div class="card-footer">
               <div class="float-right" style="margin:5px">
-                <a href="{% url 'Staff_Reject_Individual_Kpi' staff.id  the_kpi.individual_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
+                <a href="{% url 'Staff_Reject_Individual_Kpi' staff.id  the_kpi.bu_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
               </div>
               <div class="float-right" style="margin:5px">
-                <a href="{% url 'Staff_Approve_Individual_Kpi' staff.id  the_kpi.individual_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
+                <a href="{% url 'Staff_Approve_Individual_Kpi' staff.id  the_kpi.bu_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
               </div>
             </div>
             {% endif %}
@@ -195,10 +195,10 @@
                         </th>
                         <td>
                             {% if april == 'reveal' %}
-                                {{ form.individual_kpi_april_score }}
+                                {{ form.bu_kpi_april_score }}
                             {% else %}
-                                {{ form.individual_kpi_april_score.value }}
-                                {{ form.individual_kpi_april_score.as_hidden }}
+                                {{ form.bu_kpi_april_score.value }}
+                                {{ form.bu_kpi_april_score.as_hidden }}
                             {% endif %}
                         </td>
                         {% if current_month < 4 %}
@@ -206,16 +206,16 @@
                                 ----
                             </td>
                         {% else %}
-                            {% if the_kpi.individual_kpi_april_score_approve == "Approved" %}
+                            {% if the_kpi.bu_kpi_april_score_approve == "Approved" %}
                                 <td class="text-center bg-success">
                                     <i class="fa fa-check-circle"></i>
                                 </td>
                             {% else %}
                                 <td>
-                                    <button type="submit" class="btn btn-primary btn-block" id="submit">Submit</button>
+                                    <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'Staff_Approve_Kpi_score' request.user.id the_kpi.individual_kpi_id 4 %}"><small>Approve</small></a>
+                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 4 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -228,10 +228,10 @@
                         </th>
                         <td>
                             {% if may == 'reveal' %}
-                                {{ form.individual_kpi_may_score }}
+                                {{ form.bu_kpi_may_score }}
                             {% else %}
-                                {{ form.individual_kpi_may_score.value }}
-                                {{ form.individual_kpi_may_score.as_hidden }}
+                                {{ form.bu_kpi_may_score.value }}
+                                {{ form.bu_kpi_may_score.as_hidden }}
                             {% endif %}
                         </td>
                         {% if current_month < 5 %}
@@ -239,7 +239,7 @@
                                 ----
                             </td>
                         {% else %}
-                            {% if the_kpi.individual_kpi_may_score_approve == "Approved" %}
+                            {% if the_kpi.bu_kpi_may_score_approve == "Approved" %}
                                 <td class="text-center bg-success">
                                     <i class="fa fa-check-circle"></i>
                                 </td>
@@ -248,7 +248,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'Staff_Approve_Kpi_score' request.user.id the_kpi.individual_kpi_id 5 %}"><small>Approve</small></a>
+                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 5 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -259,10 +259,10 @@
                         </th>
                         <td>
                             {% if june == 'reveal' %}
-                                {{ form.individual_kpi_june_score }}
+                                {{ form.bu_kpi_june_score }}
                             {% else %}
-                                {{ form.individual_kpi_june_score.value }}
-                                {{ form.individual_kpi_june_score.as_hidden }}
+                                {{ form.bu_kpi_june_score.value }}
+                                {{ form.bu_kpi_june_score.as_hidden }}
                             {% endif %}
                         </td>
                         {% if current_month < 6 %}
@@ -270,7 +270,7 @@
                                 ----
                             </td>
                         {% else %}
-                            {% if the_kpi.individual_kpi_june_score_approve == "Approved" %}
+                            {% if the_kpi.bu_kpi_june_score_approve == "Approved" %}
                                 <td class="text-center bg-success">
                                     <i class="fa fa-check-circle"></i>
                                 </td>
@@ -279,7 +279,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'Staff_Approve_Kpi_score' request.user.id the_kpi.individual_kpi_id 6 %}"><small>Approve</small></a>
+                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 6 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -290,10 +290,10 @@
                         </th>
                         <td>
                             {% if july == 'reveal' %}
-                                {{ form.individual_kpi_july_score }}
+                                {{ form.bu_kpi_july_score }}
                             {% else %}
-                                {{ form.individual_kpi_july_score.value }}
-                                {{ form.individual_kpi_july_score.as_hidden }}
+                                {{ form.bu_kpi_july_score.value }}
+                                {{ form.bu_kpi_july_score.as_hidden }}
                             {% endif %}
                         </td>
                         {% if current_month < 7 %}
@@ -302,7 +302,7 @@
                                 ----
                             </td>
                         {% else %}
-                            {% if the_kpi.individual_kpi_july_score_approve == "Approved" %}
+                            {% if the_kpi.bu_kpi_july_score_approve == "Approved" %}
                                 <td class="text-center bg-success">
                                     <i class="fa fa-check-circle"></i>
                                 </td>
@@ -311,7 +311,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'Staff_Approve_Kpi_score' request.user.id the_kpi.individual_kpi_id 7 %}"><small>Approve</small></a>
+                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 7 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -322,10 +322,10 @@
                         </th>
                         <td>
                             {% if august == 'reveal' %}
-                                {{ form.individual_kpi_august_score }}
+                                {{ form.bu_kpi_august_score }}
                             {% else %}
-                                {{ form.individual_kpi_august_score.value }}
-                                {{ form.individual_kpi_august_score.as_hidden }}
+                                {{ form.bu_kpi_august_score.value }}
+                                {{ form.bu_kpi_august_score.as_hidden }}
                             {% endif %}
                         </td>
                         {% if current_month < 8 %}
@@ -334,7 +334,7 @@
                                 ----
                             </td>
                         {% else %}
-                            {% if the_kpi.individual_kpi_august_score_approve == "Approved" %}
+                            {% if the_kpi.bu_kpi_august_score_approve == "Approved" %}
                                 <td class="text-center bg-success">
                                     <i class="fa fa-check-circle"></i>
                                 </td>
@@ -343,7 +343,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'Staff_Approve_Kpi_score' request.user.id the_kpi.individual_kpi_id 8 %}"><small>Approve</small></a>
+                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 8 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -354,10 +354,10 @@
                         </th>
                         <td>
                             {% if september == 'reveal' %}
-                                {{ form.individual_kpi_september_score }}
+                                {{ form.bu_kpi_september_score }}
                             {% else %}
-                                {{ form.individual_kpi_september_score.value }}
-                                {{ form.individual_kpi_september_score.as_hidden }}
+                                {{ form.bu_kpi_september_score.value }}
+                                {{ form.bu_kpi_september_score.as_hidden }}
                             {% endif %}
                         </td>
                         {% if current_month < 9 %}
@@ -366,7 +366,7 @@
                                 ----
                             </td>
                         {% else %}
-                            {% if the_kpi.individual_kpi_september_score_approve == "Approved" %}
+                            {% if the_kpi.bu_kpi_september_score_approve == "Approved" %}
                                 <td class="text-center bg-success">
                                     <i class="fa fa-check-circle"></i>
                                 </td>
@@ -375,7 +375,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'Staff_Approve_Kpi_score' request.user.id the_kpi.individual_kpi_id 9 %}"><small>Approve</small></a>
+                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 9 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -386,10 +386,10 @@
                         </th>
                         <td>
                             {% if october == 'reveal' %}
-                                {{ form.individual_kpi_october_score }}
+                                {{ form.bu_kpi_october_score }}
                             {% else %}
-                                {{ form.individual_kpi_october_score.value }}
-                                {{ form.individual_kpi_october_score.as_hidden }}
+                                {{ form.bu_kpi_october_score.value }}
+                                {{ form.bu_kpi_october_score.as_hidden }}
                             {% endif %}
                         </td>
                         {% if current_month < 10 %}
@@ -398,7 +398,7 @@
                                 ----
                             </td>
                         {% else %}
-                            {% if the_kpi.individual_kpi_october_score_approve == "Approved" %}
+                            {% if the_kpi.bu_kpi_october_score_approve == "Approved" %}
                                 <td class="text-center bg-success">
                                     <i class="fa fa-check-circle"></i>
                                 </td>
@@ -407,7 +407,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'Staff_Approve_Kpi_score' request.user.id the_kpi.individual_kpi_id 10 %}"><small>Approve</small></a>
+                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 10 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -418,10 +418,10 @@
                         </th>
                         <td>
                             {% if november == 'reveal' %}
-                                {{ form.individual_kpi_november_score }}
+                                {{ form.bu_kpi_november_score }}
                             {% else %}
-                                {{ form.individual_kpi_november_score.value }}
-                                {{ form.individual_kpi_november_score.as_hidden }}
+                                {{ form.bu_kpi_november_score.value }}
+                                {{ form.bu_kpi_november_score.as_hidden }}
                             {% endif %}
                         </td>
                         {% if current_month < 11 %}
@@ -430,7 +430,7 @@
                                 ----
                             </td>
                         {% else %}
-                            {% if the_kpi.individual_kpi_november_score_approve == "Approved" %}
+                            {% if the_kpi.bu_kpi_november_score_approve == "Approved" %}
                                 <td class="text-center bg-success">
                                     <i class="fa fa-check-circle"></i>
                                 </td>
@@ -439,7 +439,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'Staff_Approve_Kpi_score' request.user.id the_kpi.individual_kpi_id 11 %}"><small>Approve</small></a>
+                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 11 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -450,10 +450,10 @@
                         </th>
                         <td>
                             {% if december == 'reveal' %}
-                                {{ form.individual_kpi_december_score }}
+                                {{ form.bu_kpi_december_score }}
                             {% else %}
-                                {{ form.individual_kpi_december_score.value }}
-                                {{ form.individual_kpi_december_score.as_hidden }}
+                                {{ form.bu_kpi_december_score.value }}
+                                {{ form.bu_kpi_december_score.as_hidden }}
                             {% endif %}
                         </td>
                         {% if current_month < 12 %}
@@ -462,7 +462,7 @@
                                 ----
                             </td>
                         {% else %}
-                            {% if the_kpi.individual_kpi_december_score_approve == "Approved" %}
+                            {% if the_kpi.bu_kpi_december_score_approve == "Approved" %}
                                 <td class="text-center bg-success">
                                     <i class="fa fa-check-circle"></i>
                                 </td>
@@ -471,7 +471,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'Staff_Approve_Kpi_score' request.user.id the_kpi.individual_kpi_id 12 %}"><small>Approve</small></a>
+                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 12 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -482,10 +482,10 @@
                         </th>
                         <td>
                             {% if january == 'reveal' %}
-                                {{ form.individual_kpi_january_score }}
+                                {{ form.bu_kpi_january_score }}
                             {% else %}
-                                {{ form.individual_kpi_january_score.value }}
-                                {{ form.individual_kpi_january_score.as_hidden }}
+                                {{ form.bu_kpi_january_score.value }}
+                                {{ form.bu_kpi_january_score.as_hidden }}
                             {% endif %}
                         </td>
                         {% if current_month < 13 %}
@@ -494,7 +494,7 @@
                                 ----
                             </td>
                         {% else %}
-                            {% if the_kpi.individual_kpi_january_score_approve == "Approved" %}
+                            {% if the_kpi.bu_kpi_january_score_approve == "Approved" %}
                                 <td class="text-center bg-success">
                                     <i class="fa fa-check-circle"></i>
                                 </td>
@@ -503,7 +503,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'Staff_Approve_Kpi_score' request.user.id the_kpi.individual_kpi_id 1 %}"><small>Approve</small></a>
+                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 1 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -514,10 +514,10 @@
                         </th>
                         <td>
                             {% if february == 'reveal' %}
-                                {{ form.individual_kpi_february_score }}
+                                {{ form.bu_kpi_february_score }}
                             {% else %}
-                                {{ form.individual_kpi_february_score.value }}
-                                {{ form.individual_kpi_february_score.as_hidden }}
+                                {{ form.bu_kpi_february_score.value }}
+                                {{ form.bu_kpi_february_score.as_hidden }}
                             {% endif %}
                         </td>
                         {% if current_month < 14 %}
@@ -526,7 +526,7 @@
                                 ----
                             </td>
                         {% else %}
-                            {% if the_kpi.individual_kpi_february_score_approve == "Approved" %}
+                            {% if the_kpi.bu_kpi_february_score_approve == "Approved" %}
                                 <td class="text-center bg-success">
                                     <i class="fa fa-check-circle"></i>
                                 </td>
@@ -535,7 +535,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'Staff_Approve_Kpi_score' request.user.id the_kpi.individual_kpi_id 2 %}"><small>Approve</small></a>
+                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 2 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -546,10 +546,10 @@
                         </th>
                         <td>
                             {% if march == 'reveal' %}
-                                {{ form.individual_kpi_march_score }}
+                                {{ form.bu_kpi_march_score }}
                             {% else %}
-                                {{ form.individual_kpi_march_score.value }}
-                                {{ form.individual_kpi_march_score.as_hidden }}
+                                {{ form.bu_kpi_march_score.value }}
+                                {{ form.bu_kpi_march_score.as_hidden }}
                             {% endif %}
                         </td>
                         {% if current_month < 15 %}
@@ -558,7 +558,7 @@
                                 ----
                             </td>
                         {% else %}
-                            {% if the_kpi.individual_kpi_march_score_approve == "Approved" %}
+                            {% if the_kpi.bu_kpi_march_score_approve == "Approved" %}
                                 <td class="text-center bg-success">
                                     <i class="fa fa-check-circle"></i>
                                 </td>
@@ -567,7 +567,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'Staff_Approve_Kpi_score' request.user.id the_kpi.individual_kpi_id 3 %}"><small>Approve</small></a>
+                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 3 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -599,7 +599,7 @@
                         KPI
                       </th>
                       <td colspan="3">
-                        {{ the_kpi.individual_kpi_title }}
+                        {{ the_kpi.bu_kpi_title }}
                       </td>
                     </tr>
                     <tr>
@@ -607,7 +607,7 @@
                         Description
                       </th>
                       <td colspan="3">
-                        {{ the_kpi.individual_kpi_details }}
+                        {{ the_kpi.bu_kpi_details }}
                       </td>
                     </tr>
                     <tr>
@@ -615,7 +615,7 @@
                         Criteria
                       </th>
                       <td colspan="3">
-                        {{ the_kpi.individual_kpi_criteria }}
+                        {{ the_kpi.bu_kpi_criteria }}
                       </td>
                     </tr>
                     <tr class="bg-info">
@@ -634,16 +634,16 @@
                     </tr>
                     <tr>
                       <td>
-                        {{ the_kpi.individual_kpi_function }}
+                        {{ the_kpi.bu_kpi_function }}
                       </td>
                       <td>
-                        {{ the_kpi.individual_kpi_target }}
+                        {{ the_kpi.bu_kpi_target }}
                       </td>
                       <td>
-                        {{ the_kpi.individual_kpi_status }}
+                        {{ the_kpi.bu_kpi_status }}
                       </td>
                       <td>
-                        {{ the_kpi.individual_kpi_submit_date }}
+                        {{ the_kpi.bu_kpi_submit_date }}
                       </td>
                     </tr>
 
@@ -658,18 +658,18 @@
                     //--------------
 
                     //Values
-                    var april = "{{the_kpi.individual_kpi_april_score}}";
-                    var may = "{{the_kpi.individual_kpi_april_score}}";
-                    var june = "{{the_kpi.individual_kpi_april_score}}";
-                    var july = "{{the_kpi.individual_kpi_april_score}}";
-                    var august = "{{the_kpi.individual_kpi_april_score}}";
-                    var september = "{{the_kpi.individual_kpi_april_score}}";
-                    var october = "{{the_kpi.individual_kpi_april_score}}";
-                    var november = "{{the_kpi.individual_kpi_april_score}}";
-                    var december = "{{the_kpi.individual_kpi_april_score}}";
-                    var january = "{{the_kpi.individual_kpi_april_score}}";
-                    var february = "{{the_kpi.individual_kpi_april_score}}";
-                    var march = "{{the_kpi.individual_kpi_april_score}}";
+                    var april = "{{the_kpi.bu_kpi_april_score}}";
+                    var may = "{{the_kpi.bu_kpi_april_score}}";
+                    var june = "{{the_kpi.bu_kpi_april_score}}";
+                    var july = "{{the_kpi.bu_kpi_april_score}}";
+                    var august = "{{the_kpi.bu_kpi_april_score}}";
+                    var september = "{{the_kpi.bu_kpi_april_score}}";
+                    var october = "{{the_kpi.bu_kpi_april_score}}";
+                    var november = "{{the_kpi.bu_kpi_april_score}}";
+                    var december = "{{the_kpi.bu_kpi_april_score}}";
+                    var january = "{{the_kpi.bu_kpi_april_score}}";
+                    var february = "{{the_kpi.bu_kpi_april_score}}";
+                    var march = "{{the_kpi.bu_kpi_april_score}}";
 
 
                     var lineChartCanvas = $('#lineChart').get(0).getContext('2d')
@@ -704,7 +704,7 @@
                           pointStrokeColor    : 'rgba(60,141,188,1)',
                           pointHighlightFill  : '#fff',
                           pointHighlightStroke: 'rgba(60,141,188,1)',
-                          data                : [{{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}]
+                          data                : [{{ the_kpi.bu_kpi_target }}, {{ the_kpi.bu_kpi_target }}, {{ the_kpi.bu_kpi_target }}, {{ the_kpi.bu_kpi_target }}, {{ the_kpi.bu_kpi_target }}, {{ the_kpi.bu_kpi_target }}, {{ the_kpi.bu_kpi_target }}, {{ the_kpi.bu_kpi_target }}, {{ the_kpi.bu_kpi_target }}, {{ the_kpi.bu_kpi_target }}, {{ the_kpi.bu_kpi_target }}, {{ the_kpi.bu_kpi_target }}]
                         },
                         {
                           label               : 'Electronics',
@@ -715,7 +715,7 @@
                           pointStrokeColor    : '#c1c7d1',
                           pointHighlightFill  : '#fff',
                           pointHighlightStroke: 'rgba(220,220,220,1)',
-                          data                : ['{{ the_kpi.individual_kpi_april_score }}', '{{ the_kpi.individual_kpi_may_score }}', '{{ the_kpi.individual_kpi_june_score }}', '{{ the_kpi.individual_kpi_july_score }}', '{{ the_kpi.individual_kpi_august_score }}', '{{ the_kpi.individual_kpi_september_score }}', '{{ the_kpi.individual_kpi_october_score }}', '{{ the_kpi.individual_kpi_november_score }}', '{{ the_kpi.individual_kpi_december_score }}', '{{ the_kpi.individual_kpi_january_score }}', '{{ the_kpi.individual_kpi_february_score }}', '{{ the_kpi.individual_kpi_march_score }}' ]
+                          data                : ['{{ the_kpi.bu_kpi_april_score }}', '{{ the_kpi.bu_kpi_may_score }}', '{{ the_kpi.bu_kpi_june_score }}', '{{ the_kpi.bu_kpi_july_score }}', '{{ the_kpi.bu_kpi_august_score }}', '{{ the_kpi.bu_kpi_september_score }}', '{{ the_kpi.bu_kpi_october_score }}', '{{ the_kpi.bu_kpi_november_score }}', '{{ the_kpi.bu_kpi_december_score }}', '{{ the_kpi.bu_kpi_january_score }}', '{{ the_kpi.bu_kpi_february_score }}', '{{ the_kpi.bu_kpi_march_score }}' ]
                         },
                       ]
                     }
