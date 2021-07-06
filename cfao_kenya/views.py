@@ -3258,410 +3258,316 @@ class MyCheckIn(TemplateView):
             ci_months = []
             for ci in context['submitted_ci']:
                 ci_months.append(ci.checkIn_month)
+            context['ci_months'] = ci_months
         return context
 
-@login_required
-def my_check_in(request):
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
 
-    no_of_bu = bu.objects.all().count()
-    # Check Level
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    if user_is_md == 'No':
-        # Active PMS
-        active_pms = pms.objects.filter(pms_status='Active')
-        active_pms = active_pms.get()
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class SubmitCheckIn(CreateView):
+    form_class = SubmitCheckInForm
+    template_name = 'Check-In/submitci.html'
 
-        if active_pms is not None:
-            all_ci = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=request.user)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
 
-            if all_ci is not None:
-                confirmed_ci = all_ci.filter(checkIn_status='Confirmed')
-                pending_ci = all_ci.filter(checkIn_status="Pending")
-                rejected_ci = all_ci.filter(checkIn_status="Rejected")
-                submitted_ci = all_ci.exclude(checkIn_status="Rejected")
-
-                total_submitted = confirmed_ci.count() + pending_ci.count()
-                total_pending = pending_ci.count()
-                total_rejected = rejected_ci.count()
-                percent_submitted = total_submitted / active_pms.checkin_number * 100
-                ci_months = []
-                for ci in submitted_ci:
-                    ci_months.append(ci.checkIn_month)
-
-            else:
-                ci_months = confirmed_ci = pending_ci = rejected_ci = total_submitted = total_pending = total_rejected = percent_submitted = None
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
         else:
-            ci_months = all_ci = confirmed_ci = pending_ci = rejected_ci = total_submitted = total_pending = total_rejected = percent_submitted = None
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+            context['all_ci'] = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=self.request.user)
 
-        context = {
-            'my_ci': all_ci,
-            'ci_months': ci_months,
-            'active_pms': active_pms,
-            'confirmed_ci': confirmed_ci,
-            'pending_ci': pending_ci,
-            'rejected_ci': rejected_ci,
-            'total_submitted': total_submitted,
-            'percent_submitted': percent_submitted,
-            'total_pending': total_pending,
-            'total_rejected': total_rejected,
-            'user_is_md': user_is_md,
-            'user_is_bu_head': user_is_bu_head,
-            'user_is_tl': user_is_tl,
-            'no_of_bu': no_of_bu,
-            'user_bu': user_bu,
-        }
-        return render(request, 'Check-In/checkin.html', context)
+            context['confirmed_ci'] = context['all_ci'].filter(checkIn_status='Confirmed')
+            context['pending_ci'] = context['all_ci'].filter(checkIn_status="Pending")
+            context['rejected_ci'] = context['all_ci'].filter(checkIn_status="Rejected")
+            context['submitted_ci'] = context['all_ci'].exclude(checkIn_status="Rejected")
 
-    else:
-        pass
+            context['total_submitted'] = context['confirmed_ci'].count() + context['pending_ci'].count()
+            context['total_pending'] = context['pending_ci'].count()
+            context['total_rejected'] = context['rejected_ci'].count()
+            context['percent_submitted'] = context['total_submitted'] / active_pms.checkin_number * 100
+            context['month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+            ci_months = []
+            for ci in context['submitted_ci']:
+                ci_months.append(ci.checkIn_month)
+            context['ci_months'] = ci_months
+        return context
 
+    def get_initial(self):
+        initial = super(SubmitCheckIn, self).get_initial()
+        initial['checkIn_pms'] = pms.objects.get(pms_status='Active')
+        initial['checkIn_submit_date'] = datetime.date.today()
+        initial['checkIn_month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+        initial['checkIn_staff'] = self.request.user
+        initial['checkIn_status'] = 'Pending'
+        return initial
 
-@login_required
-def checkin_Submit_Kpi(request):
-    # Check Level
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
+    def get_success_url(self):
+        return '{}'.format(reverse('Check-In_Submit'))
 
-    no_of_bu = bu.objects.all().count()
-    # Check Level
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    if user_is_md == 'No':
-        # Active PMS
-        active_pms = pms.objects.filter(pms_status='Active')
-        active_pms = active_pms.get()
-
-        if active_pms is not None:
-            all_ci = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=request.user)
-
-            if all_ci is not None:
-                confirmed_ci = all_ci.filter(checkIn_status='Confirmed')
-                pending_ci = all_ci.filter(checkIn_status="Pending")
-                rejected_ci = all_ci.filter(checkIn_status="Rejected")
-                submitted_ci = all_ci.exclude(checkIn_status="Rejected")
-
-                total_submitted = confirmed_ci.count() + pending_ci.count()
-                total_pending = pending_ci.count()
-                total_rejected = rejected_ci.count()
-                percent_submitted = total_submitted / active_pms.checkin_number * 100
-                ci_months = []
-                for ci in submitted_ci:
-                    ci_months.append(ci.checkIn_month)
-
-            else:
-                ci_months = confirmed_ci = pending_ci = rejected_ci = total_submitted = total_pending = total_rejected = percent_submitted = None
-        else:
-            ci_months = all_ci = confirmed_ci = pending_ci = rejected_ci = total_submitted = total_pending = total_rejected = percent_submitted = None
-
-        # Get team Leader
-        user_team = request.user.staff_person.staff_team
+    def form_valid(self, form):
+        super(SubmitCheckIn, self).form_valid(form)
+        user_team = get_object_or_404(staff, pk=self.request.user.id)
+        user_team = user_team.staff_team
+        e_message = ""
         if user_team is not None:
             team_leader = staff.objects.filter(staff_head_team=user_team)
             if team_leader:
-                team_leader = team_leader.get()
+                e_message = 'you have one CheckIn from ' + self.request.user.get_full_name() + ' that requires your approval'
+                for tl in team_leader:
+                    send_email_pms('KPI Approval', User.objects.get(pk=tl.id), self.request.user, e_message)
+
             else:
                 team_leader = None
+                e_message = 'Your CheckIn has been submitted successfully but i keep on failing contacting your immediate ' \
+                            'supervisor.<br>Please raise the issue with HR for support'
+                send_email_pms('KPI Approval', team_leader, self.request.user, e_message)
         else:
             team_leader = None
-
-        if request.method == 'POST':
-            form = submit_Check_In_Form(request.POST)
-            if form.is_valid():
-                post = form.save(commit=False)
-                post.checkIn_pms = active_pms
-                post.checkIn_staff = request.user
-                if team_leader is not None:
-                    post.checkIn_team_leader = team_leader.staff_person
-                post.checkIn_submit_date = datetime.datetime.now()
-                post.checkIn_month = datetime.datetime.strftime(datetime.datetime.now(), '%B')
-                post.company_kpi_pms_id = active_pms
-                post.save()
-                form = submit_Check_In_Form()
-                messages.success(request, 'KPI submission success')
-
-                if team_leader is not None:
-                    send_mail(
-                        subject='Check-In Submitted',
-                        message='Dear ' + team_leader.staff_person.get_full_name() + ' '
-                                + request.user.get_full_name() +
-                                'Has just submitted a checkin for your approval',
-                        recipient_list=[team_leader.staff_person.email, request.user.email],
-                        fail_silently=False,
-                        from_email='pms_notifier@c-k.co.ke',
-                    )
-                else:
-                    send_mail(
-                        subject='KPI Submitted',
-                        message='Your KPI has been submitted successfully but i keep on failing contacting your '
-                                'immediate supervisor.<br>Please raise the issue with HR for support',
-                        recipient_list=[request.user.email, ],
-                        fail_silently=False,
-                        from_email='pms_notifier@c-k.co.ke',
-                    )
-
-                # return HttpResponseRedirect('')
-                return HttpResponseRedirect(reverse("Check-In_Kpi_Submit"))
-        else:
-            form = submit_Check_In_Form()
-
-        context = {
-            'form': form,
-            'month': datetime.datetime.strftime(datetime.datetime.now(), '%B'),
-            'my_ci': all_ci,
-            'ci_months': ci_months,
-            'active_pms': active_pms,
-            'confirmed_ci': confirmed_ci,
-            'pending_ci': pending_ci,
-            'rejected_ci': rejected_ci,
-            'total_submitted': total_submitted,
-            'percent_submitted': percent_submitted,
-            'total_pending': total_pending,
-            'total_rejected': total_rejected,
-            'user_is_md': user_is_md,
-            'user_is_bu_head': user_is_bu_head,
-            'user_is_tl': user_is_tl,
-            'no_of_bu': no_of_bu,
-            'user_bu': user_bu,
-        }
-        return render(request, 'Check-In/submitci.html', context)
-    else:
-        pass
+            e_message = 'Your CheckIn has been submitted successfully but i keep on failing contacting your immediate ' \
+                        'supervisor.<br>Please raise the issue with HR for support'
+            send_email_pms('KPI Approval', team_leader, self.request.user, e_message)
 
 
-@login_required
-def track_check_in(request):
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
 
-    no_of_bu = bu.objects.all().count()
-    # Check Level
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    if user_is_md == 'No':
-        # Active PMS
-        active_pms = pms.objects.filter(pms_status='Active')
-        active_pms = active_pms.get()
+        messages.success(self.request, 'Checkin submit successful')
 
-        if active_pms is not None:
-            all_ci = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=request.user)
-            if all_ci is not None:
-                confirmed_ci = all_ci.filter(checkIn_status='Confirmed')
-                pending_ci = all_ci.filter(checkIn_status="Pending")
-                rejected_ci = all_ci.filter(checkIn_status="Rejected")
-                submitted_ci = all_ci.exclude(checkIn_status="Rejected")
-
-                total_submitted = confirmed_ci.count() + pending_ci.count()
-                total_pending = pending_ci.count()
-                total_rejected = rejected_ci.count()
-                percent_submitted = total_submitted / active_pms.checkin_number * 100
-                ci_months = []
-                for ci in submitted_ci:
-                    ci_months.append(ci.checkIn_month)
-
-            else:
-                ci_months = confirmed_ci = pending_ci = rejected_ci = total_submitted = total_pending = total_rejected = percent_submitted = None
-        else:
-            ci_months = all_ci = confirmed_ci = pending_ci = rejected_ci = total_submitted = total_pending = total_rejected = percent_submitted = None
-
-        context = {
-            'my_ci': all_ci,
-            'ci_months': ci_months,
-            'active_pms': active_pms,
-            'confirmed_ci': confirmed_ci,
-            'pending_ci': pending_ci,
-            'rejected_ci': rejected_ci,
-            'total_submitted': total_submitted,
-            'percent_submitted': percent_submitted,
-            'total_pending': total_pending,
-            'total_rejected': total_rejected,
-            'user_is_md': user_is_md,
-            'user_is_bu_head': user_is_bu_head,
-            'user_is_tl': user_is_tl,
-            'no_of_bu': no_of_bu,
-            'user_bu': user_bu,
-        }
-        return render(request, 'Check-In/trackci.html', context)
-
-    else:
-        pass
+        return HttpResponseRedirect(reverse('Check-In_Submit'))
 
 
-@login_required
-def check_In_edit(request):
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-
-    no_of_bu = bu.objects.all().count()
-    # Check Level
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    if user_is_md == 'No':
-        # Active PMS
-        active_pms = pms.objects.filter(pms_status='Active')
-        active_pms = active_pms.get()
-
-        if active_pms is not None:
-            all_ci = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=request.user)
-
-            if all_ci is not None:
-                confirmed_ci = all_ci.filter(checkIn_status='Confirmed')
-                pending_ci = all_ci.filter(checkIn_status="Pending")
-                rejected_ci = all_ci.filter(checkIn_status="Rejected")
-                submitted_ci = all_ci.exclude(checkIn_status="Rejected")
-
-                total_submitted = confirmed_ci.count() + pending_ci.count()
-                total_pending = pending_ci.count()
-                total_rejected = rejected_ci.count()
-                percent_submitted = total_submitted / active_pms.checkin_number * 100
-                ci_months = []
-                for ci in submitted_ci:
-                    ci_months.append(ci.checkIn_month)
-
-            else:
-                ci_months = confirmed_ci = pending_ci = rejected_ci = total_submitted = total_pending = total_rejected = percent_submitted = None
-        else:
-            ci_months = all_ci = confirmed_ci = pending_ci = rejected_ci = total_submitted = total_pending = total_rejected = percent_submitted = None
-
-        context = {
-            'my_ci': all_ci,
-            'ci_months': ci_months,
-            'active_pms': active_pms,
-            'confirmed_ci': confirmed_ci,
-            'pending_ci': pending_ci,
-            'rejected_ci': rejected_ci,
-            'total_submitted': total_submitted,
-            'percent_submitted': percent_submitted,
-            'total_pending': total_pending,
-            'total_rejected': total_rejected,
-            'user_is_md': user_is_md,
-            'user_is_bu_head': user_is_bu_head,
-            'user_is_tl': user_is_tl,
-            'no_of_bu': no_of_bu,
-            'user_bu': user_bu,
-        }
-        return render(request, 'Check-In/editci.html', context)
-
-    else:
-        pass
-
-
-class Check_In_Detail_View(generic.DetailView):
-    model = checkIn
-    template_name = 'Check-In/one_individual_ci.html'
-    context_object_name = 'cis'
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class TrackCheckIn(ListView):
+    template_name = 'Check-In/trackci.html'
 
     def get_queryset(self):
-        return checkIn.objects.filter(checkIn_id=self.kwargs['pk'])
+        active_pms = get_active_pms()
+        return checkIn.objects.filter(checkIn_staff=self.request.user, checkIn_pms=active_pms)
 
     def get_context_data(self, **kwargs):
-        context = super(Check_In_Detail_View, self).get_context_data(**kwargs)
-        active_pms = pms.objects.filter(pms_status='Active')
-        active_pms = active_pms.get()
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
 
-        # Check Level
-        user_is_bu_head = self.request.user.staff_person.staff_head_bu
-        user_is_md = self.request.user.staff_person.staff_md
-        user_is_tl = self.request.user.staff_person.staff_head_team
-        user_bu = self.request.user.staff_person.staff_bu
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+            context['all_ci'] = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=self.request.user)
 
-        no_of_bu = bu.objects.all().count()
-        if user_is_md == 'No':
+            context['confirmed_ci'] = context['all_ci'].filter(checkIn_status='Confirmed')
+            context['pending_ci'] = context['all_ci'].filter(checkIn_status="Pending")
+            context['rejected_ci'] = context['all_ci'].filter(checkIn_status="Rejected")
+            context['submitted_ci'] = context['all_ci'].exclude(checkIn_status="Rejected")
 
-            # Active PMS
-            active_pms = pms.objects.filter(pms_status='Active')
-            active_pms = active_pms.get()
+            context['total_submitted'] = context['confirmed_ci'].count() + context['pending_ci'].count()
+            context['total_pending'] = context['pending_ci'].count()
+            context['total_rejected'] = context['rejected_ci'].count()
+            context['percent_submitted'] = context['total_submitted'] / active_pms.checkin_number * 100
+            context['month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+            ci_months = []
+            for ci in context['submitted_ci']:
+                ci_months.append(ci.checkIn_month)
+            context['ci_months'] = ci_months
+        return context
 
-            if active_pms is not None:
-                all_kpi = company_kpi.objects.filter(company_kpi_pms_id=active_pms)
+    def get_initial(self):
+        initial = super(SubmitCheckIn, self).get_initial()
+        initial['checkIn_pms'] = pms.objects.get(pms_status='Active')
+        initial['checkIn_submit_date'] = datetime.date.today()
+        initial['checkIn_month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+        initial['checkIn_staff'] = self.request.user
+        initial['checkIn_status'] = 'Pending'
+        return initial
 
-                if all_kpi is not None:
-                    context['my_kpi'] = all_kpi
-                    context['active_pms'] = active_pms
-                    context['approved_kpi'] = all_kpi.filter(company_kpi_status='Approved')
-                    context['pending_kpi'] = all_kpi.filter(company_kpi_status="Pending")
-                    context['edit_kpi'] = all_kpi.filter(company_kpi_status="Edit")
-                    context['rejected_kpi'] = all_kpi.filter(company_kpi_status="Rejected")
-                    context['total_submitted'] = context['approved_kpi'].count() + context['pending_kpi'].count() + \
-                                                 context['edit_kpi'].count()
-                    context['total_pending'] = context['pending_kpi'].count()
-                    context['total_rejected'] = context['rejected_kpi'].count()
-                    context['percent_submitted'] = context['total_submitted'] / context[
-                        'active_pms'].pms_individual_kpi_number * 100
-                    context['user_is_bu_head'] = self.request.user.staff_person.staff_head_bu
-                    context['user_is_md'] = self.request.user.staff_person.staff_md
-                    context['user_is_tl'] = self.request.user.staff_person.staff_head_team
-                    context['user_bu'] = self.request.user.staff_person.staff_bu
-                    context['no_of_bu'] = bu.objects.all().count()
-
-                    # Get team Leader
-                    user_team = self.request.user.staff_person.staff_team
-                    return context
-
-
-class Chech_In_Edit_View(UpdateView):
-    model = checkIn
-    form_class = edit_Check_In_Form
-    context_object_name = 'cis'
-    template_name = "Check-In/one_individual_ci_edit.html"
+    def get_success_url(self):
+        return '{}'.format(reverse('Check-In_Submit'))
 
     def form_valid(self, form):
-        messages.success(self.request, "KPI Edited successfully")
-        super().form_valid(form)
-        return HttpResponseRedirect(reverse("Check-In_Edit_One", kwargs={'pk': self.kwargs['pk']}))
+        super(SubmitCheckIn, self).form_valid(form)
+        user_team = get_object_or_404(staff, pk=self.request.user.id)
+        user_team = user_team.staff_team
+        e_message = ""
+        if user_team is not None:
+            team_leader = staff.objects.filter(staff_head_team=user_team)
+            if team_leader:
+                e_message = 'you have one CheckIn from ' + self.request.user.get_full_name() + ' that requires your approval'
+                for tl in team_leader:
+                    send_email_pms('KPI Approval', User.objects.get(pk=tl.id), self.request.user, e_message)
 
-    def get_object(self, *args, **kwargs):
-        kpi = get_object_or_404(checkIn, pk=self.kwargs['pk'])
-        return kpi
+            else:
+                team_leader = None
+                e_message = 'Your CheckIn has been submitted successfully but i keep on failing contacting your immediate ' \
+                            'supervisor.<br>Please raise the issue with HR for support'
+                send_email_pms('KPI Approval', team_leader, self.request.user, e_message)
+        else:
+            team_leader = None
+            e_message = 'Your CheckIn has been submitted successfully but i keep on failing contacting your immediate ' \
+                        'supervisor.<br>Please raise the issue with HR for support'
+            send_email_pms('KPI Approval', team_leader, self.request.user, e_message)
 
-    def get_success_url(self, *args, **kwargs):
-        return reverse("Check-In_Edit_One", kwargs={'pk': self.kwargs['pk']})
+
+
+        messages.success(self.request, 'Checkin submit successful')
+
+        return HttpResponseRedirect(reverse('Check-In_Submit'))
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class DetailCheckIn(DetailView):
+    model = checkIn
+    template_name = 'Check-In/one_individual_ci.html'
+    context_object_name = 'ci'
+
+    def get_queryset(self):
+        active_pms = get_active_pms()
+        return checkIn.objects.filter(checkIn_staff=self.request.user, checkIn_pms=active_pms)
 
     def get_context_data(self, **kwargs):
-        context = super(Chech_In_Edit_View, self).get_context_data(**kwargs)
-        active_pms = pms.objects.filter(pms_status='Active')
-        active_pms = active_pms.get()
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
 
-        # Check Level
-        user_is_bu_head = self.request.user.staff_person.staff_head_bu
-        user_is_md = self.request.user.staff_person.staff_md
-        user_is_tl = self.request.user.staff_person.staff_head_team
-        user_bu = self.request.user.staff_person.staff_bu
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+            context['all_ci'] = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=self.request.user)
 
-        no_of_bu = bu.objects.all().count()
-        if user_is_md is not None:
+            context['confirmed_ci'] = context['all_ci'].filter(checkIn_status='Confirmed')
+            context['pending_ci'] = context['all_ci'].filter(checkIn_status="Pending")
+            context['rejected_ci'] = context['all_ci'].filter(checkIn_status="Rejected")
+            context['submitted_ci'] = context['all_ci'].exclude(checkIn_status="Rejected")
 
-            # Active PMS
-            active_pms = pms.objects.filter(pms_status='Active')
-            active_pms = active_pms.get()
+            context['total_submitted'] = context['confirmed_ci'].count() + context['pending_ci'].count()
+            context['total_pending'] = context['pending_ci'].count()
+            context['total_rejected'] = context['rejected_ci'].count()
+            context['percent_submitted'] = context['total_submitted'] / active_pms.checkin_number * 100
+            context['month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+            ci_months = []
+            for ci in context['submitted_ci']:
+                ci_months.append(ci.checkIn_month)
+            context['ci_months'] = ci_months
+        return context
 
-            if active_pms is not None:
-                all_kpi = company_kpi.objects.filter(company_kpi_pms_id=active_pms)
+    def get_initial(self):
+        initial = super(SubmitCheckIn, self).get_initial()
+        initial['checkIn_pms'] = pms.objects.get(pms_status='Active')
+        initial['checkIn_submit_date'] = datetime.date.today()
+        initial['checkIn_month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+        initial['checkIn_staff'] = self.request.user
+        initial['checkIn_status'] = 'Pending'
+        return initial
 
-                if all_kpi is not None:
-                    context['my_kpi'] = all_kpi
-                    context['active_pms'] = active_pms
-                    context['approved_kpi'] = all_kpi.filter(company_kpi_status='Approved')
-                    context['pending_kpi'] = all_kpi.filter(company_kpi_status="Pending")
-                    context['edit_kpi'] = all_kpi.filter(company_kpi_status="Edit")
-                    context['rejected_kpi'] = all_kpi.filter(company_kpi_status="Rejected")
-                    context['total_submitted'] = context['approved_kpi'].count() + context['pending_kpi'].count() + \
-                                                 context['edit_kpi'].count()
-                    context['total_pending'] = context['pending_kpi'].count()
-                    context['total_rejected'] = context['rejected_kpi'].count()
-                    context['percent_submitted'] = context['total_submitted'] / context[
-                        'active_pms'].pms_individual_kpi_number * 100
-                    context['user_is_bu_head'] = self.request.user.staff_person.staff_head_bu
-                    context['user_is_md'] = self.request.user.staff_person.staff_md
-                    context['user_is_tl'] = self.request.user.staff_person.staff_head_team
-                    context['user_bu'] = self.request.user.staff_person.staff_bu
-                    context['no_of_bu'] = bu.objects.all().count()
+    def get_success_url(self):
+        return '{}'.format(reverse('Check-In_Submit'))
 
-                    # Get team Leader
-                    user_team = self.request.user.staff_person.staff_team
-                    return context
+    def form_valid(self, form):
+        super(SubmitCheckIn, self).form_valid(form)
+        user_team = get_object_or_404(staff, pk=self.request.user.id)
+        user_team = user_team.staff_team
+        e_message = ""
+        if user_team is not None:
+            team_leader = staff.objects.filter(staff_head_team=user_team)
+            if team_leader:
+                e_message = 'you have one CheckIn from ' + self.request.user.get_full_name() + ' that requires your approval'
+                for tl in team_leader:
+                    send_email_pms('KPI Approval', User.objects.get(pk=tl.id), self.request.user, e_message)
+
+            else:
+                team_leader = None
+                e_message = 'Your CheckIn has been submitted successfully but i keep on failing contacting your immediate ' \
+                            'supervisor.<br>Please raise the issue with HR for support'
+                send_email_pms('KPI Approval', team_leader, self.request.user, e_message)
+        else:
+            team_leader = None
+            e_message = 'Your CheckIn has been submitted successfully but i keep on failing contacting your immediate ' \
+                        'supervisor.<br>Please raise the issue with HR for support'
+            send_email_pms('KPI Approval', team_leader, self.request.user, e_message)
+
+
+
+        messages.success(self.request, 'Checkin submit successful')
+
+        return HttpResponseRedirect(reverse('Check-In_Submit'))
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class EditCheckIn(UpdateView):
+    form_class = SubmitCheckInForm
+    template_name = 'Check-In/one_individual_ci_edit.html'
+    model = checkIn
+    context_object_name = 'ci'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+            context['all_ci'] = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=self.request.user)
+
+            context['confirmed_ci'] = context['all_ci'].filter(checkIn_status='Confirmed')
+            context['pending_ci'] = context['all_ci'].filter(checkIn_status="Pending")
+            context['rejected_ci'] = context['all_ci'].filter(checkIn_status="Rejected")
+            context['submitted_ci'] = context['all_ci'].exclude(checkIn_status="Rejected")
+
+            context['total_submitted'] = context['confirmed_ci'].count() + context['pending_ci'].count()
+            context['total_pending'] = context['pending_ci'].count()
+            context['total_rejected'] = context['rejected_ci'].count()
+            context['percent_submitted'] = context['total_submitted'] / active_pms.checkin_number * 100
+            context['month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+            ci_months = []
+            for ci in context['submitted_ci']:
+                ci_months.append(ci.checkIn_month)
+            context['ci_months'] = ci_months
+        return context
+
+    def get_initial(self):
+        ci = get_object_or_404(checkIn, checkIn_id=self.kwargs['pk'])
+        initial = super(EditCheckIn,  self).get_initial()
+        initial['checkIn_pms'] = ci.checkIn_pms
+        initial['checkIn_submit_date'] = datetime.date.today()
+        initial['checkIn_month'] = ci.checkIn_month
+        initial['checkIn_staff'] = self.request.user
+        initial['checkIn_status'] = 'Pending'
+        return initial
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Check-In_Submit'))
+
+    def form_valid(self, form):
+        super(EditCheckIn, self).form_valid(form)
+        messages.success(self.request, 'Checkin edited successful')
+
+        return HttpResponseRedirect(reverse('Check-In_Edit_One', kwargs={"pk": self.kwargs["pk"]}))
 
 
 # ======================================================================================================================
@@ -3669,92 +3575,252 @@ class Chech_In_Edit_View(UpdateView):
 # ======================================================================================================================
 
 
-@login_required
-def staff_check_in(request):
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class StaffCheckIn(TemplateView):
+    template_name = 'Staff_Ci/staffci.html'
 
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
 
-    staff_n_ci = None
-    if user_is_tl is not None:
-        team_members = staff.objects.filter(staff_team=user_is_tl).exclude(staff_person=request.user)
-        ci_approved_count = 0
-        ci_pending_count = 0
-        ci_zero_count = 0
-        if team_members is not None:
-            for member in team_members:
-                staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
-                                                           checkIn_status='Confirmed').count()
-                staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
-                                                          checkIn_status='Pending').count()
-                staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
-                                                           checkIn_status='Rejected').count()
-
-                total_ci = staff_approved_ci + staff_pending_ci
-
-                staff_n_ci = [staff_n_ci,
-                              [member.staff_person.get_full_name, member.staff_person.email, member.staff_Pf_Number,
-                               staff_approved_ci, staff_pending_ci, staff_rejected_ci, total_ci]]
-
-                if staff_approved_ci > 0:
-                    ci_approved_count = + 1
-
-                if staff_pending_ci > 0:
-                    ci_pending_count = + 1
-
-                if total_ci < 1:
-                    ci_zero_count = + 1
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
         else:
-            staff_n_ci = None
-    else:
-        team_members = None
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
 
-    context = {
-        'staff_n_ci': list(chain(staff_n_ci)),
-        'team_members': team_members,
-        'ci_approved_count': ci_approved_count,
-        'ci_pending_count': ci_pending_count,
-        'ci_zero_count': ci_zero_count,
-        'user_is_md': user_is_md,
-        'user_is_bu_head': user_is_bu_head,
-        'user_is_tl': user_is_tl,
-        'no_of_bu': no_of_bu,
-        'user_bu': user_bu,
-    }
-    return render(request, 'Staff_Ci/staffci.html', context)
+            staff_n_ci = []
+            if context['user_is_tl'] is not None:
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                ci_approved_count = 0
+                ci_pending_count = 0
+                ci_zero_count = 0
+                for member in team_members:
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Confirmed').count()
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                              checkIn_status='Pending').count()
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Rejected').count()
+
+                    total_ci = staff_approved_ci + staff_pending_ci
+
+                    staff_n_ci.append([member.staff_person.get_full_name, member.staff_person.email,
+                                   member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                                       total_ci])
+
+                    if staff_approved_ci > 0:
+                        ci_approved_count = + 1
+
+                    if staff_pending_ci > 0:
+                        ci_pending_count = + 1
+
+                    if total_ci < 1:
+                        ci_zero_count = + 1
+
+                context['staff_n_ci'] = staff_n_ci
+                context['team_members'] = team_members
+                context['ci_approved_count'] = ci_approved_count
+                context['ci_pending_count'] = ci_pending_count
+                context['ci_zero_count'] = ci_zero_count
+
+        return context
 
 
-@login_required
-def staff_check_in_staff(request, pk):
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class StaffApproveCheckIn(TemplateView):
+    template_name = 'Staff_Ci/approveci.html'
 
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
 
-    staff_u = User.objects.get(id=pk)
-    staff_p = staff.objects.filter(staff_person=staff_u)
-    staff_pending_ci = checkIn.objects.filter(checkIn_staff=pk, checkIn_pms_id=active_pms, checkIn_status='Pending')
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
 
-    context = {
-        'staff_u': staff_u,
-        'staff_pending_ci': staff_pending_ci,
-        'user_is_md': user_is_md,
-        'user_is_bu_head': user_is_bu_head,
-        'user_is_tl': user_is_tl,
-        'no_of_bu': no_of_bu,
-        'user_bu': user_bu,
-    }
+            staff_n_ci = []
+            if context['user_is_tl'] is not None:
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                ci_approved_count = 0
+                ci_pending_count = 0
+                ci_zero_count = 0
+                for member in team_members:
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Confirmed').count()
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                              checkIn_status='Pending').count()
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Rejected').count()
 
-    return render(request, 'Staff_Ci/staffcistaff.html', context)
+                    total_ci = staff_approved_ci + staff_pending_ci
+
+                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                                       total_ci])
+
+                    if staff_approved_ci > 0:
+                        ci_approved_count = + 1
+
+                    if staff_pending_ci > 0:
+                        ci_pending_count = + 1
+
+                    if total_ci < 1:
+                        ci_zero_count = + 1
+
+                context['staff_n_ci'] = staff_n_ci
+                context['team_members'] = team_members
+                context['ci_approved_count'] = ci_approved_count
+                context['ci_pending_count'] = ci_pending_count
+                context['ci_zero_count'] = ci_zero_count
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class StaffApproveStaffCheckIn(DetailView):
+    context_object_name = 'staff'
+    model = User
+    template_name = 'Staff_Ci/staffcistaff.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            staff_n_ci = []
+            if context['user_is_tl'] is not None:
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                ci_approved_count = 0
+                ci_pending_count = 0
+                ci_zero_count = 0
+                for member in team_members:
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Confirmed').count()
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                              checkIn_status='Pending').count()
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Rejected').count()
+
+                    total_ci = staff_approved_ci + staff_pending_ci
+
+                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                                       total_ci])
+
+                    if staff_approved_ci > 0:
+                        ci_approved_count = + 1
+
+                    if staff_pending_ci > 0:
+                        ci_pending_count = + 1
+
+                    if total_ci < 1:
+                        ci_zero_count = + 1
+
+                context['staff_n_ci'] = staff_n_ci
+                context['team_members'] = team_members
+                context['ci_approved_count'] = ci_approved_count
+                context['ci_pending_count'] = ci_pending_count
+                context['ci_zero_count'] = ci_zero_count
+
+            context['all_ci'] = checkIn.objects.filter(checkIn_staff=self.kwargs['pk'], checkIn_pms=active_pms)
+            context['confirmed_ci'] = context['all_ci'].filter(checkIn_status='Confirmed')
+            context['pending_ci'] = context['all_ci'].filter(checkIn_status="Pending")
+            context['rejected_ci'] = context['all_ci'].filter(checkIn_status="Rejected")
+            context['submitted_ci'] = context['all_ci'].exclude(checkIn_status="Rejected")
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class StaffApproveStaffCheckInOne(UpdateView):
+    form_class = ApproveCheckInForm
+    context_object_name = 'ci'
+    model = checkIn
+    template_name = 'Staff_Ci/one_individual_approve_ci.html'
+    pk_url_kwarg = 'ci_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = get_object_or_404(User, id=self.kwargs['pk'])
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            staff_n_ci = []
+            if context['user_is_tl'] is not None:
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                ci_approved_count = 0
+                ci_pending_count = 0
+                ci_zero_count = 0
+                for member in team_members:
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Confirmed').count()
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                              checkIn_status='Pending').count()
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Rejected').count()
+
+                    total_ci = staff_approved_ci + staff_pending_ci
+
+                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                                       total_ci])
+
+                    if staff_approved_ci > 0:
+                        ci_approved_count = + 1
+
+                    if staff_pending_ci > 0:
+                        ci_pending_count = + 1
+
+                    if total_ci < 1:
+                        ci_zero_count = + 1
+
+                context['staff_n_ci'] = staff_n_ci
+                context['team_members'] = team_members
+                context['ci_approved_count'] = ci_approved_count
+                context['ci_pending_count'] = ci_pending_count
+                context['ci_zero_count'] = ci_zero_count
+
+            context['all_ci'] = checkIn.objects.filter(checkIn_staff=self.kwargs['pk'], checkIn_pms=active_pms)
+            context['confirmed_ci'] = context['all_ci'].filter(checkIn_status='Confirmed')
+            context['pending_ci'] = context['all_ci'].filter(checkIn_status="Pending")
+            context['rejected_ci'] = context['all_ci'].filter(checkIn_status="Rejected")
+            context['submitted_ci'] = context['all_ci'].exclude(checkIn_status="Rejected")
+
+        return context
 
 
 @login_required

@@ -68,21 +68,19 @@ urlpatterns = [
          name='BUs_Approve_Kpi_score_dashboard'),
 
 
-
     # My Checkin Kpi Links
     path('Check-In/', MyCheckIn.as_view(), name='Check-In_Kpi_Dashboard'),
-    path('Check-In/Submit-CI/', views.checkin_Submit_Kpi, name='Check-In_Submit'),
-    path('Check-In/Track-CI/', views.track_check_in, name='Check-In_Detail1'),
-    path('Check-In/Track-CI/<uuid:pk>', views.Check_In_Detail_View.as_view(), name='Check-In_Detail'),
-    path('Check-In/Edit-CI/', views.check_In_edit, name='Check-In_Edit'),
-    path('Check-In/Edit-CI/<uuid:pk>', views.Chech_In_Edit_View.as_view(), name='Check-In_Edit_One'),
+    path('Check-In/Submit-CI/', SubmitCheckIn.as_view(), name='Check-In_Submit'),
+    path('Check-In/Track-CI/', TrackCheckIn.as_view(), name='Check-In_Detail1'),
+    path('Check-In/Track-CI/<uuid:pk>', DetailCheckIn.as_view(), name='Check-In_Detail'),
+    path('Check-In/Edit-CI/<uuid:pk>', EditCheckIn.as_view(), name='Check-In_Edit_One'),
     
     
     # Staff Checkin Kpi Links
-    path('Check-In/Staff-CI', views.staff_check_in, name='Staff_Check-In_Kpi_Dashboard'),
-    path('Check-In/Staff-CI/Approve-CI', views.approve_check_in, name='Staff_Approve_CI'),
-    path('Check-In/Staff-CI/Approve-CI/<int:pk>', views.staff_check_in_staff, name='Staff_Approve_CI_list'),
-    path('Check-In/Staff-CI/Approve-CI/<int:pk>/<uuid:ci_id>', views.staff_individual_check_in, name='Staff_Approve_CI_Detail1'),
+    path('Check-In/Staff-CI', StaffCheckIn.as_view(), name='Staff_Check-In_Kpi_Dashboard'),
+    path('Check-In/Staff-CI/Approve-CI', StaffApproveCheckIn.as_view(), name='Staff_Approve_CI'),
+    path('Check-In/Staff-CI/Approve-CI/<int:pk>', StaffApproveStaffCheckIn.as_view(), name='Staff_Approve_CI_list'),
+    path('Check-In/Staff-CI/Approve-CI/<int:pk>/<uuid:ci_id>', StaffApproveStaffCheckInOne.as_view(), name='Staff_Approve_CI_Detail1'),
     path('Check-In/Staff-CI/Approve-CI/Approve/<int:pk>/<uuid:ci_id>', views.approve_individual_check_in, name='Staff_Approve_Individual_CI'),
     path('Check-In/Staff-CI/Approve-CI/Reject/<int:pk>/<uuid:ci_id>', views.reject_individual_check_in, name='Staff_Reject_Individual_CI'),
     path('Check-In/Staff-CI/Track-CI/', views.staff_track_check_in, name='Staff_Track_CI'),

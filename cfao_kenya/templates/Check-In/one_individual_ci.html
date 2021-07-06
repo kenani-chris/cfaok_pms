@@ -5,11 +5,19 @@
   <div class="col-md-10">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">{{ cis.checkIn_month }} Check-In </h3>
+        <h3 class="card-title">{{ ci.checkIn_month }} Check-In </h3>
+        <div class="float-right">
+              {% if ci %}
+                  {% if ci.checkIn_status == 'Pending' %}
+                    <a href="{% url 'Check-In_Edit_One' ci.checkIn_id %}"><button class="btn btn-info"><i class="fa fa-edit" style="">Edit</i></button></a>
+                    <a href=""><button class="btn btn-danger">Delete</button></a>
+                  {% endif %}
+              {% endif %}
+          </div>
       </div>
       <!-- /.card-header -->
       <div class="card-body">
-        {% if cis %}
+        {% if ci %}
           <table class="table table-bordered table-striped">
             <tr class="bg-info">
               <td>
@@ -27,16 +35,16 @@
             </tr>
             <tr>
               <td>
-                {{cis.checkIn_submit_date}}
+                {{ci.checkIn_submit_date}}
               </td>
               <td>
-                {{cis.checkIn_team_leader.get_full_name}}
+                {{ci.checkIn_team_leader.get_full_name}}
               </td>
               <td>
-                {{cis.checkIn_status}}
+                {{ci.checkIn_status}}
               </td>
               <td>
-                {{cis.checkIn_confirm_date}}
+                {{ci.checkIn_confirm_date}}
               </td>
             </tr>
           </table>
@@ -49,7 +57,7 @@
                 </th>
                 <td>
                   {% autoescape off %}
-                    {{ cis.checkIn_performance_area }}
+                    {{ ci.checkIn_performance_area }}
                   {% endautoescape %}
                 </td>
               </tr>
@@ -59,7 +67,7 @@
                 </th>
                 <td>
                   {% autoescape off %}
-                    {{ cis.checkIn_progress_discussed }}
+                    {{ ci.checkIn_progress_discussed }}
                   {% endautoescape %}
                 </td>
               </tr>
@@ -69,7 +77,7 @@
                 </th>
                 <td>
                   {% autoescape off %}
-                    {{ cis.checkIn_team_member_actions }}
+                    {{ ci.checkIn_team_member_actions }}
                   {% endautoescape %}
                 </td>
               </tr>
@@ -79,7 +87,7 @@
                 </th>
                 <td>
                   {% autoescape off %}
-                    {{ cis.checkIn_team_leader_support }}
+                    {{ ci.checkIn_team_leader_support }}
                   {% endautoescape %}
                 </td>
               </tr>
@@ -91,7 +99,7 @@
               <tr>
                 <td colspan="2">
                   {% autoescape off %}
-                    {{ cis.checkIn_team_leader_comment }}
+                    {{ ci.checkIn_team_leader_comment }}
                   {% endautoescape %}
                 </td>
               </tr>

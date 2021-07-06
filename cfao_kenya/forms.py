@@ -227,99 +227,44 @@ class CompanyKpiResultsForm(forms.ModelForm):
     company_kpi_december_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}), required=False)
 
 
-class edit_company_kpi_form(forms.ModelForm):
-    class Meta:
-        model = company_kpi
-        fields = ['company_kpi_title', 'company_kpi_function', 'company_kpi_details', 'company_kpi_target']
-
-    company_kpi_title = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}),
-                                        required=True)
-    company_kpi_function = forms.ChoiceField(choices=company_kpi.function,
-                                             widget=forms.Select(attrs={'class': 'form-control'}))
-    company_kpi_details = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 80px'}), required=True)
-    company_kpi_target = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}), required=True)
-
-    def clean(self):
-        cleaned_data = super(edit_company_kpi_form, self).clean()
-        title = cleaned_data.get('company_kpi_title')
-        function = cleaned_data.get('company_kpi_function')
-        details = cleaned_data.get('company_kpi_details')
-        target = cleaned_data.get('company_kpi_target')
-        if not title and not function and not details and not target:
-            raise forms.ValidationError('You have some blank fields')
-
-
-class Company_Kpi_Results_Form(forms.ModelForm):
-    class Meta:
-        model = bu_kpi
-        fields = ['company_kpi_january_score', 'company_kpi_february_score', 'company_kpi_march_score',
-                  'company_kpi_april_score', 'company_kpi_may_score', 'company_kpi_june_score',
-                  'company_kpi_july_score', 'company_kpi_august_score', 'company_kpi_september_score',
-                  'company_kpi_october_score', 'company_kpi_november_score', 'company_kpi_december_score', ]
-
-    company_kpi_january_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    company_kpi_february_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    company_kpi_march_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    company_kpi_april_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    company_kpi_may_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    company_kpi_june_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    company_kpi_july_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    company_kpi_august_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    company_kpi_september_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    company_kpi_october_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    company_kpi_november_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    company_kpi_december_score = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-
-
 # =============================================================================================================
 #                                            Check-in form
 # =============================================================================================================
 
 
-class submit_Check_In_Form(forms.ModelForm):
+class SubmitCheckInForm(forms.ModelForm):
     class Meta:
         model = checkIn
         fields = ['checkIn_performance_area', 'checkIn_progress_discussed', 'checkIn_team_member_actions',
-                  'checkIn_team_leader_support']
+                  'checkIn_team_leader_support', 'checkIn_submit_date', 'checkIn_status', 'checkIn_month',
+                  'checkIn_pms', 'checkIn_staff']
 
     checkIn_performance_area = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea', 'id': 'pax'}),
                                                required=True)
     checkIn_progress_discussed = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea', }), required=True)
     checkIn_team_member_actions = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea', }), required=True)
     checkIn_team_leader_support = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea', }), required=True)
+    checkIn_month = forms.CharField(max_length=15, widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                              required=True)
 
     def clean(self):
-        cleaned_data = super(submit_Check_In_Form, self).clean()
+        cleaned_data = super(SubmitCheckInForm, self).clean()
         pa = cleaned_data.get('checkIn_performance_area')
         pd = cleaned_data.get('checkIn_progress_discussed')
         tm = cleaned_data.get('checkIn_team_member_actions')
         tl = cleaned_data.get('checkIn_team_leader_support')
-        if not pa and not pd and not tm and not tl:
+        cm = cleaned_data.get('checkIn_team_leader_support')
+        if not pa and not pd and not tm and not tl and not cm:
             raise forms.ValidationError('You have some blank fields')
 
 
-class edit_Check_In_Form(forms.ModelForm):
+class ApproveCheckInForm(forms.ModelForm):
     class Meta:
         model = checkIn
-        fields = ['checkIn_performance_area', 'checkIn_progress_discussed', 'checkIn_team_member_actions',
-                  'checkIn_team_leader_support']
+        fields = ['checkIn_confirm_date', 'checkIn_status', 'checkIn_team_leader_comment']
 
-    checkIn_performance_area = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea', 'id': 'pax'}),
-                                               required=True)
-    checkIn_progress_discussed = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea', }), required=True)
-    checkIn_team_member_actions = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea', }), required=True)
-    checkIn_team_leader_support = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea', }), required=True)
-
-    def clean(self):
-        cleaned_data = super(edit_Check_In_Form, self).clean()
-        pa = cleaned_data.get('checkIn_performance_area')
-        pd = cleaned_data.get('checkIn_progress_discussed')
-        tm = cleaned_data.get('checkIn_team_member_actions')
-        tl = cleaned_data.get('checkIn_team_leader_support')
-        if not pa and not pd and not tm and not tl:
-            raise forms.ValidationError('You have some blank fields')
-
+    checkIn_team_leader_comment = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea', 'id': 'pax'}),
+                                                  required=True)
 
 # =============================================================================================================
 #                                            Assessments

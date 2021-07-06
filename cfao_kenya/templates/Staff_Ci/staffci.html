@@ -1,5 +1,5 @@
 {% extends "default.html" %}
-{% block pagetitle %}My Staff CI Dashboard{% endblock %}
+{% block pagetitle %}Staff CI Dashboard{% endblock %}
 {% block content %}
 <div class="row">
   <div class="col-md-2">
@@ -10,7 +10,7 @@
         <br>
         <ul class="list-group list-group-unbordered mb-3">
           <li class="list-group-item">
-            <a href="{% url 'Staff_Approve_CI' %}" class="btn btn-primary btn-block"><b>Approve CI</b></a>
+            <a href="{% url 'Staff_Approve_CI' %}" class="btn btn-primary btn-block"><b>Approve CI {% if ci_pending_count > 0 %} <span class="badge badge-danger float-right">{{ ci_pending_count }}</span>{% endif %}</b></a>
             <a href="{% url 'Staff_Track_CI' %}" class="btn btn-primary btn-block"><b>Track CI</b></a>
           </li>
         </ul>
@@ -121,7 +121,6 @@
               <thead>
               <tr>
                 <th>Staff</th>
-                <th>Mail</th>
                 <th>PF</th>
                 <th>Approved</th>
                 <th>Pending 1</th>
@@ -135,9 +134,6 @@
                 <tr>
                   <td>
                     {{ member.0 }}
-                  </td>
-                  <td>
-                    <a href="mailto:{{ member.1 }}">{{ member.1 }}</a>
                   </td>
                   <td>
                     {{ member.2 }}

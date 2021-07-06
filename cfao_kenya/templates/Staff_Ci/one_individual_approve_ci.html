@@ -5,7 +5,7 @@
   <div class="col-md-10">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">{{ staff_u.get_full_name }}'s Pending CI</h3>
+        <h3 class="card-title">{{ staff.get_full_name }}'s Pending CI</h3>
       </div>
       <!-- /.card-header -->
       <div class="card-body">
@@ -80,12 +80,13 @@
               </tr>
             </tbody>
           </table>
+
             <div class="card-footer">
             <div class="float-right" style="margin:5px">
-              <a href="{% url 'Staff_Reject_Individual_CI' staff_u.id  ci.checkIn_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
+              <a href="{% url 'Staff_Reject_Individual_CI' staff.id  ci.checkIn_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
             </div>
             <div class="float-right" style="margin:5px">
-              <a href="{% url 'Staff_Approve_Individual_CI' staff_u.id  ci.checkIn_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
+              <a href="{% url 'Staff_Approve_Individual_CI' staff.id  ci.checkIn_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
             </div>
           </div>
 

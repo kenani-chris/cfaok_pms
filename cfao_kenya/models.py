@@ -121,8 +121,7 @@ class checkIn(models.Model):
     checkIn_pms = models.ForeignKey('pms', on_delete=models.RESTRICT)
     checkIn_staff = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_individual_user")
     checkIn_team_leader = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_team_leader",
-                                            null=True,
-                                            blank=True)
+                                            null=True, blank=True)
     checkIn_submit_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     checkIn_confirm_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
 
@@ -131,14 +130,14 @@ class checkIn(models.Model):
     checkIn_progress_discussed = models.TextField()
     checkIn_team_member_actions = models.TextField()
     checkIn_team_leader_support = models.TextField()
-    checkIn_team_leader_comment = models.TextField()
+    checkIn_team_leader_comment = models.TextField(null=True, blank=True)
 
     status = (
         ('Pending', 'Pending'),
         ('Confirmed', 'Confirmed'),
         ('Rejected', 'Rejected'),
     )
-    checkIn_month = models.CharField(max_length=15, default=None)
+    checkIn_month = models.CharField(max_length=15, default=None, null=True)
     checkIn_status = models.CharField(max_length=10, choices=status, blank=True, default='Pending',
                                       help_text='PMS Status')
 

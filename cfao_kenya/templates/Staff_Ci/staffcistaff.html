@@ -5,12 +5,12 @@
   <div class="col-md-10">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">{{ staff_u.get_full_name }} Pending Check-Ins</h3>
+        <h3 class="card-title">{{ staff.get_full_name }} Pending Check-Ins</h3>
       </div>
       <!-- /.card-header -->
       <div class="card-body">
         <div style="overflow-x:scroll">
-            {% if staff_pending_ci %}
+            {% if pending_ci %}
               <table class="table table-bordered table-striped">
                 <thead>
                 <tr>
@@ -20,10 +20,10 @@
                 </tr>
                 </thead>
                 <tbody>
-              {% for ci in staff_pending_ci %}
+              {% for ci in pending_ci %}
                 <tr>
                   <td>
-                    <a href="{% url 'Staff_Approve_CI_Detail1' staff_u.id ci.checkIn_id %}">{{ ci.checkIn_month }} CheckIn</a>
+                    <a href="{% url 'Staff_Approve_CI_Detail1' staff.id ci.checkIn_id %}">{{ ci.checkIn_month }} CheckIn</a>
                   </td>
                   <td>
                     {{ ci.checkIn_status }}
