@@ -11,7 +11,7 @@
       </div>
       <!-- /.card-header -->
       <div class="card-body">
-        {% if evals.6 is True %}
+        {% if  evaluation.evaluation_start_date <= today and today <= evaluation.evaluation_end_date %}
             <table class="table table-bordered table-striped">
               <thead>
               <tr>
@@ -23,10 +23,10 @@
               {% if user_is_tl is not None%}
                 <tr>
                   <th>
-                    <a href="{% url 'Assessment_S' evals.0 %}">TL evaluates Staff</a>
+                    <a href="{% url 'Assessment_S' evals.0.evaluation_id %}">TL evaluates Staff</a>
                   </th>
                   <td>
-                    {{ evals.5 }}
+                    {{ evals.1 }}
                   </td>
                 </tr>
               {% endif %}
@@ -34,15 +34,15 @@
                 {% if team_leader is not None %}
                   <tr>
                     <th>
-                      <a href="{% url 'Assessment_TL_One' evals.0 team_leader.staff_person.id %}">Evaluate TL</a>
+                      <a href="{% url 'Assessment_TL_One' evals.0.evaluation_id team_leader.staff_person.id %}">Evaluate TL</a>
                     </th>
                     <td>
-                      {{ evals.4 }}
+                      {{ evals.2 }}
                     </td>
                   </tr>
-                {% else %}}
+                {% else %}
                   <tr>
-                    <td colspan="2">IT seems i cannot get your team leader</td>
+                    <td colspan="2">It seems i cannot get your team leader</td>
                   </tr>
                 {% endif %}
               {% endif %}

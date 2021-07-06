@@ -2831,6 +2831,7 @@ class BUsTrackKpiOneListView(DetailView):
     template_name = 'Bus_Kpi/trackkpi_staff.html'
 
     all_bu = bu.objects.all()
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         staff_person = get_object_or_404(staff, id=self.request.user.id)
@@ -2917,13 +2918,13 @@ class BUsKpiTrackOneView(UpdateView):
 
     def get_success_url(self):
         return '{}'.format(reverse('BUs_Track_Kpi_BUs_One', kwargs={"pk": self.kwargs["pk"],
-                                                                        "kpi_id": self.kwargs["kpi_id"]}))
+                                                                    "kpi_id": self.kwargs["kpi_id"]}))
 
     def form_valid(self, form):
         super(BUsKpiTrackOneView, self).form_valid(form)
         messages.success(self.request, 'KPI Update successful')
         return HttpResponseRedirect(reverse('BUs_Track_Kpi_BUs_One', kwargs={"pk": self.kwargs["pk"],
-                                                                                 "kpi_id": self.kwargs["kpi_id"]}))
+                                                                             "kpi_id": self.kwargs["kpi_id"]}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -3038,7 +3039,7 @@ class BUsKpiTrackOneView(UpdateView):
             context['pms'] = active_pms
 
             kpi = bu_kpi.objects.filter(bu_kpi_user=self.kwargs['pk'],
-                                                bu_kpi_pms=active_pms)
+                                        bu_kpi_pms=active_pms)
             context['my_kpi'] = kpi
             context['approved1_kpi'] = kpi.filter(bu_kpi_status='Approved 1')
             context['approved2_kpi'] = kpi.filter(bu_kpi_status='Approved 2')
@@ -3066,7 +3067,7 @@ class BUsKpiTrackOneView(UpdateView):
 
             for member in team_members:
                 kpi = bu_kpi.objects.filter(bu_kpi_user=member.staff_person,
-                                                    bu_kpi_pms=active_pms)
+                                            bu_kpi_pms=active_pms)
                 approved1_kpi = kpi.filter(bu_kpi_status='Approved 1')
                 approved2_kpi = kpi.filter(bu_kpi_status='Approved 2')
                 pending_kpi = kpi.filter(bu_kpi_status='Pending')
@@ -3108,7 +3109,6 @@ class BUsKpiTrackOneView(UpdateView):
 
 @login_required
 def approve_bu_kpi_score(request, pk, kpi_id, month):
-
     kpi = get_object_or_404(bu_kpi, bu_kpi_id=kpi_id)
     if month == 4:
         bu_kpi.objects.filter(bu_kpi_id=kpi_id).update(
@@ -3335,8 +3335,6 @@ class SubmitCheckIn(CreateView):
                         'supervisor.<br>Please raise the issue with HR for support'
             send_email_pms('KPI Approval', team_leader, self.request.user, e_message)
 
-
-
         messages.success(self.request, 'Checkin submit successful')
 
         return HttpResponseRedirect(reverse('Check-In_Submit'))
@@ -3417,8 +3415,6 @@ class TrackCheckIn(ListView):
             e_message = 'Your CheckIn has been submitted successfully but i keep on failing contacting your immediate ' \
                         'supervisor.<br>Please raise the issue with HR for support'
             send_email_pms('KPI Approval', team_leader, self.request.user, e_message)
-
-
 
         messages.success(self.request, 'Checkin submit successful')
 
@@ -3503,8 +3499,6 @@ class DetailCheckIn(DetailView):
                         'supervisor.<br>Please raise the issue with HR for support'
             send_email_pms('KPI Approval', team_leader, self.request.user, e_message)
 
-
-
         messages.success(self.request, 'Checkin submit successful')
 
         return HttpResponseRedirect(reverse('Check-In_Submit'))
@@ -3552,7 +3546,7 @@ class EditCheckIn(UpdateView):
 
     def get_initial(self):
         ci = get_object_or_404(checkIn, checkIn_id=self.kwargs['pk'])
-        initial = super(EditCheckIn,  self).get_initial()
+        initial = super(EditCheckIn, self).get_initial()
         initial['checkIn_pms'] = ci.checkIn_pms
         initial['checkIn_submit_date'] = datetime.date.today()
         initial['checkIn_month'] = ci.checkIn_month
@@ -3597,7 +3591,8 @@ class StaffCheckIn(TemplateView):
 
             staff_n_ci = []
             if context['user_is_tl'] is not None:
-                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                    staff_person=self.request.user)
                 ci_approved_count = 0
                 ci_pending_count = 0
                 ci_zero_count = 0
@@ -3612,7 +3607,7 @@ class StaffCheckIn(TemplateView):
                     total_ci = staff_approved_ci + staff_pending_ci
 
                     staff_n_ci.append([member.staff_person.get_full_name, member.staff_person.email,
-                                   member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                                       member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
                                        total_ci])
 
                     if staff_approved_ci > 0:
@@ -3655,7 +3650,8 @@ class StaffApproveCheckIn(TemplateView):
 
             staff_n_ci = []
             if context['user_is_tl'] is not None:
-                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                    staff_person=self.request.user)
                 ci_approved_count = 0
                 ci_pending_count = 0
                 ci_zero_count = 0
@@ -3669,7 +3665,8 @@ class StaffApproveCheckIn(TemplateView):
 
                     total_ci = staff_approved_ci + staff_pending_ci
 
-                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci,
+                                       staff_rejected_ci,
                                        total_ci])
 
                     if staff_approved_ci > 0:
@@ -3714,7 +3711,8 @@ class StaffApproveStaffCheckIn(DetailView):
 
             staff_n_ci = []
             if context['user_is_tl'] is not None:
-                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                    staff_person=self.request.user)
                 ci_approved_count = 0
                 ci_pending_count = 0
                 ci_zero_count = 0
@@ -3728,7 +3726,8 @@ class StaffApproveStaffCheckIn(DetailView):
 
                     total_ci = staff_approved_ci + staff_pending_ci
 
-                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci,
+                                       staff_rejected_ci,
                                        total_ci])
 
                     if staff_approved_ci > 0:
@@ -3782,7 +3781,8 @@ class StaffApproveStaffCheckInOne(UpdateView):
 
             staff_n_ci = []
             if context['user_is_tl'] is not None:
-                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                    staff_person=self.request.user)
                 ci_approved_count = 0
                 ci_pending_count = 0
                 ci_zero_count = 0
@@ -3796,7 +3796,8 @@ class StaffApproveStaffCheckInOne(UpdateView):
 
                     total_ci = staff_approved_ci + staff_pending_ci
 
-                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci,
+                                       staff_rejected_ci,
                                        total_ci])
 
                     if staff_approved_ci > 0:
@@ -3823,7 +3824,7 @@ class StaffApproveStaffCheckInOne(UpdateView):
         return context
 
     def get_initial(self):
-        initial = super(StaffApproveStaffCheckInOne,  self).get_initial()
+        initial = super(StaffApproveStaffCheckInOne, self).get_initial()
         initial['checkIn_team_leader'] = self.request.user
         initial['checkIn_confirm_date'] = datetime.date.today()
         initial['checkIn_status'] = 'Confirmed'
@@ -3836,7 +3837,8 @@ class StaffApproveStaffCheckInOne(UpdateView):
         ci = get_object_or_404(checkIn, checkIn_id=self.kwargs['ci_id'])
         super(StaffApproveStaffCheckInOne, self).form_valid(form)
         messages.success(self.request, 'CheckIn Approved Successfully')
-        send_email_pms('CheckIn Confirmed', ci.checkIn_staff, self.request.user, 'You Kpi for the month '+ ci.checkIn_month + ' has been confirmed')
+        send_email_pms('CheckIn Confirmed', ci.checkIn_staff, self.request.user,
+                       'You Kpi for the month ' + ci.checkIn_month + ' has been confirmed')
         return HttpResponseRedirect(reverse('Staff_Approve_CI'))
 
 
@@ -3864,7 +3866,8 @@ class StaffTrackCheckIn(TemplateView):
 
             staff_n_ci = []
             if context['user_is_tl'] is not None:
-                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                    staff_person=self.request.user)
                 ci_approved_count = 0
                 ci_pending_count = 0
                 ci_zero_count = 0
@@ -3878,7 +3881,8 @@ class StaffTrackCheckIn(TemplateView):
 
                     total_ci = staff_approved_ci + staff_pending_ci
 
-                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci,
+                                       staff_rejected_ci,
                                        total_ci])
 
                     if staff_approved_ci > 0:
@@ -3923,7 +3927,8 @@ class StaffTrackStaffCheckIn(DetailView):
 
             staff_n_ci = []
             if context['user_is_tl'] is not None:
-                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                    staff_person=self.request.user)
                 ci_approved_count = 0
                 ci_pending_count = 0
                 ci_zero_count = 0
@@ -3937,7 +3942,8 @@ class StaffTrackStaffCheckIn(DetailView):
 
                     total_ci = staff_approved_ci + staff_pending_ci
 
-                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci,
+                                       staff_rejected_ci,
                                        total_ci])
 
                     if staff_approved_ci > 0:
@@ -3989,7 +3995,8 @@ class StaffTrackStaffDetailCheckIn(DetailView):
 
             staff_n_ci = []
             if context['user_is_tl'] is not None:
-                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                    staff_person=self.request.user)
                 ci_approved_count = 0
                 ci_pending_count = 0
                 ci_zero_count = 0
@@ -4003,7 +4010,8 @@ class StaffTrackStaffDetailCheckIn(DetailView):
 
                     total_ci = staff_approved_ci + staff_pending_ci
 
-                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci,
+                                       staff_rejected_ci,
                                        total_ci])
 
                     if staff_approved_ci > 0:
@@ -4031,444 +4039,270 @@ class StaffTrackStaffDetailCheckIn(DetailView):
         return context
 
 
-
-
-def staff_individual_check_in(request, pk, ci_id):
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-
-    staff_u = User.objects.get(id=pk)
-    ci = checkIn.objects.get(checkIn_id=ci_id)
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
-
-    if active_pms is not None:
-        all_ci = checkIn.objects.filter(checkIn_id=ci_id, checkIn_pms=active_pms).get()
-
-    context = {
-        'all_ci': all_ci,
-        'staff_u': staff_u,
-        'ci': ci,
-    }
-    return render(request, 'Staff_Ci/one_individual_approve_ci.html', context)
-
-
-@login_required
-def approve_check_in(request):
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
-
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
-
-    staff_n_ci = None
-    if user_is_tl is not None:
-        team_members = staff.objects.filter(staff_team=user_is_tl).exclude(staff_person=request.user)
-        ci_approved_count = 0
-        ci_pending_count = 0
-        ci_zero_count = 0
-        if team_members is not None:
-            for member in team_members:
-                staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
-                                                           checkIn_status='Confirmed').count()
-                staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
-                                                          checkIn_status='Pending').count()
-                staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
-                                                           checkIn_status='Rejected').count()
-
-                total_ci = staff_approved_ci + staff_pending_ci
-
-                staff_n_ci = [staff_n_ci, [member, staff_approved_ci, staff_pending_ci, staff_rejected_ci, total_ci]]
-
-                if staff_approved_ci > 0:
-                    ci_approved_count = + 1
-
-                if staff_pending_ci > 0:
-                    ci_pending_count = + 1
-
-                if total_ci < 1:
-                    ci_zero_count = + 1
-        else:
-            staff_n_ci = None
-    else:
-        team_members = None
-
-    context = {
-        'staff_n_ci': staff_n_ci,
-        'team_members': team_members,
-        'ci_approved_count': ci_approved_count,
-        'ci_pending_count': ci_pending_count,
-        'ci_zero_count': ci_zero_count,
-        'user_is_md': user_is_md,
-        'user_is_bu_head': user_is_bu_head,
-        'user_is_tl': user_is_tl,
-        'no_of_bu': no_of_bu,
-        'user_bu': user_bu,
-    }
-    return render(request, 'Staff_Ci/approveci.html', context)
-
-
-class approve_check_in_view(UpdateView):
-    model = individual_Kpi
-    form_class = IndividualKpiUpdateForm
-    template_name = "Staff_Kpi/one_individual_approve_kpi.html"
-
-    def form_valid(self, form):
-        messages.success(self.request, "KPI Edited successfully")
-        super().form_valid(form)
-        return HttpResponseRedirect(reverse("Individual_Kpi-Edit_One", kwargs={'pk': self.kwargs['pk']}))
-
-    def get_object(self, *args, **kwargs):
-        active_pms = pms.objects.filter(pms_status='Active').get()
-        kpi = individual_Kpi.objects.filter(individual_kpi_user=self.kwargs['pk'],
-                                            individual_kpi_pms=active_pms).first()
-        return kpi
-
-    def get_success_url(self, *args, **kwargs):
-        return reverse("Individual_Kpi-Edit_One", kwargs={'pk': self.kwargs['pk']})
-
-    def get_context_data(self, **kwargs):
-        context = super(ApproveKpiView, self).get_context_data(**kwargs)
-        active_pms = pms.objects.filter(pms_status='Active')
-        active_pms = active_pms.get()
-
-        if active_pms is not None:
-            all_kpi = individual_Kpi.objects.filter(individual_kpi_user=self.kwargs['pk'],
-                                                    individual_kpi_pms=active_pms)
-            context['staff'] = User.objects.filter(id=self.kwargs['pk']).get()
-            if all_kpi is not None:
-                context['active_pms'] = active_pms
-                context['my_kpi'] = all_kpi
-                context['approved1_kpi'] = all_kpi.filter(individual_kpi_user=self.request.user,
-                                                          individual_kpi_status='Approved 1')
-                context['approved2_kpi'] = all_kpi.filter(individual_kpi_user=self.request.user,
-                                                          individual_kpi_status='Approved 2')
-                context['pending_kpi'] = all_kpi.filter(individual_kpi_user=self.request.user,
-                                                        individual_kpi_status="Pending")
-                context['edit_kpi'] = all_kpi.filter(individual_kpi_user=self.request.user,
-                                                     individual_kpi_status="Edit")
-                context['rejected1_kpi'] = all_kpi.filter(individual_kpi_user=self.request.user,
-                                                          individual_kpi_status="Rejected 1")
-                context['rejected2_kpi'] = all_kpi.filter(individual_kpi_user=self.request.user,
-                                                          individual_kpi_status="Rejected 2")
-                context['total_submitted'] = context['approved1_kpi'].count() + context['approved2_kpi'].count() + \
-                                             context['pending_kpi'].count() + context['edit_kpi'].count()
-                context['total_pending'] = context['approved1_kpi'].count() + context['pending_kpi'].count()
-                context['total_rejected'] = context['rejected1_kpi'].count() + context['rejected2_kpi'].count()
-                context['percent_submitted'] = context['total_submitted'] / context[
-                    'active_pms'].pms_individual_kpi_number * 100
-                context['user_is_bu_head'] = self.request.user.staff_person.staff_head_bu
-                context['user_is_md'] = self.request.user.staff_person.staff_md
-                context['user_is_tl'] = self.request.user.staff_person.staff_head_team
-                context['user_bu'] = self.request.user.staff_person.staff_bu
-                context['no_of_bu'] = bu.objects.all().count()
-        # Get team Leader
-        user_team = self.request.user.staff_person.staff_team
-        return context
-
-
-@login_required
-def approve_individual_check_in(request, pk, ci_id):
-    checkIn.objects.filter(checkIn_id=ci_id).update(checkIn_status=checkIn.status[1][0],
-                                                    checkIn_team_leader=request.user.id,
-                                                    checkIn_confirm_date=datetime.datetime.now())
-
-    return HttpResponseRedirect(reverse("Staff_Approve_CI_list", kwargs={'pk': pk}))
-
-
-@login_required
-def reject_individual_check_in(request, pk, ci_id):
-    checkIn.objects.filter(checkIn_id=ci_id).update(checkIn_status=checkIn.status[2][0],
-                                                    checkIn_team_leader=request.user.id,
-                                                    checkIn_confirm_date=datetime.datetime.now())
-
-    return HttpResponseRedirect(reverse("Staff_Approve_CI_list", kwargs={'pk': pk}))
-
-
-@login_required
-def staff_track_check_in(request):
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
-
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
-
-    staff_n_ci = None
-    if user_is_tl is not None:
-        team_members = staff.objects.filter(staff_team=user_is_tl).exclude(staff_person=request.user)
-        ci_approved_count = 0
-        ci_pending_count = 0
-        ci_zero_count = 0
-        if team_members is not None:
-            for member in team_members:
-                staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
-                                                           checkIn_status='Confirmed').count()
-                staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
-                                                          checkIn_status='Pending').count()
-                staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
-                                                           checkIn_status='Rejected').count()
-
-                total_ci = staff_approved_ci + staff_pending_ci
-
-                staff_n_ci = [staff_n_ci,
-                              [member.staff_person.id, member.staff_person.get_full_name, member.staff_person.email,
-                               member.staff_Pf_Number,
-                               staff_approved_ci, staff_pending_ci, staff_rejected_ci, total_ci]]
-
-                if staff_approved_ci > 0:
-                    ci_approved_count = + 1
-
-                if staff_pending_ci > 0:
-                    ci_pending_count = + 1
-
-                if total_ci < 1:
-                    ci_zero_count = + 1
-        else:
-            staff_n_ci = None
-    else:
-        team_members = None
-
-    context = {
-        'staff_n_ci': list(chain(staff_n_ci)),
-        'team_members': team_members,
-        'ci_approved_count': ci_approved_count,
-        'ci_pending_count': ci_pending_count,
-        'ci_zero_count': ci_zero_count,
-        'user_is_md': user_is_md,
-        'user_is_bu_head': user_is_bu_head,
-        'user_is_tl': user_is_tl,
-        'no_of_bu': no_of_bu,
-        'user_bu': user_bu,
-    }
-    return render(request, 'Staff_Ci/trackci.html', context)
-
-
-@login_required
-def staff_track_check_in_staff(request, pk):
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
-
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
-
-    staff_u = User.objects.get(id=pk)
-    staff_p = staff.objects.filter(staff_person=staff_u)
-    staff_ci = checkIn.objects.filter(checkIn_staff=pk, checkIn_pms_id=active_pms)
-
-    context = {
-        'staff_u': staff_u,
-        'staff_ci': staff_ci,
-        'user_is_md': user_is_md,
-        'user_is_bu_head': user_is_bu_head,
-        'user_is_tl': user_is_tl,
-        'no_of_bu': no_of_bu,
-        'user_bu': user_bu,
-    }
-
-    return render(request, 'Staff_Ci/trackci_staff.html', context)
-
-
-@login_required
-def staff_track_check_in_staff_one(request, pk, ci_id):
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
-
-    staff_u = User.objects.get(id=pk)
-    ci = checkIn.objects.get(checkIn_id=ci_id)
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
-
-    if active_pms is not None:
-        all_ci = checkIn.objects.filter(checkIn_id=ci_id, checkIn_pms=active_pms).get()
-
-    context = {
-        'all_ci': all_ci,
-        'staff_u': staff_u,
-        'ci': ci,
-        'user_is_md': user_is_md,
-        'user_is_bu_head': user_is_bu_head,
-        'user_is_tl': user_is_tl,
-        'no_of_bu': no_of_bu,
-        'user_bu': user_bu,
-    }
-    return render(request, 'Staff_Ci/trackci_staff_one.html', context)
-
-
 # ======================================================================================================================
 #                                           ASSESSMENT
 # ======================================================================================================================
 
 
-@login_required
-def assessment(request):
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class Assessment(TemplateView):
+    template_name = 'Assessment/assessment.html'
 
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
 
-    if active_pms is not None:
-        evaluations = evaluation.objects.filter(evaluation_pms=active_pms)
-        running_evaluations = evaluation.objects.filter(evaluation_pms=active_pms,
-                                                        evaluation_start_date__lte=datetime.date.today(),
-                                                        evaluation_end_date__gte=datetime.date.today())
-        future_evaluations = evaluation.objects.filter(evaluation_pms=active_pms,
-                                                       evaluation_start_date__gt=datetime.date.today(), )
-        completed_evaluations = evaluation.objects.filter(evaluation_pms=active_pms,
-                                                          evaluation_end_date__lt=datetime.date.today())
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
 
-        if evaluations is not None:
+            today = datetime.date.today()
+            evaluations = evaluation.objects.filter(evaluation_pms=active_pms)
+            context['running_evaluations'] = evaluation.objects.filter(evaluation_pms=active_pms,
+                                                                       evaluation_start_date__lte=today,
+                                                                       evaluation_end_date__gte=today)
+            context['future_evaluations'] = evaluation.objects.filter(evaluation_pms=active_pms,
+                                                                      evaluation_start_date__gt=today, )
+            context['completed_evaluations'] = evaluation.objects.filter(evaluation_pms=active_pms,
+                                                                         evaluation_end_date__lt=today)
+
             evals = []
             for e in evaluations:
+
                 # TL evaluates Staff
+                # =====================================================================
+
                 s_tl = "N/A"
                 tl_s = "N/A"
-                if e.evaluation_start_date <= datetime.date.today() and e.evaluation_end_date >= datetime.date.today():
+
+                if e.evaluation_start_date <= today <= e.evaluation_end_date:
                     active = True
                 else:
                     active = False
-                if user_is_tl is not None:
-                    if user_is_md == "Yes":
-                        team_members = staff.objects.filter(staff_team=user_is_tl).exclude(staff_person=request.user)
+                if context['user_is_tl'] is not None:
+                    team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                        staff_person=self.request.user)
+
+                    if context['user_is_md'] == "Yes":
+
                         staff_ev_count = 0
-                        if team_members.count() > 1:
-                            for mem in team_members:
-                                if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
-                                                                          done_staff=mem.staff_person.id,
-                                                                          done_team_leader=request.user) is not None:
-                                    staff_ev_count = staff_ev_count + 1
+                        for mem in team_members:
+                            if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                                      done_staff=mem.staff_person.id,
+                                                                      done_team_leader=self.request.user) is not None:
+                                staff_ev_count = staff_ev_count + 1
 
                         tl_s = str(staff_ev_count) + "/" + str(team_members.count())
 
                     else:
-                        team_members = staff.objects.filter(staff_team=user_is_tl).exclude(staff_person=request.user)
                         staff_ev_count = 0
                         if team_members.count() > 1:
                             for mem in team_members:
                                 if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
                                                                           done_staff=mem.staff_person.id,
-                                                                          done_team_leader=request.user) is not None:
+                                                                          done_team_leader=self.request.user) is not None:
                                     staff_ev_count = staff_ev_count + 1
                 else:
                     ev_done = done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
-                                                                     done_staff=request.user)
+                                                                     done_staff=self.request.user)
                     if ev_done:
                         s_tl = "Done"
                     else:
                         s_tl = "Not done"
 
-                evals.append(
-                    [e.evaluation_id, e.evaluation_name, e.evaluation_start_date, e.evaluation_end_date, s_tl, tl_s,
-                     active])
+                evals.append([e, s_tl, tl_s, active])
 
-        context = {
-            'evals': evals,
-            'active_pms': active_pms,
-            'running_evaluations': running_evaluations,
-            'future_evaluations': future_evaluations,
-            'completed_evaluations': completed_evaluations,
-            'user_is_md': user_is_md,
-            'user_is_bu_head': user_is_bu_head,
-            'user_is_tl': user_is_tl,
-            'no_of_bu': no_of_bu,
-            'user_bu': user_bu,
-        }
-    return render(request, 'Assessment/assessment.html', context)
+            context['evals'] = evals
+
+        return context
 
 
-@login_required
-def assessment_view(request, as_id):
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AssessmentView(DetailView):
+    context_object_name = 'evaluation'
+    model = evaluation
+    template_name = 'Assessment/assessment_list.html'
 
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
-    user_team = request.user.staff_person.staff_team
+    pk_url_kwarg = 'as_id'
 
-    team_leader = None
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
 
-    if user_team is not None:
-        team_leader = staff.objects.filter(staff_head_team=user_team)
-        if team_leader is not None:
-            team_leader = team_leader.get()
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
 
-    if active_pms is not None:
-        e = evaluation.objects.filter(evaluation_id=as_id).get()
+            today = datetime.date.today()
+            context['today'] = today
+            e = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
 
-        if e is not None:
-            evals = None
+            my_team = get_object_or_404(staff, id=self.request.user.id)
+            tl = staff.objects.filter(staff_head_team=my_team.staff_team).first()
+            context['team_leader'] = tl
 
-            # TL evaluates Staff
             s_tl = "N/A"
             tl_s = "N/A"
-            if e.evaluation_start_date <= datetime.date.today() and e.evaluation_end_date >= datetime.date.today():
-                active = True
-            else:
-                active = False
-            if user_is_tl is not None:
-                if user_is_md == "Yes":
-                    team_members = staff.objects.filter(staff_team=user_is_tl).exclude(staff_person=request.user)
+
+            if context['user_is_tl'] is not None:
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                    staff_person=self.request.user)
+
+                if context['user_is_md'] == "Yes":
+
                     staff_ev_count = 0
-                    if team_members.count() > 1:
-                        for mem in team_members:
-                            if done_tl_evaluates_staff.objects.filter(done_evaluation=e, done_staff=mem.staff_person,
-                                                                      done_team_leader=request.user) is not None:
-                                staff_ev_count = staff_ev_count + 1
+                    for mem in team_members:
+                        if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                                  done_staff=mem.staff_person.id,
+                                                                  done_team_leader=self.request.user) is not None:
+                            staff_ev_count = staff_ev_count + 1
 
                     tl_s = str(staff_ev_count) + "/" + str(team_members.count())
 
                 else:
-                    team_members = staff.objects.filter(staff_team=user_is_tl).exclude(staff_person=request.user)
                     staff_ev_count = 0
-                    if team_members.count() > 1:
-                        for mem in team_members:
-                            if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
-                                                                      done_staff=mem.staff_person.id,
-                                                                      done_team_leader=request.user) is not None:
-                                staff_ev_count = staff_ev_count + 1
+                    for mem in team_members:
+                        if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                                  done_staff=mem.staff_person.id,
+                                                                  done_team_leader=self.request.user):
+                            staff_ev_count = staff_ev_count + 1
+
+                    tl_s = str(staff_ev_count) + "/" + str(team_members.count())
+
+                    ev_done = done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
+                                                                     done_staff=self.request.user)
+                    if ev_done:
+                        s_tl = "Done"
+                    else:
+                        s_tl = "Not done"
+
             else:
                 ev_done = done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
-                                                                 done_staff=request.user,
-                                                                 done_team_leader=team_leader.staff_person)
-                if ev_done.__len__() > 0:
+                                                                 done_staff=self.request.user)
+                if ev_done:
                     s_tl = "Done"
                 else:
                     s_tl = "Not done"
 
-            evals = [e.evaluation_id, e.evaluation_name, e.evaluation_start_date, e.evaluation_end_date, s_tl, tl_s,
-                     active]
+            context['evals'] = [e, tl_s, s_tl]
 
-        context = {
-            'evals': evals,
-            'team_leader': team_leader,
-            'active_pms': active_pms,
-            'user_is_md': user_is_md,
-            'user_is_bu_head': user_is_bu_head,
-            'user_is_tl': user_is_tl,
-            'no_of_bu': no_of_bu,
-            'user_bu': user_bu,
-        }
-    return render(request, 'Assessment/assessment_list.html', context)
+        return context
 
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AssessmentTlS(DetailView):
+    context_object_name = 'evaluation'
+    model = evaluation
+    template_name = 'Assessment/assessment_tl_s_view.html'
+
+    pk_url_kwarg = 'as_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            today = datetime.date.today()
+            context['today'] = today
+            e = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+
+            s_tl = "N/A"
+            tl_s = "N/A"
+
+            evals = []
+            if context['user_is_tl'] is not None:
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                    staff_person=self.request.user)
+
+                for mem in team_members:
+                    if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                              done_staff=mem.staff_person.id,
+                                                              done_team_leader=self.request.user):
+                        ev = 'Done'
+                    else:
+                        ev = "Not Done"
+                    evals.append([mem, ev])
+
+            context['evals'] = evals
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AssessmentTlS(DetailView):
+    context_object_name = 'evaluation'
+    model = evaluation
+    template_name = 'Assessment/assessment_tl_s_view.html'
+
+    pk_url_kwarg = 'as_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            today = datetime.date.today()
+            context['today'] = today
+            e = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+
+            s_tl = "N/A"
+            tl_s = "N/A"
+
+            evals = []
+            if context['user_is_tl'] is not None:
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                    staff_person=self.request.user)
+
+                for mem in team_members:
+                    if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                              done_staff=mem.staff_person.id,
+                                                              done_team_leader=self.request.user):
+                        ev = 'Done'
+                    else:
+                        ev = "Not Done"
+                    evals.append([mem, ev])
+
+            context['evals'] = evals
+
+        return context
 
 @login_required
 def assessment_s_tl(request, as_id):

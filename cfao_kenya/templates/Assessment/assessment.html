@@ -28,7 +28,7 @@
 
             <div class="info-box-content">
               <span class="info-box-text">Assessments</span>
-              <span class="info-box-number">{{ active_pms.assessment_number }} Evl.</span>
+              <span class="info-box-number">{{ pms.assessment_number }} Evl.</span>
 
               <div class="progress">
                 <div class="progress-bar" style="width: 100%"></div>
@@ -129,30 +129,29 @@
               </tr>
               </thead>
               <tbody>
-
               {% for eval in evals %}
                 {% if eval is not None %}
                   <tr>
-                    {% if eval.6 is True %}
-                      <td class="bg-success">
-                        <a href="{% url 'Assessment_View' eval.0 %}">{{ eval.1 }} <small>(Fill)</small></a>
+                    {% if eval.3 is True %}
+                      <td>
+                        <a href="{% url 'Assessment_View' eval.0.evaluation_id %}">{{ eval.0.evaluation_name }} <small>(Active)</small></a>
                       </td>
                     {% else %}
                       <td>
-                        {{ eval.1 }}
+                        {{ eval.0.evaluation_name }}
                       </td>
                     {% endif %}
                     <td>
+                      {{ eval.0.evaluation_start_date }}
+                    </td>
+                    <td>
+                      {{ eval.0.evaluation_end_date }}
+                    </td>
+                    <td>
+                      {{ eval.1 }}
+                    </td>
+                    <td>
                       {{ eval.2 }}
-                    </td>
-                    <td>
-                      {{ eval.3 }}
-                    </td>
-                    <td>
-                      {{ eval.4 }}
-                    </td>
-                    <td>
-                      {{ eval.5 }}
                     </td>
                   {% endif %}
               {% endfor %}

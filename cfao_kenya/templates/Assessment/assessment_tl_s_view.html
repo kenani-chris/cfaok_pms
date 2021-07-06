@@ -1,16 +1,15 @@
 {% extends "Assessment/default.html" %}
 {% block pagetitle %}Assessment{% endblock %}
 {% block page_top %}<li class="breadcrumb-item"><a href="{% url 'Assessment_Dashboard' %}">Assessment</a></li>{% endblock %}
-{% block page_middle %}<li class="breadcrumb-item"><a href="{% url 'Assessment_View' e.evaluation_id %}">Evaluations</a></li>{% endblock %}
+{% block page_middle %}<li class="breadcrumb-item"><a href="{% url 'Assessment_View' evaluation.evaluation_id %}">Evaluations</a></li>{% endblock %}
 {% block kpicontent %}
 
   <div class="col-md-10">
     <div class="card">
       <!-- /.card-header -->
       <div class="card-body">
-
         {% if user_is_tl %}
-          {% if team_members %}
+          {% if evals %}
             <div class="alert alert-info">
               My Team Members <h5><b>{{ team_leader.get_full_name }}</b></h5>
 
@@ -24,23 +23,24 @@
               </thead>
               <tbody>
 
-              {% for mem in data %}
-                {% if mem.2 == "Not Done" %}
+
+              {% for mem in evals %}
+                {% if mem.1 == "Not Done" %}
                   <tr>
                     <td>
-                      <a href="{% url 'Assessment_S_One' e.evaluation_id mem.0 %}">{{ mem.1 }}</a>
+                      <a href="{% url 'Assessment_S_One' evaluation.evaluation_id mem.0.staff_person.id %}">{{ mem.0.staff_person.get_full_name }}</a>
                     </td>
                     <td>
-                      {{ mem.2 }}
+                      {{ mem.1 }}
                     </td>
                   </tr>
                 {% else %}
                   <tr>
                     <td>
-                      <a href="{% url 'Assessment_S_One' e.evaluation_id mem.0 %}">{{ mem.1 }}</a>
+                      <a href="{% url 'Assessment_S_One' evaluation.evaluation_id mem.0.staff_person.id %}">{{ mem.0.staff_person.get_full_name }}</a>
                     </td>
                     <td class="bg-success">
-                      {{ mem.2 }}
+                      {{ mem.1 }}
                     </td>
                   </tr>
                 {% endif %}

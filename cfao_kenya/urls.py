@@ -86,12 +86,10 @@ urlpatterns = [
     path('Check-In/Staff-CI/Track-CI/<int:pk>/<uuid:ci_id>', StaffTrackStaffDetailCheckIn.as_view(), name='Staff_Track_CI_Detail'),
 
     # My Checkin Kpi Links
-    path('Assessment/', views.assessment, name='Assessment_Dashboard'),
-    path('Assessment/<uuid:as_id>', views.assessment_view, name='Assessment_View'),
-    path('Assessment/<uuid:as_id>/S-TL', views.assessment_s_tl, name='Assessment_TL'),
-    path('Assessment/<uuid:as_id>/TL-S', views.assessment_tl_s, name='Assessment_S'),
+    path('Assessment/', Assessment.as_view(), name='Assessment_Dashboard'),
+    path('Assessment/<uuid:as_id>', AssessmentView.as_view(), name='Assessment_View'),
+    path('Assessment/TL-S/<uuid:as_id>', AssessmentTlS.as_view(), name='Assessment_S'),
     path('Assessment/<uuid:as_id>/S-TL/<int:tl_id>', views.assessment_s_tl_one, name='Assessment_TL_One'),
     path('Assessment/<uuid:as_id>/TL-S/<int:s_id>', views.assessment_tl_s_one, name='Assessment_S_One'),
-    path('Assessment/<uuid:as_id>/TL-S', views.assessment_s_tl, name='Assessment_S'),
 
 ]
