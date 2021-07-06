@@ -5,7 +5,7 @@
   <div class="col-md-10">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">{{ staff_u.get_full_name }}'s Pending CI</h3>
+        <h3 class="card-title">{{ staff.get_full_name }}'s Pending CI</h3>
       </div>
       <!-- /.card-header -->
       <div class="card-body">
@@ -74,6 +74,18 @@
                 <td>
                   {% autoescape off %}
                     {{ ci.checkIn_team_leader_support }}
+                  {% endautoescape %}
+                </td>
+              </tr>
+              <tr>
+                <th colspan="2" class="bg-info">
+                  Team Leader Comments
+                </th>
+              </tr>
+              <tr>
+                <td>
+                  {% autoescape off %}
+                    {{ ci.checkIn_team_leader_comment }}
                   {% endautoescape %}
                 </td>
               </tr>

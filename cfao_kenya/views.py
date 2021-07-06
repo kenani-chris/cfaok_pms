@@ -3840,6 +3840,199 @@ class StaffApproveStaffCheckInOne(UpdateView):
         return HttpResponseRedirect(reverse('Staff_Approve_CI'))
 
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class StaffTrackCheckIn(TemplateView):
+    context_object_name = 'staff'
+    model = User
+    template_name = 'Staff_Ci/trackci.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            staff_n_ci = []
+            if context['user_is_tl'] is not None:
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                ci_approved_count = 0
+                ci_pending_count = 0
+                ci_zero_count = 0
+                for member in team_members:
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Confirmed').count()
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                              checkIn_status='Pending').count()
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Rejected').count()
+
+                    total_ci = staff_approved_ci + staff_pending_ci
+
+                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                                       total_ci])
+
+                    if staff_approved_ci > 0:
+                        ci_approved_count = + 1
+
+                    if staff_pending_ci > 0:
+                        ci_pending_count = + 1
+
+                    if total_ci < 1:
+                        ci_zero_count = + 1
+
+                context['staff_n_ci'] = staff_n_ci
+                context['team_members'] = team_members
+                context['ci_approved_count'] = ci_approved_count
+                context['ci_pending_count'] = ci_pending_count
+                context['ci_zero_count'] = ci_zero_count
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class StaffTrackStaffCheckIn(DetailView):
+    context_object_name = 'staff'
+    model = User
+    template_name = 'Staff_Ci/trackci_staff.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            staff_n_ci = []
+            if context['user_is_tl'] is not None:
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                ci_approved_count = 0
+                ci_pending_count = 0
+                ci_zero_count = 0
+                for member in team_members:
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Confirmed').count()
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                              checkIn_status='Pending').count()
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Rejected').count()
+
+                    total_ci = staff_approved_ci + staff_pending_ci
+
+                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                                       total_ci])
+
+                    if staff_approved_ci > 0:
+                        ci_approved_count = + 1
+
+                    if staff_pending_ci > 0:
+                        ci_pending_count = + 1
+
+                    if total_ci < 1:
+                        ci_zero_count = + 1
+
+                context['staff_n_ci'] = staff_n_ci
+                context['team_members'] = team_members
+                context['ci_approved_count'] = ci_approved_count
+                context['ci_pending_count'] = ci_pending_count
+                context['ci_zero_count'] = ci_zero_count
+
+            context['all_ci'] = checkIn.objects.filter(checkIn_staff=self.kwargs['pk'], checkIn_pms=active_pms)
+            context['confirmed_ci'] = context['all_ci'].filter(checkIn_status='Confirmed')
+            context['pending_ci'] = context['all_ci'].filter(checkIn_status="Pending")
+            context['rejected_ci'] = context['all_ci'].filter(checkIn_status="Rejected")
+            context['submitted_ci'] = context['all_ci'].exclude(checkIn_status="Rejected")
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class StaffTrackStaffDetailCheckIn(DetailView):
+    context_object_name = 'ci'
+    model = checkIn
+    pk_url_kwarg = 'ci_id'
+    template_name = 'Staff_Ci/trackci_staff_one.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            staff_n_ci = []
+            if context['user_is_tl'] is not None:
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(staff_person=self.request.user)
+                ci_approved_count = 0
+                ci_pending_count = 0
+                ci_zero_count = 0
+                for member in team_members:
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Confirmed').count()
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                              checkIn_status='Pending').count()
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                                                               checkIn_status='Rejected').count()
+
+                    total_ci = staff_approved_ci + staff_pending_ci
+
+                    staff_n_ci.append([member.staff_person, member.staff_Pf_Number, staff_approved_ci, staff_pending_ci, staff_rejected_ci,
+                                       total_ci])
+
+                    if staff_approved_ci > 0:
+                        ci_approved_count = + 1
+
+                    if staff_pending_ci > 0:
+                        ci_pending_count = + 1
+
+                    if total_ci < 1:
+                        ci_zero_count = + 1
+
+                context['staff_n_ci'] = staff_n_ci
+                context['team_members'] = team_members
+                context['ci_approved_count'] = ci_approved_count
+                context['ci_pending_count'] = ci_pending_count
+                context['ci_zero_count'] = ci_zero_count
+
+            context['staff'] = get_object_or_404(User, id=self.kwargs['pk'])
+            context['all_ci'] = checkIn.objects.filter(checkIn_staff=self.kwargs['pk'], checkIn_pms=active_pms)
+            context['confirmed_ci'] = context['all_ci'].filter(checkIn_status='Confirmed')
+            context['pending_ci'] = context['all_ci'].filter(checkIn_status="Pending")
+            context['rejected_ci'] = context['all_ci'].filter(checkIn_status="Rejected")
+            context['submitted_ci'] = context['all_ci'].exclude(checkIn_status="Rejected")
+
+        return context
+
+
+
+
 def staff_individual_check_in(request, pk, ci_id):
     user_is_bu_head = request.user.staff_person.staff_head_bu
     user_is_md = request.user.staff_person.staff_md

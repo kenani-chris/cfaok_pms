@@ -5,12 +5,12 @@
   <div class="col-md-10">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">{{ staff_u.get_full_name }} Check-Ins</h3>
+        <h3 class="card-title">{{ staff.get_full_name }} Check-Ins</h3>
       </div>
       <!-- /.card-header -->
       <div class="card-body">
         <div style="overflow-x:scroll">
-            {% if staff_ci %}
+            {% if all_ci %}
               <table class="table table-bordered table-striped">
                 <thead>
                 <tr>
@@ -20,10 +20,10 @@
                 </tr>
                 </thead>
                 <tbody>
-              {% for ci in staff_ci %}
+              {% for ci in all_ci %}
                 <tr>
                   <td>
-                    <a href="{% url 'Staff_Track_CI_Detail' staff_u.id ci.checkIn_id %}">{{ ci.checkIn_month }} CheckIn</a>
+                    <a href="{% url 'Staff_Track_CI_Detail' staff.id ci.checkIn_id %}">{{ ci.checkIn_month }} CheckIn</a>
                   </td>
                   <td>
                     {{ ci.checkIn_status }}

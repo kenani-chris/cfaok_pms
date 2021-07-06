@@ -81,11 +81,9 @@ urlpatterns = [
     path('Check-In/Staff-CI/Approve-CI', StaffApproveCheckIn.as_view(), name='Staff_Approve_CI'),
     path('Check-In/Staff-CI/Approve-CI/<int:pk>', StaffApproveStaffCheckIn.as_view(), name='Staff_Approve_CI_list'),
     path('Check-In/Staff-CI/Approve-CI/<int:pk>/<uuid:ci_id>', StaffApproveStaffCheckInOne.as_view(), name='Staff_Approve_CI_Detail1'),
-    path('Check-In/Staff-CI/Approve-CI/Approve/<int:pk>/<uuid:ci_id>', views.approve_individual_check_in, name='Staff_Approve_Individual_CI'),
-    path('Check-In/Staff-CI/Approve-CI/Reject/<int:pk>/<uuid:ci_id>', views.reject_individual_check_in, name='Staff_Reject_Individual_CI'),
-    path('Check-In/Staff-CI/Track-CI/', views.staff_track_check_in, name='Staff_Track_CI'),
-    path('Check-In/Staff-CI/Track-CI/<int:pk>', views.staff_track_check_in_staff, name='Staff_Track_CI_Staff'),
-    path('Check-In/Staff-CI/Track-CI/<int:pk>/<uuid:ci_id>', views.staff_track_check_in_staff_one, name='Staff_Track_CI_Detail'),
+    path('Check-In/Staff-CI/Track-CI/', StaffTrackCheckIn.as_view(), name='Staff_Track_CI'),
+    path('Check-In/Staff-CI/Track-CI/<int:pk>', StaffTrackStaffCheckIn.as_view(), name='Staff_Track_CI_Staff'),
+    path('Check-In/Staff-CI/Track-CI/<int:pk>/<uuid:ci_id>', StaffTrackStaffDetailCheckIn.as_view(), name='Staff_Track_CI_Detail'),
 
     # My Checkin Kpi Links
     path('Assessment/', views.assessment, name='Assessment_Dashboard'),

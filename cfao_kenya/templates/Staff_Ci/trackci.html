@@ -14,7 +14,6 @@
               <thead>
               <tr>
                 <th>Staff</th>
-                <th>Mail</th>
                 <th>PF</th>
                 <th>Approved</th>
                 <th>Pending</th>
@@ -27,7 +26,10 @@
               {% if member is not None %}
                 <tr>
                   <td>
-                    <a href="{% url 'Staff_Track_CI_Staff' member.0 %}" >{{ member.1 }}</a>
+                    <a href="{% url 'Staff_Track_CI_Staff' member.0.id %}" >{{ member.0.get_full_name }}</a>
+                  </td>
+                  <td>
+                    {{ member.1 }}
                   </td>
                   <td>
                     {{ member.2 }}
@@ -40,12 +42,6 @@
                   </td>
                   <td>
                     {{ member.5 }}
-                  </td>
-                  <td>
-                    {{ member.6 }}
-                  </td>
-                  <td>
-                    {{ member.7 }}
                   </td>
                 </tr>
               {% endif %}
