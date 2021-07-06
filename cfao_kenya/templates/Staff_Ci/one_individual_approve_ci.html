@@ -80,6 +80,12 @@
               </tr>
             </tbody>
           </table>
+            <form action="" method="post" id="submit_kpi_form">
+              {% csrf_token %}
+                {{ form.checkIn_team_leader.as_hidden }}
+                {{ form.checkIn_status.as_hidden }}
+                {{ form.checkIn_confirm_date.as_hidden }}
+                {{ form.checkIn_team_leader_comment }}
 
             <div class="card-footer">
             <div class="float-right" style="margin:5px">
@@ -89,6 +95,20 @@
               <a href="{% url 'Staff_Approve_Individual_CI' staff.id  ci.checkIn_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
             </div>
           </div>
+              </form>
+              <script>
+              $('.textarea').summernote({
+                height: 100,
+                toolbar: [
+                  // [groupName, [list of button]]
+                  ['style', ['bold', 'italic', 'underline', 'clear']],
+                  ['font', ['strikethrough', 'superscript', 'subscript']],
+                  ['fontsize', ['fontsize']],
+                  ['para', ['ul', 'ol', 'paragraph']],
+                  ['height', ['height']]
+                ]
+              });
+            </script>
 
           <br>
           {% else %}

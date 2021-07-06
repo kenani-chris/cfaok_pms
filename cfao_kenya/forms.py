@@ -261,7 +261,7 @@ class SubmitCheckInForm(forms.ModelForm):
 class ApproveCheckInForm(forms.ModelForm):
     class Meta:
         model = checkIn
-        fields = ['checkIn_confirm_date', 'checkIn_status', 'checkIn_team_leader_comment']
+        fields = ['checkIn_confirm_date', 'checkIn_status', 'checkIn_team_leader_comment', 'checkIn_team_leader']
 
     checkIn_team_leader_comment = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea', 'id': 'pax'}),
                                                   required=True)

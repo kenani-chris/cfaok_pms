@@ -3822,8 +3822,24 @@ class StaffApproveStaffCheckInOne(UpdateView):
 
         return context
 
+    def get_initial(self):
+        initial = super(StaffApproveStaffCheckInOne,  self).get_initial()
+        initial['checkIn_team_leader'] = self.request.user
+        initial['checkIn_confirm_date'] = datetime.date.today()
+        initial['checkIn_status'] = 'Confirmed'
+        return initial
 
-@login_required
+    def get_success_url(self):
+        return '{}'.format(reverse('Staff_Approve_CI'))
+
+    def form_valid(self, form):
+        ci = get_object_or_404(checkIn, checkIn_id=self.kwargs['ci_id'])
+        super(StaffApproveStaffCheckInOne, self).form_valid(form)
+        messages.success(self.request, 'CheckIn Approved Successfully')
+        send_email_pms('CheckIn Confirmed', ci.checkIn_staff, self.request.user, 'You Kpi for the month '+ ci.checkIn_month + ' has been confirmed')
+        return HttpResponseRedirect(reverse('Staff_Approve_CI'))
+
+
 def staff_individual_check_in(request, pk, ci_id):
     user_is_bu_head = request.user.staff_person.staff_head_bu
     user_is_md = request.user.staff_person.staff_md
