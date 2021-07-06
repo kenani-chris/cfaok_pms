@@ -70,7 +70,7 @@ urlpatterns = [
 
 
     # My Checkin Kpi Links
-    path('Check-In/', views.my_check_in, name='Check-In_Kpi_Dashboard'),
+    path('Check-In/', MyCheckIn.as_view(), name='Check-In_Kpi_Dashboard'),
     path('Check-In/Submit-CI/', views.checkin_Submit_Kpi, name='Check-In_Submit'),
     path('Check-In/Track-CI/', views.track_check_in, name='Check-In_Detail1'),
     path('Check-In/Track-CI/<uuid:pk>', views.Check_In_Detail_View.as_view(), name='Check-In_Detail'),

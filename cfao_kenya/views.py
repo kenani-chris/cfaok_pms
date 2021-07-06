@@ -1,15 +1,8 @@
-import calendar
 import os
 from email.mime.image import MIMEImage
-from pathlib import Path
-
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.utils.decorators import method_decorator
-
-from .models import *
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User
-from django.template import RequestContext
 from django.views import generic
 from .forms import *
 from django.contrib import messages
@@ -19,12 +12,9 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.shortcuts import get_object_or_404
 from django.views.generic import *
 from itertools import chain
-from django.db.models import Count
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import datetime
 from .permissions import is_member_company
 from django.conf import settings
-from django.contrib.messages.views import SuccessMessageMixin
 
 
 def get_active_pms():
@@ -3169,7 +3159,6 @@ def approve_bu_kpi_score(request, pk, kpi_id, month):
             bu_kpi_march_score_approve="Approved"
         )
 
-
     return HttpResponseRedirect(reverse("BUs_Track_Kpi_BUs_One", kwargs={'pk': pk, 'kpi_id': kpi_id}))
 
 
@@ -3236,6 +3225,40 @@ def approve_bu_kpi_score_dashboard(request, pk, kpi_id, month):
 #                                                 My Checkin
 # =====================================================================================================================
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class MyCheckIn(TemplateView):
+    template_name = 'Check-In/checkin.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+            context['all_ci'] = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=self.request.user)
+
+            context['confirmed_ci'] = context['all_ci'].filter(checkIn_status='Confirmed')
+            context['pending_ci'] = context['all_ci'].filter(checkIn_status="Pending")
+            context['rejected_ci'] = context['all_ci'].filter(checkIn_status="Rejected")
+            context['submitted_ci'] = context['all_ci'].exclude(checkIn_status="Rejected")
+
+            context['total_submitted'] = context['confirmed_ci'].count() + context['pending_ci'].count()
+            context['total_pending'] = context['pending_ci'].count()
+            context['total_rejected'] = context['rejected_ci'].count()
+            context['percent_submitted'] = context['total_submitted'] / active_pms.checkin_number * 100
+            ci_months = []
+            for ci in context['submitted_ci']:
+                ci_months.append(ci.checkIn_month)
+        return context
 
 @login_required
 def my_check_in(request):
