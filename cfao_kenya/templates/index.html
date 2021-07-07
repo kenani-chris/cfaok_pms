@@ -4,7 +4,6 @@
 
 {% block content %}
 
-
   <div class="row" style="margin-top: -20px">
     <div class="col-12 col-sm-6 col-md-3">
       <div class="info-box text-info">
@@ -33,7 +32,7 @@
           <div class="info-box-content">
             <span class="info-box-text">Check-Ins Confirmed</span>
             <span class="info-box-number">
-              {{ ci_count }} <small> of {{ required_ci }}</small>
+              {{ checkin.2.count }} <small> of {{ pms.checkin_number }}</small>
             </span>
           </div>
           <!-- /.info-box-content -->
@@ -126,7 +125,7 @@
 
                   <div class="info-box-content">
                     <span class="info-box-text">KPI Score</span>
-                    <span class="info-box-number">{{ total_kpi_score }}</span>
+                    <span class="info-box-number">{{ kpi.0 }} %</span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -139,7 +138,7 @@
 
                   <div class="info-box-content">
                     <span class="info-box-text">Check-In Score</span>
-                    <span class="info-box-number">{{ ci_score }}</span>
+                    <span class="info-box-number">{{ checkin.0 }} %</span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
