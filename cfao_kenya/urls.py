@@ -89,7 +89,16 @@ urlpatterns = [
     path('Assessment/', Assessment.as_view(), name='Assessment_Dashboard'),
     path('Assessment/<uuid:as_id>', AssessmentView.as_view(), name='Assessment_View'),
     path('Assessment/TL-S/<uuid:as_id>', AssessmentTlS.as_view(), name='Assessment_S'),
-    path('Assessment/<uuid:as_id>/S-TL/<int:tl_id>', views.assessment_s_tl_one, name='Assessment_TL_One'),
-    path('Assessment/<uuid:as_id>/TL-S/<int:s_id>', views.assessment_tl_s_one, name='Assessment_S_One'),
+    path('Assessment/<uuid:as_id>/S-TL/<int:tl_id>', AssessmentSTlStaff.as_view(), name='Assessment_TL_One'),
+    path('Assessment/<uuid:as_id>/TL-S/<int:s_id>', AssessmentTlSStaff.as_view(), name='Assessment_S_One'),
+
+
+
+    path('Assessment/Previous', AssessmentPrevious.as_view(), name='Assessment_Previous'),
+    path('Assessment/Previous/<uuid:as_id>', AssessmentPreviousView.as_view(), name='Assessment_Previous_One'),
+    path('Assessment/<uuid:as_id>/S-TL/<int:tl_id>/Previous', AssessmentSTlStaffPrevious.as_view(),
+         name='Assessment_TL_One_Previous'),
+    path('Assessment/TL-S/<uuid:as_id>/Previous', AssessmentTlSStaffPrevious.as_view(), name='Assessment_S_Previous'),
+    path('Assessment/<uuid:as_id>/TL-S/<int:s_id>/Previous', AssessmentTlSPreviousStaff.as_view(), name='Assessment_S_One_Previous'),
 
 ]

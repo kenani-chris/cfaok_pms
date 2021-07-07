@@ -271,7 +271,7 @@ class ApproveCheckInForm(forms.ModelForm):
 # =============================================================================================================
 
 
-class asssessment_s_tl_Form(forms.ModelForm):
+class AsssessmentSTlForm(forms.ModelForm):
     class Meta:
         model = done_staff_evaluates_tl
         fields = ['done_evaluation', 'done_staff', 'done_team_leader', 'score_q1', 'score_q2', 'score_q3', 'score_q4',
@@ -311,7 +311,7 @@ class asssessment_s_tl_Form(forms.ModelForm):
             raise forms.ValidationError('You have some blank fields')"""
 
 
-class asssessment_tl_s_Form(forms.ModelForm):
+class AssessmentTlSForm(forms.ModelForm):
     class Meta:
         model = done_tl_evaluates_staff
         fields = ['done_evaluation', 'done_staff', 'done_team_leader', 'score_q1', 'score_q2', 'score_q3', 'score_q4',

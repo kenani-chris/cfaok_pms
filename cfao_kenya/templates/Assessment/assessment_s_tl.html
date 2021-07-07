@@ -2,7 +2,7 @@
 {% block pagetitle %}Assessment{% endblock %}
 
 {% block page_top %}<li class="breadcrumb-item"><a href="{% url 'Assessment_Dashboard' %}">Assessment</a></li>{% endblock %}
-{% block page_middle %}<li class="breadcrumb-item"><a href="{% url 'Assessment_View' e.evaluation_id %}">Evaluations</a></li>{% endblock %}
+{% block page_middle %}<li class="breadcrumb-item"><a href="{% url 'Assessment_View' evaluation.evaluation_id %}">Evaluations</a></li>{% endblock %}
 
 {% block kpicontent %}
 
@@ -10,10 +10,10 @@
     <div class="card">
       <!-- /.card-header -->
       <div class="card-body">
-        {% if not ev_done %}
-          {% if team_leader is not None %}
+        {% if ev_done == 'Not Done' %}
+          {% if staff is not None %}
             <div class="alert alert-info">
-              Evaluating TL <h5><b>{{ team_leader.get_full_name }}</b></h5>
+              Evaluating TL <h5><b>{{ staff.get_full_name }}</b></h5>
             </div>
 
             {% if questions %}
@@ -235,25 +235,69 @@
                           if(score_q3===undefined){
                             q3_er = "Q3 not filled";
                           }
+                          else if(score_q3==="Strongly Agree" || score_q3 === "Strongly Disagree"){
+                            $('#mot_q3').show();
+                            $('#mot_q3').prop('required',true);
+                          }
+                          else {
+                            $('#mot_q3').hide();
+                            $('#mot_q3').prop('required',false);
+                          }
                         }
                         if(q4){
                           if(score_q4===undefined){
                             q4_er = "Q4 not filled";
+                          }
+                          
+                          else if(score_q4==="Strongly Agree" || score_q4 === "Strongly Disagree"){
+                            $('#mot_q4').show();
+                            $('#mot_q4').prop('required',true);
+                          }
+                          else {
+                            $('#mot_q4').hide();
+                            $('#mot_q4').prop('required',false);
                           }
                         }
                         if(q5){
                           if(score_q5===undefined){
                             q5_er = "Q5 not filled";
                           }
+                          
+                          else if(score_q5==="Strongly Agree" || score_q5 === "Strongly Disagree"){
+                            $('#mot_q5').show();
+                            $('#mot_q5').prop('required',true);
+                          }
+                          else {
+                            $('#mot_q5').hide();
+                            $('#mot_q5').prop('required',false);
+                          }
                         }
                         if(q6){
                           if(score_q6===undefined){
                             q6_er = "Q6 not filled";
                           }
+                          
+                          else if(score_q6==="Strongly Agree" || score_q6 === "Strongly Disagree"){
+                            $('#mot_q6').show();
+                            $('#mot_q6').prop('required',true);
+                          }
+                          else {
+                            $('#mot_q6').hide();
+                            $('#mot_q6').prop('required',false);
+                          }
                         }
                         if(q7){
                           if(score_q7===undefined){
                             q7_er = "Q7 not filled";
+                          }
+                          
+                          else if(score_q7==="Strongly Agree" || score_q7 === "Strongly Disagree"){
+                            $('#mot_q7').show();
+                            $('#mot_q7').prop('required',true);
+                          }
+                          else {
+                            $('#mot_q7').hide();
+                            $('#mot_q7').prop('required',false);
                           }
                         }
                         console.log(q1_er+q2_er+q3_er+q4_er+q5_er+q6_er+q7_er);
@@ -380,6 +424,38 @@
             <div class="alert alert-success">
               <h5><i class="icon fas fa-ban"></i> TL Evaluated</h5>
               It Appears You've already Evaluated your TL
+            </div>
+            <div class="col-md-12">
+                <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Question
+                        </th>
+                        <th>
+                            Response
+                        </th>
+                        <th>
+                            Comment
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resp in ev_results %}
+                        <tr>
+                            <td>
+                                {{ resp.0 }}
+                            </td>
+                            <td>
+                                {{ resp.1 }}
+                            </td>
+                            <td>
+                                {{ resp.2 }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
             </div>
           {% endif %}
       </div>

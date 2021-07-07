@@ -34,13 +34,14 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         if pms.objects.filter(pms_status='Active').count() != 1:
             context['pms'] = None
-            context['user_is_bu_head'] = self.request.user.staff_person.staff_head_bu
-            context['user_is_md'] = self.request.user.staff_person.staff_md
-            context['user_is_tl'] = self.request.user.staff_person.staff_head_team
-            context['user_team'] = self.request.user.staff_person.staff_team
-            context['user_bu'] = self.request.user.staff_person.staff_bu
         else:
             context['pms'] = pms.objects.get(pms_status='Active')
+            staff_person = get_object_or_404(staff, id=self.request.user.id)
+            context['user_is_bu_head'] = staff_person.staff_head_bu
+            context['user_is_md'] = staff_person.staff_md
+            context['user_is_tl'] = staff_person.staff_head_team
+            context['user_team'] = staff_person.staff_team
+            context['user_bu'] = staff_person.staff_bu
         return context
 
 
@@ -4087,6 +4088,9 @@ class Assessment(TemplateView):
                     active = True
                 else:
                     active = False
+                s_tl = "N/A"
+                tl_s = "N/A"
+
                 if context['user_is_tl'] is not None:
                     team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
                         staff_person=self.request.user)
@@ -4104,12 +4108,21 @@ class Assessment(TemplateView):
 
                     else:
                         staff_ev_count = 0
-                        if team_members.count() > 1:
-                            for mem in team_members:
-                                if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
-                                                                          done_staff=mem.staff_person.id,
-                                                                          done_team_leader=self.request.user) is not None:
-                                    staff_ev_count = staff_ev_count + 1
+                        for mem in team_members:
+                            if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                                      done_staff=mem.staff_person.id,
+                                                                      done_team_leader=self.request.user):
+                                staff_ev_count = staff_ev_count + 1
+
+                        tl_s = str(staff_ev_count) + "/" + str(team_members.count())
+
+                        ev_done = done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
+                                                                         done_staff=self.request.user)
+                        if ev_done:
+                            s_tl = "Done"
+                        else:
+                            s_tl = "Not done"
+
                 else:
                     ev_done = done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
                                                                      done_staff=self.request.user)
@@ -4257,10 +4270,446 @@ class AssessmentTlS(DetailView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
-class AssessmentTlS(DetailView):
+class AssessmentTlSStaff(CreateView):
+    form_class = AssessmentTlSForm
+    model = done_tl_evaluates_staff
+    template_name = 'Assessment/assessment_tl_s.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+            context['staff'] = get_object_or_404(User, id=self.kwargs['s_id'])
+
+            today = datetime.date.today()
+            context['today'] = today
+            e = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+            context['evaluation'] = e
+            questions = question_tl_evaluate_staff.objects.filter(question_evaluation=e).order_by(
+                'question_id')
+
+            if questions.count() == 7:
+                context['questions'] = questions
+
+            s_tl = "N/A"
+            tl_s = "N/A"
+
+            evals = []
+            if context['user_is_tl'] is not None:
+                if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                          done_staff=context['staff'],
+                                                          done_team_leader=self.request.user):
+                    ev_done = 'Done'
+                    ev_results = done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                                        done_staff=context['staff'],
+                                                                        done_team_leader=self.request.user)[0]
+                    q1 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q1_id)
+                    q2 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q2_id)
+                    q3 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q3_id)
+                    q4 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q4_id)
+                    q5 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q5_id)
+                    q6 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q6_id)
+                    q7 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q7_id)
+
+                    ev_results = [[q1.question, ev_results.score_q1, ev_results.score_q1_comment],
+                                  [q2.question, ev_results.score_q2, ev_results.score_q2_comment],
+                                  [q3.question, ev_results.score_q3, ev_results.score_q3_comment],
+                                  [q4.question, ev_results.score_q4, ev_results.score_q4_comment],
+                                  [q5.question, ev_results.score_q5, ev_results.score_q5_comment],
+                                  [q6.question, ev_results.score_q6, ev_results.score_q6_comment],
+                                  [q7.question, ev_results.score_q7, ev_results.score_q7_comment],
+                                  ]
+                    context['ev_results'] = ev_results
+
+                else:
+                    ev_done = "Not Done"
+
+                context['ev_done'] = ev_done
+
+        return context
+
+    def get_initial(self):
+        staff_u = get_object_or_404(User, id=self.kwargs['s_id'])
+        eval = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+        questions = question_tl_evaluate_staff.objects.filter(question_evaluation=eval).order_by('question_id')
+
+        initial = super(AssessmentTlSStaff, self).get_initial()
+        initial['done_evaluation'] = eval
+        initial['done_staff'] = staff_u
+        initial['done_team_leader'] = self.request.user
+        if questions.count() == 7:
+            initial['done_q1'] = questions[0]
+            initial['done_q2'] = questions[1]
+            initial['done_q3'] = questions[2]
+            initial['done_q4'] = questions[3]
+            initial['done_q5'] = questions[4]
+            initial['done_q6'] = questions[5]
+            initial['done_q7'] = questions[6]
+        return initial
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Assessment_S', kwargs={"as_id": self.kwargs["as_id"]}))
+
+    def form_valid(self, form):
+        super(AssessmentTlSStaff, self).form_valid(form)
+        messages.success(self.request, 'Evaluated staff success')
+
+        return HttpResponseRedirect(reverse('Assessment_S', kwargs={"as_id": self.kwargs["as_id"]}))
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AssessmentSTlStaff(CreateView):
+    form_class = AsssessmentSTlForm
+    model = done_staff_evaluates_tl
+    template_name = 'Assessment/assessment_s_tl.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+            context['staff'] = get_object_or_404(User, id=self.kwargs['tl_id'])
+
+            today = datetime.date.today()
+            context['today'] = today
+            e = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+            context['evaluation'] = e
+            questions = question_staff_evaluate_tl.objects.filter(question_evaluation=e).order_by(
+                'question_id')
+            if questions.count() == 7:
+                context['questions'] = questions
+            s_tl = "N/A"
+            tl_s = "N/A"
+
+            evals = []
+            if context['user_is_tl'] is not None:
+                if done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
+                                                          done_staff=self.request.user,
+                                                          done_team_leader=context['staff']):
+                    ev_done = 'Done'
+                    ev_results = done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
+                                                                        done_team_leader=context['staff'],
+                                                                        done_staff=self.request.user)[0]
+                    q1 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q1_id)
+                    q2 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q2_id)
+                    q3 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q3_id)
+                    q4 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q4_id)
+                    q5 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q5_id)
+                    q6 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q6_id)
+                    q7 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q7_id)
+
+                    ev_results = [[q1.question, ev_results.score_q1, ev_results.score_q1_comment],
+                                  [q2.question, ev_results.score_q2, ev_results.score_q2_comment],
+                                  [q3.question, ev_results.score_q3, ev_results.score_q3_comment],
+                                  [q4.question, ev_results.score_q4, ev_results.score_q4_comment],
+                                  [q5.question, ev_results.score_q5, ev_results.score_q5_comment],
+                                  [q6.question, ev_results.score_q6, ev_results.score_q6_comment],
+                                  [q7.question, ev_results.score_q7, ev_results.score_q7_comment],
+                                  ]
+                    context['ev_results'] = ev_results
+
+                else:
+                    ev_done = "Not Done"
+
+                context['ev_done'] = ev_done
+
+        return context
+
+    def get_initial(self):
+        staff_u = get_object_or_404(User, id=self.kwargs['tl_id'])
+        eval = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+        questions = question_staff_evaluate_tl.objects.filter(question_evaluation=eval).order_by('question_id')
+
+        initial = super(AssessmentSTlStaff, self).get_initial()
+        initial['done_evaluation'] = eval
+        initial['done_team_leader'] = staff_u
+        initial['done_staff'] = self.request.user
+        if questions.count() == 7:
+            initial['done_q1'] = questions[0]
+            initial['done_q2'] = questions[1]
+            initial['done_q3'] = questions[2]
+            initial['done_q4'] = questions[3]
+            initial['done_q5'] = questions[4]
+            initial['done_q6'] = questions[5]
+            initial['done_q7'] = questions[6]
+        return initial
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Assessment_TL_One', kwargs={"as_id": self.kwargs["as_id"], "tl_id": self.kwargs["tl_id"]}))
+
+    def form_valid(self, form):
+        super(AssessmentSTlStaff, self).form_valid(form)
+        messages.success(self.request, 'Evaluated staff success')
+
+        return HttpResponseRedirect(reverse('Assessment_S', kwargs={"as_id": self.kwargs["as_id"], "tl_id": self.kwargs["tl_id"]}))
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AssessmentPrevious(TemplateView):
+    template_name = 'Assessment/assessment_previous.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            today = datetime.date.today()
+            evaluations = evaluation.objects.filter(evaluation_pms=active_pms)
+            context['running_evaluations'] = evaluation.objects.filter(evaluation_pms=active_pms,
+                                                                       evaluation_start_date__lte=today,
+                                                                       evaluation_end_date__gte=today)
+            context['future_evaluations'] = evaluation.objects.filter(evaluation_pms=active_pms,
+                                                                      evaluation_start_date__gt=today, )
+            context['completed_evaluations'] = evaluation.objects.filter(evaluation_pms=active_pms,
+                                                                         evaluation_end_date__lt=today)
+
+            evals = []
+            for e in context['completed_evaluations']:
+
+                # TL evaluates Staff
+                # =====================================================================
+
+                s_tl = "N/A"
+                tl_s = "N/A"
+
+                if e.evaluation_start_date <= today <= e.evaluation_end_date:
+                    active = True
+                else:
+                    active = False
+                s_tl = "N/A"
+                tl_s = "N/A"
+
+                if context['user_is_tl'] is not None:
+                    team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                        staff_person=self.request.user)
+
+                    if context['user_is_md'] == "Yes":
+
+                        staff_ev_count = 0
+                        for mem in team_members:
+                            if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                                      done_staff=mem.staff_person.id,
+                                                                      done_team_leader=self.request.user) is not None:
+                                staff_ev_count = staff_ev_count + 1
+
+                        tl_s = str(staff_ev_count) + "/" + str(team_members.count())
+
+                    else:
+                        staff_ev_count = 0
+                        for mem in team_members:
+                            if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                                      done_staff=mem.staff_person.id,
+                                                                      done_team_leader=self.request.user):
+                                staff_ev_count = staff_ev_count + 1
+
+                        tl_s = str(staff_ev_count) + "/" + str(team_members.count())
+
+                        ev_done = done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
+                                                                         done_staff=self.request.user)
+                        if ev_done:
+                            s_tl = "Done"
+                        else:
+                            s_tl = "Not done"
+
+                else:
+                    ev_done = done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
+                                                                     done_staff=self.request.user)
+                    if ev_done:
+                        s_tl = "Done"
+                    else:
+                        s_tl = "Not done"
+
+                evals.append([e, s_tl, tl_s, active])
+
+            context['evals'] = evals
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AssessmentPreviousView(DetailView):
     context_object_name = 'evaluation'
     model = evaluation
-    template_name = 'Assessment/assessment_tl_s_view.html'
+    template_name = 'Assessment/assessment_previous_list.html'
+
+    pk_url_kwarg = 'as_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            today = datetime.date.today()
+            context['today'] = today
+            e = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+
+            my_team = get_object_or_404(staff, id=self.request.user.id)
+            tl = staff.objects.filter(staff_head_team=my_team.staff_team).first()
+            context['team_leader'] = tl
+
+            s_tl = "N/A"
+            tl_s = "N/A"
+
+            if context['user_is_tl'] is not None:
+                team_members = staff.objects.filter(staff_team=context['user_is_tl']).exclude(
+                    staff_person=self.request.user)
+
+                if context['user_is_md'] == "Yes":
+
+                    staff_ev_count = 0
+                    for mem in team_members:
+                        if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                                  done_staff=mem.staff_person.id,
+                                                                  done_team_leader=self.request.user) is not None:
+                            staff_ev_count = staff_ev_count + 1
+
+                    tl_s = str(staff_ev_count) + "/" + str(team_members.count())
+
+                else:
+                    staff_ev_count = 0
+                    for mem in team_members:
+                        if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                                  done_staff=mem.staff_person.id,
+                                                                  done_team_leader=self.request.user):
+                            staff_ev_count = staff_ev_count + 1
+
+                    tl_s = str(staff_ev_count) + "/" + str(team_members.count())
+
+                    ev_done = done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
+                                                                     done_staff=self.request.user)
+                    if ev_done:
+                        s_tl = "Done"
+                    else:
+                        s_tl = "Not done"
+
+            else:
+                ev_done = done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
+                                                                 done_staff=self.request.user)
+                if ev_done:
+                    s_tl = "Done"
+                else:
+                    s_tl = "Not done"
+
+            context['evals'] = [e, tl_s, s_tl]
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AssessmentSTlStaffPrevious(TemplateView):
+    template_name = 'Assessment/assessment_s_tl_previous.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+            context['staff'] = get_object_or_404(User, id=self.kwargs['tl_id'])
+
+            today = datetime.date.today()
+            context['today'] = today
+            e = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+            context['evaluation'] = e
+            questions = question_staff_evaluate_tl.objects.filter(question_evaluation=e).order_by(
+                'question_id')
+            if questions.count() == 7:
+                context['questions'] = questions
+            s_tl = "N/A"
+            tl_s = "N/A"
+
+            evals = []
+            if context['user_is_tl'] is not None:
+                if done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
+                                                          done_staff=self.request.user,
+                                                          done_team_leader=context['staff']):
+                    ev_done = 'Done'
+                    ev_results = done_staff_evaluates_tl.objects.filter(done_evaluation=e.evaluation_id,
+                                                                        done_team_leader=context['staff'],
+                                                                        done_staff=self.request.user)[0]
+                    q1 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q1_id)
+                    q2 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q2_id)
+                    q3 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q3_id)
+                    q4 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q4_id)
+                    q5 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q5_id)
+                    q6 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q6_id)
+                    q7 = get_object_or_404(question_staff_evaluate_tl, question_id=ev_results.done_q7_id)
+
+                    ev_results = [[q1.question, ev_results.score_q1, ev_results.score_q1_comment],
+                                  [q2.question, ev_results.score_q2, ev_results.score_q2_comment],
+                                  [q3.question, ev_results.score_q3, ev_results.score_q3_comment],
+                                  [q4.question, ev_results.score_q4, ev_results.score_q4_comment],
+                                  [q5.question, ev_results.score_q5, ev_results.score_q5_comment],
+                                  [q6.question, ev_results.score_q6, ev_results.score_q6_comment],
+                                  [q7.question, ev_results.score_q7, ev_results.score_q7_comment],
+                                  ]
+                    context['ev_results'] = ev_results
+
+                else:
+                    ev_done = "Not Done"
+
+                context['ev_done'] = ev_done
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AssessmentTlSStaffPrevious(DetailView):
+    context_object_name = 'evaluation'
+    model = evaluation
+    template_name = 'Assessment/assessment_tl_s_view_previous.html'
 
     pk_url_kwarg = 'as_id'
 
@@ -4304,206 +4753,72 @@ class AssessmentTlS(DetailView):
 
         return context
 
-@login_required
-def assessment_s_tl(request, as_id):
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
 
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
-    user_team = request.user.staff_person.staff_team
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AssessmentTlSPreviousStaff(TemplateView):
+    template_name = 'Assessment/assessment_tl_s_previous.html'
 
-    team_leader = staff.objects.filter(staff_head_team=user_team)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
 
-    if active_pms is not None:
-        e = evaluation.objects.filter(evaluation_id=as_id).get()
-
-        if e is not None:
-            questions = question_staff_evaluate_tl(question_evaluation=e)
-
-            context = {
-                'team_leader': team_leader,
-                'questions': questions,
-                'active_pms': active_pms,
-                'user_is_md': user_is_md,
-                'user_is_bu_head': user_is_bu_head,
-                'user_is_tl': user_is_tl,
-                'no_of_bu': no_of_bu,
-                'user_bu': user_bu,
-            }
-            return render(request, 'Assessment/assessment_s_tl.html', context)
-
-
-@login_required
-def assessment_s_tl_one(request, as_id, tl_id):
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
-
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
-
-    team_leader = User.objects.get(id=tl_id)
-
-    if active_pms is not None:
-        e = evaluation.objects.filter(evaluation_id=as_id).get()
-
-        if e is not None:
-            ev_done = done_staff_evaluates_tl.objects.filter(done_evaluation=e, done_staff=request.user,
-                                                             done_team_leader=team_leader)
-            questions = question_staff_evaluate_tl.objects.filter(question_evaluation_id=e)
-            default_data = {'done_evaluation': e, 'done_staff': request.user.id, 'done_team_leader': team_leader, }
-            if questions is not None:
-                if questions:
-                    count = 1
-                    for question in questions:
-                        done = 'done_q' + str(count)
-                        default_data[done] = question
-                        count = count + 1
-
-                if request.method == 'POST':
-                    form = asssessment_s_tl_Form(request.POST)
-
-                    if form.is_valid():
-                        post = form.save(commit=False)
-                        post.save()
-                        form = asssessment_s_tl_Form(default_data)
-                        messages.success(request, 'Assessment done')
-
-                        # return HttpResponseRedirect('')
-                        return HttpResponseRedirect(reverse("Assessment_View", kwargs={'as_id': as_id}))
-                else:
-                    form = asssessment_s_tl_Form(default_data)
-
-                form = asssessment_s_tl_Form(default_data)
-
-
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
         else:
-            questions = None
-            form = None
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+            context['staff'] = get_object_or_404(User, id=self.kwargs['s_id'])
 
-        context = {
-            'e': e,
-            'ev_done': ev_done,
-            'form': form,
-            'team_leader': team_leader,
-            'questions': questions,
-            'active_pms': active_pms,
-            'user_is_md': user_is_md,
-            'user_is_bu_head': user_is_bu_head,
-            'user_is_tl': user_is_tl,
-            'no_of_bu': no_of_bu,
-            'user_bu': user_bu,
-        }
-        return render(request, 'Assessment/assessment_s_tl.html', context)
+            today = datetime.date.today()
+            context['today'] = today
+            e = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+            context['evaluation'] = e
+            questions = question_tl_evaluate_staff.objects.filter(question_evaluation=e).order_by(
+                'question_id')
 
+            if questions.count() == 7:
+                context['questions'] = questions
 
-@login_required
-def assessment_tl_s(request, as_id):
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
+            s_tl = "N/A"
+            tl_s = "N/A"
 
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
+            evals = []
+            if context['user_is_tl'] is not None:
+                if done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                          done_staff=context['staff'],
+                                                          done_team_leader=self.request.user):
+                    ev_done = 'Done'
+                    ev_results = done_tl_evaluates_staff.objects.filter(done_evaluation=e.evaluation_id,
+                                                                        done_staff=context['staff'],
+                                                                        done_team_leader=self.request.user)[0]
+                    q1 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q1_id)
+                    q2 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q2_id)
+                    q3 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q3_id)
+                    q4 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q4_id)
+                    q5 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q5_id)
+                    q6 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q6_id)
+                    q7 = get_object_or_404(question_tl_evaluate_staff, question_id=ev_results.done_q7_id)
 
-    if active_pms is not None:
-        if user_is_tl:
-            team_members = staff.objects.filter(staff_team=user_is_tl).exclude(staff_person=request.user)
-            e = evaluation.objects.filter(evaluation_id=as_id).get()
-            data = []
-            if team_members.count() > 0:
-                for mem in team_members:
+                    ev_results = [[q1.question, ev_results.score_q1, ev_results.score_q1_comment],
+                                  [q2.question, ev_results.score_q2, ev_results.score_q2_comment],
+                                  [q3.question, ev_results.score_q3, ev_results.score_q3_comment],
+                                  [q4.question, ev_results.score_q4, ev_results.score_q4_comment],
+                                  [q5.question, ev_results.score_q5, ev_results.score_q5_comment],
+                                  [q6.question, ev_results.score_q6, ev_results.score_q6_comment],
+                                  [q7.question, ev_results.score_q7, ev_results.score_q7_comment],
+                                  ]
+                    context['ev_results'] = ev_results
 
-                    ev_done = done_tl_evaluates_staff.objects.filter(done_evaluation=e, done_staff=mem.staff_person,
-                                                                     done_team_leader=request.user)
-                    if ev_done:
-                        done = "Done"
-                    else:
-                        done = "Not Done"
-                    mem_rec = [mem.staff_person.id, mem.staff_person.get_full_name, done]
-                    data.append(mem_rec)
-
-                context = {
-                    'e': e,
-                    'data': data,
-                    'team_members': team_members,
-                    'active_pms': active_pms,
-                    'user_is_md': user_is_md,
-                    'user_is_bu_head': user_is_bu_head,
-                    'user_is_tl': user_is_tl,
-                    'no_of_bu': no_of_bu,
-                    'user_bu': user_bu,
-                }
-                return render(request, 'Assessment/assessment_tl_s_view.html', context)
-
-
-@login_required
-def assessment_tl_s_one(request, as_id, s_id):
-    active_pms = pms.objects.filter(pms_status='Active')
-    active_pms = active_pms.get()
-
-    user_is_bu_head = request.user.staff_person.staff_head_bu
-    user_is_md = request.user.staff_person.staff_md
-    user_is_tl = request.user.staff_person.staff_head_team
-    user_bu = request.user.staff_person.staff_bu
-    no_of_bu = bu.objects.all().count()
-
-    staff_mem = User.objects.get(id=s_id)
-
-    if active_pms is not None:
-        e = evaluation.objects.filter(evaluation_id=as_id).get()
-
-        if e is not None:
-            ev_done = done_tl_evaluates_staff.objects.filter(done_evaluation=e, done_staff=staff_mem,
-                                                             done_team_leader=request.user)
-            questions = question_tl_evaluate_staff.objects.filter(question_evaluation_id=e)
-            default_data = {'done_evaluation': e, 'done_staff': staff_mem, 'done_team_leader': request.user, }
-            if questions is not None:
-                if questions:
-                    count = 1
-                    for question in questions:
-                        done = 'done_q' + str(count)
-                        default_data[done] = question
-                        count = count + 1
-
-                if request.method == 'POST':
-                    form = asssessment_tl_s_Form(request.POST)
-
-                    if form.is_valid():
-                        post = form.save(commit=False)
-                        post.save()
-                        form = asssessment_tl_s_Form(default_data)
-                        messages.success(request, 'Assessment done')
-
-                        # return HttpResponseRedirect('')
-                        return HttpResponseRedirect(reverse("Assessment_View", kwargs={'as_id': as_id}))
                 else:
-                    form = asssessment_tl_s_Form(default_data)
-                form = asssessment_tl_s_Form(default_data)
+                    ev_done = "Not Done"
 
-        else:
-            questions = None
-            form = None
+                context['ev_done'] = ev_done
 
-        context = {
-            'e': e,
-            'ev_done': ev_done,
-            'form': form,
-            'staff_mem': staff_mem,
-            'questions': questions,
-            'active_pms': active_pms,
-            'user_is_md': user_is_md,
-            'user_is_bu_head': user_is_bu_head,
-            'user_is_tl': user_is_tl,
-            'no_of_bu': no_of_bu,
-            'user_bu': user_bu,
-        }
-        return render(request, 'Assessment/assessment_tl_s.html', context)
+        return context
+

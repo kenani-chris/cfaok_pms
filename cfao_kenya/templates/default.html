@@ -74,9 +74,6 @@
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{% url 'index' %}" class="nav-link">Home</a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Help Me</a>
-      </li>
     </ul>
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
@@ -105,11 +102,6 @@
 
         </ul>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
-        </a>
-      </li>
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -118,7 +110,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="{% url 'index' %}" class="brand-link">
       <img src="{% static 'dist/img/cfao_kenya.png' %}" alt="CFAO Kenya Logo" class="brand-image elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">ONLINE <b>PMS</b></span>
