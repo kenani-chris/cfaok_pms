@@ -12,7 +12,7 @@
         <div class="info-box-content">
           <span class="info-box-text">KPIs Approved</span>
           <span class="info-box-number">
-            {{ kpi_count }} <small> of {{ required_kpi }}</small>
+            {{ kpi.2 }} <small> of {{ pms.pms_individual_kpi_number }}</small>
           </span>
         </div>
         <!-- /.info-box-content -->
@@ -247,7 +247,7 @@
       {% elif user_is_bu_head is not None %}
         <div class="small-box bg-info">
           <div class="inner">
-            <h3>{{ total_kpi_score }}</h3>
+            <h3>{{ bu_kpi.0 }}</h3>
             <p>BU KPI score <a href="#" class="small-box-footer">
               More info <i class="fas fa-arrow-circle-right"></i></p>
           </a>
@@ -258,7 +258,7 @@
         </div>
         <div class="small-box bg-info">
           <div class="inner">
-            <h3>{{ co_kpi_score }}</h3>
+            <h3>{{ company_kpi.0 }}</h3>
             <p>Company KPI score<a href="#" class="small-box-footer">
               More <i class="fas fa-arrow-circle-right"></i></p>
           </a>
@@ -270,7 +270,7 @@
       {% else %}
         <div class="small-box bg-info">
           <div class="inner">
-            <h3>{{ bu_kpi_score }}</h3>
+            <h3>{{ bu_kpi.0 }} %</h3>
             <p>BU KPI score <a href="#" class="small-box-footer">
               More<i class="fas fa-arrow-circle-right"></i></p>
           </a>
@@ -281,7 +281,7 @@
         </div>
         <div class="small-box bg-info">
           <div class="inner">
-            <h3>{{ co_kpi_score }}</h3>
+            <h3>{{ company_kpi.0 }}</h3>
             <p>Company KPI score<a href="#" class="small-box-footer">
               More <i class="fas fa-arrow-circle-right"></i></p>
           </a>
