@@ -64,14 +64,88 @@
                         {{ staff.staff_person.last_login }}
                     </td>
                 </tr>
+              </tbody>
+          </table>
+          <table class="table table-bordered">
+              <tbody>
                 <tr class="bg-info">
                     <th colspan="4">
                         Staff Info
                     </th>
                 </tr>
                 <tr>
-
+                    <th>
+                        Team
+                    </th>
+                    <th>
+                        Dept
+                    </th>
+                    <th>
+                        Branch
+                    </th>
+                    <th>
+                        BU
+                    </th>
                 </tr>
+
+                <tr>
+                    <td>
+                        {{ staff.staff_team }}
+                    </td>
+                    <td>
+                        {{ staff.staff_department }}
+                    </td>
+                    <td>
+                        {{ staff.staff_branch }}
+                    </td>
+                    <td>
+                        {{ staff.staff_bu }}
+                    </td>
+                </tr>
+                <tr class="bg-gray">
+                    <th>
+                        Head Team
+                    </th>
+                    <th>
+                        Head Dept
+                    </th>
+                    <th>
+                        Head Branch
+                    </th>
+                    <th>
+                        Head BU
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        {{ staff.staff_team }}
+                    </td>
+                    <td>
+                        {{ staff.staff_department }}
+                    </td>
+                    <td>
+                        {{ staff.staff_branch }}
+                    </td>
+                    <td>
+                        {{ staff.staff_bu }}
+                    </td>
+                </tr>
+              <tr class="bg-gray">
+                  <th>
+                      Grade
+                  </th>
+                  <th>
+                      MD Access
+                  </th>
+              </tr>
+              <tr>
+                  <td>
+                    {{ staff.staff_grade }}
+                  </td>
+                  <td>
+                      {{ staff.staff_md }}
+                  </td>
+              </tr>
 
               </tbody>
           </table>

@@ -45,14 +45,6 @@ class staff(models.Model):
     }
     staff_grade = models.CharField(max_length=5, choices=grade, blank=True, help_text='user grade')
 
-    company = {
-        ('cfao_kenya', 'cfao_kenya'),
-        ('cfao_agri', 'cfao_agri'),
-        ('tamk', 'tamk'),
-        ('toyota_kenya', 'toyota_kenya'),
-        ('tydia', 'tydia'),
-    }
-
     def __str__(self):
         return self.staff_person.username
 

@@ -5775,3 +5775,88 @@ class AdminPMSStaffOne(DetailView):
         context['staff'] = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
 
         return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSStaffOneEdit(UpdateView):
+    template_name = 'Admin/pms_staff_edit.html'
+    form_class = StaffForm
+    form_class2 = UserForm
+
+    def get_context_data(self, **kwargs):
+        context = super(AdminPMSStaffOneEdit, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'form2' not in context:
+            context['form2'] = self.form_class2()
+        return context
+
+    def get_object(self):
+        return get_object_or_404(User, pk=self.kwargs['s_id'])
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSIndividual(ListView):
+    model = staff
+    template_name = 'Admin/pms_ind_kpi.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+        staff_n_kpi = []
+
+        approved_count = rejected_count = pending_count = 0
+
+        for staff_u in context['staff']:
+            kpi = individual_Kpi.objects.filter(individual_kpi_pms=self.kwargs['pms_id'], individual_kpi_user=staff_u.staff_person.id)
+            approved2_kpi=kpi.filter(individual_kpi_status='Approved 2')
+            approved1_kpi=kpi.filter(individual_kpi_status='Approved 1')
+            pending_kpi=kpi.filter(individual_kpi_status='Pending')
+            rejected_kpi=kpi.filter(individual_kpi_status='Rejected 2')
+
+            approved_count += approved2_kpi.count()
+            pending_count += (approved1_kpi.count() + pending_kpi.count())
+            rejected_count += rejected_kpi.count()
+
+            staff_n_kpi.append([staff_u, kpi, approved2_kpi, approved1_kpi, pending_kpi, rejected_kpi])
+
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        context['approve_count'] = approved_count
+        context['pending_count'] = pending_count
+        context['rejected_count'] = rejected_count
+        context['staff_n_kpi'] = staff_n_kpi
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSIndividualStaff(ListView):
+    model = individual_Kpi
+    template_name = 'Admin/pms_ind_kpi_staff.html'
+    context_object_name = 'individual_kpi'
+
+    def get_queryset(self):
+        return individual_Kpi.objects.filter(individual_kpi_user=self.kwargs['s_id'], individual_kpi_pms=self.kwargs['pms_id'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
+
+        return context
+

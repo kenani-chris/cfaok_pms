@@ -360,3 +360,14 @@ class PmsForm(forms.ModelForm):
     class Meta:
         model = pms
         fields = '__all__'
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model=User
+        fields = '__all__'
+
+class StaffForm(forms.ModelForm):
+    class Meta:
+        model=User
+        fields = '__all__'
