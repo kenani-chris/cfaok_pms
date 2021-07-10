@@ -8,7 +8,6 @@ from django.urls import reverse
 class staff(models.Model):
     staff_person = models.OneToOneField(User, on_delete=models.CASCADE, related_name="cfao_kenya_staff_person")
     staff_Pf_Number = models.CharField(max_length=10)
-    staff_email_address = models.CharField(max_length=100)
 
     # Groups the staff belongs to
     staff_department = models.ForeignKey('department', on_delete=models.RESTRICT, null=True, blank=True,
@@ -53,7 +52,6 @@ class staff(models.Model):
         ('toyota_kenya', 'toyota_kenya'),
         ('tydia', 'tydia'),
     }
-    staff_company = models.CharField(max_length=15, choices=company, blank=True, help_text='user grade')
 
     def __str__(self):
         return self.staff_person.username

@@ -10,7 +10,7 @@
         <br>
         <ul class="list-group list-group-unbordered mb-3">
           <li class="list-group-item">
-            <a href="{% url 'Individual_Kpi_Submit' %}" class="btn btn-primary btn-block"><b>PMS</b></a>
+            <a href="{% url 'Admin_Dashboard' %}" class="btn btn-primary btn-block"><b>PMS</b></a>
             <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Users</b></a>
             <a href="{% url 'Individual_Kpi_Result' %}" class="btn btn-primary btn-block"><b>Results</b></a>
           </li>
@@ -90,7 +90,10 @@
       <div class="card-header">
       </div>
       <!-- /.card-header -->
+
       <div class="card-body">
+      <a href="{% url 'Admin_PMS_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New PMS</i></a><br><br>
+
         <div style="overflow-x:scroll">
           {% if pms %}
             <table id="example1" class="table table-bordered table-striped">

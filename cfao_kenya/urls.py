@@ -103,6 +103,9 @@ urlpatterns = [
 
 
     path('Admin/', AdminDashboard.as_view(), name='Admin_Dashboard'),
-    path('Admin/<uuid:pms_id>', AdminPMS.as_view(), name='Admin_PMS'),
-    path('Admin/<uuid:pms_id>', AdminPMS.as_view(), name='Admin_PMS_Edit'),
+    path('Admin/PMS/<uuid:pms_id>', AdminPMS.as_view(), name='Admin_PMS'),
+    path('Admin/PMS/Edit/<uuid:pms_id>', AdminPMSEdit.as_view(), name='Admin_PMS_Edit'),
+    path('Admin/PMS/New/', AdminPMSNew.as_view(), name='Admin_PMS_New'),
+    path('Admin/PMS/<uuid:pms_id>/Staff/', AdminPMSStaff.as_view(), name='Admin_PMS_Staff'),
+    path('Admin/PMS/<uuid:pms_id>/Staff/<int:s_id>', AdminPMSStaffOne.as_view(), name='Admin_PMS_Staff_One'),
 ]

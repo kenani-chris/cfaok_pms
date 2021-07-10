@@ -357,6 +357,6 @@ class AssessmentTlSForm(forms.ModelForm):
 
 
 class PmsForm(forms.ModelForm):
-    class meta:
+    class Meta:
         model = pms
         fields = '__all__'

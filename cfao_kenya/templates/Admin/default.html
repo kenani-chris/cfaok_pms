@@ -22,7 +22,7 @@
         <br>
         <ul class="list-group list-group-unbordered mb-3">
           <li class="list-group-item">
-            <a href="{% url 'Individual_Kpi_Submit' %}" class="btn btn-primary btn-block"><b>PMS</b></a>
+            <a href="{% url 'Admin_Dashboard' %}" class="btn btn-primary btn-block"><b>PMS</b></a>
             <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Users</b></a>
             <a href="{% url 'Individual_Kpi_Result' %}" class="btn btn-primary btn-block"><b>Results</b></a>
           </li>
@@ -30,14 +30,13 @@
           {% if pms %}
           <ul class="list-group list-group-unbordered mb-3">
           <li class="list-group-item">
-            <a href="{% url 'Individual_Kpi_Submit' %}" class="btn btn-primary btn-block"><b>PMS</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Users</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Users</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Users</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Users</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Users</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Users</b></a>
-            <a href="{% url 'Individual_Kpi_Result' %}" class="btn btn-primary btn-block"><b>Results</b></a>
+            <a href="{% url 'Admin_PMS_Staff' pms.pms_id %}" class="btn btn-primary btn-block"><b>All Staff</b></a>
+            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Ind. KPI</b></a>
+            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>BU KPI</b></a>
+            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Company KPI</b></a>
+            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Check-In</b></a>
+            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Assessment</b></a>
+            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Matrix</b></a>
           </li>
         </ul>
       {% endif %}

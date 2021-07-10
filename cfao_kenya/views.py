@@ -5677,11 +5677,14 @@ class AdminPMS(DetailView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
-class AdminPMS(UpdateView):
+class AdminPMSEdit(UpdateView):
     model = pms
-    form_class = AdminPMS
+    form_class = PmsForm
     template_name = 'Admin/pms_edit.html'
     pk_url_kwarg = 'pms_id'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -5692,5 +5695,83 @@ class AdminPMS(UpdateView):
         context['user_team'] = staff_person.staff_team
         context['user_bu'] = staff_person.staff_bu
         context['staff'] = staff.objects.all()
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSEdit, self).form_valid(form)
+        messages.success(self.request, 'PMS Edited Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSNew(CreateView):
+    model = pms
+    form_class = PmsForm
+    template_name = 'Admin/pms_new.html'
+    pk_url_kwarg = 'pms_id'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_Dashboard'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSNew, self).form_valid(form)
+        messages.success(self.request, 'PMS Created Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_Dashboard'))
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSStaff(ListView):
+    model = staff
+    template_name = 'Admin/pms_staff.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSStaffOne(DetailView):
+    template_name = 'Admin/pms_staff_one.html'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(staff, staff_person=self.kwargs['s_id'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        context['staff'] = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
 
         return context

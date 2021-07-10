@@ -8,7 +8,7 @@
         <h3 class="card-title">PMS <b>{{ pms.pms_name }}</b></h3>
           <div class="float-right">
             <a href="{% url 'Admin_PMS_Edit' pms.pms_id %}"><button class="btn btn-info"><i class="fa fa-edit" style="">Edit</i></button></a>
-            <a href="{% url 'Admin_PMS_Edit' pms.pms_id %}"><button class="btn btn-success"><i class="fa fa-shopping-basket" style="">New</i></button></a>
+            <a href="{% url 'Admin_PMS_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New</i></a>
           </div>
       </div>
       <!-- /.card-header -->
