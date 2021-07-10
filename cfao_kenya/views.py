@@ -5640,7 +5640,57 @@ class AssessmentTlSPreviousStaff(TemplateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminDashboard(TemplateView):
     template_name = 'Admin/dashboard.html'
+
     def get_context_data(self, **kwargs):
-        context  = super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
         context['staff'] = staff.objects.all()
         context['pms'] = pms.objects.all()
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMS(DetailView):
+    model = pms
+    template_name = 'Admin/pms.html'
+    pk_url_kwarg = 'pms_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMS(UpdateView):
+    model = pms
+    form_class = AdminPMS
+    template_name = 'Admin/pms_edit.html'
+    pk_url_kwarg = 'pms_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+
+        return context

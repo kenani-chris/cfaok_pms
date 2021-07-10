@@ -349,3 +349,14 @@ class AssessmentTlSForm(forms.ModelForm):
         tl = cleaned_data.get('checkIn_team_leader_support')
         if not pa and not pd and not tm and not tl:
             raise forms.ValidationError('You have some blank fields')"""
+
+
+# =============================================================================================================
+#                                            Admin
+# =============================================================================================================
+
+
+class PmsForm(forms.ModelForm):
+    class meta:
+        model = pms
+        fields = '__all__'
