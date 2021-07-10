@@ -42,6 +42,7 @@ def checkin_score(pms, staff):
 
     return [score, cis, cis_approved, cis_pending]
 
+
 def ind_kpi_score(pms, staff):
     kpi = individual_Kpi.objects.filter(individual_kpi_user=staff, individual_kpi_pms=pms)
     kpi_approved = kpi.filter(individual_kpi_status='Approved 2')
@@ -609,6 +610,208 @@ def company_kpi_score(pms):
     return [sum_score, kpi_score, len(kpi_score)]
 
 
+def assessment_score(pms, staff_u):
+    staff_person = get_object_or_404(staff, id=staff_u.id)
+    user_is_md = staff_person.staff_md
+    user_is_tl = staff_person.staff_head_team
+    default_score = {'Strongly Agree': 10, 'Agree': 5, 'Disagree': -5, 'Strongly Disagree': -10}
+    evals = evaluation.objects.filter(evaluation_pms=pms, evaluation_use='Yes')
+
+    score = tl_s_score = s_tl_score = tl_s_total_score = s_tl_total_score = eval_score = 0
+    for eval in evals:
+        if user_is_md == 'Yes':
+            tl_s_score = 'N/A'
+            s_tl_score = s_tl_score(staff_u, eval, default_score)
+
+            s_tl_total_score += s_tl_score
+            tl_s_total_score = 'N/A'
+
+            eval_score += s_tl_score
+
+        elif user_is_tl:
+            s_tl_score = s_tl_score(staff_u, eval, default_score)
+            tl_s_score = tl_s_score(staff_u, eval, default_score)
+
+            s_tl_total_score += s_tl_score
+            tl_s_total_score += tl_s_total_score
+
+            eval_score += (s_tl_score + tl_s_score)/2
+        else:
+            s_tl_score = 'N/A'
+            tl_s_score = tl_s_score(staff_u, eval, default_score)
+
+            s_tl_total_score = 'N/A'
+            tl_s_total_score += tl_s_score
+
+            eval_score += tl_s_score
+
+    if evals:
+        eval_score = eval_score/evals.count()
+        if s_tl_total_score != 'N/A':
+            s_tl_total_score = s_tl_total_score/evals.count()
+        if tl_s_total_score != 'N/A':
+            tl_s_total_score = tl_s_total_score/evals.count()
+
+    return [eval_score, s_tl_total_score, tl_s_total_score]
+
+
+def tl_s_score(staff_u, eval, default_score):
+    tl_s_team_score = 0
+    # TL_S_Score
+    tl_responses = done_tl_evaluates_staff.objects.filter(done_staff=staff_u)
+    for response in tl_responses:
+        q1_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q1)
+        if q1_score:
+            q1_score = q1_score.first().response_score
+        else:
+            q1_score = default_score[response.score_q1]
+
+        q2_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q2)
+        if q2_score:
+            q2_score = q2_score.first().response_score
+        else:
+            q2_score = default_score[response.score_q2]
+
+        q3_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q3)
+        if q3_score:
+            q3_score = q3_score.first().response_score
+        else:
+            q3_score = default_score[response.score_q3]
+
+        q4_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q4)
+        if q4_score:
+            q4_score = q4_score.first().response_score
+        else:
+            q4_score = default_score[response.score_q4]
+
+        q5_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q5)
+        if q5_score:
+            q5_score = q5_score.first().response_score
+        else:
+            q5_score = default_score[response.score_q5]
+
+        q6_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q6)
+        if q6_score:
+            q6_score = q6_score.first().response_score
+        else:
+            q6_score = default_score[response.score_q6]
+
+        q7_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q7)
+        if q7_score:
+            q7_score = q7_score.first().response_score
+        else:
+            q7_score = default_score[response.score_q7]
+
+        tl_score = (q1_score + q2_score + q3_score + q4_score + q5_score + q6_score + q7_score)/7*100
+        tl_s_team_score += tl_score
+    if tl_responses:
+        tl_s_team_score = tl_s_team_score/tl_responses.count()
+
+    return tl_s_team_score
+
+
+def s_tl_score(staff_u, eval, default_score):
+    s_tl_team_score = 0
+    # S_TL_Score
+    staff_responses = done_staff_evaluates_tl.objects.filter(done_team_leader=staff_u)
+    for response in staff_responses:
+        q1_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q1)
+        if q1_score:
+            q1_score = q1_score.first().response_score
+        else:
+            q1_score = default_score[response.score_q1]
+
+        q2_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q2)
+        if q2_score:
+            q2_score = q2_score.first().response_score
+        else:
+            q2_score = default_score[response.score_q2]
+
+        q3_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q3)
+        if q3_score:
+            q3_score = q3_score.first().response_score
+        else:
+            q3_score = default_score[response.score_q3]
+
+        q4_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q4)
+        if q4_score:
+            q4_score = q4_score.first().response_score
+        else:
+            q4_score = default_score[response.score_q4]
+
+        q5_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q5)
+        if q5_score:
+            q5_score = q5_score.first().response_score
+        else:
+            q5_score = default_score[response.score_q5]
+
+        q6_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q6)
+        if q6_score:
+            q6_score = q6_score.first().response_score
+        else:
+            q6_score = default_score[response.score_q6]
+
+        q7_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q7)
+        if q7_score:
+            q7_score = q7_score.first().response_score
+        else:
+            q7_score = default_score[response.score_q7]
+
+        staff_score = (q1_score + q2_score + q3_score + q4_score + q5_score + q6_score + q7_score)/7*100
+        s_tl_team_score += staff_score
+
+    if staff_responses:
+        s_tl_team_score = s_tl_team_score/staff_responses.count()
+
+    return s_tl_team_score
+
+
+def get_matrix(pms, staff_u):
+    staff_person = get_object_or_404(staff, id=staff_u.id)
+    user_is_md = staff_person.staff_md
+    user_is_tl = staff_person.staff_head_team
+    user_is_bu_head = staff_person.staff_head_bu
+
+    matrix = [0, 0, 0, 0]
+
+    if user_is_md == 'Yes':
+        md_matrix = score_matrix.objects.filter(matrix_class='MD', matrix_pms=pms)
+        if md_matrix:
+            md_matrix = md_matrix.first()
+            md_company = md_matrix.matrix_company_kpi_weight
+            md_bu = md_matrix.matrix_bu_kpi_weight
+            md_individual = md_matrix.matrix_individual_kpi_weight
+            md_assessment = md_matrix.matrix_assessment_weight  
+            
+            matrix = [md_company, md_bu, md_individual, md_assessment]  
+     
+    elif user_is_bu_head:
+        bu_matrix = score_matrix.objects.filter(matrix_class='BU', matrix_pms=pms)
+        if bu_matrix:
+            bu_matrix = bu_matrix.first()
+            bu_company = bu_matrix.matrix_company_kpi_weight
+            bu_bu = bu_matrix.matrix_bu_kpi_weight
+            bu_individual = bu_matrix.matrix_individual_kpi_weight
+            bu_assessment = bu_matrix.matrix_assessment_weight  
+            
+            matrix = [bu_company, bu_bu, bu_individual, bu_assessment] 
+    else:
+        individual_matrix = score_matrix.objects.filter(matrix_class='Staff', matrix_pms=pms)
+        if individual_matrix:
+            individual_matrix = individual_matrix.first()
+            individual_company = individual_matrix.matrix_company_kpi_weight
+            individual_bu = individual_matrix.matrix_bu_kpi_weight
+            individual_individual = individual_matrix.matrix_individual_kpi_weight
+            individual_assessment = individual_matrix.matrix_assessment_weight  
+            
+            matrix = [individual_company, individual_bu, individual_individual, individual_assessment]
+
+    return matrix
+
+
+def overall_score(pms, staff_u):
+    matrix = get_matrix(pms, staff_u)
+
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
@@ -629,6 +832,8 @@ class HomeView(TemplateView):
             context['user_team'] = staff_person.staff_team
             context['user_bu'] = staff_person.staff_bu
             context['checkin'] = checkin_score(context['pms'], self.request.user)
+            context['matrix'] = get_matrix(context['pms'], self.request.user)
+
             if context['user_is_md'] == 'Yes':
                 context['kpi'] = company_kpi_score(context['pms'])
                 context['company_kpi'] = company_kpi_score(context['pms'])
@@ -643,6 +848,12 @@ class HomeView(TemplateView):
                     context['bu_kpi'] = bu_kpi_score(context['pms'], staff_person.staff_bu)
                 else:
                     context['bu_kpi'] = [0, [], [], []]
+
+
+
+
+
+        context['assessment'] = assessment_score(context['pms'], self.request.user)
 
         return context
 
@@ -5424,3 +5635,12 @@ class AssessmentTlSPreviousStaff(TemplateView):
 
         return context
 
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminDashboard(TemplateView):
+    template_name = 'Admin/dashboard.html'
+    def get_context_data(self, **kwargs):
+        context  = super().get_context_data(**kwargs)
+        context['staff'] = staff.objects.all()
+        context['pms'] = pms.objects.all()

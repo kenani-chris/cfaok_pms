@@ -80,7 +80,6 @@
           <div class="col-md-6">
             <h4>My score</h4>
             <h1>{{ overall_score }}</h1>
-            {% if user_is_md == "No" %}
             <table id="example1" class="table table-bordered table-striped">
               <thead>
                 <tr>
@@ -99,21 +98,20 @@
                 </tr>
                 <tr>
                   <td>
-                    {{ matrix.matrix_company_kpi_weight }} %
+                    {{ matrix.0 }} %
                   </td>
                   <td>
-                    {{ matrix.matrix_bu_kpi_weight }} %
+                    {{ matrix.1 }} %
                   </td>
                   <td>
-                    {{ matrix.matrix_individual_kpi_weight }} %
+                    {{ matrix.2 }} %
                   </td>
                   <td>
-                    {{ matrix.matrix_assessment_weight }} %
+                    {{ matrix.3 }} %
                   </td>
                 </tr>
               </thead>
             </table>
-            {% endif %}
             {{ take_score }}
           </div>
 
@@ -146,16 +144,8 @@
               </div>
 
               <div class="col-12 col-sm-6 col-md-6">
-                <div class="info-box mb-3">
-                  <span class="info-box-icon bg-gradient-success elevation-1"><i class="fas fa-poll"></i></span>
 
-                  <div class="info-box-content">
-                    <span class="info-box-text">S>TL Score</span>
-                    <span class="info-box-number">{{ s_tl_score }}</span>
-                  </div>
-                  <!-- /.info-box-content -->
-                </div>
-                <!-- /.info-box -->
+
               </div>
 
               <div class="col-12 col-sm-6 col-md-6">
@@ -163,8 +153,8 @@
                   <span class="info-box-icon bg-gradient-success elevation-1"><i class="fas fa-poll"></i></span>
 
                   <div class="info-box-content">
-                    <span class="info-box-text">TL>S Score</span>
-                    <span class="info-box-number">{{ tl_s_score }}</span>
+                    <span class="info-box-text">Assessment Score</span>
+                    <span class="info-box-number">{{ assessment.0 }} %</span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -201,7 +191,7 @@
                 <small>(Target & actuals Normalized to 100%)</small>
               </div>
               <div class="card-body">
-                {% if per_kpi_score|length > 0 %}
+                {% if kpi.1|length > 0 %}
                   <div class="chart">
                     <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                   </div>
@@ -235,9 +225,8 @@
       {% if user_is_md == "Yes" %}
         <div class="small-box bg-info">
           <div class="inner">
-            <h3>{{ total_kpi_score }}</h3>
-            <p>Company perfomance<a href="#" class="small-box-footer">
-              More info <i class="fas fa-arrow-circle-right"></i></p>
+            <h3>{{ company_kpi.0}} %</h3>
+            <p>Company perfomance</p>
           </a>
           </div>
           <div class="icon">
@@ -248,8 +237,7 @@
         <div class="small-box bg-info">
           <div class="inner">
             <h3>{{ bu_kpi.0 }}</h3>
-            <p>BU KPI score <a href="#" class="small-box-footer">
-              More info <i class="fas fa-arrow-circle-right"></i></p>
+            <p>BU KPI score</p>
           </a>
           </div>
           <div class="icon">
@@ -258,9 +246,8 @@
         </div>
         <div class="small-box bg-info">
           <div class="inner">
-            <h3>{{ company_kpi.0 }}</h3>
-            <p>Company KPI score<a href="#" class="small-box-footer">
-              More <i class="fas fa-arrow-circle-right"></i></p>
+            <h3>{{ company_kpi.0 }} %</h3>
+            <p>Company KPI score</p>
           </a>
           </div>
           <div class="icon">
@@ -271,8 +258,7 @@
         <div class="small-box bg-info">
           <div class="inner">
             <h3>{{ bu_kpi.0 }} %</h3>
-            <p>BU KPI score <a href="#" class="small-box-footer">
-              More<i class="fas fa-arrow-circle-right"></i></p>
+            <p>BU KPI score </p>
           </a>
           </div>
           <div class="icon">
@@ -281,9 +267,8 @@
         </div>
         <div class="small-box bg-info">
           <div class="inner">
-            <h3>{{ company_kpi.0 }}</h3>
-            <p>Company KPI score<a href="#" class="small-box-footer">
-              More <i class="fas fa-arrow-circle-right"></i></p>
+            <h3>{{ company_kpi.0 }} %</h3>
+            <p>Company KPI score</p>
           </a>
           </div>
           <div class="icon">
@@ -299,62 +284,66 @@
 <br>
 <!-- ./wrapper -->
 
+
 <!-- page script -->
 <script>
   $(function () {
-    var labels = []
-    targets = []
-    for(x=0; x<parseInt('{{ per_kpi_score|length }}'); x++){
-      kpi = "kpi" + (x+1);
+    var labels = targets = scores = []
+
+    for(x = 0; x < parseInt('{{ kpi.1|length }}'); x++) {
+      kpi = "kpi" + (x + 1);
       labels[x] = (kpi);
       targets[x] = 100;
+      scores[x] = 90;
     }
 
     var areaChartData = {
-      labels  : labels,
+      labels: labels,
       datasets: [
-        {
-          label               : 'Actuals',
-          backgroundColor     : 'rgba(60,141,188,0.9)',
-          borderColor         : 'rgba(60,141,188,0.8)',
-          pointRadius          : false,
-          pointColor          : '#3b8bba',
-          pointStrokeColor    : 'rgba(60,141,188,1)',
-          pointHighlightFill  : '#fff',
-          pointHighlightStroke: 'rgba(60,141,188,1)',
-          data                : JSON.parse('{{ per_kpi_score|safe }}')
-        },
-        {
-          label               : 'Target',
-          backgroundColor     : 'rgba(210, 214, 222, 1)',
-          borderColor         : 'rgba(210, 214, 222, 1)',
-          pointRadius         : false,
-          pointColor          : 'rgba(210, 214, 222, 1)',
-          pointStrokeColor    : '#c1c7d1',
-          pointHighlightFill  : '#fff',
-          pointHighlightStroke: 'rgba(220,220,220,1)',
-          data                : targets
-        },
+          {
+              label: 'Actuals',
+              backgroundColor: 'rgba(60,141,188,0.9)',
+              borderColor: 'rgba(60,141,188,0.8)',
+              pointRadius: false,
+              pointColor: '#3b8bba',
+              pointStrokeColor: 'rgba(60,141,188,1)',
+              pointHighlightFill: '#fff',
+              pointHighlightStroke: 'rgba(60,141,188,1)',
+              data:[50],
+              minBarLength: 2,
+          },
+          {
+              label: 'Target',
+              backgroundColor: 'rgba(210, 214, 222, 1)',
+              borderColor: 'rgba(210, 214, 222, 1)',
+              pointRadius: false,
+              pointColor: 'rgba(210, 214, 222, 1)',
+              pointStrokeColor: '#c1c7d1',
+              pointHighlightFill: '#fff',
+              pointHighlightStroke: 'rgba(220,220,220,1)',
+              data: targets,
+              minBarLength: 2,
+          },
       ]
     }
 
     var areaChartOptions = {
-      maintainAspectRatio : false,
-      responsive : true,
+      maintainAspectRatio: false,
+      responsive: true,
       legend: {
-        display: false
+          display: false
       },
       scales: {
-        xAxes: [{
-          gridLines : {
-            display : false,
-          }
-        }],
-        yAxes: [{
-          gridLines : {
-            display : false,
-          }
-        }]
+          xAxes: [{
+              gridLines: {
+                  display: false,
+              }
+          }],
+          yAxes: [{
+              gridLines: {
+                  display: false,
+              }
+          }]
       }
     }
 
@@ -370,21 +359,27 @@
     barChartData.datasets[1] = temp0
 
     var barChartOptions = {
-      responsive              : true,
-      maintainAspectRatio     : false,
-      datasetFill             : false
+      responsive: true,
+      maintainAspectRatio: false,
+      datasetFill: false,
+      scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true,
+                steps: 10,
+            }
+        }]
+      }
     }
 
     var barChart = new Chart(barChartCanvas, {
       type: 'bar',
       data: barChartData,
-      options: barChartOptions
+      options: barChartOptions,
     })
-  })
+    })
 </script>
 {% load static %}
-<!-- jQuery -->
-<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
 <!-- Bootstrap 4 -->
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <!-- ChartJS -->

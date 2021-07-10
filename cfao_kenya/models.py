@@ -200,6 +200,11 @@ class evaluation(models.Model):
     evaluation_pms = models.ForeignKey('pms', on_delete=models.RESTRICT)
     evaluation_start_date = models.DateField(auto_now=False, auto_now_add=False)
     evaluation_end_date = models.DateField(auto_now=False, auto_now_add=False)
+    eval_use = (
+        ('Yes', 'Yes'),
+        ('No', 'No'),
+    )
+    evaluation_use = models.CharField(max_length=15, default=None, null=True, choices=eval_use)
 
     def __str__(self):
         """String for representing the Model object."""
@@ -224,6 +229,19 @@ class question_tl_evaluate_staff(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return self.question
+
+
+class evaluation_responses(models.Model):
+    response_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    response_evaluation = models.ForeignKey(evaluation, on_delete=models.RESTRICT)
+    results = (
+        ('Strongly Agree', 'Strongly Agree'),
+        ('Agree', 'Agree'),
+        ('Disagree', 'Disagree'),
+        ('Strongly Disagree', 'Strongly Disagree'),
+    )
+    response = models.CharField(max_length=20, blank=True, choices=results, default=None)
+    response_score = models.FloatField()
 
 
 class done_staff_evaluates_tl(models.Model):

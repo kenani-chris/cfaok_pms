@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
- {% if pms is None %}
+<!-- {% if pms is None %}
     <meta http-equiv="REFRESH" content="0;url={% url 'ck_no_active_pms' %}">
-{% endif %}
+{% endif %}-->
   {% block title %}<title>Online PMS</title>{% endblock %}
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -196,14 +196,14 @@
               </a>
             </li>
           {% endif %}
-          {% if user_is_md == "No" and user_is_bu_head is None and user_bu is not None%}
+          <!--{% if user_is_md == "No" and user_is_bu_head is None and user_bu is not None%}
           <li class="nav-item">
             <a href="{% url 'BU_Kpi_Dashboard' %}" class="nav-link">
               <i class="fa fa-users nav-icon"></i>
               <p>BU Dashboard</p>
             </a>
           </li>
-          {% endif %}
+          {% endif %}-->
 
           <!-- Company KPI LINK =================================================================================== -->
           {% if user_is_md == "Yes" %}
@@ -214,12 +214,12 @@
               </a>
             </li>
           {% else %}
-             <li class="nav-item">
+             <!--<li class="nav-item">
               <a href="" class="nav-link">
                 <i class="fa fa-building nav-icon"></i>
                 <p>Company Dashboard</p>
               </a>
-            </li>
+            </li>-->
           {% endif %}
 
 
