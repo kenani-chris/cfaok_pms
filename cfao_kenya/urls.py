@@ -109,7 +109,24 @@ urlpatterns = [
     path('Admin/PMS/<uuid:pms_id>/Staff/', AdminPMSStaff.as_view(), name='Admin_PMS_Staff'),
     path('Admin/PMS/<uuid:pms_id>/Staff/<int:s_id>', AdminPMSStaffOne.as_view(), name='Admin_PMS_Staff_One'),
     path('Admin/PMS/<uuid:pms_id>/Staff/<int:s_id>/Edit', AdminPMSStaffOneEdit.as_view(), name='Admin_PMS_Staff_One_Edit'),
+
     path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/', AdminPMSIndividual.as_view(), name='Admin_PMS_Individual'),
     path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/<int:s_id>', AdminPMSIndividualStaff.as_view(), name='Admin_PMS_Individual_Staff'),
+    path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/<int:s_id>/New', AdminPMSIndividualStaffNew.as_view(), name='Admin_PMS_Individual_Staff_New'),
     path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/<int:s_id>/<uuid:kpi_id>', AdminPMSIndividualStaffOne.as_view(), name='Admin_PMS_Individual_Staff_One'),
+
+    path('Admin/PMS/<uuid:pms_id>/BU-Kpi/', AdminPMSBU.as_view(), name='Admin_PMS_BU'),
+    path('Admin/PMS/<uuid:pms_id>/BU-Kpi/<int:s_id>', AdminPMSBUStaff.as_view(), name='Admin_PMS_BU_Staff'),
+    path('Admin/PMS/<uuid:pms_id>/BU-Kpi/<int:s_id>/New', AdminPMSBUStaffNew.as_view(), name='Admin_PMS_BU_Staff_New'),
+    path('Admin/PMS/<uuid:pms_id>/BU-Kpi/<int:s_id>/<uuid:kpi_id>', AdminPMSBUStaffOne.as_view(), name='Admin_PMS_BU_Staff_One'),
+
+    path('Admin/PMS/<uuid:pms_id>/Company-Kpi/', AdminPMSCompany.as_view(), name='Admin_PMS_Company'),
+    path('Admin/PMS/<uuid:pms_id>/Company-Kpi/New', AdminPMSCompanyNew.as_view(), name='Admin_PMS_Company_New'),
+    path('Admin/PMS/<uuid:pms_id>/Company-Kpi/<uuid:kpi_id>', AdminPMSCompanyOne.as_view(), name='Admin_PMS_Company_One'),
+
+    path('Admin/PMS/<uuid:pms_id>/Check-In/', AdminPMSCheckIn.as_view(), name='Admin_PMS_CheckIn'),
+    path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/<int:s_id>', AdminPMSIndividualStaff.as_view(), name='Admin_PMS_Individual_Staff'),
+    path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/<int:s_id>/New', AdminPMSIndividualStaffNew.as_view(), name='Admin_PMS_Individual_Staff_New'),
+    path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/<int:s_id>/<uuid:kpi_id>', AdminPMSIndividualStaffOne.as_view(), name='Admin_PMS_Individual_Staff_One'),
+
 ]

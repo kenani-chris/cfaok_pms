@@ -32,9 +32,9 @@
           <li class="list-group-item">
             <a href="{% url 'Admin_PMS_Staff' pms.pms_id %}" class="btn btn-primary btn-block"><b>All Staff</b></a>
             <a href="{% url 'Admin_PMS_Individual' pms.pms_id %}" class="btn btn-primary btn-block"><b>Ind. KPI</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>BU KPI</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Company KPI</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Check-In</b></a>
+            <a href="{% url 'Admin_PMS_BU' pms.pms_id %}" class="btn btn-primary btn-block"><b>BU KPI</b></a>
+            <a href="{% url 'Admin_PMS_Company' pms.pms_id %}" class="btn btn-primary btn-block"><b>Company KPI</b></a>
+            <a href="{% url 'Admin_PMS_CheckIn' pms.pms_id  %}" class="btn btn-primary btn-block"><b>Check-In</b></a>
             <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Assessment</b></a>
             <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Matrix</b></a>
           </li>

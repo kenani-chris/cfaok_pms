@@ -379,3 +379,15 @@ class IndividualKpiForm(forms.ModelForm):
         model = individual_Kpi
         fields = '__all__'
 
+
+class BUKpiForm(forms.ModelForm):
+    class Meta:
+        model = bu_kpi
+        fields = '__all__'
+
+
+class CompanyKpiForm(forms.ModelForm):
+    class Meta:
+        model = company_kpi
+        fields = '__all__'
+

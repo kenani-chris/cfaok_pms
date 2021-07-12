@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import *
 from itertools import chain
 import datetime
-from .permissions import is_member_company
+from .permissions import is_member_company, is_admin
 from django.conf import settings
 
 
@@ -5638,6 +5638,7 @@ class AssessmentTlSPreviousStaff(TemplateView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminDashboard(TemplateView):
     template_name = 'Admin/dashboard.html'
 
@@ -5655,6 +5656,7 @@ class AdminDashboard(TemplateView):
         return context
 
 
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMS(DetailView):
@@ -5675,6 +5677,7 @@ class AdminPMS(DetailView):
         return context
 
 
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSEdit(UpdateView):
@@ -5705,6 +5708,7 @@ class AdminPMSEdit(UpdateView):
         return HttpResponseRedirect(reverse('Admin_PMS', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
 
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSNew(CreateView):
@@ -5735,6 +5739,7 @@ class AdminPMSNew(CreateView):
         return HttpResponseRedirect(reverse('Admin_Dashboard'))
 
 
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSStaff(ListView):
@@ -5755,6 +5760,7 @@ class AdminPMSStaff(ListView):
         return context
 
 
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSStaffOne(DetailView):
@@ -5777,6 +5783,7 @@ class AdminPMSStaffOne(DetailView):
         return context
 
 
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSStaffOneEdit(UpdateView):
@@ -5796,6 +5803,7 @@ class AdminPMSStaffOneEdit(UpdateView):
         return get_object_or_404(User, pk=self.kwargs['s_id'])
 
 
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSIndividual(ListView):
@@ -5837,6 +5845,7 @@ class AdminPMSIndividual(ListView):
         return context
 
 
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSIndividualStaff(ListView):
@@ -5861,6 +5870,7 @@ class AdminPMSIndividualStaff(ListView):
         return context
 
 
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSIndividualStaffOne(UpdateView):
@@ -5890,4 +5900,416 @@ class AdminPMSIndividualStaffOne(UpdateView):
         messages.success(self.request, 'KPI Editted Successfully')
 
         return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSIndividualStaffNew(CreateView):
+    model = individual_Kpi
+    form_class = IndividualKpiForm
+    template_name = 'Admin/pms_ind_kpi_staff_new.html'
+    pk_url_kwarg = 'kpi_id'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_Individual_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSIndividualStaffNew, self).form_valid(form)
+        messages.success(self.request, 'KPI Created Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+
+    def get_initial(self):
+        initial = super(AdminPMSIndividualStaffNew, self).get_initial()
+        initial['individual_kpi_pms'] = self.kwargs['pms_id']
+        initial['individual_kpi_user'] = self.kwargs['s_id']
+        initial['individual_kpi_submit_date'] = datetime.date.today()
+
+        return initial
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSBU(ListView):
+    model = staff
+    template_name = 'Admin/pms_bu_kpi.html'
+    queryset = staff.objects.exclude(staff_head_bu=None)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.exclude(staff_head_bu=None)
+        staff_n_kpi = []
+
+        approved_count = rejected_count = pending_count = 0
+
+        for staff_u in context['staff']:
+            kpi = bu_kpi.objects.filter(bu_kpi_pms=self.kwargs['pms_id'], bu_kpi_bu=staff_u.staff_head_bu)
+            approved_kpi=kpi.filter(bu_kpi_status='Approved')
+            pending_kpi=kpi.filter(bu_kpi_status='Pending')
+            rejected_kpi=kpi.filter(bu_kpi_status='Rejected')
+
+            approved_count += approved_kpi.count()
+            pending_count += pending_kpi.count()
+            rejected_count += rejected_kpi.count()
+
+            staff_n_kpi.append([staff_u, kpi, approved_kpi, pending_kpi, rejected_kpi])
+
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        context['approve_count'] = approved_count
+        context['pending_count'] = pending_count
+        context['rejected_count'] = rejected_count
+        context['staff_n_kpi'] = staff_n_kpi
+
+        return context
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSBUStaff(ListView):
+    model = bu_kpi
+    template_name = 'Admin/pms_bu_kpi_staff.html'
+    context_object_name = 'bu_kpi'
+
+    def get_queryset(self):
+        staff_u = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
+        return bu_kpi.objects.filter(bu_kpi_bu=staff_u.staff_head_bu, bu_kpi_pms=self.kwargs['pms_id'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
+
+        return context
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSBUStaffOne(UpdateView):
+    model = bu_kpi
+    form_class = BUKpiForm
+    template_name = 'Admin/pms_bu_kpi_staff_one.html'
+    pk_url_kwarg = 'kpi_id'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_BU_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSBUStaffOne, self).form_valid(form)
+        messages.success(self.request, 'KPI Editted Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_BU_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSBUStaffNew(CreateView):
+    model = bu_kpi
+    form_class = BUKpiForm
+    template_name = 'Admin/pms_bu_kpi_staff_new.html'
+    pk_url_kwarg = 'kpi_id'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_BU_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSBUStaffNew, self).form_valid(form)
+        messages.success(self.request, 'KPI Created Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_BU_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+
+    def get_initial(self):
+        staff_u = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
+        initial = super(AdminPMSBUStaffNew, self).get_initial()
+        initial['bu_kpi_pms'] = self.kwargs['pms_id']
+        initial['bu_kpi_bu'] = staff_u.staff_head_bu
+        initial['bu_kpi_submit_date'] = datetime.date.today()
+
+        return initial
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSCompany(ListView):
+    model = company_kpi
+    template_name = 'Admin/pms_company_kpi.html'
+    context_object_name = 'company_kpi'
+
+    def get_queryset(self):
+        return company_kpi.objects.filter(company_kpi_pms=self.kwargs['pms_id'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        return context
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSCompanyOne(UpdateView):
+    model = company_kpi
+    form_class = CompanyKpiForm
+    template_name = 'Admin/pms_company_kpi_one.html'
+    pk_url_kwarg = 'kpi_id'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_Company_One', kwargs={"pms_id": self.kwargs["pms_id"], 'kpi_id': self.kwargs['kpi_id']}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSCompanyOne, self).form_valid(form)
+        messages.success(self.request, 'KPI Editted Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_Company_One', kwargs={"pms_id": self.kwargs["pms_id"], 'kpi_id': self.kwargs['kpi_id']}))
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSCompanyNew(CreateView):
+    model = company_kpi
+    form_class = CompanyKpiForm
+    template_name = 'Admin/pms_company_kpi_new.html'
+    pk_url_kwarg = 'kpi_id'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_Company', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSCompanyNew, self).form_valid(form)
+        messages.success(self.request, 'KPI Created Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_Company', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+    def get_initial(self):
+        initial = super(AdminPMSCompanyNew, self).get_initial()
+        initial['company_kpi_pms'] = self.kwargs['pms_id']
+        initial['company_kpi_submit_date'] = datetime.date.today()
+
+        return initial
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSCheckIn(ListView):
+    model = staff
+    template_name = 'Admin/pms_checkin.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+        staff_n_ci = []
+
+        approved_count = rejected_count = pending_count = 0
+
+        for staff_u in context['staff']:
+            ci = checkIn.objects.filter(checkIn_pms=self.kwargs['pms_id'], checkIn_staff=staff_u.staff_person.id)
+            approved_ci = ci.filter(checkIn_status='Approved')
+            pending_ci = ci.filter(checkIn_status='Pending')
+            rejected_ci = ci.filter(checkIn_status='Rejected')
+
+            approved_count += approved_ci.count()
+            pending_count += pending_ci.count()
+            rejected_count += rejected_ci.count()
+
+            staff_n_ci.append([staff_u, ci, approved_ci, pending_ci, rejected_ci])
+
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        context['approve_count'] = approved_count
+        context['pending_count'] = pending_count
+        context['rejected_count'] = rejected_count
+        context['staff_n_ci'] = staff_n_ci
+
+        return context
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSIndividualStaff(ListView):
+    model = individual_Kpi
+    template_name = 'Admin/pms_ind_kpi_staff.html'
+    context_object_name = 'individual_kpi'
+
+    def get_queryset(self):
+        return individual_Kpi.objects.filter(individual_kpi_user=self.kwargs['s_id'], individual_kpi_pms=self.kwargs['pms_id'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
+
+        return context
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSIndividualStaffOne(UpdateView):
+    model = individual_Kpi
+    form_class = IndividualKpiForm
+    template_name = 'Admin/pms_ind_kpi_staff_one.html'
+    pk_url_kwarg = 'kpi_id'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_Individual_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSIndividualStaffOne, self).form_valid(form)
+        messages.success(self.request, 'KPI Editted Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSIndividualStaffNew(CreateView):
+    model = individual_Kpi
+    form_class = IndividualKpiForm
+    template_name = 'Admin/pms_ind_kpi_staff_new.html'
+    pk_url_kwarg = 'kpi_id'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_Individual_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSIndividualStaffNew, self).form_valid(form)
+        messages.success(self.request, 'KPI Created Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+
+    def get_initial(self):
+        initial = super(AdminPMSIndividualStaffNew, self).get_initial()
+        initial['individual_kpi_pms'] = self.kwargs['pms_id']
+        initial['individual_kpi_user'] = self.kwargs['s_id']
+        initial['individual_kpi_submit_date'] = datetime.date.today()
+
+        return initial
 

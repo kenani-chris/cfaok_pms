@@ -13,7 +13,6 @@
           {% csrf_token %}
           <div class="float-right">
               <button type="submit" class="btn btn-info"><i class="fa fa-save" style=""> Save</i></button>
-              <a href="{% url 'Admin_PMS_Individual_Staff_New' pms.pms_id staff.staff_person.id %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New</i></a>
           </div>
       </div>
       <!-- /.card-header -->
@@ -43,7 +42,7 @@
               </tbody>
           </table>
 
-
+            {{ form.errors }}
             {{ form.individual_kpi_id.as_hidden }}
             {{ form.individual_kpi_pms.as_hidden }}
             {{ form.individual_kpi_user.as_hidden }}
@@ -84,15 +83,6 @@
                     </th>
                     <td colspan="5">
                         {{ form.individual_kpi_criteria }}
-                    </td>
-                </tr>
-
-                <tr>
-                    <th>
-                        KPI Criteria
-                    </th>
-                    <td colspan="5">
-                        {{ form.individual_kpi_title }}
                     </td>
                 </tr>
                 <tr>
