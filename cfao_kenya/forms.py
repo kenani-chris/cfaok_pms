@@ -364,10 +364,18 @@ class PmsForm(forms.ModelForm):
 
 class UserForm(forms.ModelForm):
     class Meta:
-        model=User
+        model = User
         fields = '__all__'
+
 
 class StaffForm(forms.ModelForm):
     class Meta:
-        model=User
+        model = User
         fields = '__all__'
+
+
+class IndividualKpiForm(forms.ModelForm):
+    class Meta:
+        model = individual_Kpi
+        fields = '__all__'
+

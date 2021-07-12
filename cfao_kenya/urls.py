@@ -111,4 +111,5 @@ urlpatterns = [
     path('Admin/PMS/<uuid:pms_id>/Staff/<int:s_id>/Edit', AdminPMSStaffOneEdit.as_view(), name='Admin_PMS_Staff_One_Edit'),
     path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/', AdminPMSIndividual.as_view(), name='Admin_PMS_Individual'),
     path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/<int:s_id>', AdminPMSIndividualStaff.as_view(), name='Admin_PMS_Individual_Staff'),
+    path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/<int:s_id>/<uuid:kpi_id>', AdminPMSIndividualStaffOne.as_view(), name='Admin_PMS_Individual_Staff_One'),
 ]

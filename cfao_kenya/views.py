@@ -5860,3 +5860,34 @@ class AdminPMSIndividualStaff(ListView):
 
         return context
 
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSIndividualStaffOne(UpdateView):
+    model = individual_Kpi
+    form_class = IndividualKpiForm
+    template_name = 'Admin/pms_ind_kpi_staff_one.html'
+    pk_url_kwarg = 'kpi_id'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_Individual_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSIndividualStaffOne, self).form_valid(form)
+        messages.success(self.request, 'KPI Editted Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+
