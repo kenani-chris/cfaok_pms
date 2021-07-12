@@ -61,7 +61,7 @@
   <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini layout-fixed text-sm">
 <div class="wrapper">
 
   <!-- Navbar -->
@@ -266,6 +266,24 @@
                 <p>My Staff Checkin</p>
               </a>
             </li>
+          {% endif %}
+          {% if request.user.is_superuser %}
+              <li>
+                <a href="#" class="nav-link active">
+                  <i class="nav-icon fas fa-edit"></i>
+                  <p>
+                    Management
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+              <a href="{% url 'Admin_Dashboard' %}" class="nav-link">
+                <i class="far fa-user nav-icon"></i>
+                <p>Admin</p>
+              </a>
+            </li>
+
+
           {% endif %}
         </ul>
       </nav>

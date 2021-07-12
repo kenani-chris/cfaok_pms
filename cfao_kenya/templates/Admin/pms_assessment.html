@@ -1,0 +1,55 @@
+{% extends "Admin/default.html" %}
+{% block page_top %}
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Admin_Dashboard' %}">Admin</a></li>{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">PMS <b>{{ pms.pms_name }}</b> --- Assessment</h3>
+      </div>
+
+      <!-- /.card-header -->
+      <div class="card-body">
+      {{ evaluation_list }}
+          <table id="example1" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        Assessment
+                    </th>
+                    <th>
+                        Start Date
+                    </th>
+                    <th>
+                        End Date
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for eval in evaluation %}
+                  <tr>
+                    <td>
+                        <a href="{% url 'Admin_PMS_Assessment_One' pms.pms_id eval.evaluation_id %}">{{ eval.evaluation_name }}</a>
+                    </td>
+                    <td>
+                        {{ eval.evaluation_start_date }}
+                    </td>
+                  <td>
+                      {{ eval.evaluation_end_date }}
+                  </td>
+                  </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </form>
+          <br>
+          <br>
+          <br>
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}

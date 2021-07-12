@@ -397,3 +397,21 @@ class CheckInForm(forms.ModelForm):
         model = checkIn
         fields = '__all__'
 
+
+class AssessmentForm(forms.ModelForm):
+    class Meta:
+        model = evaluation
+        fields = '__all__'
+
+
+class QuestionTlSForm(forms.ModelForm):
+    class Meta:
+        model = question_tl_evaluate_staff
+        fields = '__all__'
+
+
+class QuestionSTlForm(forms.ModelForm):
+    class Meta:
+        model = question_staff_evaluate_tl
+        fields = '__all__'
+
