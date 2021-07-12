@@ -6198,7 +6198,7 @@ class AdminPMSCheckIn(ListView):
 
         for staff_u in context['staff']:
             ci = checkIn.objects.filter(checkIn_pms=self.kwargs['pms_id'], checkIn_staff=staff_u.staff_person.id)
-            approved_ci = ci.filter(checkIn_status='Approved')
+            approved_ci = ci.filter(checkIn_status='Confirmed')
             pending_ci = ci.filter(checkIn_status='Pending')
             rejected_ci = ci.filter(checkIn_status='Rejected')
 
@@ -6220,13 +6220,13 @@ class AdminPMSCheckIn(ListView):
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
-class AdminPMSIndividualStaff(ListView):
-    model = individual_Kpi
-    template_name = 'Admin/pms_ind_kpi_staff.html'
-    context_object_name = 'individual_kpi'
+class AdminPMSCheckInStaff(ListView):
+    model = checkIn
+    template_name = 'Admin/pms_checkin_staff.html'
+    context_object_name = 'checkIn'
 
     def get_queryset(self):
-        return individual_Kpi.objects.filter(individual_kpi_user=self.kwargs['s_id'], individual_kpi_pms=self.kwargs['pms_id'])
+        return checkIn.objects.filter(checkIn_staff=self.kwargs['s_id'], checkIn_pms=self.kwargs['pms_id'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6245,14 +6245,14 @@ class AdminPMSIndividualStaff(ListView):
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
-class AdminPMSIndividualStaffOne(UpdateView):
-    model = individual_Kpi
-    form_class = IndividualKpiForm
-    template_name = 'Admin/pms_ind_kpi_staff_one.html'
+class AdminPMSCheckInStaffOne(UpdateView):
+    model = checkIn
+    form_class = CheckInForm
+    template_name = 'Admin/pms_checkin_staff_one.html'
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Individual_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+        return '{}'.format(reverse('Admin_PMS_CheckIn_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6268,23 +6268,23 @@ class AdminPMSIndividualStaffOne(UpdateView):
         return context
 
     def form_valid(self, form):
-        super(AdminPMSIndividualStaffOne, self).form_valid(form)
-        messages.success(self.request, 'KPI Editted Successfully')
+        super(AdminPMSCheckInStaffOne, self).form_valid(form)
+        messages.success(self.request, 'CheckIn Editted Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
-class AdminPMSIndividualStaffNew(CreateView):
-    model = individual_Kpi
-    form_class = IndividualKpiForm
-    template_name = 'Admin/pms_ind_kpi_staff_new.html'
+class AdminPMSCheckInStaffNew(CreateView):
+    model = checkIn
+    form_class = CheckInForm
+    template_name = 'Admin/pms_checkin_staff_new.html'
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Individual_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+        return '{}'.format(reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6300,16 +6300,16 @@ class AdminPMSIndividualStaffNew(CreateView):
         return context
 
     def form_valid(self, form):
-        super(AdminPMSIndividualStaffNew, self).form_valid(form)
-        messages.success(self.request, 'KPI Created Successfully')
+        super(AdminPMSCheckInStaffNew, self).form_valid(form)
+        messages.success(self.request, 'CheckIn Created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_initial(self):
-        initial = super(AdminPMSIndividualStaffNew, self).get_initial()
-        initial['individual_kpi_pms'] = self.kwargs['pms_id']
-        initial['individual_kpi_user'] = self.kwargs['s_id']
-        initial['individual_kpi_submit_date'] = datetime.date.today()
+        initial = super(AdminPMSCheckInStaffNew, self).get_initial()
+        initial['checkIn_pms'] = self.kwargs['pms_id']
+        initial['checkIn_staff'] = self.kwargs['s_id']
+        initial['checkIn_submit_date'] = datetime.date.today()
 
         return initial
 

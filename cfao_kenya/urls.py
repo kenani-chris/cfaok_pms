@@ -125,8 +125,15 @@ urlpatterns = [
     path('Admin/PMS/<uuid:pms_id>/Company-Kpi/<uuid:kpi_id>', AdminPMSCompanyOne.as_view(), name='Admin_PMS_Company_One'),
 
     path('Admin/PMS/<uuid:pms_id>/Check-In/', AdminPMSCheckIn.as_view(), name='Admin_PMS_CheckIn'),
-    path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/<int:s_id>', AdminPMSIndividualStaff.as_view(), name='Admin_PMS_Individual_Staff'),
-    path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/<int:s_id>/New', AdminPMSIndividualStaffNew.as_view(), name='Admin_PMS_Individual_Staff_New'),
-    path('Admin/PMS/<uuid:pms_id>/Individual-Kpi/<int:s_id>/<uuid:kpi_id>', AdminPMSIndividualStaffOne.as_view(), name='Admin_PMS_Individual_Staff_One'),
+    path('Admin/PMS/<uuid:pms_id>/Check-In/<int:s_id>', AdminPMSCheckInStaff.as_view(), name='Admin_PMS_CheckIn_Staff'),
+    path('Admin/PMS/<uuid:pms_id>/Check-In/<int:s_id>/New', AdminPMSCheckInStaffNew.as_view(), name='Admin_PMS_CheckInStaff_New'),
+    path('Admin/PMS/<uuid:pms_id>/Check-In/<int:s_id>/<uuid:kpi_id>', AdminPMSCheckInStaffOne.as_view(), name='Admin_PMS_CheckIn_Staff_One'),
+
+    path('Admin/PMS/<uuid:pms_id>/Check-In/', AdminPMSCheckIn.as_view(), name='Admin_PMS_Assessment'),
+    path('Admin/PMS/<uuid:pms_id>/Check-In/<int:s_id>', AdminPMSCheckInStaff.as_view(), name='Admin_PMS_CheckIn_Staff'),
+    path('Admin/PMS/<uuid:pms_id>/Check-In/<int:s_id>/New', AdminPMSCheckInStaffNew.as_view(),
+         name='Admin_PMS_CheckInStaff_New'),
+    path('Admin/PMS/<uuid:pms_id>/Check-In/<int:s_id>/<uuid:kpi_id>', AdminPMSCheckInStaffOne.as_view(),
+         name='Admin_PMS_CheckIn_Staff_One'),
 
 ]

@@ -173,12 +173,27 @@ class checkIn(models.Model):
     checkIn_team_leader_support = models.TextField()
     checkIn_team_leader_comment = models.TextField(null=True, blank=True)
 
+    months = (
+        ('April', 'April'),
+        ('May', 'May'),
+        ('June', 'June'),
+        ('July', 'July'),
+        ('August', 'August'),
+        ('September', 'September'),
+        ('October', 'October'),
+        ('November', 'November'),
+        ('December', 'December'),
+        ('January', 'January'),
+        ('February', 'February'),
+        ('March', 'March'),
+    )
+
     status = (
         ('Pending', 'Pending'),
         ('Confirmed', 'Confirmed'),
         ('Rejected', 'Rejected'),
     )
-    checkIn_month = models.CharField(max_length=15, default=None, null=True)
+    checkIn_month = models.CharField(max_length=15, default=None, choices=months, null=True)
     checkIn_status = models.CharField(max_length=10, choices=status, blank=True, default='Pending',
                                       help_text='PMS Status')
 

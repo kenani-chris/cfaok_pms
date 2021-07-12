@@ -37,16 +37,16 @@
               {% for staff_u in staff_n_ci %}
                   <tr>
                     <td>
-                        <a href="{% url 'Admin_PMS_Individual_Staff' pms.pms_id staff_u.0.staff_person.id %}">{{ staff_u.0.staff_person.get_full_name }}</a>
+                        <a href="{% url 'Admin_PMS_CheckIn_Staff' pms.pms_id staff_u.0.staff_person.id %}">{{ staff_u.0.staff_person.get_full_name }}</a>
                     </td>
                     <td>
                         {{ staff_u.0.staff_Pf_Number }}
                     </td>
                   <td>
-                      {{ staff_u.3.count }}
+                      {{ staff_u.2.count }}
                   </td>
                   <td>
-                      {{ staff_u.2.count }}
+                      {{ staff_u.3.count }}
                   </td>
                   <td>
                       {{ staff_u.4.count }}

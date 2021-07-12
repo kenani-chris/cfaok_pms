@@ -391,3 +391,9 @@ class CompanyKpiForm(forms.ModelForm):
         model = company_kpi
         fields = '__all__'
 
+
+class CheckInForm(forms.ModelForm):
+    class Meta:
+        model = checkIn
+        fields = '__all__'
+
