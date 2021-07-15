@@ -60,9 +60,13 @@
             <input type="hidden" name="next" value="{{ next }}" />
         </div>
 
+
         <!-- /.col -->
       </div>
     </form>
-<hr>
+
+    <br>
+      <p class="text-center container-fluid"><a href="{% url 'password_reset' %}">Forgot Password?</a></p>
+      <hr>
     <!-- /.social-auth-links -->
   {% endblock %}

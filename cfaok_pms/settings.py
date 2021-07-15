@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import pymysql
 import os
+from account.conf import AccountAppConf
+
 
 pymysql.install_as_MySQLdb()
 
@@ -56,7 +58,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
+
+MIDDLEWARE_CLASSES = {
+    "account.middleware.ExpiredPasswordMiddleware",
+}
 
 ROOT_URLCONF = 'cfaok_pms.urls'
 
@@ -153,3 +160,6 @@ EMAIL_HOST_USER = 'pms_notifier@c-k.co.ke'
 EMAIL_HOST_PASSWORD = 'Kenani1997.'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+ACCOUNT_PASSWORD_EXPIRY = 5
+ACCOUNT_PASSWORD_USE_HISTORY = True
