@@ -6462,6 +6462,45 @@ class AdminPMSAssessmentOne(UpdateView):
 
         return context
 
+    def form_valid(self, form):
+        super(AdminPMSAssessmentOne, self).form_valid(form)
+        messages.success(self.request, 'Assessment Edited Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_Assessment_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSAssessmentNew(CreateView):
+    model = evaluation
+    form_class = AssessmentForm
+    template_name = 'Admin/pms_assessment_new.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSAssessmentNew, self).form_valid(form)
+        messages.success(self.request, 'Assessment Edited Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_Assessment', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_Assessment', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
@@ -6475,7 +6514,6 @@ class AdminPMSAssessmentOneQuestionOneTlS(UpdateView):
 
     def get_success_url(self):
         return '{}'.format(reverse('Admin_PMS_Assessment_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6629,6 +6667,146 @@ class AdminPMSAssessmentOneQuestionNewSTl(CreateView):
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSAssessmentOneResponseSTl(DetailView):
+    model = evaluation
+    template_name = 'Admin/pms_assessment_one_stl.html'
+    context_object_name = 'evaluation'
+    pk_url_kwarg = 'as_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        staffs = staff.objects.all()
+        staffs_u = []
+        for staff_u in staffs:
+            user = get_object_or_404(User, id=staff_u.staff_person.id)
+            done = done_staff_evaluates_tl.objects.filter(done_evaluation_id=self.kwargs['as_id'], done_staff_id=staff_u.staff_person.id)
+            tl = None
+            if done:
+                done = done.first()
+                if done.done_team_leader_id:
+                    tl = get_object_or_404(User, id=done.done_team_leader_id)
+
+            staffs_u.append([user, tl, done])
+
+        context['staff_n_res'] = staffs_u
+        return context
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSAssessmentOneResponseSTlOne(UpdateView):
+    model = done_staff_evaluates_tl
+    form_class = DoneStaffEvaluateTl
+    template_name = 'Admin/pms_assessment_one_question_one_s_tl_one.html'
+    context_object_name = 'done'
+    pk_url_kwarg = 'd_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['evaluation'] = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_Assessment_One_STl_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'], 'd_id': self.kwargs['d_id'], }))
+
+    def form_valid(self, form):
+        super(AdminPMSAssessmentOneResponseSTlOne, self).form_valid(form)
+        messages.success(self.request, 'Assessment Edited Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One_STl_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'], 'd_id': self.kwargs['d_id'], }))
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSAssessmentOneResponseTlS(DetailView):
+    model = evaluation
+    template_name = 'Admin/pms_assessment_one_tls.html'
+    context_object_name = 'evaluation'
+    pk_url_kwarg = 'as_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        staffs = staff.objects.all()
+        staffs_u = []
+        for staff_u in staffs:
+            user = get_object_or_404(User, id=staff_u.staff_person.id)
+            done = done_tl_evaluates_staff.objects.filter(done_evaluation_id=self.kwargs['as_id'], done_staff_id=staff_u.staff_person.id)
+            tl = None
+            if done:
+                done = done.first()
+                if done.done_team_leader_id:
+                    tl = get_object_or_404(User, id=done.done_team_leader_id)
+
+            staffs_u.append([user, tl, done])
+
+        context['staff_n_res'] = staffs_u
+        return context
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSAssessmentOneResponseTlSOne(UpdateView):
+    model = done_tl_evaluates_staff
+    form_class = DoneTlEvaluateStaff
+    template_name = 'Admin/pms_assessment_one_question_one_tl_s_one.html'
+    context_object_name = 'done'
+    pk_url_kwarg = 'd_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['evaluation'] = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_Assessment_One_TlS_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'], 'd_id': self.kwargs['d_id'], }))
+
+    def form_valid(self, form):
+        super(AdminPMSAssessmentOneResponseTlSOne, self).form_valid(form)
+        messages.success(self.request, 'Assessment Edited Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One_TlS_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'], 'd_id': self.kwargs['d_id'], }))
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSCheckInStaffOne(UpdateView):
     model = checkIn
     form_class = CheckInForm
@@ -6697,3 +6875,10 @@ class AdminPMSCheckInStaffNew(CreateView):
 
         return initial
 
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class Matrix(TemplateView):
+    template_name = ''

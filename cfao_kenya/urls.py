@@ -131,15 +131,20 @@ urlpatterns = [
 
     path('Admin/PMS/<uuid:pms_id>/Assessment/', AdminPMSAssessment.as_view(), name='Admin_PMS_Assessment'),
     path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>', AdminPMSAssessmentOne.as_view(), name='Admin_PMS_Assessment_One'),
+    path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/S_Tl', AdminPMSAssessmentOneResponseSTl.as_view(), name='Admin_PMS_Assessment_One_STl'),
+    path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/S_Tl/<uuid:d_id>', AdminPMSAssessmentOneResponseSTlOne.as_view(), name='Admin_PMS_Assessment_One_STl_One'),
+    path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/Tl_S', AdminPMSAssessmentOneResponseTlS.as_view(), name='Admin_PMS_Assessment_One_TlS'),
+    path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/Tl_S/<uuid:d_id>', AdminPMSAssessmentOneResponseTlSOne.as_view(), name='Admin_PMS_Assessment_One_TlS_One'),
+    path('Admin/PMS/<uuid:pms_id>/Assessment/New', AdminPMSAssessmentNew.as_view(), name='Admin_PMS_Assessment_New'),
     path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/Question/<uuid:q_id>/TL_S', AdminPMSAssessmentOneQuestionOneTlS.as_view(), name='Admin_PMS_Assessment_One_Question_One_Tl_S'),
     path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/Question/<uuid:q_id>/S_TL', AdminPMSAssessmentOneQuestionOneSTl.as_view(), name='Admin_PMS_Assessment_One_Question_One_S_Tl'),
     path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/Question/New/TL_S', AdminPMSAssessmentOneQuestionNewTlS.as_view(), name='Admin_PMS_Assessment_New_Question_One_Tl_S'),
     path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/Question/New/S_TL', AdminPMSAssessmentOneQuestionNewSTl.as_view(), name='Admin_PMS_Assessment_New_Question_One_S_Tl'),
-    path('Admin/PMS/<uuid:pms_id>/Assessment/New', AdminPMSAssessmentOne.as_view(), name='Admin_PMS_Assessment_New'),
     path('Admin/PMS/<uuid:pms_id>/Check-In/<int:s_id>/New', AdminPMSCheckInStaffNew.as_view(),
          name='Admin_PMS_CheckInStaff_New'),
     path('Admin/PMS/<uuid:pms_id>/Check-In/<int:s_id>/<uuid:kpi_id>', AdminPMSCheckInStaffOne.as_view(),
          name='Admin_PMS_CheckIn_Staff_One'),
     path('Admin/PMS/Send_PWD', reset_all_password, name='Admin_Reset_Password'),
+    path('Admin/PMS/<uuid:pms_id>/Matrix', Matrix.as_view(), name='Admin_PMS_Matrix'),
 
 ]

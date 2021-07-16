@@ -415,3 +415,15 @@ class QuestionSTlForm(forms.ModelForm):
         model = question_staff_evaluate_tl
         fields = '__all__'
 
+
+class DoneStaffEvaluateTl(forms.ModelForm):
+    class Meta:
+        model = done_staff_evaluates_tl
+        fields = '__all__'
+
+
+class DoneTlEvaluateStaff(forms.ModelForm):
+    class Meta:
+        model = done_tl_evaluates_staff
+        fields = '__all__'
+

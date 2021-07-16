@@ -34,6 +34,8 @@
               </tbody>
           </table>
             <br>
+       <form action="" method="post" id="submit_kpi_form">
+          {% csrf_token %}
           <table class="table table-bordered">
               {{ form.evaluation_id.as_hidden }}
               <tbody>
@@ -61,13 +63,13 @@
                         Start Date
                     </th>
                     <td>
-                        {{ form.evaluation_start_date }}
+                        <input class="form-control" name="{{ form.evaluation_start_date.name }}" id="{{ form.evaluation_start_date.id_for_label }}" type="date"  value="{{ form.evaluation_start_date.value|date:'Y-m-d'|stringformat:'s' }}">
                     </td>
                     <th>
-                        PMS
+                        End Date
                     </th>
                     <td>
-                        {{ form.evaluation_end_date }}
+                        <input class="form-control" name="{{ form.evaluation_end_date.name }}" id="{{ form.evaluation_end_date.id_for_label }}" type="date"  value="{{ form.evaluation_end_date.value|date:'Y-m-d'|stringformat:'s' }}">
                     </td>
                 </tr>
                 <tr>
@@ -80,15 +82,46 @@
                 </tr>
               </tbody>
           </table>
+         <div class="float-right" style="margin:5px">
+            <button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Submit</button>
+        </div>
+       </form>
           <br>
           <br>
             <hr>
-          <h4>TL Evaluate Staff Assessment Questions</h4>
+           <table id="example" class="table table-bordered">
+              <thead>
+                <tr>
+                    <th class="bg-info" colspan="2">
+                        Responses
+                    </th>
+                </tr>
+              </thead>
+               <tbody>
+                <tr>
+                    <td>
+                        <a href="{% url 'Admin_PMS_Assessment_One_STl' pms.pms_id evaluation.evaluation_id %}">Staff Evaluate TL</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'Admin_PMS_Assessment_One_TlS' pms.pms_id evaluation.evaluation_id %}">TL Evaluate Staff</a>
+                    </td>
+                </tr>
+               </tbody>
+           </table>
+            <br>
+           <table id="example" class="table table-bordered">
+              <thead>
+                <tr>
+                    <th class="bg-info">
+                        Questions TL Evaluate Staff Assessment
+                    </th>
+                </tr>
+              </thead>
+           </table>
             {% if tl_s_questions.count < 7 %}
                 <a href="{% url 'Admin_PMS_Assessment_New_Question_One_Tl_S' pms.pms_id evaluation.evaluation_id %}" class="btn btn-success">New Question</a>
             {% endif %}
-            <hr>
-          <table id="example1" class="table table-bordered">
+          <table id="example" class="table table-bordered">
               <thead>
                 <tr>
                     <th>
@@ -110,12 +143,20 @@
           </table>
             <br>
             <hr>
-            <h4>Staff Evaluate TL Assessment Questions</h4>
-            {% if s_tl_questions.count < 20 %}
+            <table id="example" class="table table-bordered">
+              <thead>
+                <tr>
+                    <th class="bg-info">
+                        Questions Staff Evaluate TL Assessment
+                    </th>
+                </tr>
+              </thead>
+           </table>
+            {% if s_tl_questions.count < 7 %}
                 <a href="{% url 'Admin_PMS_Assessment_New_Question_One_S_Tl' pms.pms_id evaluation.evaluation_id %}" class="btn btn-success">New Question</a>
             {% endif %}
-            <hr>
-          <table id="example1" class="table table-bordered">
+
+          <table id="example" class="table table-bordered">
               <thead>
                 <tr>
                     <th>
