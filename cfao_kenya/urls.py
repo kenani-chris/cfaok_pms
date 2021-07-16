@@ -140,5 +140,6 @@ urlpatterns = [
          name='Admin_PMS_CheckInStaff_New'),
     path('Admin/PMS/<uuid:pms_id>/Check-In/<int:s_id>/<uuid:kpi_id>', AdminPMSCheckInStaffOne.as_view(),
          name='Admin_PMS_CheckIn_Staff_One'),
+    path('Admin/PMS/Send_PWD', reset_all_password, name='Admin_Reset_Password'),
 
 ]

@@ -1,8 +1,13 @@
 import os
 from email.mime.image import MIMEImage
+
+from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.utils.encoding import force_bytes
+from django.utils.html import format_html
+from django.utils.http import urlsafe_base64_encode
 from django.views import generic
 from .forms import *
 from django.contrib import messages
@@ -17,11 +22,36 @@ from .permissions import is_member_company, is_admin
 from django.conf import settings
 
 
+
+
 def get_active_pms():
     if pms.objects.filter(pms_status='Active').count() != 1:
         return None
     else:
         return pms.objects.get(pms_status='Active')
+
+
+def reset_all_password(request):
+    staffs = staff.objects.all()
+
+    for staff_u in staffs:
+        user = get_object_or_404(User, id=staff_u.staff_person.id)
+        # 'password_reset_confirm' ''' + str(user.id) + ''' ''' + default_token_generator.make_token(user) + ''' %
+        # message = format_html('Click On the following <a href="{}">HERE</a>to reset your PMS password the following', reverse('password_reset_confirm', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.id)), 'token': default_token_generator.make_token(user)}))
+
+        message = format_html('''Click On the following <a href="https://ck-pms.com{%'password_reset_confirm ''' + urlsafe_base64_encode(force_bytes(user.id)) + ''' ''' + default_token_generator.make_token(user) + ''' %}">HERE</a>to reset your PMS password the following''')
+        if user.is_active and user.email:
+            send_email_pms_one_reciepient('Password Reset', user, message)
+
+    return HttpResponseRedirect(reverse('index'))
+
+'''send_
+    { % url
+    'account:password_reset_confirm'
+    uidb64 = uid
+    token = token %}
+'''
+
 
 
 def checkin_score(pms, staff):
@@ -1031,6 +1061,54 @@ def send_email_pms(subject, receiver1, receiver2, e_message):
         body_html,
         from_email=from_email,
         to=to_email
+    )
+
+    msg.mixed_subtype = 'related'
+    msg.attach_alternative(body_html, "text/html")
+    img_dir = 'static/images'
+    image = 'cfao_kenya_sign.jpg'
+    file_path = os.path.join(img_dir, image)
+    with open(file_path, 'rb') as f:
+        img = MIMEImage(f.read())
+        img.add_header('Content-ID', 'logo.png')
+        img.add_header('Content-Disposition', 'inline', filename=image)
+    msg.attach(img)
+    msg.send()
+
+
+def send_email_pms_one_reciepient(subject, receiver, e_message):
+
+    name = receiver.get_full_name()
+
+    body_html = '''
+        <html>
+            <body>
+                <br>Dear ''' + name + ''',
+                <br>
+                <br>
+                ''' + e_message + '''
+                Kind regards,
+                <br>
+                <br>
+                <hr>
+                <b>Do not reply to this message, for it is system Generated</b>
+                <hr>
+                <br>
+                Kind regards,
+                <br>
+                Notifier, PMS
+                <br>
+                A solution of CFAO Kenya Limited<br>
+                <img src='cid:logo.png' />
+            </body>
+        </html>'''
+
+    from_email = settings.EMAIL_HOST_USER
+    msg = EmailMultiAlternatives(
+        subject,
+        body_html,
+        from_email=from_email,
+        to=[receiver.email]
     )
 
     msg.mixed_subtype = 'related'
