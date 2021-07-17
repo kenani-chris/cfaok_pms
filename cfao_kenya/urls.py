@@ -131,6 +131,8 @@ urlpatterns = [
 
     path('Admin/PMS/<uuid:pms_id>/Assessment/', AdminPMSAssessment.as_view(), name='Admin_PMS_Assessment'),
     path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>', AdminPMSAssessmentOne.as_view(), name='Admin_PMS_Assessment_One'),
+    path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/Score/New', AdminPMSAssessmentOneResponseNew.as_view(), name='Admin_PMS_Assessment_One_Response_New'),
+    path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/Score/<uuid:m_id>', AdminPMSAssessmentOneResponseOne.as_view(), name='Admin_PMS_Assessment_One_Response_One'),
     path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/S_Tl', AdminPMSAssessmentOneResponseSTl.as_view(), name='Admin_PMS_Assessment_One_STl'),
     path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/S_Tl/<uuid:d_id>', AdminPMSAssessmentOneResponseSTlOne.as_view(), name='Admin_PMS_Assessment_One_STl_One'),
     path('Admin/PMS/<uuid:pms_id>/Assessment/<uuid:as_id>/Tl_S', AdminPMSAssessmentOneResponseTlS.as_view(), name='Admin_PMS_Assessment_One_TlS'),

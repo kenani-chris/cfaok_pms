@@ -109,6 +109,40 @@
                </tbody>
            </table>
             <br>
+            <br>
+            <table id="example" class="table table-bordered">
+              <thead>
+                <tr>
+                    <th class="bg-info" colspan="2">
+                        Scoring
+                    </th>
+                </tr>
+              </thead>
+            </table>
+            <a href="{% url 'Admin_PMS_Assessment_One_Response_New' pms.pms_id evaluation.evaluation_id %}" class="btn btn-success float-right">New Score</a>
+            <table id="example" class="table table-bordered">
+                <thead>
+                    <th>
+                       Response
+                    </th>
+                    <th>
+                       Score
+                    </th>
+                </thead>
+               <tbody>
+                    {% for score in evaluation_responses %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'Admin_PMS_Assessment_One_Response_One' pms.pms_id evaluation.evaluation_id score.response_id %}">{{ score.response }}</a>
+                            </td>
+                            <td>
+                                {{ score.response_score }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+               </tbody>
+           </table>
+            <br>
            <table id="example" class="table table-bordered">
               <thead>
                 <tr>

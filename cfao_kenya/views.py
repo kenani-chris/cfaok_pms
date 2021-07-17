@@ -6457,6 +6457,7 @@ class AdminPMSAssessmentOne(UpdateView):
         context['user_team'] = staff_person.staff_team
         context['user_bu'] = staff_person.staff_bu
 
+        context['evaluation_responses'] = evaluation_responses.objects.filter(response_evaluation=self.kwargs['as_id'])
         context['s_tl_questions'] = question_staff_evaluate_tl.objects.filter(question_evaluation=self.kwargs['as_id'])
         context['tl_s_questions'] = question_tl_evaluate_staff.objects.filter(question_evaluation=self.kwargs['as_id'])
 
@@ -6500,6 +6501,88 @@ class AdminPMSAssessmentNew(CreateView):
 
     def get_success_url(self):
         return '{}'.format(reverse('Admin_PMS_Assessment', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSAssessmentOneResponseNew(CreateView):
+    model = evaluation_responses
+    form_class = MatrixAssessment
+    template_name = 'Admin/pms_assessment_one_response_new.html'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['evaluation'] = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSAssessmentOneResponseNew, self).form_valid(form)
+        messages.success(self.request, 'Score Matrix')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
+                                            kwargs={"pms_id": self.kwargs["pms_id"],
+                                                    'as_id': self.kwargs['as_id']}))
+
+    def get_initial(self):
+        initial = super(AdminPMSAssessmentOneResponseNew, self).get_initial()
+        initial['response_evaluation'] = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+        return initial
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSAssessmentOneResponseOne(UpdateView):
+    model = evaluation_responses
+    form_class = MatrixAssessment
+    template_name = 'Admin/pms_assessment_one_response_one.html'
+    pk_url_kwarg = 'm_id'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['evaluation'] = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSAssessmentOneResponseOne, self).form_valid(form)
+        messages.success(self.request, 'Score Matrix')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
+                                            kwargs={"pms_id": self.kwargs["pms_id"],
+                                                    'as_id': self.kwargs['as_id']}))
+
+    def get_initial(self):
+        initial = super(AdminPMSAssessmentOneResponseOne, self).get_initial()
+        initial['response_evaluation'] = get_object_or_404(evaluation, evaluation_id=self.kwargs['as_id'])
+        return initial
+
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -7041,6 +7124,7 @@ class AdminPMSMatrixKPIOne(UpdateView):
     model = kpi_months
     form_class = MatrixKpi
     template_name = 'Admin/pms_matrix_kpi_one.html'
+    pk_url_kwarg = 'm_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -7058,12 +7142,70 @@ class AdminPMSMatrixKPIOne(UpdateView):
 
     def get_success_url(self):
         return '{}'.format(
-            reverse('Admin_PMS_Matrix_KPI_One', kwargs={"pms_id": self.kwargs["pms_id"], "m_id": self.kwargs['m_id']}))
+            reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def form_valid(self, form):
         super(AdminPMSMatrixKPIOne, self).form_valid(form)
         messages.success(self.request, 'Matrix Edited Successfully')
 
         return HttpResponseRedirect(
-            reverse('Admin_PMS_Matrix_KPI_One', kwargs={"pms_id": self.kwargs["pms_id"], "m_id": self.kwargs['m_id']}))
+            reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+# =======================================================================================================
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSMatrixAssessment(TemplateView):
+    template_name = 'Admin/pms_matrix_assessment.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['assessment'] = evaluation.objects.filter()
+
+        return context
+
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSMatrixKPIOne(UpdateView):
+    model = kpi_months
+    form_class = MatrixKpi
+    template_name = 'Admin/pms_matrix_kpi_one.html'
+    pk_url_kwarg = 'm_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['score_matrix'] = score_matrix.objects.filter(matrix_pms=context['pms'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(
+            reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+    def form_valid(self, form):
+        super(AdminPMSMatrixKPIOne, self).form_valid(form)
+        messages.success(self.request, 'Matrix Edited Successfully')
+
+        return HttpResponseRedirect(
+            reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
 

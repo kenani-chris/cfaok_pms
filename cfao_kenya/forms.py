@@ -439,3 +439,9 @@ class MatrixKpi(forms.ModelForm):
         model = kpi_months
         fields = '__all__'
 
+
+class MatrixAssessment(forms.ModelForm):
+    class Meta:
+        model = evaluation_responses
+        fields = '__all__'
+
