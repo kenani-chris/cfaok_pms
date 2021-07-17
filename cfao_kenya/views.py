@@ -5856,8 +5856,7 @@ class AdminUserNewDetails(UpdateView):
 class AdminUserNewDetailsStaff(CreateView):
     model = staff
     form_class = StaffForm
-    template_name = 'Admin/admin_users_new_details.html'
-    context_object_name = 'user'
+    template_name = 'Admin/admin_users_new_details_staff.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -5867,6 +5866,7 @@ class AdminUserNewDetailsStaff(CreateView):
         context['user_is_tl'] = staff_person.staff_head_team
         context['user_team'] = staff_person.staff_team
         context['user_bu'] = staff_person.staff_bu
+        context['staff'] = get_object_or_404(User, id=self.kwargs['pk'])
         return context
 
     def get_success_url(self):
@@ -5881,6 +5881,7 @@ class AdminUserNewDetailsStaff(CreateView):
     def get_initial(self):
         initial = super(AdminUserNewDetailsStaff, self).get_initial()
         initial['staff_person'] = get_object_or_404(User, id=self.kwargs['pk'])
+        return initial
 
 @login_required
 def new_user_details(request, pk):

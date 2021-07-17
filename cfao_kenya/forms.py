@@ -370,7 +370,7 @@ class UserForm(forms.ModelForm):
 
 class StaffForm(forms.ModelForm):
     class Meta:
-        model = User
+        model = staff
         fields = '__all__'
 
 
