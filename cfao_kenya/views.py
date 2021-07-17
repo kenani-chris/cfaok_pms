@@ -6291,8 +6291,86 @@ class AdminPMSCheckIn(ListView):
         context['pending_count'] = pending_count
         context['rejected_count'] = rejected_count
         context['staff_n_ci'] = staff_n_ci
+        context['checkin_matrix'] = matrix_checkin.objects.filter(matrix_pms=context['pms'])
 
         return context
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSCheckInScoreNew(CreateView):
+    model = matrix_checkin
+    form_class = MatrixCheckIn
+    template_name = 'Admin/pms_checkin_score_new.html'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['checkin_matrix'] = matrix_checkin.objects.filter(matrix_pms=context['pms'])
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSCheckInScoreNew, self).form_valid(form)
+        messages.success(self.request, 'CheckIn Score Created Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+    def get_initial(self):
+        initial = super(AdminPMSCheckInScoreNew, self).get_initial()
+        initial['matrix_pms'] = self.kwargs['pms_id']
+
+        return initial
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSCheckInScoreOne(UpdateView):
+    model = matrix_checkin
+    form_class = MatrixCheckIn
+    template_name = 'Admin/pms_checkin_score_one.html'
+    pk_url_kwarg = 'm_id'
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['checkin_matrix'] = matrix_checkin.objects.filter(matrix_pms=context['pms'])
+
+        return context
+
+    def form_valid(self, form):
+        super(AdminPMSCheckInScoreOne, self).form_valid(form)
+        messages.success(self.request, 'CheckIn Score Created Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+    def get_initial(self):
+        initial = super(AdminPMSCheckInScoreOne, self).get_initial()
+        initial['matrix_pms'] = self.kwargs['pms_id']
+
+        return initial
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')

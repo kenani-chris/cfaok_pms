@@ -10,6 +10,39 @@
       </div>
       <!-- /.card-header -->
       <div class="card-body">
+          <a class="float-right btn btn-success text-light" href="{% url 'Admin_PMS_CheckIn_Score_New' pms.pms_id %}"><i class="fa fa-save"> New Score</i></a>
+         <table id="example" class="table table-bordered">
+            <thead>
+                <tr>
+                   <th colspan="2" class="bg-info">
+                       Checkin Scores
+                   </th>
+                </tr>
+                <tr>
+                    <th>
+                        CheckIn count
+                    </th>
+                    <th>
+                        Score
+                    </th>
+                </tr>
+            </thead>
+             <tbody>
+                {% for matrix in checkin_matrix %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'Admin_PMS_CheckIn_Score_One' pms.pms_id matrix.matrix_checkin_id %}">{{ matrix.matrix_checkin_no }}</a>
+                        </td>
+                        <td>
+                            {{ matrix.matrix_checkin_score }}
+                        </td>
+                    </tr>
+                {% endfor %}
+             </tbody>
+         </table>
+        <br>
+        <br>
+        <br>
           <table id="example1" class="table table-bordered">
             <thead>
                 <tr>

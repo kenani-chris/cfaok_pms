@@ -445,3 +445,9 @@ class MatrixAssessment(forms.ModelForm):
         model = evaluation_responses
         fields = '__all__'
 
+
+class MatrixCheckIn(forms.ModelForm):
+    class Meta:
+        model = matrix_checkin
+        fields = '__all__'
+
