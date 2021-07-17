@@ -1,5 +1,22 @@
 {% extends "default.html" %}
 {% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+      <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
+        $(function() {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+          });
+          toastr.success('{{ message }}');
+        });
+      </script>
+    {% endfor %}
+{% endif %}
+
 <div class="row">
   <div class="col-md-2">
     <div class="card card-primary card-outline">
@@ -25,14 +42,22 @@
         <div class="card-header">
             <h4 class="card-title">Create New User</h4>
         </div>
+        <div class="card card-danger">
+            <div class="card-body card-danger bg-warning">
+                {{ form.errors }}
+            </div>
+        </div>
       <div class="card-body">
         <form method="post">
             {% csrf_token %}
         <div style="overflow-x:scroll">
             <table>
-            {{ form }}
+            {{ form.as_table }}
                 </table>
-            <button type="submit" class="btn btn-success">Save</button>
+            <br>
+            <hr>
+            <button type="submit" class="btn btn-success">Save and Next</button>
+            <button type="reset" class="btn btn-danger">Clear</button>
         </div>
         </form>
       </div>
