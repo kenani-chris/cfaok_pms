@@ -5,35 +5,51 @@
 
   <div class="col-md-10">
     <div class="card">
-        <div class="card-header">
-            <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link card-title active" id="custom-tabs-two-home-tab" data-toggle="pill" href="{% url 'Admin_PMS_Matrix' pms.pms_id %}" role="tab" aria-controls="custom-tabs-two-home">Score Matrix</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link card-title" id="custom-tabs-two-home-tab"  href="{% url 'Admin_PMS_Matrix_KPI' pms.pms_id %}" role="tab" aria-controls="custom-tabs-two-home">KPI Matrix</a>
-              </li>
-              <li class="nav-item card-title">
-                <a class="nav-link" id="custom-tabs-two-profile-tab" data-toggle="pill" href="#custom-tabs-two-profile" role="tab" aria-controls="custom-tabs-two-profile">Assessment</a>
-              </li>
-              <li class="nav-item card-title">
-                <a class="nav-link" id="custom-tabs-two-messages-tab" data-toggle="pill" href="#custom-tabs-two-messages" role="tab" aria-controls="custom-tabs-two-messages">CheckIn</a>
-              </li>
-            </ul>
+      <div class="card-header">
+        <h3 class="card-title">PMS <b>{{ pms.pms_name }}</b> --- Matrix/Config</h3>
+          <div class="float-right">
+
           </div>
+      </div>
 
       <!-- /.card-header -->
       <div class="card-body">
-        <div class="float-right">
+      <div class="float-right">
            <a href="{% url 'Admin_PMS_Matrix_New' pms.pms_id %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New</i></a>
         </div>
-        <br>
-        <br>
+      <br>
+      <br>
+       <form action="" method="post" id="submit_kpi_form">
+              {% csrf_token %}
+      {{ form.matrix_id.as_hidden }}
+      {{ form.matrix_pms.as_hidden }}
+       <table id="example" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="6" class="bg-info">
+                        Edit Matrix <b>{{ one_matrix.matrix_class }}</b>
+                    </th>
+                </tr>
+                <tr>
+                  <td>{{ form.matrix_class }}</td>
+                  <td>{{ form.matrix_grade }}</td>
+                  <td>{{ form.matrix_company_kpi_weight }}</td>
+                  <td>{{ form.matrix_bu_kpi_weight }}</td>
+                  <td>{{ form.matrix_individual_kpi_weight }}</td>
+                  <td>{{ form.matrix_assessment_weight }}</td>
+                </tr>
+            </thead>
+       </table>
+       <button type="submit" class="btn btn-primary" id="submit_kpi_button">Update</button>
+       </form>
+      <br>
+      <br>
+
           <table id="example" class="table table-bordered">
             <thead>
                 <tr>
                     <th colspan="6" class="bg-info">
-                        Score Matrix
+                        Score Matrix Available
                     </th>
                 </tr>
                 <tr>
@@ -75,11 +91,17 @@
 
             </tbody>
           </table>
-            <br>
+          <br>
+          <br>
+          <br>
       </div>
       <!-- /.card-body -->
       <!-- /.card-body -->
     </div>
   </div>
+    <script>
+         $("input").addClass("form-control");
+         $("select").addClass("form-control");
+    </script>
 
 {% endblock %}

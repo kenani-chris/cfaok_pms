@@ -6876,9 +6876,194 @@ class AdminPMSCheckInStaffNew(CreateView):
         return initial
 
 
-
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class Matrix(TemplateView):
-    template_name = ''
+    template_name = 'Admin/pms_matrix.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['score_matrix'] = score_matrix.objects.filter(matrix_pms=context['pms'])
+
+        return context
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSMatrixScore(UpdateView):
+    model = score_matrix
+    form_class = MatrixScore
+    context_object_name = 'one_matrix'
+    template_name = 'Admin/pms_matrix_score.html'
+    pk_url_kwarg = 'm_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['score_matrix'] = score_matrix.objects.filter(matrix_pms=context['pms'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(
+            reverse('Admin_PMS_Matrix_Score', kwargs={"pms_id": self.kwargs["pms_id"], 'm_id': self.kwargs['m_id']}))
+
+    def form_valid(self, form):
+        super(AdminPMSMatrixScore, self).form_valid(form)
+        messages.success(self.request, 'Matrix updated Successfully')
+
+        return HttpResponseRedirect(
+            reverse('Admin_PMS_Matrix_Score', kwargs={"pms_id": self.kwargs["pms_id"], 'm_id': self.kwargs['m_id']}))
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSMatrixScoreNew(CreateView):
+    model = score_matrix
+    form_class = MatrixScore
+    template_name = 'Admin/pms_matrix_score_new.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['score_matrix'] = score_matrix.objects.filter(matrix_pms=context['pms'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(
+            reverse('Admin_PMS_Matrix', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+    def form_valid(self, form):
+        super(AdminPMSMatrixScoreNew, self).form_valid(form)
+        messages.success(self.request, 'Matrix Created Successfully')
+
+        return HttpResponseRedirect(
+            reverse('Admin_PMS_Matrix', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+    def get_initial(self):
+        initial = super(AdminPMSMatrixScoreNew, self).get_initial()
+        initial['matrix_pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+
+        return initial
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSMatrixKPI(TemplateView):
+    template_name = 'Admin/pms_matrix_kpi.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['kpi_matrix'] = kpi_months.objects.filter(kpi_months_pms=context['pms'])
+
+        return context
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSMatrixKPINew(CreateView):
+    model = kpi_months
+    form_class = MatrixKpi
+    template_name = 'Admin/pms_matrix_kpi_new.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['score_matrix'] = score_matrix.objects.filter(matrix_pms=context['pms'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(
+            reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+    def form_valid(self, form):
+        super(AdminPMSMatrixKPINew, self).form_valid(form)
+        messages.success(self.request, 'Matrix Created Successfully')
+
+        return HttpResponseRedirect(
+            reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
+
+    def get_initial(self):
+        initial = super(AdminPMSMatrixKPINew, self).get_initial()
+        initial['kpi_months_pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+
+        return initial
+
+
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class AdminPMSMatrixKPIOne(UpdateView):
+    model = kpi_months
+    form_class = MatrixKpi
+    template_name = 'Admin/pms_matrix_kpi_one.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        context['score_matrix'] = score_matrix.objects.filter(matrix_pms=context['pms'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(
+            reverse('Admin_PMS_Matrix_KPI_One', kwargs={"pms_id": self.kwargs["pms_id"], "m_id": self.kwargs['m_id']}))
+
+    def form_valid(self, form):
+        super(AdminPMSMatrixKPIOne, self).form_valid(form)
+        messages.success(self.request, 'Matrix Edited Successfully')
+
+        return HttpResponseRedirect(
+            reverse('Admin_PMS_Matrix_KPI_One', kwargs={"pms_id": self.kwargs["pms_id"], "m_id": self.kwargs['m_id']}))
+

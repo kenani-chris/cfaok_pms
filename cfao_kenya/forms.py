@@ -427,3 +427,15 @@ class DoneTlEvaluateStaff(forms.ModelForm):
         model = done_tl_evaluates_staff
         fields = '__all__'
 
+
+class MatrixScore(forms.ModelForm):
+    class Meta:
+        model = score_matrix
+        fields = '__all__'
+
+
+class MatrixKpi(forms.ModelForm):
+    class Meta:
+        model = kpi_months
+        fields = '__all__'
+

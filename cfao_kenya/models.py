@@ -96,7 +96,6 @@ class score_matrix(models.Model):
     m_class = (
         ('MD', 'MD'),
         ('BU', 'BU'),
-        ('Non_BU', 'Non_BU'),
         ('staff', 'staff'),
     )
     matrix_class = models.CharField(max_length=10, choices=m_class, blank=True, help_text='PMS class')

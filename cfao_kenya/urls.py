@@ -146,5 +146,10 @@ urlpatterns = [
          name='Admin_PMS_CheckIn_Staff_One'),
     path('Admin/PMS/Send_PWD', reset_all_password, name='Admin_Reset_Password'),
     path('Admin/PMS/<uuid:pms_id>/Matrix', Matrix.as_view(), name='Admin_PMS_Matrix'),
+    path('Admin/PMS/<uuid:pms_id>/Matrix/New', AdminPMSMatrixScoreNew.as_view(), name='Admin_PMS_Matrix_New'),
+    path('Admin/PMS/<uuid:pms_id>/Matrix/<uuid:m_id>', AdminPMSMatrixScore.as_view(), name='Admin_PMS_Matrix_Score'),
+    path('Admin/PMS/<uuid:pms_id>/Matrix/KPI', AdminPMSMatrixKPI.as_view(), name='Admin_PMS_Matrix_KPI'),
+    path('Admin/PMS/<uuid:pms_id>/Matrix/KPI/New', AdminPMSMatrixKPINew.as_view(), name='Admin_PMS_Matrix_KPI_New'),
+    path('Admin/PMS/<uuid:pms_id>/Matrix/KPI/<uuid:m_id>', AdminPMSMatrixKPIOne.as_view(), name='Admin_PMS_Matrix_KPI_One'),
 
 ]
