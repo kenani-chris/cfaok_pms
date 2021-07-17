@@ -103,6 +103,17 @@ urlpatterns = [
 
 
     path('Admin/', AdminDashboard.as_view(), name='Admin_Dashboard'),
+
+    path('Admin/Users', AdminUser.as_view(), name='Admin_Users'),
+    path('Admin/Users/New', new_user, name='Admin_Users_New'),
+    path('Admin/Users/New/Details/<int:pk>', AdminUserNewDetails.as_view(), name='Admin_Users_New_Details'),
+    path('Admin/Users/New/Details/<int:pk>/Staff', AdminUserNewDetailsStaff.as_view(), name='Admin_Users_New_Details_Staff'),
+    path('Admin/Users/<int:pk>', AdminUserOne.as_view(), name='Admin_Users_One'),
+    path('Admin/Users/Deactivate/<int:pk>', deactivate_account_dashboard, name='Admin_Users_deactivate1'),
+    path('Admin/Users/Activate/<int:pk>', activate_account_dashboard, name='Admin_Users_activate1'),
+    path('Admin/Users/Reset_Password/<int:pk>', change_password, name='Admin_Users_reset_password'),
+
+
     path('Admin/PMS/<uuid:pms_id>', AdminPMS.as_view(), name='Admin_PMS'),
     path('Admin/PMS/Edit/<uuid:pms_id>', AdminPMSEdit.as_view(), name='Admin_PMS_Edit'),
     path('Admin/PMS/New/', AdminPMSNew.as_view(), name='Admin_PMS_New'),

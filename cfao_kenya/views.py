@@ -1,8 +1,10 @@
 import os
 from email.mime.image import MIMEImage
 
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.contrib.auth.tokens import default_token_generator
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.encoding import force_bytes
@@ -22,8 +24,6 @@ from .permissions import is_member_company, is_admin
 from django.conf import settings
 
 
-
-
 def get_active_pms():
     if pms.objects.filter(pms_status='Active').count() != 1:
         return None
@@ -39,11 +39,15 @@ def reset_all_password(request):
         # 'password_reset_confirm' ''' + str(user.id) + ''' ''' + default_token_generator.make_token(user) + ''' %
         # message = format_html('Click On the following <a href="{}">HERE</a>to reset your PMS password the following', reverse('password_reset_confirm', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.id)), 'token': default_token_generator.make_token(user)}))
 
-        message = format_html('''Click On the following <a href="https://ck-pms.com{%'password_reset_confirm ''' + urlsafe_base64_encode(force_bytes(user.id)) + ''' ''' + default_token_generator.make_token(user) + ''' %}">HERE</a>to reset your PMS password the following''')
+        message = format_html(
+            '''Click On the following <a href="https://ck-pms.com{%'password_reset_confirm ''' + urlsafe_base64_encode(
+                force_bytes(user.id)) + ''' ''' + default_token_generator.make_token(
+                user) + ''' %}">HERE</a>to reset your PMS password the following''')
         if user.is_active and user.email:
             send_email_pms_one_reciepient('Password Reset', user, message)
 
     return HttpResponseRedirect(reverse('index'))
+
 
 '''send_
     { % url
@@ -51,7 +55,6 @@ def reset_all_password(request):
     uidb64 = uid
     token = token %}
 '''
-
 
 
 def checkin_score(pms, staff):
@@ -106,7 +109,8 @@ def ind_kpi_score(pms, staff):
         if kpi_matrix.kpi_month_march == 'Yes':
             use_months.append('March')
     else:
-        use_months = ['April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'January', 'February', 'March']
+        use_months = ['April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',
+                      'January', 'February', 'March']
 
     kpi_score = []
     sum_score = 0
@@ -115,33 +119,33 @@ def ind_kpi_score(pms, staff):
         target = kpi.individual_kpi_target
         if kpi.individual_kpi_type == 'Addition':
             if 'April' in use_months and kpi.individual_kpi_april_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_april_score)
+                kpi_calc.append(kpi.individual_kpi_april_score)
             if 'May' in use_months and kpi.individual_kpi_may_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_may_score)
+                kpi_calc.append(kpi.individual_kpi_may_score)
             if 'June' in use_months and kpi.individual_kpi_june_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_june_score)
+                kpi_calc.append(kpi.individual_kpi_june_score)
             if 'July' in use_months and kpi.individual_kpi_july_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_july_score)
+                kpi_calc.append(kpi.individual_kpi_july_score)
             if 'August' in use_months and kpi.individual_kpi_august_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_august_score)
+                kpi_calc.append(kpi.individual_kpi_august_score)
             if 'September' in use_months and kpi.individual_kpi_september_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_september_score)
+                kpi_calc.append(kpi.individual_kpi_september_score)
             if 'October' in use_months and kpi.individual_kpi_october_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_october_score)
+                kpi_calc.append(kpi.individual_kpi_october_score)
             if 'November' in use_months and kpi.individual_kpi_november_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_november_score)
+                kpi_calc.append(kpi.individual_kpi_november_score)
             if 'December' in use_months and kpi.individual_kpi_december_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_december_score)
+                kpi_calc.append(kpi.individual_kpi_december_score)
             if 'January' in use_months and kpi.individual_kpi_january_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_january_score)
+                kpi_calc.append(kpi.individual_kpi_january_score)
             if 'February' in use_months and kpi.individual_kpi_february_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_february_score)
+                kpi_calc.append(kpi.individual_kpi_february_score)
             if 'March' in use_months and kpi.individual_kpi_march_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_march_score)
+                kpi_calc.append(kpi.individual_kpi_march_score)
 
             score = sum(kpi_calc)
             if kpi.individual_kpi_function == "Maximize":
-                score = (score / target)*100
+                score = (score / target) * 100
             else:
                 if score == 0:
                     if score <= target:
@@ -199,7 +203,7 @@ def ind_kpi_score(pms, staff):
                         value = kpi.individual_kpi_march_score
 
             if kpi.individual_kpi_function == "Maximize":
-                score = (value / target)*100
+                score = (value / target) * 100
             else:
                 if value == 0:
                     if value <= target:
@@ -213,34 +217,34 @@ def ind_kpi_score(pms, staff):
 
         elif kpi.individual_kpi_type == 'Addition':
             if 'April' in use_months and kpi.individual_kpi_april_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_april_score)
+                kpi_calc.append(kpi.individual_kpi_april_score)
             if 'May' in use_months and kpi.individual_kpi_may_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_may_score)
+                kpi_calc.append(kpi.individual_kpi_may_score)
             if 'June' in use_months and kpi.individual_kpi_june_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_june_score)
+                kpi_calc.append(kpi.individual_kpi_june_score)
             if 'July' in use_months and kpi.individual_kpi_july_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_july_score)
+                kpi_calc.append(kpi.individual_kpi_july_score)
             if 'August' in use_months and kpi.individual_kpi_august_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_august_score)
+                kpi_calc.append(kpi.individual_kpi_august_score)
             if 'September' in use_months and kpi.individual_kpi_september_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_september_score)
+                kpi_calc.append(kpi.individual_kpi_september_score)
             if 'October' in use_months and kpi.individual_kpi_october_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_october_score)
+                kpi_calc.append(kpi.individual_kpi_october_score)
             if 'November' in use_months and kpi.individual_kpi_november_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_november_score)
+                kpi_calc.append(kpi.individual_kpi_november_score)
             if 'December' in use_months and kpi.individual_kpi_december_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_december_score)
+                kpi_calc.append(kpi.individual_kpi_december_score)
             if 'January' in use_months and kpi.individual_kpi_january_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_january_score)
+                kpi_calc.append(kpi.individual_kpi_january_score)
             if 'February' in use_months and kpi.individual_kpi_february_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_february_score)
+                kpi_calc.append(kpi.individual_kpi_february_score)
             if 'March' in use_months and kpi.individual_kpi_march_score_approve == 'Approved':
-                 kpi_calc.append(kpi.individual_kpi_march_score)
+                kpi_calc.append(kpi.individual_kpi_march_score)
 
             score = sum(kpi_calc) / len(kpi_calc)
 
             if kpi.individual_kpi_function == "Maximize":
-                score = (score / target)*100
+                score = (score / target) * 100
             else:
                 if score == 0:
                     if score <= target:
@@ -295,7 +299,8 @@ def bu_kpi_score(pms, bu):
         if kpi_matrix.kpi_month_march == 'Yes':
             use_months.append('March')
     else:
-        use_months = ['April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'January', 'February', 'March']
+        use_months = ['April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',
+                      'January', 'February', 'March']
 
     kpi_score = []
     sum_score = 0
@@ -304,33 +309,33 @@ def bu_kpi_score(pms, bu):
         target = kpi.bu_kpi_target
         if kpi.bu_kpi_type == 'Addition':
             if 'April' in use_months and kpi.bu_kpi_april_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_april_score)
+                kpi_calc.append(kpi.bu_kpi_april_score)
             if 'May' in use_months and kpi.bu_kpi_may_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_may_score)
+                kpi_calc.append(kpi.bu_kpi_may_score)
             if 'June' in use_months and kpi.bu_kpi_june_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_june_score)
+                kpi_calc.append(kpi.bu_kpi_june_score)
             if 'July' in use_months and kpi.bu_kpi_july_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_july_score)
+                kpi_calc.append(kpi.bu_kpi_july_score)
             if 'August' in use_months and kpi.bu_kpi_august_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_august_score)
+                kpi_calc.append(kpi.bu_kpi_august_score)
             if 'September' in use_months and kpi.bu_kpi_september_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_september_score)
+                kpi_calc.append(kpi.bu_kpi_september_score)
             if 'October' in use_months and kpi.bu_kpi_october_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_october_score)
+                kpi_calc.append(kpi.bu_kpi_october_score)
             if 'November' in use_months and kpi.bu_kpi_november_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_november_score)
+                kpi_calc.append(kpi.bu_kpi_november_score)
             if 'December' in use_months and kpi.bu_kpi_december_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_december_score)
+                kpi_calc.append(kpi.bu_kpi_december_score)
             if 'January' in use_months and kpi.bu_kpi_january_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_january_score)
+                kpi_calc.append(kpi.bu_kpi_january_score)
             if 'February' in use_months and kpi.bu_kpi_february_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_february_score)
+                kpi_calc.append(kpi.bu_kpi_february_score)
             if 'March' in use_months and kpi.bu_kpi_march_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_march_score)
+                kpi_calc.append(kpi.bu_kpi_march_score)
 
             score = sum(kpi_calc)
             if kpi.bu_kpi_function == "Maximize":
-                score = (score / target)*100
+                score = (score / target) * 100
             else:
                 if score == 0:
                     if score <= target:
@@ -388,7 +393,7 @@ def bu_kpi_score(pms, bu):
                         value = kpi.bu_kpi_march_score
 
             if kpi.bu_kpi_function == "Maximize":
-                score = (value / target)*100
+                score = (value / target) * 100
             else:
                 if value == 0:
                     if value <= target:
@@ -402,34 +407,34 @@ def bu_kpi_score(pms, bu):
 
         elif kpi.bu_kpi_type == 'Addition':
             if 'April' in use_months and kpi.bu_kpi_april_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_april_score)
+                kpi_calc.append(kpi.bu_kpi_april_score)
             if 'May' in use_months and kpi.bu_kpi_may_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_may_score)
+                kpi_calc.append(kpi.bu_kpi_may_score)
             if 'June' in use_months and kpi.bu_kpi_june_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_june_score)
+                kpi_calc.append(kpi.bu_kpi_june_score)
             if 'July' in use_months and kpi.bu_kpi_july_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_july_score)
+                kpi_calc.append(kpi.bu_kpi_july_score)
             if 'August' in use_months and kpi.bu_kpi_august_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_august_score)
+                kpi_calc.append(kpi.bu_kpi_august_score)
             if 'September' in use_months and kpi.bu_kpi_september_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_september_score)
+                kpi_calc.append(kpi.bu_kpi_september_score)
             if 'October' in use_months and kpi.bu_kpi_october_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_october_score)
+                kpi_calc.append(kpi.bu_kpi_october_score)
             if 'November' in use_months and kpi.bu_kpi_november_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_november_score)
+                kpi_calc.append(kpi.bu_kpi_november_score)
             if 'December' in use_months and kpi.bu_kpi_december_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_december_score)
+                kpi_calc.append(kpi.bu_kpi_december_score)
             if 'January' in use_months and kpi.bu_kpi_january_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_january_score)
+                kpi_calc.append(kpi.bu_kpi_january_score)
             if 'February' in use_months and kpi.bu_kpi_february_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_february_score)
+                kpi_calc.append(kpi.bu_kpi_february_score)
             if 'March' in use_months and kpi.bu_kpi_march_score_approve == 'Approved':
-                 kpi_calc.append(kpi.bu_kpi_march_score)
+                kpi_calc.append(kpi.bu_kpi_march_score)
 
             score = sum(kpi_calc) / len(kpi_calc)
 
             if kpi.bu_kpi_function == "Maximize":
-                score = (score / target)*100
+                score = (score / target) * 100
             else:
                 if score == 0:
                     if score <= target:
@@ -484,7 +489,8 @@ def company_kpi_score(pms):
         if kpi_matrix.kpi_month_march == 'Yes':
             use_months.append('March')
     else:
-        use_months = ['April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'January', 'February', 'March']
+        use_months = ['April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',
+                      'January', 'February', 'March']
 
     kpi_score = []
     sum_score = 0
@@ -493,33 +499,33 @@ def company_kpi_score(pms):
         target = kpi.company_kpi_target
         if kpi.company_kpi_type == 'Addition':
             if 'April' in use_months:
-                 kpi_calc.append(kpi.company_kpi_april_score)
+                kpi_calc.append(kpi.company_kpi_april_score)
             if 'May' in use_months:
-                 kpi_calc.append(kpi.company_kpi_may_score)
+                kpi_calc.append(kpi.company_kpi_may_score)
             if 'June' in use_months:
-                 kpi_calc.append(kpi.company_kpi_june_score)
+                kpi_calc.append(kpi.company_kpi_june_score)
             if 'July' in use_months:
-                 kpi_calc.append(kpi.company_kpi_july_score)
+                kpi_calc.append(kpi.company_kpi_july_score)
             if 'August' in use_months:
-                 kpi_calc.append(kpi.company_kpi_august_score)
+                kpi_calc.append(kpi.company_kpi_august_score)
             if 'September' in use_months:
-                 kpi_calc.append(kpi.company_kpi_september_score)
+                kpi_calc.append(kpi.company_kpi_september_score)
             if 'October' in use_months:
-                 kpi_calc.append(kpi.company_kpi_october_score)
+                kpi_calc.append(kpi.company_kpi_october_score)
             if 'November' in use_months:
-                 kpi_calc.append(kpi.company_kpi_november_score)
+                kpi_calc.append(kpi.company_kpi_november_score)
             if 'December' in use_months:
-                 kpi_calc.append(kpi.company_kpi_december_score)
+                kpi_calc.append(kpi.company_kpi_december_score)
             if 'January' in use_months:
-                 kpi_calc.append(kpi.company_kpi_january_score)
+                kpi_calc.append(kpi.company_kpi_january_score)
             if 'February' in use_months:
-                 kpi_calc.append(kpi.company_kpi_february_score)
+                kpi_calc.append(kpi.company_kpi_february_score)
             if 'March' in use_months:
-                 kpi_calc.append(kpi.company_kpi_march_score)
+                kpi_calc.append(kpi.company_kpi_march_score)
 
             score = sum(kpi_calc)
             if kpi.company_kpi_function == "Maximize":
-                score = (score / target)*100
+                score = (score / target) * 100
             else:
                 if score == 0:
                     if score <= target:
@@ -577,7 +583,7 @@ def company_kpi_score(pms):
                         value = kpi.company_kpi_march_score
 
             if kpi.company_kpi_function == "Maximize":
-                score = (value / target)*100
+                score = (value / target) * 100
             else:
                 if value == 0:
                     if value <= target:
@@ -591,34 +597,34 @@ def company_kpi_score(pms):
 
         elif kpi.company_kpi_type == 'Addition':
             if 'April' in use_months and kpi.company_kpi_april_score_approve == 'Approved':
-                 kpi_calc.append(kpi.company_kpi_april_score)
+                kpi_calc.append(kpi.company_kpi_april_score)
             if 'May' in use_months and kpi.company_kpi_may_score_approve == 'Approved':
-                 kpi_calc.append(kpi.company_kpi_may_score)
+                kpi_calc.append(kpi.company_kpi_may_score)
             if 'June' in use_months and kpi.company_kpi_june_score_approve == 'Approved':
-                 kpi_calc.append(kpi.company_kpi_june_score)
+                kpi_calc.append(kpi.company_kpi_june_score)
             if 'July' in use_months and kpi.company_kpi_july_score_approve == 'Approved':
-                 kpi_calc.append(kpi.company_kpi_july_score)
+                kpi_calc.append(kpi.company_kpi_july_score)
             if 'August' in use_months and kpi.company_kpi_august_score_approve == 'Approved':
-                 kpi_calc.append(kpi.company_kpi_august_score)
+                kpi_calc.append(kpi.company_kpi_august_score)
             if 'September' in use_months and kpi.company_kpi_september_score_approve == 'Approved':
-                 kpi_calc.append(kpi.company_kpi_september_score)
+                kpi_calc.append(kpi.company_kpi_september_score)
             if 'October' in use_months and kpi.company_kpi_october_score_approve == 'Approved':
-                 kpi_calc.append(kpi.company_kpi_october_score)
+                kpi_calc.append(kpi.company_kpi_october_score)
             if 'November' in use_months and kpi.company_kpi_november_score_approve == 'Approved':
-                 kpi_calc.append(kpi.company_kpi_november_score)
+                kpi_calc.append(kpi.company_kpi_november_score)
             if 'December' in use_months and kpi.company_kpi_december_score_approve == 'Approved':
-                 kpi_calc.append(kpi.company_kpi_december_score)
+                kpi_calc.append(kpi.company_kpi_december_score)
             if 'January' in use_months and kpi.company_kpi_january_score_approve == 'Approved':
-                 kpi_calc.append(kpi.company_kpi_january_score)
+                kpi_calc.append(kpi.company_kpi_january_score)
             if 'February' in use_months and kpi.company_kpi_february_score_approve == 'Approved':
-                 kpi_calc.append(kpi.company_kpi_february_score)
+                kpi_calc.append(kpi.company_kpi_february_score)
             if 'March' in use_months and kpi.company_kpi_march_score_approve == 'Approved':
-                 kpi_calc.append(kpi.company_kpi_march_score)
+                kpi_calc.append(kpi.company_kpi_march_score)
 
             score = sum(kpi_calc) / len(kpi_calc)
 
             if kpi.company_kpi_function == "Maximize":
-                score = (score / target)*100
+                score = (score / target) * 100
             else:
                 if score == 0:
                     if score <= target:
@@ -665,7 +671,7 @@ def assessment_score(pms, staff_u):
             s_tl_total_score += s_tl_score
             tl_s_total_score += tl_s_total_score
 
-            eval_score += (s_tl_score + tl_s_score)/2
+            eval_score += (s_tl_score + tl_s_score) / 2
         else:
             s_tl_score = 'N/A'
             tl_s_score = tl_s_score(staff_u, eval, default_score)
@@ -676,11 +682,11 @@ def assessment_score(pms, staff_u):
             eval_score += tl_s_score
 
     if evals:
-        eval_score = eval_score/evals.count()
+        eval_score = eval_score / evals.count()
         if s_tl_total_score != 'N/A':
-            s_tl_total_score = s_tl_total_score/evals.count()
+            s_tl_total_score = s_tl_total_score / evals.count()
         if tl_s_total_score != 'N/A':
-            tl_s_total_score = tl_s_total_score/evals.count()
+            tl_s_total_score = tl_s_total_score / evals.count()
 
     return [eval_score, s_tl_total_score, tl_s_total_score]
 
@@ -732,10 +738,10 @@ def tl_s_score(staff_u, eval, default_score):
         else:
             q7_score = default_score[response.score_q7]
 
-        tl_score = (q1_score + q2_score + q3_score + q4_score + q5_score + q6_score + q7_score)/7*100
+        tl_score = (q1_score + q2_score + q3_score + q4_score + q5_score + q6_score + q7_score) / 7 * 100
         tl_s_team_score += tl_score
     if tl_responses:
-        tl_s_team_score = tl_s_team_score/tl_responses.count()
+        tl_s_team_score = tl_s_team_score / tl_responses.count()
 
     return tl_s_team_score
 
@@ -787,11 +793,11 @@ def s_tl_score(staff_u, eval, default_score):
         else:
             q7_score = default_score[response.score_q7]
 
-        staff_score = (q1_score + q2_score + q3_score + q4_score + q5_score + q6_score + q7_score)/7*100
+        staff_score = (q1_score + q2_score + q3_score + q4_score + q5_score + q6_score + q7_score) / 7 * 100
         s_tl_team_score += staff_score
 
     if staff_responses:
-        s_tl_team_score = s_tl_team_score/staff_responses.count()
+        s_tl_team_score = s_tl_team_score / staff_responses.count()
 
     return s_tl_team_score
 
@@ -811,10 +817,10 @@ def get_matrix(pms, staff_u):
             md_company = md_matrix.matrix_company_kpi_weight
             md_bu = md_matrix.matrix_bu_kpi_weight
             md_individual = md_matrix.matrix_individual_kpi_weight
-            md_assessment = md_matrix.matrix_assessment_weight  
-            
-            matrix = [md_company, md_bu, md_individual, md_assessment]  
-     
+            md_assessment = md_matrix.matrix_assessment_weight
+
+            matrix = [md_company, md_bu, md_individual, md_assessment]
+
     elif user_is_bu_head:
         bu_matrix = score_matrix.objects.filter(matrix_class='BU', matrix_pms=pms)
         if bu_matrix:
@@ -822,9 +828,9 @@ def get_matrix(pms, staff_u):
             bu_company = bu_matrix.matrix_company_kpi_weight
             bu_bu = bu_matrix.matrix_bu_kpi_weight
             bu_individual = bu_matrix.matrix_individual_kpi_weight
-            bu_assessment = bu_matrix.matrix_assessment_weight  
-            
-            matrix = [bu_company, bu_bu, bu_individual, bu_assessment] 
+            bu_assessment = bu_matrix.matrix_assessment_weight
+
+            matrix = [bu_company, bu_bu, bu_individual, bu_assessment]
     else:
         individual_matrix = score_matrix.objects.filter(matrix_class='Staff', matrix_pms=pms)
         if individual_matrix:
@@ -832,8 +838,8 @@ def get_matrix(pms, staff_u):
             individual_company = individual_matrix.matrix_company_kpi_weight
             individual_bu = individual_matrix.matrix_bu_kpi_weight
             individual_individual = individual_matrix.matrix_individual_kpi_weight
-            individual_assessment = individual_matrix.matrix_assessment_weight  
-            
+            individual_assessment = individual_matrix.matrix_assessment_weight
+
             matrix = [individual_company, individual_bu, individual_individual, individual_assessment]
 
     return matrix
@@ -878,10 +884,6 @@ class HomeView(TemplateView):
                     context['bu_kpi'] = bu_kpi_score(context['pms'], staff_person.staff_bu)
                 else:
                     context['bu_kpi'] = [0, [], [], []]
-
-
-
-
 
         context['assessment'] = assessment_score(context['pms'], self.request.user)
 
@@ -1077,7 +1079,6 @@ def send_email_pms(subject, receiver1, receiver2, e_message):
 
 
 def send_email_pms_one_reciepient(subject, receiver, e_message):
-
     name = receiver.get_full_name()
 
     body_html = '''
@@ -5346,13 +5347,15 @@ class AssessmentSTlStaff(CreateView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('Assessment_TL_One', kwargs={"as_id": self.kwargs["as_id"], "tl_id": self.kwargs["tl_id"]}))
+        return '{}'.format(
+            reverse('Assessment_TL_One', kwargs={"as_id": self.kwargs["as_id"], "tl_id": self.kwargs["tl_id"]}))
 
     def form_valid(self, form):
         super(AssessmentSTlStaff, self).form_valid(form)
         messages.success(self.request, 'Evaluated staff success')
 
-        return HttpResponseRedirect(reverse('Assessment_S', kwargs={"as_id": self.kwargs["as_id"], "tl_id": self.kwargs["tl_id"]}))
+        return HttpResponseRedirect(
+            reverse('Assessment_S', kwargs={"as_id": self.kwargs["as_id"], "tl_id": self.kwargs["tl_id"]}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -5730,8 +5733,308 @@ class AdminDashboard(TemplateView):
         context['user_bu'] = staff_person.staff_bu
         context['staff'] = staff.objects.all()
         context['pms'] = pms.objects.all()
+        context['teams'] = team.objects.all()
+        context['bus'] = bu.objects.all()
 
         return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+class AdminUser(TemplateView):
+    template_name = 'Admin/admin_users.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+        context['staff_active'] = staff.objects.filter(staff_person__is_active=True)
+        context['staff_tl'] = staff.objects.exclude(staff_head_team__isnull=True)
+        context['staff_bu_heads'] = staff.objects.exclude(staff_head_bu__isnull=True)
+        context['staff_md'] = staff.objects.exclude(staff_md='No')
+        context['pms'] = pms.objects.all()
+        context['teams'] = team.objects.all()
+        context['bus'] = bu.objects.all()
+
+        return context
+
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, UserModel
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+class AdminUserNew(CreateView):
+    model = User
+    form_class = UserCreationForm
+
+    template_name = 'Admin/admin_users_new.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+        context['staff_active'] = staff.objects.filter(staff_person__is_active=True)
+        context['staff_tl'] = staff.objects.exclude(staff_head_team__isnull=True)
+        context['staff_bu_heads'] = staff.objects.exclude(staff_head_bu__isnull=True)
+        context['staff_md'] = staff.objects.exclude(staff_md='No')
+        context['pms'] = pms.objects.all()
+        context['teams'] = team.objects.all()
+        context['bus'] = bu.objects.all()
+
+        return context
+
+
+@login_required
+def new_user(request):
+    if request.user.is_superuser:
+        context = {}
+        staff_person = get_object_or_404(staff, id=request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+        context['staff_active'] = staff.objects.filter(staff_person__is_active=True)
+        context['staff_tl'] = staff.objects.exclude(staff_head_team__isnull=True)
+        context['staff_bu_heads'] = staff.objects.exclude(staff_head_bu__isnull=True)
+        context['staff_md'] = staff.objects.exclude(staff_md='No')
+        context['pms'] = pms.objects.all()
+        context['teams'] = team.objects.all()
+        context['bus'] = bu.objects.all()
+
+        if request.method == 'POST':
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                user = form.save()
+                update_session_auth_hash(request, user)  # Important!
+                messages.success(request, 'Your password was successfully updated!')
+                return HttpResponseRedirect(reverse('Admin_Users_New_Details', kwargs={'pk': user.id}))
+        else:
+            form = UserCreationForm()
+        context['form'] = form
+        return render(request, 'Admin/admin_users_new.html', context)
+
+
+class AdminUserNewDetails(UpdateView):
+    model = UserModel
+    form_class = UserForm
+    template_name = 'Admin/admin_users_new_details.html'
+    context_object_name = 'user'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_Users_New_Details_Staff', kwargs={'pk':self.kwargs['pk']}))
+
+    def form_valid(self, form):
+        super(AdminUserNewDetails, self).form_valid(form)
+        messages.success(self.request, 'User updated Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_Users_New_Details_Staff', kwargs={'pk':self.kwargs['pk']}))
+
+
+class AdminUserNewDetailsStaff(CreateView):
+    model = staff
+    form_class = StaffForm
+    template_name = 'Admin/admin_users_new_details.html'
+    context_object_name = 'user'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_Users', ))
+
+    def form_valid(self, form):
+        super(AdminUserNewDetailsStaff, self).form_valid(form)
+        messages.success(self.request, 'Staff record created Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_Users'))
+
+    def get_initial(self):
+        initial = super(AdminUserNewDetailsStaff, self).get_initial()
+        initial['staff_person'] = get_object_or_404(User, id=self.kwargs['pk'])
+
+@login_required
+def new_user_details(request, pk):
+    if request.user.is_superuser:
+        context = {}
+        staff_person = get_object_or_404(staff, id=request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+        context['staff_active'] = staff.objects.filter(staff_person__is_active=True)
+        context['staff_tl'] = staff.objects.exclude(staff_head_team__isnull=True)
+        context['staff_bu_heads'] = staff.objects.exclude(staff_head_bu__isnull=True)
+        context['staff_md'] = staff.objects.exclude(staff_md='No')
+        context['pms'] = pms.objects.all()
+        context['teams'] = team.objects.all()
+        context['bus'] = bu.objects.all()
+
+        staff_u = User.objects.get(pk=pk)
+
+        if request.method == 'POST':
+            form = UserForm(staff_u, request.POST)
+            if form.is_valid():
+                user = form.save()
+                update_session_auth_hash(request, user)  # Important!
+                messages.success(request, 'Your password was successfully updated!')
+                return HttpResponseRedirect(reverse('Admin_Users_reset_password', kwargs={'pk': user.id}))
+        else:
+            form = UserForm(User.objects.filter(id=pk).first())
+        context['form'] = form
+        return render(request, 'Admin/admin_users_new_details.html', context)
+
+
+@login_required
+def change_password(request, pk):
+    if request.user.is_superuser:
+        context = {}
+        staff_person = get_object_or_404(staff, id=request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+        context['staff_active'] = staff.objects.filter(staff_person__is_active=True)
+        context['staff_tl'] = staff.objects.exclude(staff_head_team__isnull=True)
+        context['staff_bu_heads'] = staff.objects.exclude(staff_head_bu__isnull=True)
+        context['staff_md'] = staff.objects.exclude(staff_md='No')
+        context['pms'] = pms.objects.all()
+        context['teams'] = team.objects.all()
+        context['bus'] = bu.objects.all()
+
+        staff_u = User.objects.get(id=pk)
+        context['staff_u'] = staff_u
+
+        if request.method == 'POST':
+            form = SetPasswordForm(staff_u, request.POST)
+            if form.is_valid():
+                user = form.save()
+                update_session_auth_hash(request, user)  # Important!
+                messages.success(request, 'Your password was successfully updated!')
+                return HttpResponseRedirect(reverse('Admin_Users_reset_password', kwargs={'pk': pk}))
+        else:
+            form = SetPasswordForm(staff_u)
+        context['form'] = form
+        return render(request, 'Admin/admin_users_reset_password.html', context)
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+class AdminResetPasswordUser(UpdateView):
+    model = User
+    form_class = PasswordSet
+    template_name = 'Admin/admin_users_reset_password.html'
+    pk_url_kwarg = 'pk'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(User, id=self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+        context['staff_active'] = staff.objects.filter(staff_person__is_active=True)
+        context['staff_tl'] = staff.objects.exclude(staff_head_team__isnull=True)
+        context['staff_bu_heads'] = staff.objects.exclude(staff_head_bu__isnull=True)
+        context['staff_md'] = staff.objects.exclude(staff_md='No')
+        context['pms'] = pms.objects.all()
+        context['teams'] = team.objects.all()
+        context['bus'] = bu.objects.all()
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+class AdminUserOne(DetailView):
+    model = User
+    context_object_name = 'user'
+    template_name = 'Admin/admin_users_one.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+        context['staff_active'] = staff.objects.filter(staff_person__is_active=True)
+        context['staff_tl'] = staff.objects.exclude(staff_head_team__isnull=True)
+        context['staff_bu_heads'] = staff.objects.exclude(staff_head_bu__isnull=True)
+        context['staff_md'] = staff.objects.exclude(staff_md='No')
+        context['pms'] = pms.objects.all()
+        context['teams'] = team.objects.all()
+        context['bus'] = bu.objects.all()
+
+        return context
+
+
+def deactivate_account_dashboard(request, pk):
+    if request.user.is_superuser:
+        user = get_object_or_404(User, id=pk)
+        user.is_active = False
+        user.save()
+
+        return HttpResponseRedirect(reverse('Admin_Users'))
+
+
+def activate_account_dashboard(request, pk):
+    if request.user.is_superuser:
+        user = get_object_or_404(User, id=pk)
+        user.is_active = True
+        user.save()
+
+        return HttpResponseRedirect(reverse('Admin_Users'))
+
+
+def reset_user_password(request, pk):
+    if request.user.is_superuser:
+        return HttpResponseRedirect(reverse('password_reset_confirm',
+                                            kwargs={'uidb64': urlsafe_base64_encode(force_bytes(pk)),
+                                                    'token': default_token_generator.make_token(
+                                                        get_object_or_404(User, id=pk))}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -5902,11 +6205,12 @@ class AdminPMSIndividual(ListView):
         approved_count = rejected_count = pending_count = 0
 
         for staff_u in context['staff']:
-            kpi = individual_Kpi.objects.filter(individual_kpi_pms=self.kwargs['pms_id'], individual_kpi_user=staff_u.staff_person.id)
-            approved2_kpi=kpi.filter(individual_kpi_status='Approved 2')
-            approved1_kpi=kpi.filter(individual_kpi_status='Approved 1')
-            pending_kpi=kpi.filter(individual_kpi_status='Pending')
-            rejected_kpi=kpi.filter(individual_kpi_status='Rejected 2')
+            kpi = individual_Kpi.objects.filter(individual_kpi_pms=self.kwargs['pms_id'],
+                                                individual_kpi_user=staff_u.staff_person.id)
+            approved2_kpi = kpi.filter(individual_kpi_status='Approved 2')
+            approved1_kpi = kpi.filter(individual_kpi_status='Approved 1')
+            pending_kpi = kpi.filter(individual_kpi_status='Pending')
+            rejected_kpi = kpi.filter(individual_kpi_status='Rejected 2')
 
             approved_count += approved2_kpi.count()
             pending_count += (approved1_kpi.count() + pending_kpi.count())
@@ -5932,7 +6236,8 @@ class AdminPMSIndividualStaff(ListView):
     context_object_name = 'individual_kpi'
 
     def get_queryset(self):
-        return individual_Kpi.objects.filter(individual_kpi_user=self.kwargs['s_id'], individual_kpi_pms=self.kwargs['pms_id'])
+        return individual_Kpi.objects.filter(individual_kpi_user=self.kwargs['s_id'],
+                                             individual_kpi_pms=self.kwargs['pms_id'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -5958,7 +6263,9 @@ class AdminPMSIndividualStaffOne(UpdateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Individual_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+        return '{}'.format(reverse('Admin_PMS_Individual_Staff_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
+                                           'kpi_id': self.kwargs['kpi_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -5977,7 +6284,9 @@ class AdminPMSIndividualStaffOne(UpdateView):
         super(AdminPMSIndividualStaffOne, self).form_valid(form)
         messages.success(self.request, 'KPI Editted Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+        return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff_One',
+                                            kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
+                                                    'kpi_id': self.kwargs['kpi_id']}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -5990,7 +6299,8 @@ class AdminPMSIndividualStaffNew(CreateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Individual_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+        return '{}'.format(reverse('Admin_PMS_Individual_Staff',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6009,7 +6319,8 @@ class AdminPMSIndividualStaffNew(CreateView):
         super(AdminPMSIndividualStaffNew, self).form_valid(form)
         messages.success(self.request, 'KPI Created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+        return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff',
+                                            kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_initial(self):
         initial = super(AdminPMSIndividualStaffNew, self).get_initial()
@@ -6043,9 +6354,9 @@ class AdminPMSBU(ListView):
 
         for staff_u in context['staff']:
             kpi = bu_kpi.objects.filter(bu_kpi_pms=self.kwargs['pms_id'], bu_kpi_bu=staff_u.staff_head_bu)
-            approved_kpi=kpi.filter(bu_kpi_status='Approved')
-            pending_kpi=kpi.filter(bu_kpi_status='Pending')
-            rejected_kpi=kpi.filter(bu_kpi_status='Rejected')
+            approved_kpi = kpi.filter(bu_kpi_status='Approved')
+            pending_kpi = kpi.filter(bu_kpi_status='Pending')
+            rejected_kpi = kpi.filter(bu_kpi_status='Rejected')
 
             approved_count += approved_kpi.count()
             pending_count += pending_kpi.count()
@@ -6098,7 +6409,9 @@ class AdminPMSBUStaffOne(UpdateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_BU_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+        return '{}'.format(reverse('Admin_PMS_BU_Staff_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
+                                           'kpi_id': self.kwargs['kpi_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6117,7 +6430,9 @@ class AdminPMSBUStaffOne(UpdateView):
         super(AdminPMSBUStaffOne, self).form_valid(form)
         messages.success(self.request, 'KPI Editted Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_BU_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+        return HttpResponseRedirect(reverse('Admin_PMS_BU_Staff_One',
+                                            kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
+                                                    'kpi_id': self.kwargs['kpi_id']}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -6130,7 +6445,8 @@ class AdminPMSBUStaffNew(CreateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_BU_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+        return '{}'.format(
+            reverse('Admin_PMS_BU_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6149,7 +6465,8 @@ class AdminPMSBUStaffNew(CreateView):
         super(AdminPMSBUStaffNew, self).form_valid(form)
         messages.success(self.request, 'KPI Created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_BU_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+        return HttpResponseRedirect(
+            reverse('Admin_PMS_BU_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_initial(self):
         staff_u = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
@@ -6195,7 +6512,8 @@ class AdminPMSCompanyOne(UpdateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Company_One', kwargs={"pms_id": self.kwargs["pms_id"], 'kpi_id': self.kwargs['kpi_id']}))
+        return '{}'.format(
+            reverse('Admin_PMS_Company_One', kwargs={"pms_id": self.kwargs["pms_id"], 'kpi_id': self.kwargs['kpi_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6213,7 +6531,8 @@ class AdminPMSCompanyOne(UpdateView):
         super(AdminPMSCompanyOne, self).form_valid(form)
         messages.success(self.request, 'KPI Editted Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Company_One', kwargs={"pms_id": self.kwargs["pms_id"], 'kpi_id': self.kwargs['kpi_id']}))
+        return HttpResponseRedirect(
+            reverse('Admin_PMS_Company_One', kwargs={"pms_id": self.kwargs["pms_id"], 'kpi_id': self.kwargs['kpi_id']}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -6408,7 +6727,9 @@ class AdminPMSCheckInStaffOne(UpdateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_CheckIn_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+        return '{}'.format(reverse('Admin_PMS_CheckIn_Staff_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
+                                           'kpi_id': self.kwargs['kpi_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6427,7 +6748,9 @@ class AdminPMSCheckInStaffOne(UpdateView):
         super(AdminPMSCheckInStaffOne, self).form_valid(form)
         messages.success(self.request, 'CheckIn Editted Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn_Staff_One',
+                                            kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
+                                                    'kpi_id': self.kwargs['kpi_id']}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -6440,7 +6763,8 @@ class AdminPMSCheckInStaffNew(CreateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+        return '{}'.format(
+            reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6459,7 +6783,8 @@ class AdminPMSCheckInStaffNew(CreateView):
         super(AdminPMSCheckInStaffNew, self).form_valid(form)
         messages.success(self.request, 'CheckIn Created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+        return HttpResponseRedirect(
+            reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_initial(self):
         initial = super(AdminPMSCheckInStaffNew, self).get_initial()
@@ -6545,10 +6870,12 @@ class AdminPMSAssessmentOne(UpdateView):
         super(AdminPMSAssessmentOne, self).form_valid(form)
         messages.success(self.request, 'Assessment Edited Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
+                                            kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -6662,7 +6989,6 @@ class AdminPMSAssessmentOneResponseOne(UpdateView):
         return initial
 
 
-
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
@@ -6674,7 +7000,8 @@ class AdminPMSAssessmentOneQuestionOneTlS(UpdateView):
     pk_url_kwarg = 'q_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6696,7 +7023,8 @@ class AdminPMSAssessmentOneQuestionOneTlS(UpdateView):
             messages.success(self.request, 'Question Edited Successfully')
 
             return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
-                                                kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+                                                kwargs={"pms_id": self.kwargs["pms_id"],
+                                                        'as_id': self.kwargs['as_id']}))
 
         return context
 
@@ -6712,7 +7040,8 @@ class AdminPMSAssessmentOneQuestionNewTlS(CreateView):
     pk_url_kwarg = 'q_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6734,7 +7063,8 @@ class AdminPMSAssessmentOneQuestionNewTlS(CreateView):
             messages.success(self.request, 'Question Edited Successfully')
 
             return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
-                                                kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+                                                kwargs={"pms_id": self.kwargs["pms_id"],
+                                                        'as_id': self.kwargs['as_id']}))
 
         return context
 
@@ -6755,7 +7085,8 @@ class AdminPMSAssessmentOneQuestionOneSTl(UpdateView):
     pk_url_kwarg = 'q_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6777,7 +7108,8 @@ class AdminPMSAssessmentOneQuestionOneSTl(UpdateView):
             messages.success(self.request, 'Question Edited Successfully')
 
             return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
-                                                kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+                                                kwargs={"pms_id": self.kwargs["pms_id"],
+                                                        'as_id': self.kwargs['as_id']}))
 
         return context
 
@@ -6793,7 +7125,8 @@ class AdminPMSAssessmentOneQuestionNewSTl(CreateView):
     pk_url_kwarg = 'q_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6815,7 +7148,8 @@ class AdminPMSAssessmentOneQuestionNewSTl(CreateView):
             messages.success(self.request, 'Question Added Successfully')
 
             return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
-                                                kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
+                                                kwargs={"pms_id": self.kwargs["pms_id"],
+                                                        'as_id': self.kwargs['as_id']}))
 
         return context
 
@@ -6848,7 +7182,8 @@ class AdminPMSAssessmentOneResponseSTl(DetailView):
         staffs_u = []
         for staff_u in staffs:
             user = get_object_or_404(User, id=staff_u.staff_person.id)
-            done = done_staff_evaluates_tl.objects.filter(done_evaluation_id=self.kwargs['as_id'], done_staff_id=staff_u.staff_person.id)
+            done = done_staff_evaluates_tl.objects.filter(done_evaluation_id=self.kwargs['as_id'],
+                                                          done_staff_id=staff_u.staff_person.id)
             tl = None
             if done:
                 done = done.first()
@@ -6886,13 +7221,17 @@ class AdminPMSAssessmentOneResponseSTlOne(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One_STl_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'], 'd_id': self.kwargs['d_id'], }))
+        return '{}'.format(reverse('Admin_PMS_Assessment_One_STl_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'],
+                                           'd_id': self.kwargs['d_id'], }))
 
     def form_valid(self, form):
         super(AdminPMSAssessmentOneResponseSTlOne, self).form_valid(form)
         messages.success(self.request, 'Assessment Edited Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One_STl_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'], 'd_id': self.kwargs['d_id'], }))
+        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One_STl_One',
+                                            kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'],
+                                                    'd_id': self.kwargs['d_id'], }))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -6918,7 +7257,8 @@ class AdminPMSAssessmentOneResponseTlS(DetailView):
         staffs_u = []
         for staff_u in staffs:
             user = get_object_or_404(User, id=staff_u.staff_person.id)
-            done = done_tl_evaluates_staff.objects.filter(done_evaluation_id=self.kwargs['as_id'], done_staff_id=staff_u.staff_person.id)
+            done = done_tl_evaluates_staff.objects.filter(done_evaluation_id=self.kwargs['as_id'],
+                                                          done_staff_id=staff_u.staff_person.id)
             tl = None
             if done:
                 done = done.first()
@@ -6956,13 +7296,17 @@ class AdminPMSAssessmentOneResponseTlSOne(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One_TlS_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'], 'd_id': self.kwargs['d_id'], }))
+        return '{}'.format(reverse('Admin_PMS_Assessment_One_TlS_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'],
+                                           'd_id': self.kwargs['d_id'], }))
 
     def form_valid(self, form):
         super(AdminPMSAssessmentOneResponseTlSOne, self).form_valid(form)
         messages.success(self.request, 'Assessment Edited Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One_TlS_One', kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'], 'd_id': self.kwargs['d_id'], }))
+        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One_TlS_One',
+                                            kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'],
+                                                    'd_id': self.kwargs['d_id'], }))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -6975,7 +7319,9 @@ class AdminPMSCheckInStaffOne(UpdateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_CheckIn_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+        return '{}'.format(reverse('Admin_PMS_CheckIn_Staff_One',
+                                   kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
+                                           'kpi_id': self.kwargs['kpi_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6994,7 +7340,9 @@ class AdminPMSCheckInStaffOne(UpdateView):
         super(AdminPMSCheckInStaffOne, self).form_valid(form)
         messages.success(self.request, 'CheckIn Editted Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn_Staff_One', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'], 'kpi_id': self.kwargs['kpi_id']}))
+        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn_Staff_One',
+                                            kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
+                                                    'kpi_id': self.kwargs['kpi_id']}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -7007,7 +7355,8 @@ class AdminPMSCheckInStaffNew(CreateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+        return '{}'.format(
+            reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -7026,7 +7375,8 @@ class AdminPMSCheckInStaffNew(CreateView):
         super(AdminPMSCheckInStaffNew, self).form_valid(form)
         messages.success(self.request, 'CheckIn Created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+        return HttpResponseRedirect(
+            reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_initial(self):
         initial = super(AdminPMSCheckInStaffNew, self).get_initial()
@@ -7229,6 +7579,7 @@ class AdminPMSMatrixKPIOne(UpdateView):
         return HttpResponseRedirect(
             reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
+
 # =======================================================================================================
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -7250,7 +7601,6 @@ class AdminPMSMatrixAssessment(TemplateView):
         context['assessment'] = evaluation.objects.filter()
 
         return context
-
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -7286,4 +7636,3 @@ class AdminPMSMatrixKPIOne(UpdateView):
 
         return HttpResponseRedirect(
             reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
-

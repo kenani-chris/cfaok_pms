@@ -451,3 +451,9 @@ class MatrixCheckIn(forms.ModelForm):
         model = matrix_checkin
         fields = '__all__'
 
+
+class PasswordSet(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['password']
+
