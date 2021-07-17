@@ -6000,14 +6000,7 @@ class AdminUserOne(DetailView):
         context['user_is_tl'] = staff_person.staff_head_team
         context['user_team'] = staff_person.staff_team
         context['user_bu'] = staff_person.staff_bu
-        context['staff'] = staff.objects.all()
-        context['staff_active'] = staff.objects.filter(staff_person__is_active=True)
-        context['staff_tl'] = staff.objects.exclude(staff_head_team__isnull=True)
-        context['staff_bu_heads'] = staff.objects.exclude(staff_head_bu__isnull=True)
-        context['staff_md'] = staff.objects.exclude(staff_md='No')
-        context['pms'] = pms.objects.all()
-        context['teams'] = team.objects.all()
-        context['bus'] = bu.objects.all()
+        context['staff'] = get_object_or_404(staff, staff_person=self.kwargs['pk'])
 
         return context
 
@@ -6036,6 +6029,65 @@ def reset_user_password(request, pk):
                                             kwargs={'uidb64': urlsafe_base64_encode(force_bytes(pk)),
                                                     'token': default_token_generator.make_token(
                                                         get_object_or_404(User, id=pk))}))
+
+
+class AdminUserOneEditUser(UpdateView):
+    model = UserModel
+    form_class = UserForm
+    template_name = 'Admin/admin_users_one_edit_user.html'
+    context_object_name = 'user'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_Users_One', kwargs={'pk':self.kwargs['pk']}))
+
+    def form_valid(self, form):
+        super(AdminUserOneEditUser, self).form_valid(form)
+        messages.success(self.request, 'User updated Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_Users_One', kwargs={'pk':self.kwargs['pk']}))
+
+
+
+class AdminUserOneEditStaff(UpdateView):
+    model = staff
+    form_class = StaffForm
+    template_name = 'Admin/admin_users_one_edit_staff.html'
+    context_object_name = 'staff'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(staff, staff_person=self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_Users_One', kwargs={'pk':self.kwargs['pk']}))
+
+    def form_valid(self, form):
+        super(AdminUserOneEditStaff, self).form_valid(form)
+        messages.success(self.request, 'User updated Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_Users_One', kwargs={'pk':self.kwargs['pk']}))
+
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
