@@ -463,3 +463,9 @@ class BUForm(forms.ModelForm):
         model = bu
         fields = '__all__'
 
+
+class TeamForm(forms.ModelForm):
+    class Meta:
+        model = team
+        fields = '__all__'
+

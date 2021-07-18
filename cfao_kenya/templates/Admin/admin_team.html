@@ -1,25 +1,6 @@
-{% extends "default.html" %}
-{% block content %}
-<div class="row">
-  <div class="col-md-2">
-    <div class="card card-primary card-outline">
-      <div class="card-body box-profile">
-        <h2 class="profile-username text-center">ADMIN</h2>
-        <hr>
-        <br>
-        <br>
-        <ul class="list-group list-group-unbordered mb-3">
-          <li class="list-group-item">
-            <a href="{% url 'Admin_Dashboard' %}" class="btn btn-primary btn-block"><b>PMS</b></a>
-            <a href="{% url 'Admin_Users' %}" class="btn btn-primary btn-block"><b>Users</b></a>
-            <a href="{% url 'Admin_BUs' %}" class="btn btn-primary btn-block"><b>BU</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Teams</b></a>
-          </li>
-        </ul>
-      </div>
-      <!-- /.card-body -->
-    </div>
-  </div>
+{% extends "Admin/default.html" %}
+{% block kpicontent %}
+
   <div class="col-md-10">
   <div class="row">
       <div class="col-md-3 col-sm-6 col-12">
@@ -125,35 +106,29 @@
     {% endfor %}
     <div class="card">
       <div class="card-body">
-      <a href="{% url 'Admin_BUs_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New BU</i></a><br><br>
+      <a href="{% url 'Admin_Teams_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New Team</i></a><br><br>
 
         <div style="overflow-x:scroll">
             <table id="example1" class="table table-bordered">
             <thead>
                 <tr>
                     <th>
-                        BU Name
+                        Team Name
                     </th>
                     <th>
-                        BU Abbrev
-                    </th>
-                    <th>
-                        BU Head
+                        Team Leader
                     </th>
                 </tr>
             </thead>
             <tbody>
-                {% for bu in bu_n_l %}
+                {% for team in team_n_l %}
                     <tr>
                         <td>
-                            <a href="{% url 'Admin_BUs_One' bu.0.bu_id %}">{{ bu.0.bu_name }}</a>
+                            <a href="{% url 'Admin_Teams_One' team.0.team_id %}">{{ team.0.team_name }}</a>
                         </td>
                         <td>
-                            {{ bu.0.bu_bbreviation }}
-                        </td>
-                        <td>
-                            {% for b in bu.1  %}
-                                {{ b.staff_person.get_full_name }},
+                            {% for t in team.1  %}
+                                {{ t.staff_person.get_full_name }},
                             {% endfor %}
                         </td>
                     </tr>
@@ -165,7 +140,7 @@
       <!-- /.card-body -->
     </div>
   </div>
-</div>
+
     <script>
   $(function () {
     $("#example1").DataTable({

@@ -1,11 +1,11 @@
-{% extends "Admin/default.html" %}
+{% extends 'Admin/default.html' %}
 {% block kpicontent %}
 
-  <div class="col-md-10">
+    <div class="col-md-10">
 
     <div class="card">
         <div class="card-header">
-            <h4 class="card-title">New BU</h4>
+            <h4 class="card-title">New Team</h4>
         </div>
       <div class="card-body">
 
@@ -13,23 +13,15 @@
             <form method="post">
                 {% csrf_token %}
                 {{ form.errors }}
-                {{ form.bu_id.as_hidden }}
+                {{ form.team_id.as_hidden }}
             <table id="example1" class="table table-bordered">
                 <tbody>
                     <tr>
                         <th>
-                            BU Name
+                            Team Name
                         </th>
                         <td>
-                            {{ form.bu_name }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            BU Abbr
-                        </th>
-                        <td>
-                            {{ form.bu_abbreviation }}
+                            {{ form.team_name }}
                         </td>
                     </tr>
                 </tbody>
@@ -40,7 +32,6 @@
       </div>
       <!-- /.card-body -->
     </div>
-  </div>
-
+    </div>
 {% endblock %}
 

@@ -1,41 +1,6 @@
-{% extends "default.html" %}
-{% block content %}
+{% extends "Admin/default.html" %}
+{% block kpicontent %}
 
-{% if messages %}
-    {% for message in messages %}
-      <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
-        $(function() {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000
-          });
-          toastr.success('{{ message }}');
-        });
-      </script>
-    {% endfor %}
-{% endif %}
-<div class="row">
-  <div class="col-md-2">
-    <div class="card card-primary card-outline">
-      <div class="card-body box-profile">
-        <h2 class="profile-username text-center">ADMIN</h2>
-        <hr>
-        <br>
-        <br>
-        <ul class="list-group list-group-unbordered mb-3">
-          <li class="list-group-item">
-            <a href="{% url 'Admin_Dashboard' %}" class="btn btn-primary btn-block"><b>PMS</b></a>
-            <a href="{% url 'Admin_Users' %}" class="btn btn-primary btn-block"><b>Users</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>BU</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Teams</b></a>
-          </li>
-        </ul>
-      </div>
-      <!-- /.card-body -->
-    </div>
-  </div>
   <div class="col-md-10">
 
     <div class="card">
@@ -195,18 +160,5 @@
       <!-- /.card-body -->
     </div>
   </div>
-</div>
-    <script>
-        $('input').addClass('form-control')
-        $('select').addClass('form-control')
-        $(':checkbox').removeClass('form-control')
-        $(':checkbox').removeClass('form-check-input')
-        $(function () {
-            $("#example1").DataTable({
-              "responsive": false,
-              "autoWidth": false,
-            });
-        });
-    </script>
 {% endblock %}
 

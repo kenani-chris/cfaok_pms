@@ -1,25 +1,6 @@
-{% extends "default.html" %}
-{% block content %}
-<div class="row">
-  <div class="col-md-2">
-    <div class="card card-primary card-outline">
-      <div class="card-body box-profile">
-        <h2 class="profile-username text-center">ADMIN</h2>
-        <hr>
-        <br>
-        <br>
-        <ul class="list-group list-group-unbordered mb-3">
-          <li class="list-group-item">
-            <a href="{% url 'Admin_Dashboard' %}" class="btn btn-primary btn-block"><b>PMS</b></a>
-            <a href="{% url 'Admin_Users' %}" class="btn btn-primary btn-block"><b>Users</b></a>
-            <a href="{% url 'Admin_BUs' %}" class="btn btn-primary btn-block"><b>BU</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block"><b>Teams</b></a>
-          </li>
-        </ul>
-      </div>
-      <!-- /.card-body -->
-    </div>
-  </div>
+{% extends "Admin/default.html" %}
+{% block kpicontent %}
+
   <div class="col-md-10">
   <div class="row">
       <div class="col-md-3 col-sm-6 col-12">
@@ -99,30 +80,7 @@
       <!-- /.col -->
     </div>
 
-    {% for s in staff %}
-        <div class="modal fade" id="modal{{ s.staff_person.id }}">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h4 class="modal-title">Default Modal</h4>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <p>One fine body&hellip;</p>
-                </div>
 
-                <div class="modal-footer justify-content-between">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-              </div>
-              <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-          </div>
-    {% endfor %}
     <div class="card">
       <div class="card-body">
       <a href="{% url 'Admin_BUs_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New BU</i></a><br><br>
@@ -165,14 +123,6 @@
       <!-- /.card-body -->
     </div>
   </div>
-</div>
-    <script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": false,
-      "autoWidth": false,
-    });
-  });
-</script>
+
 {% endblock %}
 

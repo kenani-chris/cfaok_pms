@@ -5790,15 +5790,8 @@ class AdminBUOne(UpdateView):
         context['user_is_tl'] = staff_person.staff_head_team
         context['user_team'] = staff_person.staff_team
         context['user_bu'] = staff_person.staff_bu
-
-        bu_n_l = []
-        bus = bu.objects.all()
-        for bu_u in bus:
-            bu_l = staff.objects.filter(staff_head_bu=bu_u.bu_id)
-            bu_n_l.append([bu_u, bu_l])
-
-        context['bu_n_l'] = bu_n_l
-
+        context['bu_members'] = staff.objects.filter(staff_bu=self.kwargs['bu_id'])
+        context['bu_head'] = staff.objects.filter(staff_head_bu=self.kwargs['bu_id'])
         return context
 
     def get_success_url(self):
@@ -5876,11 +5869,11 @@ class AdminTeam(TemplateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 @method_decorator(user_passes_test(is_admin), name='dispatch')
-class AdminBUOne(UpdateView):
-    template_name = 'Admin/admin_bu_one.html'
-    form_class = BUForm
-    model = bu
-    pk_url_kwarg = 'bu_id'
+class AdminTeamOne(UpdateView):
+    template_name = 'Admin/admin_team_one.html'
+    form_class = TeamForm
+    model = team
+    pk_url_kwarg = 't_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -5890,34 +5883,28 @@ class AdminBUOne(UpdateView):
         context['user_is_tl'] = staff_person.staff_head_team
         context['user_team'] = staff_person.staff_team
         context['user_bu'] = staff_person.staff_bu
-
-        bu_n_l = []
-        bus = bu.objects.all()
-        for bu_u in bus:
-            bu_l = staff.objects.filter(staff_head_bu=bu_u.bu_id)
-            bu_n_l.append([bu_u, bu_l])
-
-        context['bu_n_l'] = bu_n_l
+        context['team_members'] = staff.objects.filter(staff_team=self.kwargs['t_id'])
+        context['team_head'] = staff.objects.filter(staff_head_team=self.kwargs['t_id'])
 
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_BUs'))
+        return '{}'.format(reverse('Admin_Teams'))
 
     def form_valid(self, form):
-        super(AdminBUOne, self).form_valid(form)
-        messages.success(self.request, 'BU updated Successfully')
+        super(AdminTeamOne, self).form_valid(form)
+        messages.success(self.request, 'Team Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_BUs'))
+        return HttpResponseRedirect(reverse('Admin_Teams'))
 
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 @method_decorator(user_passes_test(is_admin), name='dispatch')
-class AdminBUNew(CreateView):
-    template_name = 'Admin/admin_bu_new.html'
-    form_class = BUForm
-    model = bu
+class AdminTeamNew(CreateView):
+    template_name = 'Admin/admin_team_new.html'
+    form_class = TeamForm
+    model = team
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -5930,16 +5917,13 @@ class AdminBUNew(CreateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_BUs'))
+        return '{}'.format(reverse('Admin_Teams'))
 
     def form_valid(self, form):
-        super(AdminBUNew, self).form_valid(form)
-        messages.success(self.request, 'BU updated Successfully')
+        super(AdminTeamNew, self).form_valid(form)
+        messages.success(self.request, 'Team Created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_BUs'))
-
-
-
+        return HttpResponseRedirect(reverse('Admin_Teams'))
 
 
 @method_decorator(login_required, name='dispatch')

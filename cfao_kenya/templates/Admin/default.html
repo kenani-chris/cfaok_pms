@@ -23,12 +23,15 @@
         <ul class="list-group list-group-unbordered mb-3">
           <li class="list-group-item">
             <a href="{% url 'Admin_Dashboard' %}" class="btn btn-primary btn-block"><b>PMS</b></a>
-            <a href="{% url 'Individual_Kpi_Detail1' %}" class="btn btn-primary btn-block disabled"><b>Users</b></a>
-              <a href="{% url 'Admin_PMS_Staff' pms.pms_id %}" class="btn btn-primary btn-block"><b>All Staff</b></a>
+            <a href="{% url 'Admin_Users' %}" class="btn btn-primary btn-block"><b>Users</b></a>
+            <a href="{% url 'Admin_BUs' %}" class="btn btn-primary btn-block"><b>BU</b></a>
+            <a href="{% url 'Admin_Teams' %}" class="btn btn-primary btn-block"><b>Teams</b></a>
+
           </li>
         </ul>
-          {% if pms %}
+          {% if pms and pms.id %}
           <ul class="list-group list-group-unbordered mb-3">
+          <a href="{% url 'Admin_PMS_Staff' pms.pms_id %}" class="btn btn-primary btn-block"><b>All Staff</b></a>
           <li class="list-group-item">
             <a href="{% url 'Admin_PMS_Matrix' pms.pms_id %}" class="btn btn-primary btn-block"><b>Matrix</b></a>
           </li>
@@ -50,14 +53,20 @@
     </div>
   </div>
   {% block kpicontent %} {% endblock %}
+    <script>
+        $('input').addClass('form-control')
+      $(function () {
+        $("#example1").DataTable({
+          "responsive": false,
+          "autoWidth": false,
+        });
+      });
+    </script>
+        <script>
+        $('input').addClass('form-control')
+        $('select').addClass('form-control')
+        $(':checkbox').removeClass('form-control')
+        $(':checkbox').removeClass('form-check-input')
+    </script>
 </div>
-<!-- page script -->
-<script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": false,
-      "autoWidth": false,
-    });
-  });
-</script>
 {% endblock %}
