@@ -658,6 +658,7 @@ class company_kpi(models.Model):
     type = (
         ('cumulative', 'cumulative'),
         ('YTD', 'YTD'),
+        ('Addition', 'Addition'),
     )
     company_kpi_type = models.CharField(max_length=10, choices=type, blank=True, default='cumulative', )
 

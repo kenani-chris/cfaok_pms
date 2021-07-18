@@ -144,6 +144,7 @@ def ind_kpi_score(pms, staff):
             if 'March' in use_months and kpi.individual_kpi_march_score_approve == 'Approved':
                 kpi_calc.append(kpi.individual_kpi_march_score)
 
+            kpi_calc = [0 if v is None else v for v in kpi_calc]
             score = sum(kpi_calc)
             print('Score '+ str(score))
             if kpi.individual_kpi_function == "Maximize" or kpi.individual_kpi_function == "maximize":
@@ -292,6 +293,7 @@ def ind_kpi_score(pms, staff):
                 kpi_calc.append(kpi.individual_kpi_march_score)
 
             if len(kpi_calc)>0:
+                kpi_calc = [0 if v is None else v for v in kpi_calc]
                 score = sum(kpi_calc) / len(kpi_calc)
 
                 if kpi.individual_kpi_function == "Maximize" or kpi.individual_kpi_function == 'maximize':
@@ -387,8 +389,9 @@ def bu_kpi_score(pms, bu):
             if 'March' in use_months and kpi.bu_kpi_march_score_approve == 'Approved':
                 kpi_calc.append(kpi.bu_kpi_march_score)
 
+            kpi_calc = [0 if v is None else v for v in kpi_calc]
             score = sum(kpi_calc)
-            if kpi.bu_kpi_function == "Maximize":
+            if kpi.bu_kpi_function == "Maximize" or kpi.bu_kpi_function == "maximize":
                 score = (score / target) * 100
             else:
                 if score == 0:
@@ -399,7 +402,7 @@ def bu_kpi_score(pms, bu):
                 else:
                     score = (target / score) * 100
 
-            kpi_score.append([kpi, score])
+            kpi_score.append([kpi, round(score, 0)])
 
         elif kpi.bu_kpi_type == 'YTD':
             today = datetime.date.today()
@@ -446,7 +449,7 @@ def bu_kpi_score(pms, bu):
                     if 'March' in use_months and kpi.bu_kpi_march_score_approve == 'Approved':
                         value = kpi.bu_kpi_march_score
 
-            if kpi.bu_kpi_function == "Maximize":
+            if kpi.bu_kpi_function == "Maximize" or kpi.bu_kpi_function == "maximize":
                 score = (value / target) * 100
             else:
                 if value == 0:
@@ -455,11 +458,11 @@ def bu_kpi_score(pms, bu):
                     else:
                         score = 0
                 else:
-                    score = (value / score) * 100
+                    score = (value / round(score, 0)) * 100
 
             kpi_score.append([kpi, score])
 
-        elif kpi.bu_kpi_type == 'Addition':
+        elif kpi.bu_kpi_type == 'Average':
             if 'April' in use_months and kpi.bu_kpi_april_score_approve == 'Approved':
                 kpi_calc.append(kpi.bu_kpi_april_score)
             if 'May' in use_months and kpi.bu_kpi_may_score_approve == 'Approved':
@@ -485,27 +488,31 @@ def bu_kpi_score(pms, bu):
             if 'March' in use_months and kpi.bu_kpi_march_score_approve == 'Approved':
                 kpi_calc.append(kpi.bu_kpi_march_score)
 
-            score = sum(kpi_calc) / len(kpi_calc)
+            if len(kpi_calc) >0:
+                kpi_calc = [0 if v is None else v for v in kpi_calc]
+                score = sum(kpi_calc) / len(kpi_calc)
 
-            if kpi.bu_kpi_function == "Maximize":
-                score = (score / target) * 100
-            else:
-                if score == 0:
-                    if score <= target:
-                        score = 100
-                    else:
-                        score = 0
+                if kpi.bu_kpi_function == "Maximize" or kpi.bu_kpi_function == "maximize":
+                    score = (score / target) * 100
                 else:
-                    score = (target / score) * 100
+                    if score == 0:
+                        if score <= target:
+                            score = 100
+                        else:
+                            score = 0
+                    else:
+                        score = (target / score) * 100
+            else:
+                score = 0
 
-            kpi_score.append([kpi, score])
+            kpi_score.append([kpi, round(score, 0)])
 
         else:
             score = 0
             kpi_score.append([kpi, 0])
 
-        score = score * kpi.bu_kpi_weight
-        sum_score = + score
+        score = round(score * (kpi.bu_kpi_weight/100), 0)
+        sum_score += score
 
     return [sum_score, kpi_score, len(kpi_score)]
 
@@ -577,8 +584,10 @@ def company_kpi_score(pms):
             if 'March' in use_months:
                 kpi_calc.append(kpi.company_kpi_march_score)
 
+            kpi_calc = [0 if v is None else v for v in kpi_calc]
             score = sum(kpi_calc)
-            if kpi.company_kpi_function == "Maximize":
+
+            if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
                 score = (score / target) * 100
             else:
                 if score == 0:
@@ -589,54 +598,54 @@ def company_kpi_score(pms):
                 else:
                     score = (target / score) * 100
 
-            kpi_score.append([kpi, score])
+            kpi_score.append([kpi, round(score, 0)])
 
         elif kpi.company_kpi_type == 'YTD':
             today = datetime.date.today()
             value = 0
             if today >= pms.pms_end_date:
-                if 'March' in use_months and kpi.company_kpi_march_score_approve == 'Approved':
+                if 'March' in use_months :
                     value = kpi.company_kpi_march_score
             else:
                 month = today.strftime('%B')
                 if month == 'April':
-                    if 'April' in use_months and kpi.company_kpi_april_score_approve == 'Approved':
+                    if 'April' in use_months :
                         value = kpi.company_kpi_april_score
                 if month == 'May':
-                    if 'May' in use_months and kpi.company_kpi_may_score_approve == 'Approved':
+                    if 'May' in use_months :
                         value = kpi.company_kpi_may_score
                 if month == 'June':
-                    if 'June' in use_months and kpi.company_kpi_june_score_approve == 'Approved':
+                    if 'June' in use_months :
                         value = kpi.company_kpi_june_score
                 if month == 'July':
-                    if 'July' in use_months and kpi.company_kpi_july_score_approve == 'Approved':
+                    if 'July' in use_months :
                         value = kpi.company_kpi_july_score
                 if month == 'August':
-                    if 'August' in use_months and kpi.company_kpi_august_score_approve == 'Approved':
+                    if 'August' in use_months :
                         value = kpi.company_kpi_august_score
                 if month == 'September':
-                    if 'September' in use_months and kpi.company_kpi_september_score_approve == 'Approved':
+                    if 'September' in use_months :
                         value = kpi.company_kpi_september_score
                 if month == 'October':
-                    if 'October' in use_months and kpi.company_kpi_october_score_approve == 'Approved':
+                    if 'October' in use_months :
                         value = kpi.company_kpi_october_score
                 if month == 'November':
-                    if 'November' in use_months and kpi.company_kpi_november_score_approve == 'Approved':
+                    if 'November' in use_months :
                         value = kpi.company_kpi_november_score
                 if month == 'December':
-                    if 'December' in use_months and kpi.company_kpi_december_score_approve == 'Approved':
+                    if 'December' in use_months :
                         value = kpi.company_kpi_december_score
                 if month == 'January':
-                    if 'January' in use_months and kpi.company_kpi_january_score_approve == 'Approved':
+                    if 'January' in use_months :
                         value = kpi.company_kpi_january_score
                 if month == 'February':
-                    if 'February' in use_months and kpi.company_kpi_february_score_approve == 'Approved':
+                    if 'February' in use_months :
                         value = kpi.company_kpi_february_score
                 if month == 'March':
-                    if 'March' in use_months and kpi.company_kpi_march_score_approve == 'Approved':
+                    if 'March' in use_months :
                         value = kpi.company_kpi_march_score
 
-            if kpi.company_kpi_function == "Maximize":
+            if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
                 score = (value / target) * 100
             else:
                 if value == 0:
@@ -647,55 +656,59 @@ def company_kpi_score(pms):
                 else:
                     score = (value / score) * 100
 
-            kpi_score.append([kpi, score])
+            kpi_score.append([kpi, round(score, 0)])
 
         elif kpi.company_kpi_type == 'Addition':
-            if 'April' in use_months and kpi.company_kpi_april_score_approve == 'Approved':
+            if 'April' in use_months :
                 kpi_calc.append(kpi.company_kpi_april_score)
-            if 'May' in use_months and kpi.company_kpi_may_score_approve == 'Approved':
+            if 'May' in use_months :
                 kpi_calc.append(kpi.company_kpi_may_score)
-            if 'June' in use_months and kpi.company_kpi_june_score_approve == 'Approved':
+            if 'June' in use_months :
                 kpi_calc.append(kpi.company_kpi_june_score)
-            if 'July' in use_months and kpi.company_kpi_july_score_approve == 'Approved':
+            if 'July' in use_months :
                 kpi_calc.append(kpi.company_kpi_july_score)
-            if 'August' in use_months and kpi.company_kpi_august_score_approve == 'Approved':
+            if 'August' in use_months :
                 kpi_calc.append(kpi.company_kpi_august_score)
-            if 'September' in use_months and kpi.company_kpi_september_score_approve == 'Approved':
+            if 'September' in use_months :
                 kpi_calc.append(kpi.company_kpi_september_score)
-            if 'October' in use_months and kpi.company_kpi_october_score_approve == 'Approved':
+            if 'October' in use_months :
                 kpi_calc.append(kpi.company_kpi_october_score)
-            if 'November' in use_months and kpi.company_kpi_november_score_approve == 'Approved':
+            if 'November' in use_months :
                 kpi_calc.append(kpi.company_kpi_november_score)
-            if 'December' in use_months and kpi.company_kpi_december_score_approve == 'Approved':
+            if 'December' in use_months :
                 kpi_calc.append(kpi.company_kpi_december_score)
-            if 'January' in use_months and kpi.company_kpi_january_score_approve == 'Approved':
+            if 'January' in use_months :
                 kpi_calc.append(kpi.company_kpi_january_score)
-            if 'February' in use_months and kpi.company_kpi_february_score_approve == 'Approved':
+            if 'February' in use_months :
                 kpi_calc.append(kpi.company_kpi_february_score)
-            if 'March' in use_months and kpi.company_kpi_march_score_approve == 'Approved':
+            if 'March' in use_months :
                 kpi_calc.append(kpi.company_kpi_march_score)
 
-            score = sum(kpi_calc) / len(kpi_calc)
+            if len(kpi_calc) > 0:
+                kpi_calc = [0 if v is None else v for v in kpi_calc]
+                score = sum(kpi_calc) / len(kpi_calc)
 
-            if kpi.company_kpi_function == "Maximize":
-                score = (score / target) * 100
-            else:
-                if score == 0:
-                    if score <= target:
-                        score = 100
-                    else:
-                        score = 0
+                if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
+                    score = (score / target) * 100
                 else:
-                    score = (target / score) * 100
+                    if score == 0:
+                        if score <= target:
+                            score = 100
+                        else:
+                            score = 0
+                    else:
+                        score = (target / score) * 100
+            else:
+                score = 0
 
-            kpi_score.append([kpi, score])
+            kpi_score.append([kpi, round(score, 0)])
 
         else:
             score = 0
             kpi_score.append([kpi, 0])
 
-        score = score * kpi.company_kpi_weight
-        sum_score = + score
+        score = round(score * (kpi.company_kpi_weight/100), 0)
+        sum_score += score
 
     return [sum_score, kpi_score, len(kpi_score)]
 
@@ -711,7 +724,7 @@ def assessment_score(pms, staff_u):
     for eval in evals:
         if user_is_md == 'Yes':
             tl_s_score = 'N/A'
-            s_tl_score = s_tl_score(staff_u, eval, default_score)
+            s_tl_score = s_tl_score_fun(staff_u, eval, default_score)
 
             s_tl_total_score += s_tl_score
             tl_s_total_score = 'N/A'
@@ -719,8 +732,8 @@ def assessment_score(pms, staff_u):
             eval_score += s_tl_score
 
         elif user_is_tl:
-            s_tl_score = s_tl_score(staff_u, eval, default_score)
-            tl_s_score = tl_s_score(staff_u, eval, default_score)
+            s_tl_score = s_tl_score_fun(staff_u, eval, default_score)
+            tl_s_score = tl_s_score_fun(staff_u, eval, default_score)
 
             s_tl_total_score += s_tl_score
             tl_s_total_score += tl_s_total_score
@@ -728,7 +741,7 @@ def assessment_score(pms, staff_u):
             eval_score += (s_tl_score + tl_s_score) / 2
         else:
             s_tl_score = 'N/A'
-            tl_s_score = tl_s_score(staff_u, eval, default_score)
+            tl_s_score = tl_s_score_fun(staff_u, eval, default_score)
 
             s_tl_total_score = 'N/A'
             tl_s_total_score += tl_s_score
@@ -745,7 +758,7 @@ def assessment_score(pms, staff_u):
     return [eval_score, s_tl_total_score, tl_s_total_score]
 
 
-def tl_s_score(staff_u, eval, default_score):
+def tl_s_score_fun(staff_u, eval, default_score):
     tl_s_team_score = 0
     # TL_S_Score
     tl_responses = done_tl_evaluates_staff.objects.filter(done_staff=staff_u)
@@ -800,7 +813,7 @@ def tl_s_score(staff_u, eval, default_score):
     return tl_s_team_score
 
 
-def s_tl_score(staff_u, eval, default_score):
+def s_tl_score_fun(staff_u, eval, default_score):
     s_tl_team_score = 0
     # S_TL_Score
     staff_responses = done_staff_evaluates_tl.objects.filter(done_team_leader=staff_u)
@@ -939,7 +952,7 @@ class HomeView(TemplateView):
                 else:
                     context['bu_kpi'] = [0, [], [], []]
 
-#        context['assessment'] = assessment_score(context['pms'], self.request.user)
+        context['assessment'] = assessment_score(context['pms'], self.request.user)
 
         return context
 
