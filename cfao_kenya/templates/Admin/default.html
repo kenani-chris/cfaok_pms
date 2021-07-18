@@ -19,6 +19,7 @@
   <div class="col-md-2">
     <div class="card card-primary card-outline">
       <div class="card-body box-profile">
+        <h2 class="profile-username text-center">Admin</h2>
         <br>
         <ul class="list-group list-group-unbordered mb-3">
           <li class="list-group-item">
@@ -29,9 +30,8 @@
 
           </li>
         </ul>
-          {% if pms and pms.id %}
+          {% if pms and pms.pms_id %}
           <ul class="list-group list-group-unbordered mb-3">
-          <a href="{% url 'Admin_PMS_Staff' pms.pms_id %}" class="btn btn-primary btn-block"><b>All Staff</b></a>
           <li class="list-group-item">
             <a href="{% url 'Admin_PMS_Matrix' pms.pms_id %}" class="btn btn-primary btn-block"><b>Matrix</b></a>
           </li>

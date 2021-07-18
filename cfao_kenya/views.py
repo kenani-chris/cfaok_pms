@@ -145,7 +145,8 @@ def ind_kpi_score(pms, staff):
                 kpi_calc.append(kpi.individual_kpi_march_score)
 
             score = sum(kpi_calc)
-            if kpi.individual_kpi_function == "Maximize":
+            print('Score '+ str(score))
+            if kpi.individual_kpi_function == "Maximize" or kpi.individual_kpi_function == "maximize":
                 score = (score / target) * 100
             else:
                 if score == 0:
@@ -156,7 +157,7 @@ def ind_kpi_score(pms, staff):
                 else:
                     score = (target / score) * 100
 
-            kpi_score.append([kpi, score])
+            kpi_score.append([kpi, round(score, 0)])
 
         elif kpi.individual_kpi_type == 'YTD':
             today = datetime.date.today()
@@ -167,43 +168,91 @@ def ind_kpi_score(pms, staff):
             else:
                 month = today.strftime('%B')
                 if month == 'April':
-                    if 'April' in use_months and kpi.individual_kpi_april_score_approve == 'Approved':
-                        value = kpi.individual_kpi_april_score
+                    if int(today.strftime('%-d')) >= pms.pms_individual_submit_results_date:
+                        if 'April' in use_months and kpi.individual_kpi_april_score_approve == 'Approved':
+                            value = kpi.individual_kpi_april_score
                 if month == 'May':
-                    if 'May' in use_months and kpi.individual_kpi_may_score_approve == 'Approved':
-                        value = kpi.individual_kpi_may_score
+                    if int(today.strftime('%-d')) >= pms.pms_individual_submit_results_date:
+                        if 'May' in use_months and kpi.individual_kpi_may_score_approve == 'Approved':
+                            value = kpi.individual_kpi_may_score
+                    else:
+                        if 'April' in use_months and kpi.individual_kpi_april_score_approve == 'Approved':
+                            value = kpi.individual_kpi_april_score
                 if month == 'June':
-                    if 'June' in use_months and kpi.individual_kpi_june_score_approve == 'Approved':
-                        value = kpi.individual_kpi_june_score
-                if month == 'July':
-                    if 'July' in use_months and kpi.individual_kpi_july_score_approve == 'Approved':
-                        value = kpi.individual_kpi_july_score
-                if month == 'August':
-                    if 'August' in use_months and kpi.individual_kpi_august_score_approve == 'Approved':
-                        value = kpi.individual_kpi_august_score
-                if month == 'September':
-                    if 'September' in use_months and kpi.individual_kpi_september_score_approve == 'Approved':
-                        value = kpi.individual_kpi_september_score
-                if month == 'October':
-                    if 'October' in use_months and kpi.individual_kpi_october_score_approve == 'Approved':
-                        value = kpi.individual_kpi_october_score
-                if month == 'November':
-                    if 'November' in use_months and kpi.individual_kpi_november_score_approve == 'Approved':
-                        value = kpi.individual_kpi_november_score
-                if month == 'December':
-                    if 'December' in use_months and kpi.individual_kpi_december_score_approve == 'Approved':
-                        value = kpi.individual_kpi_december_score
-                if month == 'January':
-                    if 'January' in use_months and kpi.individual_kpi_january_score_approve == 'Approved':
-                        value = kpi.individual_kpi_january_score
-                if month == 'February':
-                    if 'February' in use_months and kpi.individual_kpi_february_score_approve == 'Approved':
-                        value = kpi.individual_kpi_february_score
-                if month == 'March':
-                    if 'March' in use_months and kpi.individual_kpi_march_score_approve == 'Approved':
-                        value = kpi.individual_kpi_march_score
+                    if int(today.strftime('%-d')) >= pms.pms_individual_submit_results_date:
+                        if 'June' in use_months and kpi.individual_kpi_june_score_approve == 'Approved':
+                            value = kpi.individual_kpi_june_score
+                    else:
+                        if 'May' in use_months and kpi.individual_kpi_may_score_approve == 'Approved':
+                            value = kpi.individual_kpi_may_score
 
-            if kpi.individual_kpi_function == "Maximize":
+                if month == 'July':
+                    if int(today.strftime('%-d')) >= pms.pms_individual_submit_results_date:
+                        if 'July' in use_months and kpi.individual_kpi_july_score_approve == 'Approved':
+                            value = kpi.individual_kpi_july_score
+                    else:
+                        if 'June' in use_months and kpi.individual_kpi_june_score_approve == 'Approved':
+                            value = kpi.individual_kpi_june_score
+
+                if month == 'August':
+                    if int(today.strftime('%-d')) >= pms.pms_individual_submit_results_date:
+                        if 'August' in use_months and kpi.individual_kpi_august_score_approve == 'Approved':
+                            value = kpi.individual_kpi_august_score
+                    else:
+                        if 'July' in use_months and kpi.individual_kpi_july_score_approve == 'Approved':
+                            value = kpi.individual_kpi_july_score
+                if month == 'September':
+                    if int(today.strftime('%-d')) >= pms.pms_individual_submit_results_date:
+                        if 'September' in use_months and kpi.individual_kpi_september_score_approve == 'Approved':
+                            value = kpi.individual_kpi_september_score
+                    else:
+                        if 'August' in use_months and kpi.individual_kpi_august_score_approve == 'Approved':
+                            value = kpi.individual_kpi_august_score
+
+                if month == 'October':
+                    if int(today.strftime('%-d')) >= pms.pms_individual_submit_results_date:
+                        if 'October' in use_months and kpi.individual_kpi_october_score_approve == 'Approved':
+                            value = kpi.individual_kpi_october_score
+                    else:
+                        if 'September' in use_months and kpi.individual_kpi_september_score_approve == 'Approved':
+                            value = kpi.individual_kpi_september_score
+                if month == 'November':
+                    if int(today.strftime('%-d')) >= pms.pms_individual_submit_results_date:
+                        if 'November' in use_months and kpi.individual_kpi_november_score_approve == 'Approved':
+                            value = kpi.individual_kpi_november_score
+                    else:
+                        if 'October' in use_months and kpi.individual_kpi_october_score_approve == 'Approved':
+                            value = kpi.individual_kpi_october_score
+                if month == 'December':
+                    if int(today.strftime('%-d')) >= pms.pms_individual_submit_results_date:
+                        if 'December' in use_months and kpi.individual_kpi_december_score_approve == 'Approved':
+                            value = kpi.individual_kpi_december_score
+                    else:
+                        if 'November' in use_months and kpi.individual_kpi_november_score_approve == 'Approved':
+                            value = kpi.individual_kpi_november_score
+                if month == 'January':
+                    if int(today.strftime('%-d')) >= pms.pms_individual_submit_results_date:
+                        if 'January' in use_months and kpi.individual_kpi_january_score_approve == 'Approved':
+                            value = kpi.individual_kpi_january_score
+                    else:
+                        if 'December' in use_months and kpi.individual_kpi_december_score_approve == 'Approved':
+                            value = kpi.individual_kpi_december_score
+                if month == 'February':
+                    if int(today.strftime('%-d')) >= pms.pms_individual_submit_results_date:
+                        if 'February' in use_months and kpi.individual_kpi_february_score_approve == 'Approved':
+                            value = kpi.individual_kpi_february_score
+                    else:
+                        if 'January' in use_months and kpi.individual_kpi_january_score_approve == 'Approved':
+                            value = kpi.individual_kpi_january_score
+                if month == 'March':
+                    if int(today.strftime('%-d')) >= pms.pms_individual_submit_results_date:
+                        if 'March' in use_months and kpi.individual_kpi_march_score_approve == 'Approved':
+                            value = kpi.individual_kpi_march_score
+                    else:
+                        if 'February' in use_months and kpi.individual_kpi_february_score_approve == 'Approved':
+                            value = kpi.individual_kpi_february_score
+                        
+            if kpi.individual_kpi_function == "Maximize" or kpi.individual_kpi_function == "maximize":
                 score = (value / target) * 100
             else:
                 if value == 0:
@@ -214,9 +263,9 @@ def ind_kpi_score(pms, staff):
                 else:
                     score = (value / score) * 100
 
-            kpi_score.append([kpi, score])
+            kpi_score.append([kpi, round(score, 0)])
 
-        elif kpi.individual_kpi_type == 'Addition':
+        elif kpi.individual_kpi_type == 'Average':
             if 'April' in use_months and kpi.individual_kpi_april_score_approve == 'Approved':
                 kpi_calc.append(kpi.individual_kpi_april_score)
             if 'May' in use_months and kpi.individual_kpi_may_score_approve == 'Approved':
@@ -242,27 +291,31 @@ def ind_kpi_score(pms, staff):
             if 'March' in use_months and kpi.individual_kpi_march_score_approve == 'Approved':
                 kpi_calc.append(kpi.individual_kpi_march_score)
 
-            score = sum(kpi_calc) / len(kpi_calc)
+            if len(kpi_calc)>0:
+                score = sum(kpi_calc) / len(kpi_calc)
 
-            if kpi.individual_kpi_function == "Maximize":
-                score = (score / target) * 100
-            else:
-                if score == 0:
-                    if score <= target:
-                        score = 100
-                    else:
-                        score = 0
+                if kpi.individual_kpi_function == "Maximize" or kpi.individual_kpi_function == 'maximize':
+                    score = (score / target) * 100
                 else:
-                    score = (target / score) * 100
+                    if score == 0:
+                        if score <= target:
+                            score = 100
+                        else:
+                            score = 0
+                    else:
+                        score = (target / score) * 100
+            else:
+                score = 0
 
-            kpi_score.append([kpi, score])
+            kpi_score.append([kpi, round(score, 0)])
 
         else:
             score = 0
             kpi_score.append([kpi, 0])
 
-        score = score * kpi.individual_kpi_weight
-        sum_score = + score
+        score = round(score * (kpi.individual_kpi_weight/100), 0)
+        sum_score += score
+        print('sum_score: '+ str(sum_score))
 
     return [sum_score, kpi_score, len(kpi_score)]
 
@@ -886,7 +939,7 @@ class HomeView(TemplateView):
                 else:
                     context['bu_kpi'] = [0, [], [], []]
 
-        context['assessment'] = assessment_score(context['pms'], self.request.user)
+#        context['assessment'] = assessment_score(context['pms'], self.request.user)
 
         return context
 
