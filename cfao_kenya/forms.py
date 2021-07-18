@@ -457,3 +457,9 @@ class PasswordSet(forms.ModelForm):
         model = User
         fields = ['password']
 
+
+class BUForm(forms.ModelForm):
+    class Meta:
+        model = bu
+        fields = '__all__'
+

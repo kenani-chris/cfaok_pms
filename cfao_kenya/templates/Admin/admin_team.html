@@ -125,101 +125,39 @@
     {% endfor %}
     <div class="card">
       <div class="card-body">
-      <a href="{% url 'Admin_Users_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New User</i></a><br><br>
+      <a href="{% url 'Admin_BUs_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New BU</i></a><br><br>
 
         <div style="overflow-x:scroll">
             <table id="example1" class="table table-bordered">
             <thead>
                 <tr>
                     <th>
-                        Name
+                        BU Name
                     </th>
                     <th>
-                        Action
+                        BU Abbrev
                     </th>
                     <th>
-                        PF
-                    </th>
-                    <th>
-                        Active
-                    </th>
-                    <th>
-                        Superuser
-                    </th>
-                    <th>
-                        Email
-                    </th>
-                    <th>
-                        Team
-                    </th>
-                    <th>
-                        BU
-                    </th>
-                    <th>
-                        Is TL
-                    </th>
-                    <th>
-                        Is BU L
-                    </th>
-                    <th>
-                        Grade
+                        BU Head
                     </th>
                 </tr>
             </thead>
             <tbody>
-              {% for s in staff %}
-
-                  <tr>
-                    <td>
-                        <a href="{% url 'Admin_Users_One' s.staff_person.id %}">{{ s.staff_person.get_full_name }}</a>
-                    </td>
-                      <td>
-                            <div class="dropdown">
-                              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Action
-                              </button>
-                              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                  {% if s.staff_person.is_active is True %}
-                                    <a class="dropdown-item" href="{% url 'Admin_Users_deactivate1' s.staff_person.id %}">Deactivate</a>
-                                  {% else %}
-                                      <a class="dropdown-item" href="{% url 'Admin_Users_activate1' s.staff_person.id %}">Activate</a>
-                                  {% endif %}
-                                <a class="dropdown-item" href="{% url 'Admin_Users_reset_password' s.staff_person.id %}">Reset Password</a>
-
-                              </div>
-                            </div>
-                      </td>
-                    <td>
-                        {{ s.staff_Pf_Number }}
-                    </td>
-                    <td>
-                        {{ s.staff_person.is_active }}
-                    </td>
-
-                    <td>
-                        {{ s.staff_person.is_superuser }}
-                    </td>
-
-                    <td>
-                        {{ s.staff_person.email }}
-                    </td>
-                    <td>
-                        {{ s.staff_team }}
-                    </td>
-                    <td>
-                        {{ s.staff_bu }}
-                    </td>
-                    <td>
-                        {{ s.staff_head_team }}
-                    </td>
-                    <td>
-                        {{ s.staff_head_bu.bu_name }}
-                    </td>
-                    <td>
-                        {{ s.staff_grade }}
-                    </td>
-                  </tr>
-              {% endfor %}
+                {% for bu in bu_n_l %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'Admin_BUs_One' bu.0.bu_id %}">{{ bu.0.bu_name }}</a>
+                        </td>
+                        <td>
+                            {{ bu.0.bu_bbreviation }}
+                        </td>
+                        <td>
+                            {% for b in bu.1  %}
+                                {{ b.staff_person.get_full_name }},
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
             </tbody>
           </table>
         </div>

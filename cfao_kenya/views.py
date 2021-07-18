@@ -19,6 +19,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.shortcuts import get_object_or_404
 from django.views.generic import *
 from itertools import chain
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, UserModel
 import datetime
 from .permissions import is_member_company, is_admin
 from django.conf import settings
@@ -5742,6 +5743,208 @@ class AdminDashboard(TemplateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 @method_decorator(user_passes_test(is_admin), name='dispatch')
+class AdminBU(TemplateView):
+    template_name = 'Admin/admin_bu.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+        context['staff_active'] = staff.objects.filter(staff_person__is_active=True)
+        context['staff_tl'] = staff.objects.exclude(staff_head_team__isnull=True)
+        context['staff_bu_heads'] = staff.objects.exclude(staff_head_bu__isnull=True)
+        context['staff_md'] = staff.objects.exclude(staff_md='No')
+        context['pms'] = pms.objects.all()
+        context['teams'] = team.objects.all()
+
+        bu_n_l = []
+        bus = bu.objects.all()
+        for bu_u in bus:
+            bu_l = staff.objects.filter(staff_head_bu=bu_u.bu_id)
+            bu_n_l.append([bu_u, bu_l])
+
+        context['bu_n_l'] = bu_n_l
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+class AdminBUOne(UpdateView):
+    template_name = 'Admin/admin_bu_one.html'
+    form_class = BUForm
+    model = bu
+    pk_url_kwarg = 'bu_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        bu_n_l = []
+        bus = bu.objects.all()
+        for bu_u in bus:
+            bu_l = staff.objects.filter(staff_head_bu=bu_u.bu_id)
+            bu_n_l.append([bu_u, bu_l])
+
+        context['bu_n_l'] = bu_n_l
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_BUs'))
+
+    def form_valid(self, form):
+        super(AdminBUOne, self).form_valid(form)
+        messages.success(self.request, 'BU updated Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_BUs'))
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+class AdminBUNew(CreateView):
+    template_name = 'Admin/admin_bu_new.html'
+    form_class = BUForm
+    model = bu
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_BUs'))
+
+    def form_valid(self, form):
+        super(AdminBUNew, self).form_valid(form)
+        messages.success(self.request, 'BU updated Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_BUs'))
+
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+class AdminTeam(TemplateView):
+    template_name = 'Admin/admin_team.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = staff.objects.all()
+        context['staff_active'] = staff.objects.filter(staff_person__is_active=True)
+        context['staff_tl'] = staff.objects.exclude(staff_head_team__isnull=True)
+        context['staff_bu_heads'] = staff.objects.exclude(staff_head_bu__isnull=True)
+        context['staff_md'] = staff.objects.exclude(staff_md='No')
+        context['pms'] = pms.objects.all()
+        context['teams'] = team.objects.all()
+
+        team_n_l = []
+        teams = team.objects.all()
+        for t in teams:
+            tl = staff.objects.filter(staff_head_team=t.team_id)
+            team_n_l.append([t, tl])
+
+        context['team_n_l'] = team_n_l
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+class AdminBUOne(UpdateView):
+    template_name = 'Admin/admin_bu_one.html'
+    form_class = BUForm
+    model = bu
+    pk_url_kwarg = 'bu_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        bu_n_l = []
+        bus = bu.objects.all()
+        for bu_u in bus:
+            bu_l = staff.objects.filter(staff_head_bu=bu_u.bu_id)
+            bu_n_l.append([bu_u, bu_l])
+
+        context['bu_n_l'] = bu_n_l
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_BUs'))
+
+    def form_valid(self, form):
+        super(AdminBUOne, self).form_valid(form)
+        messages.success(self.request, 'BU updated Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_BUs'))
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+class AdminBUNew(CreateView):
+    template_name = 'Admin/admin_bu_new.html'
+    form_class = BUForm
+    model = bu
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Admin_BUs'))
+
+    def form_valid(self, form):
+        super(AdminBUNew, self).form_valid(form)
+        messages.success(self.request, 'BU updated Successfully')
+
+        return HttpResponseRedirect(reverse('Admin_BUs'))
+
+
+
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminUser(TemplateView):
     template_name = 'Admin/admin_users.html'
 
@@ -5764,7 +5967,7 @@ class AdminUser(TemplateView):
 
         return context
 
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, UserModel
+
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -5826,6 +6029,9 @@ def new_user(request):
         return render(request, 'Admin/admin_users_new.html', context)
 
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminUserNewDetails(UpdateView):
     model = UserModel
     form_class = UserForm
@@ -5844,15 +6050,18 @@ class AdminUserNewDetails(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_Users_New_Details_Staff', kwargs={'pk':self.kwargs['pk']}))
+        return '{}'.format(reverse('Admin_Users_New_Details_Staff', kwargs={'pk': self.kwargs['pk']}))
 
     def form_valid(self, form):
         super(AdminUserNewDetails, self).form_valid(form)
         messages.success(self.request, 'User updated Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_Users_New_Details_Staff', kwargs={'pk':self.kwargs['pk']}))
+        return HttpResponseRedirect(reverse('Admin_Users_New_Details_Staff', kwargs={'pk': self.kwargs['pk']}))
 
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminUserNewDetailsStaff(CreateView):
     model = staff
     form_class = StaffForm
@@ -5882,6 +6091,7 @@ class AdminUserNewDetailsStaff(CreateView):
         initial = super(AdminUserNewDetailsStaff, self).get_initial()
         initial['staff_person'] = get_object_or_404(User, id=self.kwargs['pk'])
         return initial
+
 
 @login_required
 def new_user_details(request, pk):
@@ -6005,6 +6215,7 @@ class AdminUserOne(DetailView):
         return context
 
 
+@login_required
 def deactivate_account_dashboard(request, pk):
     if request.user.is_superuser:
         user = get_object_or_404(User, id=pk)
@@ -6014,6 +6225,7 @@ def deactivate_account_dashboard(request, pk):
         return HttpResponseRedirect(reverse('Admin_Users'))
 
 
+@login_required
 def activate_account_dashboard(request, pk):
     if request.user.is_superuser:
         user = get_object_or_404(User, id=pk)
@@ -6023,6 +6235,7 @@ def activate_account_dashboard(request, pk):
         return HttpResponseRedirect(reverse('Admin_Users'))
 
 
+@login_required
 def reset_user_password(request, pk):
     if request.user.is_superuser:
         return HttpResponseRedirect(reverse('password_reset_confirm',
@@ -6031,6 +6244,9 @@ def reset_user_password(request, pk):
                                                         get_object_or_404(User, id=pk))}))
 
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminUserOneEditUser(UpdateView):
     model = UserModel
     form_class = UserForm
@@ -6049,16 +6265,18 @@ class AdminUserOneEditUser(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_Users_One', kwargs={'pk':self.kwargs['pk']}))
+        return '{}'.format(reverse('Admin_Users_One', kwargs={'pk': self.kwargs['pk']}))
 
     def form_valid(self, form):
         super(AdminUserOneEditUser, self).form_valid(form)
         messages.success(self.request, 'User updated Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_Users_One', kwargs={'pk':self.kwargs['pk']}))
+        return HttpResponseRedirect(reverse('Admin_Users_One', kwargs={'pk': self.kwargs['pk']}))
 
 
-
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+@method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminUserOneEditStaff(UpdateView):
     model = staff
     form_class = StaffForm
@@ -6080,14 +6298,13 @@ class AdminUserOneEditStaff(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_Users_One', kwargs={'pk':self.kwargs['pk']}))
+        return '{}'.format(reverse('Admin_Users_One', kwargs={'pk': self.kwargs['pk']}))
 
     def form_valid(self, form):
         super(AdminUserOneEditStaff, self).form_valid(form)
         messages.success(self.request, 'User updated Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_Users_One', kwargs={'pk':self.kwargs['pk']}))
-
+        return HttpResponseRedirect(reverse('Admin_Users_One', kwargs={'pk': self.kwargs['pk']}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')

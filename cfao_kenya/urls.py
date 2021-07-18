@@ -104,6 +104,15 @@ urlpatterns = [
 
     path('Admin/', AdminDashboard.as_view(), name='Admin_Dashboard'),
 
+    path('Admin/BUs', AdminBU.as_view(), name='Admin_BUs'),
+    path('Admin/BUs/<uuid:bu_id>', AdminBUOne.as_view(), name='Admin_BUs_One'),
+    path('Admin/BUs/New', AdminBUNew.as_view(), name='Admin_BUs_New'),
+
+    path('Admin/Teams', AdminTeam.as_view(), name='Admin_Teams'),
+    path('Admin/BUs/<uuid:bu_id>', AdminBUOne.as_view(), name='Admin_BUs_One'),
+    path('Admin/BUs/New', AdminBUNew.as_view(), name='Admin_BUs_New'),
+
+
     path('Admin/Users', AdminUser.as_view(), name='Admin_Users'),
     path('Admin/Users/New', new_user, name='Admin_Users_New'),
     path('Admin/Users/New/Details/<int:pk>', AdminUserNewDetails.as_view(), name='Admin_Users_New_Details'),
