@@ -102,6 +102,9 @@ urlpatterns = [
     path('Assessment/<uuid:as_id>/TL-S/<int:s_id>/Previous', AssessmentTlSPreviousStaff.as_view(), name='Assessment_S_One_Previous'),
 
 
+    path('Report/', Report.as_view(), name='Reports'),
+
+
     path('Admin/', AdminDashboard.as_view(), name='Admin_Dashboard'),
 
     path('Admin/BUs', AdminBU.as_view(), name='Admin_BUs'),
