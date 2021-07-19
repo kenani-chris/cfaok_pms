@@ -32,7 +32,7 @@
             {% for kpi in approved %}
                 <tr>
                   <td>
-                    <a href="{% url 'BU_Kpi_Result_Update' kpi.bu_kpi_id %}"><span class="fa fa-clipboard-check"></span> {{ kpi.bu_kpi_title }}</a>
+                    <a href="{% url 'tamk_url_BU_Kpi_Result_Update' kpi.bu_kpi_id %}"><span class="fa fa-clipboard-check"></span> {{ kpi.bu_kpi_title }}</a>
                   </td>
                   <td>
                     {{ kpi.bu_kpi_april_score }}

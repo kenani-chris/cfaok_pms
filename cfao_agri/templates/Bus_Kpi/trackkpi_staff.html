@@ -11,7 +11,7 @@
       <br>
       <div class="row">
         <div class="col-md-3 col-sm-6 col-12">
-          <a href="{% url 'Individual_Kpi_Detail1' %}">
+          <a href="{% url 'cfaoa_url_Individual_Kpi_Detail1' %}">
             <div class="info-box bg-info">
               <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
 
@@ -30,7 +30,7 @@
         </div>
         <!-- /.col -->
         <div class="col-md-3 col-sm-6 col-12">
-          <a href="{% url 'Individual_Kpi_Detail1' %}">
+          <a href="{% url 'cfaoa_url_Individual_Kpi_Detail1' %}">
             <div class="info-box bg-success">
               <span class="info-box-icon"><i class="far fa-thumbs-up"></i></span>
               <div class="info-box-content">
@@ -48,7 +48,7 @@
         </div>
         <!-- /.col -->
         <div class="col-md-3 col-sm-6 col-12">
-          <a href="{% url 'Individual_Kpi_Detail1' %}">
+          <a href="{% url 'cfaoa_url_Individual_Kpi_Detail1' %}">
             <div class="info-box bg-warning">
               <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
 
@@ -67,7 +67,7 @@
         </div>
         <!-- /.col -->
         <div class="col-md-3 col-sm-6 col-12">
-          <a href="{% url 'Individual_Kpi_Detail1' %}">
+          <a href="{% url 'cfaoa_url_Individual_Kpi_Detail1' %}">
             <div class="info-box bg-danger">
               <span class="info-box-icon"><i class="fas fa-thumbs-down"></i></span>
 
@@ -116,7 +116,7 @@
               {% if kpi.bu_kpi_status == "Approved" %}
                 <tr>
                   <td rowspan="2">
-                    <a href="{% url 'BUs_Track_Kpi_BUs_One' bu.bu_id kpi.bu_kpi_id %}"> {{ kpi.bu_kpi_title }}</a>
+                    <a href="{% url 'cfaoa_url_BUs_Track_Kpi_BUs_One' bu.bu_id kpi.bu_kpi_id %}"> {{ kpi.bu_kpi_title }}</a>
                   </td>
                   <td rowspan="2">
                     {{ kpi.bu_kpi_function }}
@@ -291,7 +291,7 @@
               {% else%}
                 <tr>
                   <td>
-                    <a href="{% url 'BUs_Track_Kpi_BUs_One' bu.bu_id kpi.bu_kpi_id %}"> {{ kpi.bu_kpi_title }}</a>
+                    <a href="{% url 'cfaoa_url_BUs_Track_Kpi_BUs_One' bu.bu_id kpi.bu_kpi_id %}"> {{ kpi.bu_kpi_title }}</a>
                   </td>
                   <td>
                     {{ kpi.bu_kpi_function }}

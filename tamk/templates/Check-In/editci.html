@@ -23,7 +23,7 @@
         {% for ci in pending_ci %}
             <tr>
               <td>
-                <a href="{% url 'Check-In_Edit_One' ci.checkIn_id %}"><span class="fa fa-pen"></span> {{ ci.checkIn_month }}</a>
+                <a href="{% url 'tamk_url_Check-In_Edit_One' ci.checkIn_id %}"><span class="fa fa-pen"></span> {{ ci.checkIn_month }}</a>
               </td>
               <td>
                 {{ ci.checkIn_status }}

@@ -1,7 +1,7 @@
 {% extends "Admin/default.html" %}
 {% block page_top %}
-    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Admin_Dashboard' %}">Admin</a></li>
-    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Admin_PMS_Assessment' pms.pms_id %}">Assessment</a></li>
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'tamk_url_Admin_Dashboard' %}">Admin</a></li>
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'tamk_url_Admin_PMS_Assessment' pms.pms_id %}">Assessment</a></li>
 {% endblock %}
 {% block kpicontent %}
 
@@ -10,7 +10,7 @@
       <div class="card-header">
         <h3 class="card-title">PMS <b>{{ pms.pms_name }}</b></h3>
           <div class="float-right">
-            <a href="{% url 'Admin_PMS_Assessment_New' pms.pms_id %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New</i></a>
+            <a href="{% url 'tamk_url_Admin_PMS_Assessment_New' pms.pms_id %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New</i></a>
           </div>
       </div>
       <!-- /.card-header -->
@@ -100,10 +100,10 @@
                <tbody>
                 <tr>
                     <td>
-                        <a href="{% url 'Admin_PMS_Assessment_One_STl' pms.pms_id evaluation.evaluation_id %}">Staff Evaluate TL</a>
+                        <a href="{% url 'tamk_url_Admin_PMS_Assessment_One_STl' pms.pms_id evaluation.evaluation_id %}">Staff Evaluate TL</a>
                     </td>
                     <td>
-                        <a href="{% url 'Admin_PMS_Assessment_One_TlS' pms.pms_id evaluation.evaluation_id %}">TL Evaluate Staff</a>
+                        <a href="{% url 'tamk_url_Admin_PMS_Assessment_One_TlS' pms.pms_id evaluation.evaluation_id %}">TL Evaluate Staff</a>
                     </td>
                 </tr>
                </tbody>
@@ -119,7 +119,7 @@
                 </tr>
               </thead>
             </table>
-            <a href="{% url 'Admin_PMS_Assessment_One_Response_New' pms.pms_id evaluation.evaluation_id %}" class="btn btn-success float-right">New Score</a>
+            <a href="{% url 'tamk_url_Admin_PMS_Assessment_One_Response_New' pms.pms_id evaluation.evaluation_id %}" class="btn btn-success float-right">New Score</a>
             <table id="example" class="table table-bordered">
                 <thead>
                     <th>
@@ -133,7 +133,7 @@
                     {% for score in evaluation_responses %}
                         <tr>
                             <td>
-                                <a href="{% url 'Admin_PMS_Assessment_One_Response_One' pms.pms_id evaluation.evaluation_id score.response_id %}">{{ score.response }}</a>
+                                <a href="{% url 'tamk_url_Admin_PMS_Assessment_One_Response_One' pms.pms_id evaluation.evaluation_id score.response_id %}">{{ score.response }}</a>
                             </td>
                             <td>
                                 {{ score.response_score }}
@@ -153,7 +153,7 @@
               </thead>
            </table>
             {% if tl_s_questions.count < 7 %}
-                <a href="{% url 'Admin_PMS_Assessment_New_Question_One_Tl_S' pms.pms_id evaluation.evaluation_id %}" class="btn btn-success">New Question</a>
+                <a href="{% url 'tamk_url_Admin_PMS_Assessment_New_Question_One_Tl_S' pms.pms_id evaluation.evaluation_id %}" class="btn btn-success">New Question</a>
             {% endif %}
           <table id="example" class="table table-bordered">
               <thead>
@@ -169,7 +169,7 @@
                 {% for quiz in tl_s_questions %}
                     <tr>
                         <td>
-                            <a href="{% url 'Admin_PMS_Assessment_One_Question_One_Tl_S' pms.pms_id evaluation.evaluation_id quiz.question_id %}">{{ quiz.question }}</a>
+                            <a href="{% url 'tamk_url_Admin_PMS_Assessment_One_Question_One_Tl_S' pms.pms_id evaluation.evaluation_id quiz.question_id %}">{{ quiz.question }}</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -187,7 +187,7 @@
               </thead>
            </table>
             {% if s_tl_questions.count < 7 %}
-                <a href="{% url 'Admin_PMS_Assessment_New_Question_One_S_Tl' pms.pms_id evaluation.evaluation_id %}" class="btn btn-success">New Question</a>
+                <a href="{% url 'tamk_url_Admin_PMS_Assessment_New_Question_One_S_Tl' pms.pms_id evaluation.evaluation_id %}" class="btn btn-success">New Question</a>
             {% endif %}
 
           <table id="example" class="table table-bordered">
@@ -204,7 +204,7 @@
                 {% for quiz in s_tl_questions %}
                     <tr>
                         <td>
-                            <a href="{% url 'Admin_PMS_Assessment_One_Question_One_S_Tl' pms.pms_id evaluation.evaluation_id quiz.question_id %}">{{ quiz.question }}</a>
+                            <a href="{% url 'tamk_url_Admin_PMS_Assessment_One_Question_One_S_Tl' pms.pms_id evaluation.evaluation_id quiz.question_id %}">{{ quiz.question }}</a>
                         </td>
                     </tr>
                 {% endfor %}

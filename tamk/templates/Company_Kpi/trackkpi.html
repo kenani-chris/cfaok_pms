@@ -26,7 +26,7 @@
         {% for kpi in my_kpi %}
             <tr>
               <td>
-                <a href="{% url 'Company_Kpi_Edit_One' kpi.company_kpi_id %}"> {{ kpi.company_kpi_title }} </a>
+                <a href="{% url 'tamk_url_Company_Kpi_Edit_One' kpi.company_kpi_id %}"> {{ kpi.company_kpi_title }} </a>
               </td>
               <td>
                 {{ kpi.company_kpi_function }}
@@ -41,7 +41,7 @@
                {{ kpi.company_kpi_status }}
               </td>
               <td>
-                  <a class="text-info" href="{% url 'Company_Kpi_Edit_One' kpi.company_kpi_id %}"><i class="fa fa-edit" style="font-size:20px"></i>Edit</a>
+                  <a class="text-info" href="{% url 'tamk_url_Company_Kpi_Edit_One' kpi.company_kpi_id %}"><i class="fa fa-edit" style="font-size:20px"></i>Edit</a>
                   <span style="padding-right: 10px"></span>
                   <a class="text-danger"><i class="fa fa-trash" style="font-size:20px; color:red"></i>Delete</a>
               </td>

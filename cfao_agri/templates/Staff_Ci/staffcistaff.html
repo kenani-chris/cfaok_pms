@@ -23,7 +23,7 @@
               {% for ci in pending_ci %}
                 <tr>
                   <td>
-                    <a href="{% url 'Staff_Approve_CI_Detail1' staff.id ci.checkIn_id %}">{{ ci.checkIn_month }} CheckIn</a>
+                    <a href="{% url 'cfaoa_url_Staff_Approve_CI_Detail1' staff.id ci.checkIn_id %}">{{ ci.checkIn_month }} CheckIn</a>
                   </td>
                   <td>
                     {{ ci.checkIn_status }}

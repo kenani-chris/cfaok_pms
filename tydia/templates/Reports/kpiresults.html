@@ -33,7 +33,7 @@
               {% if kpi.individual_kpi_status != "Rejected" %}
                 <tr>
                   <td>
-                    <a href="{% url 'Individual_Kpi_Result_Update' kpi.individual_kpi_id %}"><span class="fa fa-clipboard-check"></span> {{ kpi.individual_kpi_title }}</a>
+                    <a href="{% url 'tydia_url_Individual_Kpi_Result_Update' kpi.individual_kpi_id %}"><span class="fa fa-clipboard-check"></span> {{ kpi.individual_kpi_title }}</a>
                   </td>
                   <td>
                     {{ kpi.individual_kpi_april_score }}

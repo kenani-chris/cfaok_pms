@@ -89,7 +89,7 @@
       <!-- /.card-header -->
 
       <div class="card-body">
-      <a href="{% url 'Admin_PMS_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New PMS</i></a><br><br>
+      <a href="{% url 'cfaoa_url_Admin_PMS_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New PMS</i></a><br><br>
 
         <div style="overflow-x:scroll">
           {% if pms %}
@@ -106,7 +106,7 @@
               {% for p in pms %}
                   <tr>
                     <td>
-                        <a href="{% url 'Admin_PMS' p.pms_id %}">{{ p.pms_name }}</a>
+                        <a href="{% url 'cfaoa_url_Admin_PMS' p.pms_id %}">{{ p.pms_name }}</a>
                     </td>
                     <td>
                         {{ p.pms_start_date }}

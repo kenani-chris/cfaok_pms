@@ -1,7 +1,7 @@
 {% extends "Assessment/default.html" %}
 {% block pagetitle %}Previous Assessment{% endblock %}
-{% block page_top %}<li class="breadcrumb-item"><a href="{% url 'Assessment_Previous' %}">Prev Assessment</a></li>{% endblock %}
-{% block page_middle %}<li class="breadcrumb-item"><a href="{% url 'Assessment_Previous_One' evaluation.evaluation_id %}">Prev Evaluations</a></li>{% endblock %}
+{% block page_top %}<li class="breadcrumb-item"><a href="{% url 'cfaoa_url_Assessment_Previous' %}">Prev Assessment</a></li>{% endblock %}
+{% block page_middle %}<li class="breadcrumb-item"><a href="{% url 'cfaoa_url_Assessment_Previous_One' evaluation.evaluation_id %}">Prev Evaluations</a></li>{% endblock %}
 {% block kpicontent %}
 
   <div class="col-md-10">
@@ -28,7 +28,7 @@
                 {% if mem.1 == "Not Done" %}
                   <tr>
                     <td>
-                      <a href="{% url 'Assessment_S_One_Previous' evaluation.evaluation_id mem.0.staff_person.id %}">{{ mem.0.staff_person.get_full_name }}</a>
+                      <a href="{% url 'cfaoa_url_Assessment_S_One_Previous' evaluation.evaluation_id mem.0.staff_person.id %}">{{ mem.0.staff_person.get_full_name }}</a>
                     </td>
                     <td>
                       {{ mem.1 }}
@@ -37,7 +37,7 @@
                 {% else %}
                   <tr>
                     <td>
-                      <a href="{% url 'Assessment_S_One_Previous' evaluation.evaluation_id mem.0.staff_person.id %}">{{ mem.0.staff_person.get_full_name }}</a>
+                      <a href="{% url 'cfaoa_url_Assessment_S_One_Previous' evaluation.evaluation_id mem.0.staff_person.id %}">{{ mem.0.staff_person.get_full_name }}</a>
                     </td>
                     <td class="bg-success">
                       {{ mem.1 }}

@@ -65,10 +65,10 @@
             </table>
             <div class="card-footer">
               <div class="float-right" style="margin:5px">
-                <a href="{% url 'Staff_Reject_Individual_Kpi' staff.id  the_kpi.bu_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
+                <a href="{% url 'cfaoa_url_Staff_Reject_Individual_Kpi' staff.id  the_kpi.bu_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
               </div>
               <div class="float-right" style="margin:5px">
-                <a href="{% url 'Staff_Approve_Individual_Kpi' staff.id  the_kpi.bu_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
+                <a href="{% url 'cfaoa_url_Staff_Approve_Individual_Kpi' staff.id  the_kpi.bu_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
               </div>
             </div>
             {% elif the_kpi.bu_kpi_status == "Rejected 1" or the_kpi.bu_kpi_status == "Rejected 2" %}
@@ -174,10 +174,10 @@
             {% if user_is_bu_head is not None or user_is_md is not None%}
             <div class="card-footer">
               <div class="float-right" style="margin:5px">
-                <a href="{% url 'Staff_Reject_Individual_Kpi' staff.id  the_kpi.bu_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
+                <a href="{% url 'cfaoa_url_Staff_Reject_Individual_Kpi' staff.id  the_kpi.bu_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
               </div>
               <div class="float-right" style="margin:5px">
-                <a href="{% url 'Staff_Approve_Individual_Kpi' staff.id  the_kpi.bu_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
+                <a href="{% url 'cfaoa_url_Staff_Approve_Individual_Kpi' staff.id  the_kpi.bu_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
               </div>
             </div>
             {% endif %}
@@ -215,7 +215,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 4 %}"><small>Approve</small></a>
+                                    <a href="{% url 'cfaoa_url_BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 4 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -248,7 +248,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 5 %}"><small>Approve</small></a>
+                                    <a href="{% url 'cfaoa_url_BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 5 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -279,7 +279,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 6 %}"><small>Approve</small></a>
+                                    <a href="{% url 'cfaoa_url_BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 6 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -311,7 +311,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 7 %}"><small>Approve</small></a>
+                                    <a href="{% url 'cfaoa_url_BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 7 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -343,7 +343,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 8 %}"><small>Approve</small></a>
+                                    <a href="{% url 'cfaoa_url_BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 8 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -375,7 +375,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 9 %}"><small>Approve</small></a>
+                                    <a href="{% url 'cfaoa_url_BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 9 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -407,7 +407,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 10 %}"><small>Approve</small></a>
+                                    <a href="{% url 'cfaoa_url_BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 10 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -439,7 +439,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 11 %}"><small>Approve</small></a>
+                                    <a href="{% url 'cfaoa_url_BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 11 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -471,7 +471,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 12 %}"><small>Approve</small></a>
+                                    <a href="{% url 'cfaoa_url_BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 12 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -503,7 +503,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 1 %}"><small>Approve</small></a>
+                                    <a href="{% url 'cfaoa_url_BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 1 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -535,7 +535,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 2 %}"><small>Approve</small></a>
+                                    <a href="{% url 'cfaoa_url_BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 2 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}
@@ -567,7 +567,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
                                 </td>
                                 <td>
-                                    <a href="{% url 'BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 3 %}"><small>Approve</small></a>
+                                    <a href="{% url 'cfaoa_url_BUs_Approve_Kpi_score' bu.bu_id the_kpi.bu_kpi_id 3 %}"><small>Approve</small></a>
                                 </td>
                             {% endif %}
                         {% endif %}

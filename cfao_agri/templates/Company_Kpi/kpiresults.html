@@ -32,7 +32,7 @@
             {% for kpi in my_kpi %}
                 <tr>
                   <td>
-                    <a href="{% url 'Company_Kpi_Result_Update' kpi.company_kpi_id %}"><span class="fa fa-clipboard-check"></span> {{ kpi.company_kpi_title }}</a>
+                    <a href="{% url 'cfaoa_url_Company_Kpi_Result_Update' kpi.company_kpi_id %}"><span class="fa fa-clipboard-check"></span> {{ kpi.company_kpi_title }}</a>
                   </td>
                   <td>
                     {{ kpi.company_kpi_april_score }}

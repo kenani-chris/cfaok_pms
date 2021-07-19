@@ -27,9 +27,9 @@
         <br>
         <ul class="list-group list-group-unbordered mb-3">
           <li class="list-group-item">
-            <a href="{% url 'Staff_Check-In_Kpi_Dashboard' %}" class="btn btn-primary btn-block"><b>CI Dashboard</b></a>
-            <a href="{% url 'Staff_Approve_CI' %}" class="btn btn-primary btn-block"><b>Approve CI {% if ci_pending_count > 0 %} <span class="badge badge-danger float-right">{{ ci_pending_count }}</span>{% endif %}</b></a>
-            <a href="{% url 'Staff_Track_CI' %}" class="btn btn-primary btn-block"><b>Track CI</b></a>
+            <a href="{% url 'cfaoa_url_Staff_Check-In_Kpi_Dashboard' %}" class="btn btn-primary btn-block"><b>CI Dashboard</b></a>
+            <a href="{% url 'cfaoa_url_Staff_Approve_CI' %}" class="btn btn-primary btn-block"><b>Approve CI {% if ci_pending_count > 0 %} <span class="badge badge-danger float-right">{{ ci_pending_count }}</span>{% endif %}</b></a>
+            <a href="{% url 'cfaoa_url_Staff_Track_CI' %}" class="btn btn-primary btn-block"><b>Track CI</b></a>
           </li>
         </ul>
       </div>

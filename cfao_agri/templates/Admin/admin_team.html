@@ -106,7 +106,7 @@
     {% endfor %}
     <div class="card">
       <div class="card-body">
-      <a href="{% url 'Admin_Teams_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New Team</i></a><br><br>
+      <a href="{% url 'cfaoa_url_Admin_Teams_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New Team</i></a><br><br>
 
         <div style="overflow-x:scroll">
             <table id="example1" class="table table-bordered">
@@ -124,7 +124,7 @@
                 {% for team in team_n_l %}
                     <tr>
                         <td>
-                            <a href="{% url 'Admin_Teams_One' team.0.team_id %}">{{ team.0.team_name }}</a>
+                            <a href="{% url 'cfaoa_url_Admin_Teams_One' team.0.team_id %}">{{ team.0.team_name }}</a>
                         </td>
                         <td>
                             {% for t in team.1  %}

@@ -1,7 +1,7 @@
 {% extends "Admin/default.html" %}
 {% block page_top %}
-    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Admin_Dashboard' %}">Admin</a></li>
-    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Admin_PMS_Individual' pms.pms_id %}">Staff</a></li>
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'tydia_url_Admin_Dashboard' %}">Admin</a></li>
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'tydia_url_Admin_PMS_Individual' pms.pms_id %}">Staff</a></li>
 {% endblock %}
 {% block kpicontent %}
 
@@ -10,7 +10,7 @@
       <div class="card-header">
         <h3 class="card-title">PMS <b>{{ pms.pms_name }}</b></h3>
           <div class="float-right">
-            <a href="{% url 'Admin_PMS_Individual_Staff_New' pms.pms_id staff.staff_person.id %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New</i></a>
+            <a href="{% url 'tydia_url_Admin_PMS_Individual_Staff_New' pms.pms_id staff.staff_person.id %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New</i></a>
           </div>
       </div>
       <!-- /.card-header -->
@@ -68,7 +68,7 @@
                 {% for kpi in individual_kpi %}
                     <tr>
                         <td>
-                            <a href="{% url 'Admin_PMS_Individual_Staff_One' pms.pms_id staff.staff_person_id kpi.individual_kpi_id %}">{{ kpi.individual_kpi_title }}</a>
+                            <a href="{% url 'tydia_url_Admin_PMS_Individual_Staff_One' pms.pms_id staff.staff_person_id kpi.individual_kpi_id %}">{{ kpi.individual_kpi_title }}</a>
                         </td>
                         <td>
                             {{ kpi.individual_kpi_status }}

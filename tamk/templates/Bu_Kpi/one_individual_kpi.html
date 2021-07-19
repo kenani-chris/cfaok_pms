@@ -9,11 +9,11 @@
           <div class="float-right">
               {% if bu_kpi %}
                   {% if bu_kpi.bu_kpi_status == 'Pending' or bu_kpi.bu_kpi_status == 'Rejected 1' or bu_kpi.bu_kpi_status == 'Edit'%}
-                    <a href="{% url 'BU_Kpi_Edit_One' bu_kpi.bu_kpi_id %}"><button class="btn btn-info"><i class="fa fa-edit" style="">Edit</i></button></a>
+                    <a href="{% url 'tamk_url_BU_Kpi_Edit_One' bu_kpi.bu_kpi_id %}"><button class="btn btn-info"><i class="fa fa-edit" style="">Edit</i></button></a>
                     <a href=""><button class="btn btn-danger">Delete</button></a>
                   {% endif %}
                   {% if bu_kpi.bu_kpi_status == "Approved" %}
-                    <a href="{% url 'BU_Kpi_Result_Update' bu_kpi.bu_kpi_id%}"><button class="btn btn-info">Results</button></a>
+                    <a href="{% url 'tamk_url_BU_Kpi_Result_Update' bu_kpi.bu_kpi_id%}"><button class="btn btn-info">Results</button></a>
                     {% endif %}
               {% endif %}
           </div>

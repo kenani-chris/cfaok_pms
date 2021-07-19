@@ -1,7 +1,7 @@
 {% extends "Admin/default.html" %}
 {% block page_top %}
-    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Admin_Dashboard' %}">Admin</a></li>
-    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Admin_PMS_Assessment' pms.pms_id %}">Assessment</a></li>
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'tamk_url_Admin_Dashboard' %}">Admin</a></li>
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'tamk_url_Admin_PMS_Assessment' pms.pms_id %}">Assessment</a></li>
 {% endblock %}
 {% block kpicontent %}
 

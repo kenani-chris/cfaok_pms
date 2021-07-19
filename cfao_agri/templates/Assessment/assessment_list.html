@@ -1,6 +1,6 @@
 {% extends "Assessment/default.html" %}
 {% block pagetitle %}Assessment{% endblock %}
-{% block page_top %}<li class="breadcrumb-item"><a href="{% url 'Assessment_Dashboard' %}">Assessment</a></li>{% endblock %}
+{% block page_top %}<li class="breadcrumb-item"><a href="{% url 'cfaoa_url_Assessment_Dashboard' %}">Assessment</a></li>{% endblock %}
 
 {% block kpicontent %}
 
@@ -23,7 +23,7 @@
               {% if user_is_tl is not None%}
                 <tr>
                   <th>
-                    <a href="{% url 'Assessment_S' evals.0.evaluation_id %}">TL evaluates Staff</a>
+                    <a href="{% url 'cfaoa_url_Assessment_S' evals.0.evaluation_id %}">TL evaluates Staff</a>
                   </th>
                   <td>
                     {{ evals.1 }}
@@ -34,7 +34,7 @@
                 {% if team_leader is not None %}
                   <tr>
                     <th>
-                      <a href="{% url 'Assessment_TL_One' evals.0.evaluation_id team_leader.staff_person.id %}">Evaluate TL</a>
+                      <a href="{% url 'cfaoa_url_Assessment_TL_One' evals.0.evaluation_id team_leader.staff_person.id %}">Evaluate TL</a>
                     </th>
                     <td>
                       {{ evals.2 }}

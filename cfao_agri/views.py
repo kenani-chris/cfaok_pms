@@ -4,13 +4,12 @@ from email.mime.image import MIMEImage
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.contrib.auth.tokens import default_token_generator
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.encoding import force_bytes
 from django.utils.html import format_html
 from django.utils.http import urlsafe_base64_encode
-from django.views import generic
 from .forms import *
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -18,7 +17,6 @@ from django.urls import reverse
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.shortcuts import get_object_or_404
 from django.views.generic import *
-from itertools import chain
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, UserModel
 import datetime
 from .permissions import is_member_company, is_admin
@@ -38,7 +36,7 @@ def reset_all_password(request):
     for staff_u in staffs:
         user = get_object_or_404(User, id=staff_u.staff_person.id)
         # 'password_reset_confirm' ''' + str(user.id) + ''' ''' + default_token_generator.make_token(user) + ''' %
-        # message = format_html('Click On the following <a href="{}">HERE</a>to reset your PMS password the following', reverse('password_reset_confirm', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.id)), 'token': default_token_generator.make_token(user)}))
+        # message = format_html('Click On the following <a href="{}">HERE</a>to reset your PMS password the following', reverse('cfaoa_url_password_reset_confirm', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.id)), 'token': default_token_generator.make_token(user)}))
 
         message = format_html(
             '''Click On the following <a href="https://ck-pms.com{%'password_reset_confirm ''' + urlsafe_base64_encode(
@@ -47,7 +45,7 @@ def reset_all_password(request):
         if user.is_active and user.email:
             send_email_pms_one_reciepient('Password Reset', user, message)
 
-    return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('cfaoa_url_index'))
 
 
 def checkin_score(pms, staff):
@@ -1060,7 +1058,7 @@ class SubmitKpiView(CreateView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('Individual_Kpi_Submit'))
+        return '{}'.format(reverse('cfaoa_url_Individual_Kpi_Submit'))
 
     def form_valid(self, form):
         super(SubmitKpiView, self).form_valid(form)
@@ -1085,7 +1083,7 @@ class SubmitKpiView(CreateView):
 
         messages.success(self.request, 'KPI submit successful')
 
-        return HttpResponseRedirect(reverse('Individual_Kpi_Submit'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Individual_Kpi_Submit'))
 
 
 def send_email_pms(subject, receiver1, receiver2, e_message):
@@ -1281,7 +1279,7 @@ class EditKpiView(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('kpi-detail', kwargs={"pk": self.kwargs["pk"]}))
+        return '{}'.format(reverse('cfaoa_url_kpi-detail', kwargs={"pk": self.kwargs["pk"]}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1602,10 +1600,10 @@ class KpiResultUpdateView(UpdateView):
     def form_valid(self, form):
         super(KpiResultUpdateView, self).form_valid(form)
         messages.success(self.request, 'KPI Update successful')
-        return HttpResponseRedirect(reverse('Individual_Kpi_Result_Update', kwargs={"pk": self.kwargs["pk"]}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Individual_Kpi_Result_Update', kwargs={"pk": self.kwargs["pk"]}))
 
     def get_success_url(self):
-        return '{}'.format(reverse('Individual_Kpi_Result_Update', kwargs={"pk": self.kwargs["pk"]}))
+        return '{}'.format(reverse('cfaoa_url_Individual_Kpi_Result_Update', kwargs={"pk": self.kwargs["pk"]}))
 
 
 # ======================================================================================================================
@@ -2063,13 +2061,13 @@ class StaffKpiTrackOneView(UpdateView):
     model = individual_Kpi
 
     def get_success_url(self):
-        return '{}'.format(reverse('Staff_Track_Kpi_Staff_One', kwargs={"pk": self.kwargs["pk"],
+        return '{}'.format(reverse('cfaoa_url_Staff_Track_Kpi_Staff_One', kwargs={"pk": self.kwargs["pk"],
                                                                         "kpi_id": self.kwargs["kpi_id"]}))
 
     def form_valid(self, form):
         super(StaffKpiTrackOneView, self).form_valid(form)
         messages.success(self.request, 'KPI Update successful')
-        return HttpResponseRedirect(reverse('Staff_Track_Kpi_Staff_One', kwargs={"pk": self.kwargs["pk"],
+        return HttpResponseRedirect(reverse('cfaoa_url_Staff_Track_Kpi_Staff_One', kwargs={"pk": self.kwargs["pk"],
                                                                                  "kpi_id": self.kwargs["kpi_id"]}))
 
     def get_context_data(self, **kwargs):
@@ -2501,7 +2499,7 @@ class SubmitBuKpiView(CreateView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('BU_Kpi_Submit'))
+        return '{}'.format(reverse('cfaoa_url_BU_Kpi_Submit'))
 
     def form_valid(self, form):
         super(SubmitBuKpiView, self).form_valid(form)
@@ -2527,7 +2525,7 @@ class SubmitBuKpiView(CreateView):
 
         messages.success(self.request, 'BU KPI submit successful')
 
-        return HttpResponseRedirect(reverse('BU_Kpi_Submit'))
+        return HttpResponseRedirect(reverse('cfaoa_url_BU_Kpi_Submit'))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -2684,12 +2682,12 @@ class TrackBuKpiEditlView(UpdateView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('BU_Kpi_Edit_One', kwargs={"pk": self.kwargs["pk"]}))
+        return '{}'.format(reverse('cfaoa_url_BU_Kpi_Edit_One', kwargs={"pk": self.kwargs["pk"]}))
 
     def form_valid(self, form):
         super(TrackBuKpiEditlView, self).form_valid(form)
         messages.success(self.request, 'BU KPI edited successful')
-        return HttpResponseRedirect(reverse('BU_Kpi_Edit_One', kwargs={"pk": self.kwargs["pk"]}))
+        return HttpResponseRedirect(reverse('cfaoa_url_BU_Kpi_Edit_One', kwargs={"pk": self.kwargs["pk"]}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -2968,10 +2966,10 @@ class BuKpiResultUpdateView(UpdateView):
     def form_valid(self, form):
         super(BuKpiResultUpdateView, self).form_valid(form)
         messages.success(self.request, 'KPI Update successful')
-        return HttpResponseRedirect(reverse('BU_Kpi_Result_Update', kwargs={"pk": self.kwargs["pk"]}))
+        return HttpResponseRedirect(reverse('cfaoa_url_BU_Kpi_Result_Update', kwargs={"pk": self.kwargs["pk"]}))
 
     def get_success_url(self):
-        return '{}'.format(reverse('BU_Kpi_Result_Update', kwargs={"pk": self.kwargs["pk"]}))
+        return '{}'.format(reverse('cfaoa_url_BU_Kpi_Result_Update', kwargs={"pk": self.kwargs["pk"]}))
 
 
 # =====================================================================================================================
@@ -3104,13 +3102,13 @@ class SubmitCompanyKpiView(CreateView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('Company_Kpi_Submit'))
+        return '{}'.format(reverse('cfaoa_url_Company_Kpi_Submit'))
 
     def form_valid(self, form):
         super(SubmitCompanyKpiView, self).form_valid(form)
         messages.success(self.request, 'BU KPI submit successful')
 
-        return HttpResponseRedirect(reverse('Company_Kpi_Submit'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Company_Kpi_Submit'))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -3212,12 +3210,12 @@ class EditCompanyKpiUpdateView(UpdateView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('Company_Kpi_Edit_One', kwargs={"pk": self.kwargs["pk"]}))
+        return '{}'.format(reverse('cfaoa_url_Company_Kpi_Edit_One', kwargs={"pk": self.kwargs["pk"]}))
 
     def form_valid(self, form):
         super(EditCompanyKpiUpdateView, self).form_valid(form)
         messages.success(self.request, 'Company KPI edited successful')
-        return HttpResponseRedirect(reverse('Company_Kpi_Edit_One', kwargs={"pk": self.kwargs["pk"]}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Company_Kpi_Edit_One', kwargs={"pk": self.kwargs["pk"]}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -3460,10 +3458,10 @@ class CompanyKpiResultUpdateView(UpdateView):
     def form_valid(self, form):
         super(CompanyKpiResultUpdateView, self).form_valid(form)
         messages.success(self.request, 'KPI Update successful')
-        return HttpResponseRedirect(reverse('Company_Kpi_Result_Update', kwargs={"pk": self.kwargs["pk"]}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Company_Kpi_Result_Update', kwargs={"pk": self.kwargs["pk"]}))
 
     def get_success_url(self):
-        return '{}'.format(reverse('Company_Kpi_Result_Update', kwargs={"pk": self.kwargs["pk"]}))
+        return '{}'.format(reverse('cfaoa_url_Company_Kpi_Result_Update', kwargs={"pk": self.kwargs["pk"]}))
 
 
 # ======================================================================================================================
@@ -3872,13 +3870,13 @@ class BUsKpiTrackOneView(UpdateView):
     model = bu_kpi
 
     def get_success_url(self):
-        return '{}'.format(reverse('BUs_Track_Kpi_BUs_One', kwargs={"pk": self.kwargs["pk"],
+        return '{}'.format(reverse('cfaoa_url_BUs_Track_Kpi_BUs_One', kwargs={"pk": self.kwargs["pk"],
                                                                     "kpi_id": self.kwargs["kpi_id"]}))
 
     def form_valid(self, form):
         super(BUsKpiTrackOneView, self).form_valid(form)
         messages.success(self.request, 'KPI Update successful')
-        return HttpResponseRedirect(reverse('BUs_Track_Kpi_BUs_One', kwargs={"pk": self.kwargs["pk"],
+        return HttpResponseRedirect(reverse('cfaoa_url_BUs_Track_Kpi_BUs_One', kwargs={"pk": self.kwargs["pk"],
                                                                              "kpi_id": self.kwargs["kpi_id"]}))
 
     def get_context_data(self, **kwargs):
@@ -4265,7 +4263,7 @@ class SubmitCheckIn(CreateView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('Check-In_Submit'))
+        return '{}'.format(reverse('cfaoa_url_Check-In_Submit'))
 
     def form_valid(self, form):
         super(SubmitCheckIn, self).form_valid(form)
@@ -4292,7 +4290,7 @@ class SubmitCheckIn(CreateView):
 
         messages.success(self.request, 'Checkin submit successful')
 
-        return HttpResponseRedirect(reverse('Check-In_Submit'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Check-In_Submit'))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -4346,7 +4344,7 @@ class TrackCheckIn(ListView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('Check-In_Submit'))
+        return '{}'.format(reverse('cfaoa_url_Check-In_Submit'))
 
     def form_valid(self, form):
         super(SubmitCheckIn, self).form_valid(form)
@@ -4373,7 +4371,7 @@ class TrackCheckIn(ListView):
 
         messages.success(self.request, 'Checkin submit successful')
 
-        return HttpResponseRedirect(reverse('Check-In_Submit'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Check-In_Submit'))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -4429,7 +4427,7 @@ class DetailCheckIn(DetailView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('Check-In_Submit'))
+        return '{}'.format(reverse('cfaoa_url_Check-In_Submit'))
 
     def form_valid(self, form):
         super(SubmitCheckIn, self).form_valid(form)
@@ -4456,7 +4454,7 @@ class DetailCheckIn(DetailView):
 
         messages.success(self.request, 'Checkin submit successful')
 
-        return HttpResponseRedirect(reverse('Check-In_Submit'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Check-In_Submit'))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -4510,13 +4508,13 @@ class EditCheckIn(UpdateView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('Check-In_Submit'))
+        return '{}'.format(reverse('cfaoa_url_Check-In_Submit'))
 
     def form_valid(self, form):
         super(EditCheckIn, self).form_valid(form)
         messages.success(self.request, 'Checkin edited successful')
 
-        return HttpResponseRedirect(reverse('Check-In_Edit_One', kwargs={"pk": self.kwargs["pk"]}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Check-In_Edit_One', kwargs={"pk": self.kwargs["pk"]}))
 
 
 # ======================================================================================================================
@@ -4786,7 +4784,7 @@ class StaffApproveStaffCheckInOne(UpdateView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('Staff_Approve_CI'))
+        return '{}'.format(reverse('cfaoa_url_Staff_Approve_CI'))
 
     def form_valid(self, form):
         ci = get_object_or_404(checkIn, checkIn_id=self.kwargs['ci_id'])
@@ -4794,7 +4792,7 @@ class StaffApproveStaffCheckInOne(UpdateView):
         messages.success(self.request, 'CheckIn Approved Successfully')
         send_email_pms('CheckIn Confirmed', ci.checkIn_staff, self.request.user,
                        'You Kpi for the month ' + ci.checkIn_month + ' has been confirmed')
-        return HttpResponseRedirect(reverse('Staff_Approve_CI'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Staff_Approve_CI'))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -5312,13 +5310,13 @@ class AssessmentTlSStaff(CreateView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('Assessment_S', kwargs={"as_id": self.kwargs["as_id"]}))
+        return '{}'.format(reverse('cfaoa_url_Assessment_S', kwargs={"as_id": self.kwargs["as_id"]}))
 
     def form_valid(self, form):
         super(AssessmentTlSStaff, self).form_valid(form)
         messages.success(self.request, 'Evaluated staff success')
 
-        return HttpResponseRedirect(reverse('Assessment_S', kwargs={"as_id": self.kwargs["as_id"]}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Assessment_S', kwargs={"as_id": self.kwargs["as_id"]}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -5410,14 +5408,14 @@ class AssessmentSTlStaff(CreateView):
 
     def get_success_url(self):
         return '{}'.format(
-            reverse('Assessment_TL_One', kwargs={"as_id": self.kwargs["as_id"], "tl_id": self.kwargs["tl_id"]}))
+            reverse('cfaoa_url_Assessment_TL_One', kwargs={"as_id": self.kwargs["as_id"], "tl_id": self.kwargs["tl_id"]}))
 
     def form_valid(self, form):
         super(AssessmentSTlStaff, self).form_valid(form)
         messages.success(self.request, 'Evaluated staff success')
 
         return HttpResponseRedirect(
-            reverse('Assessment_S', kwargs={"as_id": self.kwargs["as_id"], "tl_id": self.kwargs["tl_id"]}))
+            reverse('cfaoa_url_Assessment_S', kwargs={"as_id": self.kwargs["as_id"], "tl_id": self.kwargs["tl_id"]}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -5856,13 +5854,13 @@ class AdminBUOne(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_BUs'))
+        return '{}'.format(reverse('cfaoa_url_Admin_BUs'))
 
     def form_valid(self, form):
         super(AdminBUOne, self).form_valid(form)
         messages.success(self.request, 'BU updated Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_BUs'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_BUs'))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -5884,13 +5882,13 @@ class AdminBUNew(CreateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_BUs'))
+        return '{}'.format(reverse('cfaoa_url_Admin_BUs'))
 
     def form_valid(self, form):
         super(AdminBUNew, self).form_valid(form)
         messages.success(self.request, 'BU updated Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_BUs'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_BUs'))
 
 
 
@@ -5950,13 +5948,13 @@ class AdminTeamOne(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_Teams'))
+        return '{}'.format(reverse('cfaoa_url_Admin_Teams'))
 
     def form_valid(self, form):
         super(AdminTeamOne, self).form_valid(form)
         messages.success(self.request, 'Team Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_Teams'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_Teams'))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -5978,13 +5976,13 @@ class AdminTeamNew(CreateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_Teams'))
+        return '{}'.format(reverse('cfaoa_url_Admin_Teams'))
 
     def form_valid(self, form):
         super(AdminTeamNew, self).form_valid(form)
         messages.success(self.request, 'Team Created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_Teams'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_Teams'))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -6067,7 +6065,7 @@ def new_user(request):
                 user = form.save()
                 update_session_auth_hash(request, user)  # Important!
                 messages.success(request, 'Your password was successfully updated!')
-                return HttpResponseRedirect(reverse('Admin_Users_New_Details', kwargs={'pk': user.id}))
+                return HttpResponseRedirect(reverse('cfaoa_url_Admin_Users_New_Details', kwargs={'pk': user.id}))
         else:
             form = UserCreationForm()
         context['form'] = form
@@ -6095,13 +6093,13 @@ class AdminUserNewDetails(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_Users_New_Details_Staff', kwargs={'pk': self.kwargs['pk']}))
+        return '{}'.format(reverse('cfaoa_url_Admin_Users_New_Details_Staff', kwargs={'pk': self.kwargs['pk']}))
 
     def form_valid(self, form):
         super(AdminUserNewDetails, self).form_valid(form)
         messages.success(self.request, 'User updated Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_Users_New_Details_Staff', kwargs={'pk': self.kwargs['pk']}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_Users_New_Details_Staff', kwargs={'pk': self.kwargs['pk']}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -6124,13 +6122,13 @@ class AdminUserNewDetailsStaff(CreateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_Users', ))
+        return '{}'.format(reverse('cfaoa_url_Admin_Users', ))
 
     def form_valid(self, form):
         super(AdminUserNewDetailsStaff, self).form_valid(form)
         messages.success(self.request, 'Staff record created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_Users'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_Users'))
 
     def get_initial(self):
         initial = super(AdminUserNewDetailsStaff, self).get_initial()
@@ -6165,7 +6163,7 @@ def new_user_details(request, pk):
                 user = form.save()
                 update_session_auth_hash(request, user)  # Important!
                 messages.success(request, 'Your password was successfully updated!')
-                return HttpResponseRedirect(reverse('Admin_Users_reset_password', kwargs={'pk': user.id}))
+                return HttpResponseRedirect(reverse('cfaoa_url_Admin_Users_reset_password', kwargs={'pk': user.id}))
         else:
             form = UserForm(User.objects.filter(id=pk).first())
         context['form'] = form
@@ -6200,7 +6198,7 @@ def change_password(request, pk):
                 user = form.save()
                 update_session_auth_hash(request, user)  # Important!
                 messages.success(request, 'Your password was successfully updated!')
-                return HttpResponseRedirect(reverse('Admin_Users_reset_password', kwargs={'pk': pk}))
+                return HttpResponseRedirect(reverse('cfaoa_url_Admin_Users_reset_password', kwargs={'pk': pk}))
         else:
             form = SetPasswordForm(staff_u)
         context['form'] = form
@@ -6267,7 +6265,7 @@ def deactivate_account_dashboard(request, pk):
         user.is_active = False
         user.save()
 
-        return HttpResponseRedirect(reverse('Admin_Users'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_Users'))
 
 
 @login_required
@@ -6277,13 +6275,13 @@ def activate_account_dashboard(request, pk):
         user.is_active = True
         user.save()
 
-        return HttpResponseRedirect(reverse('Admin_Users'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_Users'))
 
 
 @login_required
 def reset_user_password(request, pk):
     if request.user.is_superuser:
-        return HttpResponseRedirect(reverse('password_reset_confirm',
+        return HttpResponseRedirect(reverse('cfaoa_url_password_reset_confirm',
                                             kwargs={'uidb64': urlsafe_base64_encode(force_bytes(pk)),
                                                     'token': default_token_generator.make_token(
                                                         get_object_or_404(User, id=pk))}))
@@ -6310,13 +6308,13 @@ class AdminUserOneEditUser(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_Users_One', kwargs={'pk': self.kwargs['pk']}))
+        return '{}'.format(reverse('cfaoa_url_Admin_Users_One', kwargs={'pk': self.kwargs['pk']}))
 
     def form_valid(self, form):
         super(AdminUserOneEditUser, self).form_valid(form)
         messages.success(self.request, 'User updated Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_Users_One', kwargs={'pk': self.kwargs['pk']}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_Users_One', kwargs={'pk': self.kwargs['pk']}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -6343,13 +6341,13 @@ class AdminUserOneEditStaff(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_Users_One', kwargs={'pk': self.kwargs['pk']}))
+        return '{}'.format(reverse('cfaoa_url_Admin_Users_One', kwargs={'pk': self.kwargs['pk']}))
 
     def form_valid(self, form):
         super(AdminUserOneEditStaff, self).form_valid(form)
         messages.success(self.request, 'User updated Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_Users_One', kwargs={'pk': self.kwargs['pk']}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_Users_One', kwargs={'pk': self.kwargs['pk']}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -6383,7 +6381,7 @@ class AdminPMSEdit(UpdateView):
     pk_url_kwarg = 'pms_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS', kwargs={"pms_id": self.kwargs["pms_id"]}))
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6401,7 +6399,7 @@ class AdminPMSEdit(UpdateView):
         super(AdminPMSEdit, self).form_valid(form)
         messages.success(self.request, 'PMS Edited Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS', kwargs={"pms_id": self.kwargs["pms_id"]}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -6414,7 +6412,7 @@ class AdminPMSNew(CreateView):
     pk_url_kwarg = 'pms_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_Dashboard'))
+        return '{}'.format(reverse('cfaoa_url_Admin_Dashboard'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6432,7 +6430,7 @@ class AdminPMSNew(CreateView):
         super(AdminPMSNew, self).form_valid(form)
         messages.success(self.request, 'PMS Created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_Dashboard'))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_Dashboard'))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -6578,7 +6576,7 @@ class AdminPMSIndividualStaffOne(UpdateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Individual_Staff_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Individual_Staff_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
                                            'kpi_id': self.kwargs['kpi_id']}))
 
@@ -6599,7 +6597,7 @@ class AdminPMSIndividualStaffOne(UpdateView):
         super(AdminPMSIndividualStaffOne, self).form_valid(form)
         messages.success(self.request, 'KPI Editted Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff_One',
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Individual_Staff_One',
                                             kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
                                                     'kpi_id': self.kwargs['kpi_id']}))
 
@@ -6614,7 +6612,7 @@ class AdminPMSIndividualStaffNew(CreateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Individual_Staff',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Individual_Staff',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_context_data(self, **kwargs):
@@ -6634,7 +6632,7 @@ class AdminPMSIndividualStaffNew(CreateView):
         super(AdminPMSIndividualStaffNew, self).form_valid(form)
         messages.success(self.request, 'KPI Created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Individual_Staff',
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Individual_Staff',
                                             kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_initial(self):
@@ -6724,7 +6722,7 @@ class AdminPMSBUStaffOne(UpdateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_BU_Staff_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_BU_Staff_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
                                            'kpi_id': self.kwargs['kpi_id']}))
 
@@ -6745,7 +6743,7 @@ class AdminPMSBUStaffOne(UpdateView):
         super(AdminPMSBUStaffOne, self).form_valid(form)
         messages.success(self.request, 'KPI Editted Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_BU_Staff_One',
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_BU_Staff_One',
                                             kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
                                                     'kpi_id': self.kwargs['kpi_id']}))
 
@@ -6761,7 +6759,7 @@ class AdminPMSBUStaffNew(CreateView):
 
     def get_success_url(self):
         return '{}'.format(
-            reverse('Admin_PMS_BU_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+            reverse('cfaoa_url_Admin_PMS_BU_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6781,7 +6779,7 @@ class AdminPMSBUStaffNew(CreateView):
         messages.success(self.request, 'KPI Created Successfully')
 
         return HttpResponseRedirect(
-            reverse('Admin_PMS_BU_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+            reverse('cfaoa_url_Admin_PMS_BU_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_initial(self):
         staff_u = get_object_or_404(staff, staff_person=self.kwargs['s_id'])
@@ -6828,7 +6826,7 @@ class AdminPMSCompanyOne(UpdateView):
 
     def get_success_url(self):
         return '{}'.format(
-            reverse('Admin_PMS_Company_One', kwargs={"pms_id": self.kwargs["pms_id"], 'kpi_id': self.kwargs['kpi_id']}))
+            reverse('cfaoa_url_Admin_PMS_Company_One', kwargs={"pms_id": self.kwargs["pms_id"], 'kpi_id': self.kwargs['kpi_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6847,7 +6845,7 @@ class AdminPMSCompanyOne(UpdateView):
         messages.success(self.request, 'KPI Editted Successfully')
 
         return HttpResponseRedirect(
-            reverse('Admin_PMS_Company_One', kwargs={"pms_id": self.kwargs["pms_id"], 'kpi_id': self.kwargs['kpi_id']}))
+            reverse('cfaoa_url_Admin_PMS_Company_One', kwargs={"pms_id": self.kwargs["pms_id"], 'kpi_id': self.kwargs['kpi_id']}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -6860,7 +6858,7 @@ class AdminPMSCompanyNew(CreateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Company', kwargs={"pms_id": self.kwargs["pms_id"]}))
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Company', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6878,7 +6876,7 @@ class AdminPMSCompanyNew(CreateView):
         super(AdminPMSCompanyNew, self).form_valid(form)
         messages.success(self.request, 'KPI Created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Company', kwargs={"pms_id": self.kwargs["pms_id"]}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Company', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def get_initial(self):
         initial = super(AdminPMSCompanyNew, self).get_initial()
@@ -6939,7 +6937,7 @@ class AdminPMSCheckInScoreNew(CreateView):
     template_name = 'Admin/pms_checkin_score_new.html'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6959,7 +6957,7 @@ class AdminPMSCheckInScoreNew(CreateView):
         super(AdminPMSCheckInScoreNew, self).form_valid(form)
         messages.success(self.request, 'CheckIn Score Created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def get_initial(self):
         initial = super(AdminPMSCheckInScoreNew, self).get_initial()
@@ -6978,7 +6976,7 @@ class AdminPMSCheckInScoreOne(UpdateView):
     pk_url_kwarg = 'm_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -6998,7 +6996,7 @@ class AdminPMSCheckInScoreOne(UpdateView):
         super(AdminPMSCheckInScoreOne, self).form_valid(form)
         messages.success(self.request, 'CheckIn Score Created Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def get_initial(self):
         initial = super(AdminPMSCheckInScoreOne, self).get_initial()
@@ -7042,7 +7040,7 @@ class AdminPMSCheckInStaffOne(UpdateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_CheckIn_Staff_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_CheckIn_Staff_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
                                            'kpi_id': self.kwargs['kpi_id']}))
 
@@ -7063,7 +7061,7 @@ class AdminPMSCheckInStaffOne(UpdateView):
         super(AdminPMSCheckInStaffOne, self).form_valid(form)
         messages.success(self.request, 'CheckIn Editted Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn_Staff_One',
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_CheckIn_Staff_One',
                                             kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
                                                     'kpi_id': self.kwargs['kpi_id']}))
 
@@ -7079,7 +7077,7 @@ class AdminPMSCheckInStaffNew(CreateView):
 
     def get_success_url(self):
         return '{}'.format(
-            reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+            reverse('cfaoa_url_Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -7099,7 +7097,7 @@ class AdminPMSCheckInStaffNew(CreateView):
         messages.success(self.request, 'CheckIn Created Successfully')
 
         return HttpResponseRedirect(
-            reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+            reverse('cfaoa_url_Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_initial(self):
         initial = super(AdminPMSCheckInStaffNew, self).get_initial()
@@ -7185,11 +7183,11 @@ class AdminPMSAssessmentOne(UpdateView):
         super(AdminPMSAssessmentOne, self).form_valid(form)
         messages.success(self.request, 'Assessment Edited Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                             kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
 
@@ -7217,10 +7215,10 @@ class AdminPMSAssessmentNew(CreateView):
         super(AdminPMSAssessmentNew, self).form_valid(form)
         messages.success(self.request, 'Assessment Edited Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Assessment', kwargs={"pms_id": self.kwargs["pms_id"]}))
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Assessment', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment', kwargs={"pms_id": self.kwargs["pms_id"]}))
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Assessment', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -7232,7 +7230,7 @@ class AdminPMSAssessmentOneResponseNew(CreateView):
     template_name = 'Admin/pms_assessment_one_response_new.html'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
     def get_context_data(self, **kwargs):
@@ -7253,7 +7251,7 @@ class AdminPMSAssessmentOneResponseNew(CreateView):
         super(AdminPMSAssessmentOneResponseNew, self).form_valid(form)
         messages.success(self.request, 'Score Matrix')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                             kwargs={"pms_id": self.kwargs["pms_id"],
                                                     'as_id': self.kwargs['as_id']}))
 
@@ -7273,7 +7271,7 @@ class AdminPMSAssessmentOneResponseOne(UpdateView):
     pk_url_kwarg = 'm_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
     def get_context_data(self, **kwargs):
@@ -7294,7 +7292,7 @@ class AdminPMSAssessmentOneResponseOne(UpdateView):
         super(AdminPMSAssessmentOneResponseOne, self).form_valid(form)
         messages.success(self.request, 'Score Matrix')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                             kwargs={"pms_id": self.kwargs["pms_id"],
                                                     'as_id': self.kwargs['as_id']}))
 
@@ -7315,7 +7313,7 @@ class AdminPMSAssessmentOneQuestionOneTlS(UpdateView):
     pk_url_kwarg = 'q_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
     def get_context_data(self, **kwargs):
@@ -7337,7 +7335,7 @@ class AdminPMSAssessmentOneQuestionOneTlS(UpdateView):
             super(AdminPMSAssessmentOneQuestionOneTlS, self).form_valid(form)
             messages.success(self.request, 'Question Edited Successfully')
 
-            return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
+            return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                                 kwargs={"pms_id": self.kwargs["pms_id"],
                                                         'as_id': self.kwargs['as_id']}))
 
@@ -7355,7 +7353,7 @@ class AdminPMSAssessmentOneQuestionNewTlS(CreateView):
     pk_url_kwarg = 'q_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
     def get_context_data(self, **kwargs):
@@ -7377,7 +7375,7 @@ class AdminPMSAssessmentOneQuestionNewTlS(CreateView):
             super(AdminPMSAssessmentOneQuestionOneTlS, self).form_valid(form)
             messages.success(self.request, 'Question Edited Successfully')
 
-            return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
+            return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                                 kwargs={"pms_id": self.kwargs["pms_id"],
                                                         'as_id': self.kwargs['as_id']}))
 
@@ -7400,7 +7398,7 @@ class AdminPMSAssessmentOneQuestionOneSTl(UpdateView):
     pk_url_kwarg = 'q_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
     def get_context_data(self, **kwargs):
@@ -7422,7 +7420,7 @@ class AdminPMSAssessmentOneQuestionOneSTl(UpdateView):
             super(AdminPMSAssessmentOneQuestionOneSTl, self).form_valid(form)
             messages.success(self.request, 'Question Edited Successfully')
 
-            return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
+            return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                                 kwargs={"pms_id": self.kwargs["pms_id"],
                                                         'as_id': self.kwargs['as_id']}))
 
@@ -7440,7 +7438,7 @@ class AdminPMSAssessmentOneQuestionNewSTl(CreateView):
     pk_url_kwarg = 'q_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id']}))
 
     def get_context_data(self, **kwargs):
@@ -7462,7 +7460,7 @@ class AdminPMSAssessmentOneQuestionNewSTl(CreateView):
             super(AdminPMSAssessmentOneQuestionNewSTl, self).form_valid(form)
             messages.success(self.request, 'Question Added Successfully')
 
-            return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One',
+            return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Assessment_One',
                                                 kwargs={"pms_id": self.kwargs["pms_id"],
                                                         'as_id': self.kwargs['as_id']}))
 
@@ -7536,7 +7534,7 @@ class AdminPMSAssessmentOneResponseSTlOne(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One_STl_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Assessment_One_STl_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'],
                                            'd_id': self.kwargs['d_id'], }))
 
@@ -7544,7 +7542,7 @@ class AdminPMSAssessmentOneResponseSTlOne(UpdateView):
         super(AdminPMSAssessmentOneResponseSTlOne, self).form_valid(form)
         messages.success(self.request, 'Assessment Edited Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One_STl_One',
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Assessment_One_STl_One',
                                             kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'],
                                                     'd_id': self.kwargs['d_id'], }))
 
@@ -7611,7 +7609,7 @@ class AdminPMSAssessmentOneResponseTlSOne(UpdateView):
         return context
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_Assessment_One_TlS_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_Assessment_One_TlS_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'],
                                            'd_id': self.kwargs['d_id'], }))
 
@@ -7619,7 +7617,7 @@ class AdminPMSAssessmentOneResponseTlSOne(UpdateView):
         super(AdminPMSAssessmentOneResponseTlSOne, self).form_valid(form)
         messages.success(self.request, 'Assessment Edited Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_Assessment_One_TlS_One',
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_Assessment_One_TlS_One',
                                             kwargs={"pms_id": self.kwargs["pms_id"], 'as_id': self.kwargs['as_id'],
                                                     'd_id': self.kwargs['d_id'], }))
 
@@ -7634,7 +7632,7 @@ class AdminPMSCheckInStaffOne(UpdateView):
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
-        return '{}'.format(reverse('Admin_PMS_CheckIn_Staff_One',
+        return '{}'.format(reverse('cfaoa_url_Admin_PMS_CheckIn_Staff_One',
                                    kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
                                            'kpi_id': self.kwargs['kpi_id']}))
 
@@ -7655,7 +7653,7 @@ class AdminPMSCheckInStaffOne(UpdateView):
         super(AdminPMSCheckInStaffOne, self).form_valid(form)
         messages.success(self.request, 'CheckIn Editted Successfully')
 
-        return HttpResponseRedirect(reverse('Admin_PMS_CheckIn_Staff_One',
+        return HttpResponseRedirect(reverse('cfaoa_url_Admin_PMS_CheckIn_Staff_One',
                                             kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id'],
                                                     'kpi_id': self.kwargs['kpi_id']}))
 
@@ -7671,7 +7669,7 @@ class AdminPMSCheckInStaffNew(CreateView):
 
     def get_success_url(self):
         return '{}'.format(
-            reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+            reverse('cfaoa_url_Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -7691,7 +7689,7 @@ class AdminPMSCheckInStaffNew(CreateView):
         messages.success(self.request, 'CheckIn Created Successfully')
 
         return HttpResponseRedirect(
-            reverse('Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
+            reverse('cfaoa_url_Admin_PMS_CheckIn_Staff', kwargs={"pms_id": self.kwargs["pms_id"], 's_id': self.kwargs['s_id']}))
 
     def get_initial(self):
         initial = super(AdminPMSCheckInStaffNew, self).get_initial()
@@ -7749,14 +7747,14 @@ class AdminPMSMatrixScore(UpdateView):
 
     def get_success_url(self):
         return '{}'.format(
-            reverse('Admin_PMS_Matrix_Score', kwargs={"pms_id": self.kwargs["pms_id"], 'm_id': self.kwargs['m_id']}))
+            reverse('cfaoa_url_Admin_PMS_Matrix_Score', kwargs={"pms_id": self.kwargs["pms_id"], 'm_id': self.kwargs['m_id']}))
 
     def form_valid(self, form):
         super(AdminPMSMatrixScore, self).form_valid(form)
         messages.success(self.request, 'Matrix updated Successfully')
 
         return HttpResponseRedirect(
-            reverse('Admin_PMS_Matrix_Score', kwargs={"pms_id": self.kwargs["pms_id"], 'm_id': self.kwargs['m_id']}))
+            reverse('cfaoa_url_Admin_PMS_Matrix_Score', kwargs={"pms_id": self.kwargs["pms_id"], 'm_id': self.kwargs['m_id']}))
 
 
 @method_decorator(user_passes_test(is_admin), name='dispatch')
@@ -7783,14 +7781,14 @@ class AdminPMSMatrixScoreNew(CreateView):
 
     def get_success_url(self):
         return '{}'.format(
-            reverse('Admin_PMS_Matrix', kwargs={"pms_id": self.kwargs["pms_id"]}))
+            reverse('cfaoa_url_Admin_PMS_Matrix', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def form_valid(self, form):
         super(AdminPMSMatrixScoreNew, self).form_valid(form)
         messages.success(self.request, 'Matrix Created Successfully')
 
         return HttpResponseRedirect(
-            reverse('Admin_PMS_Matrix', kwargs={"pms_id": self.kwargs["pms_id"]}))
+            reverse('cfaoa_url_Admin_PMS_Matrix', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def get_initial(self):
         initial = super(AdminPMSMatrixScoreNew, self).get_initial()
@@ -7844,14 +7842,14 @@ class AdminPMSMatrixKPINew(CreateView):
 
     def get_success_url(self):
         return '{}'.format(
-            reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
+            reverse('cfaoa_url_Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def form_valid(self, form):
         super(AdminPMSMatrixKPINew, self).form_valid(form)
         messages.success(self.request, 'Matrix Created Successfully')
 
         return HttpResponseRedirect(
-            reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
+            reverse('cfaoa_url_Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def get_initial(self):
         initial = super(AdminPMSMatrixKPINew, self).get_initial()
@@ -7885,14 +7883,14 @@ class AdminPMSMatrixKPIOne(UpdateView):
 
     def get_success_url(self):
         return '{}'.format(
-            reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
+            reverse('cfaoa_url_Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def form_valid(self, form):
         super(AdminPMSMatrixKPIOne, self).form_valid(form)
         messages.success(self.request, 'Matrix Edited Successfully')
 
         return HttpResponseRedirect(
-            reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
+            reverse('cfaoa_url_Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
 
 # =======================================================================================================
@@ -7943,14 +7941,14 @@ class AdminPMSMatrixKPIOne(UpdateView):
 
     def get_success_url(self):
         return '{}'.format(
-            reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
+            reverse('cfaoa_url_Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
     def form_valid(self, form):
         super(AdminPMSMatrixKPIOne, self).form_valid(form)
         messages.success(self.request, 'Matrix Edited Successfully')
 
         return HttpResponseRedirect(
-            reverse('Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
+            reverse('cfaoa_url_Admin_PMS_Matrix_KPI', kwargs={"pms_id": self.kwargs["pms_id"]}))
 
 
 @method_decorator(login_required, name='dispatch')

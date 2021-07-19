@@ -1,8 +1,8 @@
 {% extends "Assessment/default.html" %}
 {% block pagetitle %}Assessment{% endblock %}
-{% block page_top %}<li class="breadcrumb-item"><a href="{% url 'Assessment_Dashboard' %}">Assessment</a></li>{% endblock %}
-{% block page_middle %}<li class="breadcrumb-item"><a href="{% url 'Assessment_View' evaluation.evaluation_id %}">Evaluations</a></li>{% endblock %}
-{% block page_bottom %}<li class="breadcrumb-item"><a href="{% url 'Assessment_S' evaluation.evaluation_id %}">Staff Evaluations</a></li>{% endblock %}
+{% block page_top %}<li class="breadcrumb-item"><a href="{% url 'tamk_url_Assessment_Dashboard' %}">Assessment</a></li>{% endblock %}
+{% block page_middle %}<li class="breadcrumb-item"><a href="{% url 'tamk_url_Assessment_View' evaluation.evaluation_id %}">Evaluations</a></li>{% endblock %}
+{% block page_bottom %}<li class="breadcrumb-item"><a href="{% url 'tamk_url_Assessment_S' evaluation.evaluation_id %}">Staff Evaluations</a></li>{% endblock %}
 {% block kpicontent %}
 
   <div class="col-md-10">

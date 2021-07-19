@@ -1,6 +1,6 @@
 {% extends "Admin/default.html" %}
 {% block page_top %}
-    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Admin_Dashboard' %}">Admin</a></li>{% endblock %}
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'tamk_url_Admin_Dashboard' %}">Admin</a></li>{% endblock %}
 {% block kpicontent %}
 
   <div class="col-md-10">
@@ -8,10 +8,10 @@
         <div class="card-header">
             <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
               <li class="nav-item">
-                <a class="nav-link card-title" id="custom-tabs-two-home-tab" href="{% url 'Admin_PMS_Matrix' pms.pms_id %}" role="tab" aria-controls="custom-tabs-two-home">Score Matrix</a>
+                <a class="nav-link card-title" id="custom-tabs-two-home-tab" href="{% url 'tamk_url_Admin_PMS_Matrix' pms.pms_id %}" role="tab" aria-controls="custom-tabs-two-home">Score Matrix</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link card-title active" id="custom-tabs-two-home-tab"  href="{% url 'Admin_PMS_Matrix_KPI' pms.pms_id %}" role="tab" aria-controls="custom-tabs-two-home">KPI Matrix</a>
+                <a class="nav-link card-title active" id="custom-tabs-two-home-tab"  href="{% url 'tamk_url_Admin_PMS_Matrix_KPI' pms.pms_id %}" role="tab" aria-controls="custom-tabs-two-home">KPI Matrix</a>
               </li>
               <li class="nav-item card-title">
                 <a class="nav-link" id="custom-tabs-two-profile-tab" data-toggle="pill" href="#custom-tabs-two-profile" role="tab" aria-controls="custom-tabs-two-profile">Assessment</a>
@@ -25,7 +25,7 @@
       <!-- /.card-header -->
       <div class="card-body">
         <div class="float-right">
-           <a href="{% url 'Admin_PMS_Matrix_KPI_New' pms.pms_id %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New</i></a>
+           <a href="{% url 'tamk_url_Admin_PMS_Matrix_KPI_New' pms.pms_id %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New</i></a>
         </div>
         <br>
         <br>
@@ -83,7 +83,7 @@
                   {% if kpi_matrix %}
                       {% for kpi in kpi_matrix %}
                           <tr>
-                              <td><a href="{% url 'Admin_PMS_Matrix_KPI_One' pms.pms_id kpi.kpi_months_id %}">{{ kpi.kpi_months_class }}</a></td>
+                              <td><a href="{% url 'tamk_url_Admin_PMS_Matrix_KPI_One' pms.pms_id kpi.kpi_months_id %}">{{ kpi.kpi_months_class }}</a></td>
                               <td>{{ kpi.kpi_month_april }}</td>
                               <td>{{ kpi.kpi_month_may }}</td>
                               <td>{{ kpi.kpi_month_june }}</td>

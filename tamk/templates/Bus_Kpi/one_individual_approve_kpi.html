@@ -70,10 +70,10 @@
           </table>
           <div class="card-footer">
             <div class="float-right" style="margin:5px">
-              <a href="{% url 'BUs_Reject_Kpi' bu.bu_id  kpi.bu_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
+              <a href="{% url 'tamk_url_BUs_Reject_Kpi' bu.bu_id  kpi.bu_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
             </div>
             <div class="float-right" style="margin:5px">
-              <a href="{% url 'BUs_Approve_Kpi' bu.bu_id  kpi.bu_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
+              <a href="{% url 'tamk_url_BUs_Approve_Kpi' bu.bu_id  kpi.bu_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
             </div>
           </div>
           <br>

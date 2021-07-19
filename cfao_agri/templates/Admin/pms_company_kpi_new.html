@@ -1,7 +1,7 @@
 {% extends "Admin/default.html" %}
 {% block page_top %}
-    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Admin_Dashboard' %}">Admin</a></li>
-    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Admin_PMS_Company' pms.pms_id %}">KPI</a></li>
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'cfaoa_url_Admin_Dashboard' %}">Admin</a></li>
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'cfaoa_url_Admin_PMS_Company' pms.pms_id %}">KPI</a></li>
 {% endblock %}
 {% block kpicontent %}
 
@@ -13,7 +13,7 @@
           {% csrf_token %}
           <div class="float-right">
               <button type="submit" class="btn btn-info"><i class="fa fa-save" style=""> Save</i></button>
-              <a href="{% url 'Admin_PMS_Company_New' pms.pms_id %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New</i></a>
+              <a href="{% url 'cfaoa_url_Admin_PMS_Company_New' pms.pms_id %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New</i></a>
           </div>
       </div>
       <!-- /.card-header -->
