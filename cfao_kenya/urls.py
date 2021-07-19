@@ -103,6 +103,7 @@ urlpatterns = [
 
 
     path('Report/', Report.as_view(), name='Reports'),
+    path('Profile/', Profile.as_view(), name='Profile'),
 
 
     path('Admin/', AdminDashboard.as_view(), name='Admin_Dashboard'),

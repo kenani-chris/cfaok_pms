@@ -1,70 +1,81 @@
-{% extends "Admin/default.html" %}
-{% block kpicontent %}
+{% extends "default.html" %}
 
-  <div class="col-md-10">
+{% block mykpi %}{{ my_kpi_link }}{% endblock %}
 
-    <div class="card">
-        <div class="card-header">
-            <h4 class="card-title">{{ user.first_name }} record</h4>
+{% block content %}
+
+  <div class="row">
+    <div class="col-md-3">
+
+    <!-- Profile Image -->
+    <div class="card card-primary card-outline">
+      <div class="card-body box-profile">
+        <div class="text-center">
+            {% load static %}
+            <img src="{% static 'dist/img/user3.png' %}" class="profile-user-img img-fluid img-circle" alt="User Image">
         </div>
+
+        <h3 class="profile-username text-center">{{ user.get_full_name }}</h3>
+
+
+      </div>
+      <!-- /.card-body -->
+
+      <div class="card-header">
+        <h3 class="card-title">About Me</h3>
+      </div>
+      <!-- /.card-header -->
       <div class="card-body">
+        <strong>Username</strong>
 
-        <div style="overflow-x:scroll">
-            <table class="table table-bordered">
-              <tbody>
-                <tr class="bg-info">
-                    <th colspan="4">
-                        User Info <a class="float-right btn btn-default text-dark" href="{% url 'Admin_Users_One_Edit_User' user.id %}">Edit User info</a>
-                    </th>
-                </tr>
-                <tr>
-                    <th>
-                        User
-                    </th>
-                    <td colspan="5">
-                        {{ user.get_full_name }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Username
-                    </th>
-                    <td>
-                        {{ user.username }}
-                    </td>
-                    <th>
-                        Email
-                    </th>
-                    <td colspan="3">
-                        {{ user.email }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Status Active
-                    </th>
-                    <td>
-                        {{ user.is_active }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Joined
-                    </th>
-                    <td>
-                        {{ user.date_joined }}
-                    </td>
-                    <th>
-                        Last login
-                    </th>
-                    <td>
-                        {{ user.last_login }}
-                    </td>
-                </tr>
+        <p class="text-muted">{{ user.username }}</p>
 
-              </tbody>
-          </table>
-          <table class="table table-bordered">
+        <hr>
+
+        <strong> Email</strong>
+
+        <p class="text-muted">{{ user.email }}  </p>
+        <hr>
+
+        <strong>Status Active</strong>
+
+        <p class="text-muted">{{ user.is_active }}</p>
+
+        <hr>
+
+        <strong>Admin</strong>
+
+        <p class="text-muted">{{ user.is_superuser }}</p>
+
+        <hr>
+
+        <strong> Last Login</strong>
+
+        <p class="text-muted">{{ user.last_login }}</p>
+        <hr>
+        <a class="btn btn-success" href="{% url 'password_change' %}">Reset password</a>
+
+
+
+      </div>
+      <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+    </div>
+    <!-- /.col -->
+    <div class="col-md-9">
+    <div class="card">
+      <div class="card-header p-2">
+        <ul class="nav nav-pills">
+          <li class="nav-item"><div class="nav-link active" href="#my_profile" data-toggle="tab" style="cursor: pointer;">My Profile</div></li>
+          <li class="nav-item"><div class="nav-link" href="#team_members" data-toggle="tab" style="cursor: pointer;">Team Members</div></li>
+          <li class="nav-item"><div class="nav-link" href="bu_members" data-toggle="tab" style="cursor: pointer;">BU Members</div></li>
+        </ul>
+      </div><!-- /.card-header -->
+      <div class="card-body">
+          <div class="tab-content">
+              <div class="active tab-pane" id="my_profile">
+                    <table class="table table-bordered">
               <tbody>
                 <tr class="bg-info">
                     <th colspan="4">
@@ -154,11 +165,23 @@
               </tr>
 
               </tbody>
-          </table>
-        </div>
-      </div>
-      <!-- /.card-body -->
+  </table>
+              </div>
+              <div class="tab-pane" id="team_members">
+
+              </div>
+              <div class="tab-pane" id="bu_members">
+
+              </div>
+
+          </div>
+        <!-- /.tab-content -->
+      </div><!-- /.card-body -->
     </div>
-  </div>
+    <!-- /.nav-tabs-custom -->
+    </div>
+    <!-- /.col -->
+</div>
+
 {% endblock %}
 

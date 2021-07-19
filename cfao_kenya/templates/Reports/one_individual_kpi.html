@@ -1,0 +1,132 @@
+{% extends "Individual_Kpi/default.html" %}
+{% block pagetitle %}View KPI{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">View KPI</h3>
+          <div class="float-right">
+              {% if individual_kpi %}
+                  {% if individual_kpi.individual_kpi_status == 'Pending' or individual_kpi.individual_kpi_status == 'Rejected 1' or individual_kpi.individual_kpi_status == 'Edit'%}
+                    <a href="{% url 'Individual_Kpi-Edit_One' individual_kpi.individual_kpi_id %}"><button class="btn btn-info"><i class="fa fa-edit" style="">Edit</i></button></a>
+                    <a href=""><button class="btn btn-danger">Delete</button></a>
+                  {% endif %}
+                  {% if individual_kpi.individual_kpi_status == "Approved 2" %}
+                    <a href="{% url 'Individual_Kpi_Result_Update' individual_kpi.individual_kpi_id%}"><button class="btn btn-info">Results</button></a>
+                    {% endif %}
+              {% endif %}
+          </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        {% if individual_kpi %}
+
+          <table id="example1" class="table table-bordered table-striped">
+            <tbody>
+              <tr>
+                <th>
+                  KPI
+                </th>
+                <td colspan="5">
+                  {{ individual_kpi.individual_kpi_title }}
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Description
+                </th>
+                <td colspan="5">
+                  {{ individual_kpi.individual_kpi_details }}
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Criteria
+                </th>
+                <td colspan="5">
+                  {{ individual_kpi.individual_kpi_criteria }}
+                </td>
+              </tr>
+              <tr class="bg-info">
+                <th>
+                  Function
+                </th>
+                <th>
+                  Target
+                </th>
+                <th>
+                  Calculation
+                </th>
+                <th>
+                  Weight
+                </th>
+                <th>
+                  Status
+                </th>
+                <th>
+                  Submit Date
+                </th>
+              </tr>
+              <tr>
+                <td>
+                  {{ individual_kpi.individual_kpi_function }}
+                </td>
+                <td>
+                  {{ individual_kpi.individual_kpi_target }}
+                </td>
+                <td>
+                  {{ individual_kpi.individual_kpi_type }}
+                </td>
+                <td>
+                  {{ individual_kpi.individual_kpi_weight }}
+                </td>
+                <td>
+                  {{ individual_kpi.individual_kpi_status }}
+                </td>
+                <td>
+                  {{ individual_kpi.individual_kpi_submit_date }}
+                </td>
+              </tr>
+              <tr class="bg-info">
+                <th colspan="6">
+                  Approvals
+                </th>
+              </tr>
+              <tr>
+                <th>
+                  1st Approver
+                </th>
+                <td>
+                  {{ individual_kpi.individual_kpi_team_leader_approval }}
+                </td>
+                <td>
+                  {{ individual_kpi.individual_kpi_approval1_date }}
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  2nd Approver
+                </th>
+                <td>
+                  {{ individual_kpi.individual_kpi_bu_leader_approval }}
+                </td>
+                <td>
+                  {{ individual_kpi.individual_kpi_approval2_date }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        {% else %}
+          <div class="alert alert-warning">
+            <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
+            It Appears you've not submitted any KPIs. Or all of them have been declined
+          </div>
+        {% endif %}
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}

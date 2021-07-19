@@ -22,4 +22,5 @@ urlpatterns = [
     path('', views.home, name="main_home"),
     path('cfao_kenya/', include('cfao_kenya.urls'), name='cfao_kenya'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/password_change/', views.change_password, name='change_password'),
 ]

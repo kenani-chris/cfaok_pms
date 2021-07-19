@@ -717,7 +717,7 @@ def assessment_score(pms, staff_u):
     staff_person = get_object_or_404(staff, id=staff_u.id)
     user_is_md = staff_person.staff_md
     user_is_tl = staff_person.staff_head_team
-    default_score = {'Strongly Agree': 10, 'Agree': 5, 'Disagree': -5, 'Strongly Disagree': -10}
+    default_score = {'Strongly Agree': 10, 'Agree': 5, 'Disagree': -5, 'Strongly Disagree': -10, None: 0}
     evals = evaluation.objects.filter(evaluation_pms=pms, evaluation_use='Yes')
 
     score = tl_s_score = s_tl_score = tl_s_total_score = s_tl_total_score = eval_score = 0
@@ -761,7 +761,9 @@ def assessment_score(pms, staff_u):
 def tl_s_score_fun(staff_u, eval, default_score):
     tl_s_team_score = 0
     # TL_S_Score
-    tl_responses = done_tl_evaluates_staff.objects.filter(done_staff=staff_u)
+    staff_u = get_object_or_404(staff, id=staff_u.id)
+
+    tl_responses = done_tl_evaluates_staff.objects.filter(done_staff=staff_u.staff_person)
     for response in tl_responses:
         q1_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q1)
         if q1_score:
@@ -816,7 +818,8 @@ def tl_s_score_fun(staff_u, eval, default_score):
 def s_tl_score_fun(staff_u, eval, default_score):
     s_tl_team_score = 0
     # S_TL_Score
-    staff_responses = done_staff_evaluates_tl.objects.filter(done_team_leader=staff_u)
+    staff_u = get_object_or_404(staff, id=staff_u.id)
+    staff_responses = done_staff_evaluates_tl.objects.filter(done_team_leader=staff_u.staff_person)
     for response in staff_responses:
         q1_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q1)
         if q1_score:
@@ -7977,5 +7980,152 @@ class Report(TemplateView):
         else:
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
+
+            all_records =[]
+
+            staff_u = get_object_or_404(staff, staff_person=self.request.user.id)
+
+
+
+            # kpi_score
+            if staff_u.staff_md == 'Yes':
+                ind_kpi_scores = 0
+                bu_kpi_scores = 0
+            elif staff_u.staff_head_bu:
+                ind_kpi_scores = 0
+                bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_head_bu)
+            else:
+                ind_kpi_scores = ind_kpi_score(context['pms'], staff_u.staff_person)
+                if staff_u.staff_bu:
+                    bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_bu)
+                else:
+                    bu_kpi_scores = 0
+            company_kpi_scores = kpi_score = company_kpi_score(context['pms'])
+
+            # Assessment Score
+            ass_score = assessment_score(context['pms'], staff_u)
+
+            # Checkin Score
+            ci_score = checkin_score(context['pms'], staff_u.staff_person)
+
+            ov_score = overall_score(context['pms'], staff_u)
+
+            all_records.append(
+                [staff_u, company_kpi_scores, bu_kpi_scores, ind_kpi_scores, ass_score, ci_score, ov_score])
+
+
+            if context['user_is_md'] == 'Yes' or self.request.user.is_superuser:
+                all_staff = staff.objects.all()
+
+                for staff_u in all_staff:
+
+                    # kpi_score
+                    if staff_u.staff_md == 'Yes':
+                        ind_kpi_scores = 0
+                        bu_kpi_scores = 0
+                    elif staff_u.staff_head_bu:
+                        ind_kpi_scores = 0
+                        bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_head_bu)
+                    else:
+                        ind_kpi_scores = ind_kpi_score(context['pms'], staff_u.staff_person)
+                        if staff_u.staff_bu:
+                            bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_bu)
+                        else:
+                            bu_kpi_scores = 0
+                    company_kpi_scores = kpi_score = company_kpi_score(context['pms'])
+
+                    # Assessment Score
+                    ass_score = assessment_score(context['pms'], staff_u)
+
+                    # Checkin Score
+                    ci_score = checkin_score(context['pms'], staff_u.staff_person)
+
+                    ov_score = overall_score(context['pms'], staff_u)
+
+                    all_records.append([staff_u, company_kpi_scores, bu_kpi_scores, ind_kpi_scores, ass_score, ci_score, ov_score])
+
+            elif context['user_is_bu_head']:
+                all_staff = staff.objects.filter(staff_bu=context['user_is_bu_head'])
+
+                for staff_u in all_staff:
+
+                    # kpi_score
+                    if staff_u.staff_md == 'Yes':
+                        ind_kpi_scores = 0
+                        bu_kpi_scores = 0
+                    elif staff_u.staff_head_bu:
+                        ind_kpi_scores = 0
+                        bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_head_bu)
+                    else:
+                        ind_kpi_scores = ind_kpi_score(context['pms'], staff_u.staff_person)
+                        if staff_u.staff_bu:
+                            bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_bu)
+                        else:
+                            bu_kpi_scores = 0
+                    company_kpi_scores = kpi_score = company_kpi_score(context['pms'])
+
+                    # Assessment Score
+                    ass_score = assessment_score(context['pms'], staff_u)
+
+                    # Checkin Score
+                    ci_score = checkin_score(context['pms'], staff_u.staff_person)
+
+                    ov_score = overall_score(context['pms'], staff_u)
+
+                    all_records.append(
+                        [staff_u, company_kpi_scores, bu_kpi_scores, ind_kpi_scores, ass_score, ci_score, ov_score])
+
+
+            elif context['user_is_tl']:
+                all_staff = staff.objects.filter(staff_bu=context['user_is_tl'])
+
+                for staff_u in all_staff:
+
+                    # kpi_score
+                    if staff_u.staff_md == 'Yes':
+                        ind_kpi_scores = 0
+                        bu_kpi_scores = 0
+                    elif staff_u.staff_head_bu:
+                        ind_kpi_scores = 0
+                        bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_head_bu)
+                    else:
+                        ind_kpi_scores = ind_kpi_score(context['pms'], staff_u.staff_person)
+                        if staff_u.staff_bu:
+                            bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_bu)
+                        else:
+                            bu_kpi_scores = 0
+                    company_kpi_scores = kpi_score = company_kpi_score(context['pms'])
+
+                    # Assessment Score
+                    ass_score = assessment_score(context['pms'], staff_u)
+
+                    # Checkin Score
+                    ci_score = checkin_score(context['pms'], staff_u.staff_person)
+
+                    ov_score = overall_score(context['pms'], staff_u)
+
+                    all_records.append(
+                        [staff_u, company_kpi_scores, bu_kpi_scores, ind_kpi_scores, ass_score, ci_score, ov_score])
+
+
+            context['all_records'] = all_records
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class Profile(TemplateView):
+    template_name = 'profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+        context['staff'] = get_object_or_404(staff, staff_person=self.request.user.id)
 
         return context

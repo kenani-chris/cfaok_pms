@@ -91,13 +91,13 @@
               <img src="{% static 'dist/img/user.png' %}" class="img-circle float-left" alt="User Image" style="width:100%">
             </div>
             <div class=" float-right col-md-8 text-left">
-              {% firstof request.user.get_full_name %}
+                <a href="{% url 'Profile' %}">{% firstof request.user.get_full_name %}</a>
               <small>{% firstof request.user.email %}</small>
             </div>
           </li>
           <li class="user-footer" style="margin-top: -80px">
             <a href="{% url 'logout'%}" class="btn btn-small btn-danger float-right">Sign out</a>
-            <a href="{% url 'logout'%}" class="btn btn-default btn-info">Profile</a>
+            <a href="{% url 'Profile'%}" class="btn btn-default btn-info">Profile</a>
           </li>
 
         </ul>
@@ -124,7 +124,7 @@
           <img src="{% static 'dist/img/user3.png' %}" class="elevation-2 img-circle" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">{% firstof request.user.get_full_name%}</a>
+          <a href="{% url 'Profile' %}" class="d-block">{% firstof request.user.get_full_name%}</a>
         </div>
       </div>
 
