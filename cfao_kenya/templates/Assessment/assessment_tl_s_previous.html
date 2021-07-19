@@ -1,8 +1,8 @@
 {% extends "Assessment/default.html" %}
 {% block pagetitle %}Previous Assessment{% endblock %}
-{% block page_top %}<li class="breadcrumb-item"><a href="{% url 'Assessment_Previous' %}">Prev Assessment</a></li>{% endblock %}
-{% block page_middle %}<li class="breadcrumb-item"><a href="{% url 'Assessment_Previous_One' evaluation.evaluation_id %}">Prev Evaluations</a></li>{% endblock %}
-{% block page_bottom %}<li class="breadcrumb-item"><a href="{% url 'Assessment_S_Previous' evaluation.evaluation_id %}">Prev Staff Evaluations</a></li>{% endblock %}
+{% block page_top %}<li class="breadcrumb-item"><a href="{% url 'cfaok_url_Assessment_Previous' %}">Prev Assessment</a></li>{% endblock %}
+{% block page_middle %}<li class="breadcrumb-item"><a href="{% url 'cfaok_url_Assessment_Previous_One' evaluation.evaluation_id %}">Prev Evaluations</a></li>{% endblock %}
+{% block page_bottom %}<li class="breadcrumb-item"><a href="{% url 'cfaok_url_Assessment_S_Previous' evaluation.evaluation_id %}">Prev Staff Evaluations</a></li>{% endblock %}
 {% block kpicontent %}
 
   <div class="col-md-10">

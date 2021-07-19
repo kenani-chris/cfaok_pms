@@ -9,7 +9,7 @@
         <div class="float-right">
               {% if ci %}
                   {% if ci.checkIn_status == 'Pending' %}
-                    <a href="{% url 'Check-In_Edit_One' ci.checkIn_id %}"><button class="btn btn-info"><i class="fa fa-edit" style="">Edit</i></button></a>
+                    <a href="{% url 'cfaok_url_Check-In_Edit_One' ci.checkIn_id %}"><button class="btn btn-info"><i class="fa fa-edit" style="">Edit</i></button></a>
                     <a href=""><button class="btn btn-danger">Delete</button></a>
                   {% endif %}
               {% endif %}

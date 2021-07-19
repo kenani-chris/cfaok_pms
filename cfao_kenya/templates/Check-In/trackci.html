@@ -23,7 +23,7 @@
             {% for ci in all_ci %}
               <tr>
                 <td>
-                  <a href="{% url 'Check-In_Detail' ci.checkIn_id %}"> {{ ci.checkIn_month }} Check-In </a>
+                  <a href="{% url 'cfaok_url_Check-In_Detail' ci.checkIn_id %}"> {{ ci.checkIn_month }} Check-In </a>
                 </td>
                 <td>
                   {{ ci.checkIn_status }}

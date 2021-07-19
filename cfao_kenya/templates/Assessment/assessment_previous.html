@@ -1,6 +1,6 @@
 {% extends "Assessment/default.html" %}
 {% block pagetitle %}Previous Assessment{% endblock %}
-{% block page_top %}<li class="breadcrumb-item"><a href="{% url 'Assessment_Dashboard' %}">Assessment</a></li>{% endblock %}
+{% block page_top %}<li class="breadcrumb-item"><a href="{% url 'cfaok_url_Assessment_Dashboard' %}">Assessment</a></li>{% endblock %}
 
 {% block kpicontent %}
 
@@ -28,7 +28,7 @@
                 {% if eval is not None %}
                   <tr>
                       <td>
-                        <a href="{% url 'Assessment_Previous_One' eval.0.evaluation_id %}">{{ eval.0.evaluation_name }}</a>
+                        <a href="{% url 'cfaok_url_Assessment_Previous_One' eval.0.evaluation_id %}">{{ eval.0.evaluation_name }}</a>
                       </td>
                     <td>
                       {{ eval.0.evaluation_start_date }}
