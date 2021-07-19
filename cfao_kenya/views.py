@@ -50,14 +50,6 @@ def reset_all_password(request):
     return HttpResponseRedirect(reverse('index'))
 
 
-'''send_
-    { % url
-    'account:password_reset_confirm'
-    uidb64 = uid
-    token = token %}
-'''
-
-
 def checkin_score(pms, staff):
     cis = checkIn.objects.filter(checkIn_staff=staff, checkIn_pms=pms)
     cis_approved = cis.filter(checkIn_status='Confirmed')
