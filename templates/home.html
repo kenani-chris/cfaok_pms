@@ -222,20 +222,17 @@ body {
             <p class="lead ">Let's get you there, shall we</p>
 
             {% ifequal user.groups.all.0.name "cfao_kenya" %}
-                <a href="cfao_kenya/" class="btn btn-lg btn-default">CFAO K PMS</a>
+                <a href="{% url 'cfao_kenya' %}" class="btn btn-lg btn-default">CFAO K PMS</a>
             {% endifequal %}
 
             {% ifequal user.groups.all.0.name "cfao_agri" %}
-                <a href="cfao_kenya/" class="btn btn-lg btn-default">CFAO K PMS</a>
+                <a href="{% url 'cfao_agri' %}" class="btn btn-lg btn-default">CFAO Agri</a>
             {% endifequal %}
-            {% ifequal user.groups.all.0.name "cfao_tamk" %}
-                <a href="cfao_kenya/" class="btn btn-lg btn-default">CFAO K PMS</a>
-            {% endifequal %}
-            {% ifequal user.groups.all.0.name "toyota_kenya" %}
-                <a href="cfao_kenya/" class="btn btn-lg btn-default">CFAO K PMS</a>
+            {% ifequal user.groups.all.0.name "tamk" %}
+                <a href="{% url 'tamk' %}" class="btn btn-lg btn-default">Tamk</a>
             {% endifequal %}
             {% ifequal user.groups.all.0.name "tydia" %}
-                <a href="cfao_kenya/" class="btn btn-lg btn-default">CFAO K PMS</a>
+                <a href="{% url 'tydia' %}" class="btn btn-lg btn-default">Tydia</a>
             {% endifequal %}
           {% else %}
             <p class="lead text-left bg-warning " style="border-radius: 3px; padding: 10px">Error</p>
