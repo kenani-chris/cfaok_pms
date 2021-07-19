@@ -1,0 +1,210 @@
+{% extends "Check-In/default.html" %}
+{% block pagetitle %}Submit KPI{% endblock %}
+{% block kpicontent %}
+  <div class="col-md-10">
+    <div class="card">
+      <!-- /.card-header -->
+        {{ form.errors }}
+      <div class="card-body">
+        {% if month not in ci_months %}
+        <blockquote class="bg-info " style="margin:-20px -20px 0px -20px ;"><h2 class="text-white">{% now 'F' %} Check-In</h2></blockquote>
+          <form action="" method="post" id="submit_Check_In_Form">
+          {% csrf_token %}
+
+            {{ form.checkIn_pms.as_hidden }}
+            {{ form.checkIn_submit_date.as_hidden }}
+            {{ form.checkIn_month.as_hidden }}
+            {{ form.checkIn_staff.as_hidden }}
+            {{ form.checkIn_status.as_hidden }}
+              <br>
+              <h5 class="text-info">Perfomance Areas</h5>
+              {{ form.checkIn_performance_area }}
+              <br>
+              <h5 class="text-info">Progress Discussed</h5>
+              {{ form.checkIn_progress_discussed }}
+              <br>
+              <h5 class="text-info">Team member actions</h5>
+              {{ form.checkIn_team_member_actions }}
+              <br>
+              <h5 class="text-info">Team Leader support</h5>
+              {{ form.checkIn_team_leader_support }}
+            {% load static %}
+            <script src="{% static 'plugins/summernote/summernote-bs4.min.js' %}"></script>
+            <script>
+              $('.textarea').summernote({
+                height: 100,
+                toolbar: [
+                  // [groupName, [list of button]]
+                  ['style', ['bold', 'italic', 'underline', 'clear']],
+                  ['font', ['strikethrough', 'superscript', 'subscript']],
+                  ['fontsize', ['fontsize']],
+                  ['para', ['ul', 'ol', 'paragraph']],
+                  ['height', ['height']]
+                ]
+              });
+            </script>
+            <hr>
+          <div class="card-footer">
+            <div class="float-right" style="margin:5px">
+                <button type="reset" class="btn btn-danger btn-block">Clear</button>
+            </div>
+            <div class="float-right" style="margin:5px">
+                <button type="submit" class="btn btn-primary btn-block btn_submit" id="submit_kpi_button">Submit</button>
+            </div>
+          </div>
+          </form>
+
+          <script>
+            $( ".btn_submit").click(function() {
+              $(".btn_submit").prop('readonly', true);
+              $('html').preloader({
+                // loading text
+                text:'Loading',
+                // from 0 to 100
+                percent:'100',
+                // duration in ms
+                duration:'30000',
+                // z-index property
+                zIndex:'1',
+                // sets relative position to preloader's parent
+                width:'100%',
+                height:'100%',
+                setRelative:false,
+              });
+          });
+          </script>
+          <hr>
+          {% else %}
+          <div class="alert alert-success">
+            <h5><i class="icon fas fa-ban"></i> Check-In Submitted</h5>
+            It Appears you've already submitted Checkin for {% now 'F' %}
+          </div>
+          <div class="row">
+            <div class="col-md-3 col-sm-6 col-12">
+              <a href="{% url 'BU_Kpi_Detail1' %}">
+                <div class="info-box bg-info">
+                  <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Required</span>
+                    <span class="info-box-number">{{ pms.checkin_number }} CIs</span>
+
+                    <div class="progress">
+                      <div class="progress-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="progress-description">
+                      <small>Required no of Check-Ins</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+              </a>
+              <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-3 col-sm-6 col-12">
+              <a href="{% url 'BU_Kpi_Detail1' %}">
+                <div class="info-box bg-success">
+                  <span class="info-box-icon"><i class="far fa-thumbs-up"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Confirmed</span>
+                    <span class="info-box-number">{{ confirmed_ci.count }} CIs</span>
+
+                    <div class="progress">
+                      <div class="progress-bar" style="width:100%"></div>
+                    </div>
+                    <span class="progress-description">
+                      <small>Confirmed CIs by TL</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+              </a>
+              <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-3 col-sm-6 col-12">
+              <a href="{% url 'BU_Kpi_Detail1' %}">
+                <div class="info-box bg-warning">
+                  <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Pending</span>
+                    <span class="info-box-number">{{ total_pending }} CIs</span>
+
+                    <div class="progress">
+                      <div class="progress-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="progress-description">
+                      <small>Total Pending CIs</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+              </a>
+              <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-3 col-sm-6 col-12">
+              <a href="{% url 'BU_Kpi_Detail1' %}">
+                <div class="info-box bg-danger">
+                  <span class="info-box-icon"><i class="fas fa-thumbs-down"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Rejected</span>
+                    <span class="info-box-number">{{ total_rejected }} CIs</span>
+
+                    <div class="progress">
+                      <div class="progress-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="progress-description">
+                      <small>Total Rejected CIs</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+              </a>
+              <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+          </div>
+          {% endif %}
+          {% if my_ci %}
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>Month</th>
+                <th>Status</th>
+                <th>Submit Date</th>
+              </tr>
+              </thead>
+              <tbody>
+            {% for ci in my_ci %}
+              {% if kpi.company_kpi_status != "Rejected" %}
+                <tr>
+                  <td>
+                    {{ ci.checkIn_month }} Check-In
+                  </td>
+                  <td>
+                    {{ ci.checkIn_status }}
+                  </td>
+                  <td>
+                    {{ ci.checkIn_submit_date }}
+                  </td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+              </tbody>
+              <tfoot>
+
+              </tfoot>
+            </table>
+          {% endif %}
+
+      </div>
+      <!-- /.card-body -->
+    </div>
+</div>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js" defer></script>
+{% endblock %}
+

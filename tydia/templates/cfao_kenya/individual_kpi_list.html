@@ -1,0 +1,18 @@
+{% extends "default.html" %}
+
+{% block content %}
+  <h1>Book List</h1>
+  {{ get_approved_kpi }}
+  {% if Individual_Kpi_List %}
+  <ul>
+    {% for individual_kpi in Individual_Kpi_List %}
+    asd
+    <li>
+        <a href="{{ individual_kpi.get_absolute_url }}">{{ individual_kpi }}KPI</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no books in the library.</p>
+  {% endif %}
+{% endblock %}

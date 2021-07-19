@@ -1,0 +1,192 @@
+{% extends "Admin/default.html" %}
+{% block page_top %}
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Admin_Dashboard' %}">Admin</a></li>{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">PMS <b>{{ pms.pms_name }}</b></h3>
+          <form action="" method="post">
+          {% csrf_token %}
+          <div class="float-right">
+            <button type="submit" class="btn btn-info"><i class="fa fa-save" style=""> Save</i></button>
+          </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+          {{ form.errors }}
+          {{ form.pms_id.as_hidden }}
+          <table id="example1" class="table table-bordered">
+            <tbody>
+              <tr>
+                <th>
+                  PMS
+                </th>
+                <td>
+                  {{ form.pms_name }}
+                </td>
+                  <th>
+                      Status
+                  </th>
+                  <td>
+                      {{ form.pms_status }}
+                  </td>
+              </tr>
+              <tr>
+                <th>
+                  Start
+                </th>
+                <td>
+                    <input class="form-control" name="{{ form.pms_start_date.name }}" id="{{ form.pms_start_date.id_for_label }}" type="date"  value="{{ form.pms_start_date.value|date:'Y-m-d'|stringformat:'s' }}">
+                </td>
+                  <th>
+                      Status
+                  </th>
+                  <td>
+                      <input class="form-control" name="{{ form.pms_end_date.name }}" id="{{ form.pms_end_date.id_for_label }}" type="date"  value="{{ form.pms_end_date.value|date:'Y-m-d'|stringformat:'s' }}">
+                  </td>
+              </tr>
+            </tbody>
+          </table>
+          <table id="example1" class="table table-bordered table-striped">
+            <tbody>
+            <tr class="bg-info">
+                <th colspan="4">
+                    Individual Kpi
+                </th>
+            </tr>
+            <tr>
+                <th>
+                  KPI No
+                </th>
+                <td>
+                    {{ form.pms_individual_kpi_number}}
+                </td>
+                <th>
+                  Submit Date
+                </th>
+                <td>
+                    {{ form.pms_individual_submit_results_date}}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                  Start Date
+                </th>
+                <td>
+                    <input class="form-control" name="{{ form.pms_individual_submit_start_date.name }}" id="{{ form.pms_individual_submit_start_date.id_for_label }}" type="date"  value="{{ form.pms_individual_submit_start_date.value|date:'Y-m-d'|stringformat:'s' }}">
+                </td>
+                <th>
+                  End Date
+                </th>
+                <td>
+                    <input class="form-control" name="{{ form.pms_individual_submit_end_date.name }}" id="{{ form.pms_individual_submit_end_date.id_for_label }}" type="date"  value="{{ form.pms_individual_submit_end_date.value|date:'Y-m-d'|stringformat:'s' }}">
+                </td>
+            </tr>
+            <tr class="bg-info">
+                <th colspan="4">
+                    BU Kpi
+                </th>
+            </tr>
+            <tr>
+                <th>
+                  KPI No
+                </th>
+                <td>
+                    {{ form.pms_bu_kpi_number}}
+                </td>
+                <th>
+                  Submit Date
+                </th>
+                <td>
+                    {{ form.pms_bu_submit_result_date}}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                  Start Date
+                </th>
+                <td>
+                      <input class="form-control" name="{{ form.pms_bu_submit_start_date.name }}" id="{{ form.pms_bu_submit_start_date.id_for_label }}" type="date"  value="{{ form.pms_bu_submit_start_date.value|date:'Y-m-d'|stringformat:'s' }}">
+                </td>
+                <th>
+                  End Date
+                </th>
+                <td>
+                    <input class="form-control" name="{{ form.pms_bu_submit_end_date.name }}" id="{{ form.pms_bu_submit_end_date.id_for_label }}" type="date"  value="{{ form.pms_bu_submit_end_date.value|date:'Y-m-d'|stringformat:'s' }}">
+                </td>
+            </tr>
+            <tr class="bg-info">
+                <th colspan="4">
+                    Company Kpi
+                </th>
+            </tr>
+            <tr>
+                <th>
+                  KPI No
+                </th>
+                <td>
+                    {{ form.pms_company_kpi_number}}
+                </td>
+                <th>
+                  Submit Date
+                </th>
+                <td>
+                    {{ form.pms_company_submit_result_date }}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                  Start Date
+                </th>
+                <td>
+                    <input class="form-control" name="{{ form.pms_company_submit_start_date.name }}" id="{{ form.pms_company_submit_start_date.id_for_label }}" type="date"  value="{{ form.pms_company_submit_start_date.value|date:'Y-m-d'|stringformat:'s' }}">
+                </td>
+                <th>
+                  End Date
+                </th>
+                <td>
+                    <input class="form-control" name="{{ form.pms_company_submit_end_date.name }}" id="{{ form.pms_company_submit_end_date.id_for_label }}" type="date"  value="{{ form.pms_company_submit_end_date.value|date:'Y-m-d'|stringformat:'s' }}">
+                </td>
+            </tr>
+            </tbody>
+          </table>
+          <br>
+          <table id="example1" class="table table-bordered table-striped">
+            <tbody>
+                <tr class="bg-info">
+                    <th colspan="2">
+                        Assessment
+                    </th>
+                    <th colspan="2">
+                        Check-In
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Assessment count
+                    </th>
+                    <td>
+                        {{ form.assessment_number }}
+                    </td>
+                    <th>
+                        Checkin count
+                    </th>
+                    <td>
+                        {{ form.checkin_number }}
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+        </form>
+          <br>
+          <br>
+          <br>
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}

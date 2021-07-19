@@ -1,0 +1,46 @@
+{% extends "default.html" %}
+{% block pagetitle %}Reports{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+      <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
+        $(function() {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+          });
+          toastr.success('{{ message }}');
+        });
+      </script>
+    {% endfor %}
+{% endif %}
+<div class="row">
+  <div class="col-md-2">
+    <div class="card card-primary card-outline">
+      <div class="card-body box-profile">
+
+
+        <br>
+        <ul class="list-group list-group-unbordered mb-3">
+          <li class="list-group-item">
+            <a href="{% url 'Reports' %}" class="btn btn-primary btn-block"><b>Perfomance Reports</b></a>
+          </li>
+        </ul>
+      </div>
+      <!-- /.card-body -->
+    </div>
+  </div>
+  {% block kpicontent %} {% endblock %}
+</div>
+<!-- page script -->
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": false,
+      "autoWidth": false,
+    });
+  });
+</script>
+{% endblock %}
