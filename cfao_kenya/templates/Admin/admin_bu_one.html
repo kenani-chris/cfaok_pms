@@ -1,4 +1,4 @@
-{% extends "Admin/default.html" %}
+{% extends "cfao_agri/Admin/default.html" %}
 {% block kpicontent %}
 
   <div class="col-md-10">
@@ -51,7 +51,7 @@
                     {% for head in bu_head %}
                         <tr>
                             <td>
-                                <a href="{% url 'cfaok_url_Admin_Users_One' head.staff_person.id %}">{{ head.staff_person.get_full_name }}</a>
+                                <a href="{% url 'cfao_kenya:Admin_Users_One' head.staff_person.id %}">{{ head.staff_person.get_full_name }}</a>
                             </td>
                             <td>
                                 {{ head.staff_Pf_Number }}
@@ -88,7 +88,7 @@
             {% for staff in bu_members %}
                     <tr>
                         <td>
-                            <a href="{% url 'cfaok_url_Admin_Users_One' staff.staff_person.id %}">{{ staff.staff_person.get_full_name }}</a>
+                            <a href="{% url 'cfao_kenya:Admin_Users_One' staff.staff_person.id %}">{{ staff.staff_person.get_full_name }}</a>
                         </td>
                         <td>
                             {{ staff.staff_Pf_Number }}

@@ -26,7 +26,7 @@
         {% for kpi in my_kpi %}
             <tr>
               <td>
-                <a href="{% url 'cfaok_url_BU_kpi-detail' kpi.bu_kpi_id %}"> {{ kpi.bu_kpi_title }} </a>
+                <a href="{% url 'cfao_kenya:BU_kpi-detail' kpi.bu_kpi_id %}"> {{ kpi.bu_kpi_title }} </a>
               </td>
               <td>
                 {{ kpi.bu_kpi_function }}
@@ -42,7 +42,7 @@
               </td>
               <td>
                   {% if kpi.bu_kpi_status == "Pending" or kpi.bu_kpi_status == "Edit" or kpi.bu_kpi_status == "Rejected 1"%}
-                      <a class="text-info" href="{% url 'cfaok_url_BU_Kpi_Edit_One' kpi.bu_kpi_id %}"><i class="fa fa-edit" style="font-size:20px"></i>Edit</a>
+                      <a class="text-info" href="{% url 'cfao_kenya:BU_Kpi_Edit_One' kpi.bu_kpi_id %}"><i class="fa fa-edit" style="font-size:20px"></i>Edit</a>
                       <span style="padding-right: 10px"></span>
                       <a class="text-danger"><i class="fa fa-trash" style="font-size:20px; color:red"></i>Delete</a>
                   {% endif %}

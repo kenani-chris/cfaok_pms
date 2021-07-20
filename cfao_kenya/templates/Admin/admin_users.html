@@ -1,4 +1,4 @@
-{% extends "Admin/default.html" %}
+{% extends "cfao_agri/Admin/default.html" %}
 {% block kpicontent %}
   <div class="col-md-10">
   <div class="row">
@@ -82,7 +82,7 @@
 
     <div class="card">
       <div class="card-body">
-      <a href="{% url 'cfaok_url_Admin_Users_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New User</i></a><br><br>
+      <a href="{% url 'cfao_kenya:Admin_Users_New' %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New User</i></a><br><br>
 
         <div style="overflow-x:scroll">
             <table id="example1" class="table table-bordered">
@@ -128,7 +128,7 @@
 
                   <tr>
                     <td>
-                        <a href="{% url 'cfaok_url_Admin_Users_One' s.staff_person.id %}">{{ s.staff_person.get_full_name }}</a>
+                        <a href="{% url 'cfao_kenya:Admin_Users_One' s.staff_person.id %}">{{ s.staff_person.get_full_name }}</a>
                     </td>
                       <td>
                             <div class="dropdown">
@@ -137,11 +137,11 @@
                               </button>
                               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                   {% if s.staff_person.is_active is True %}
-                                    <a class="dropdown-item" href="{% url 'cfaok_url_Admin_Users_deactivate1' s.staff_person.id %}">Deactivate</a>
+                                    <a class="dropdown-item" href="{% url 'cfao_kenya:Admin_Users_deactivate1' s.staff_person.id %}">Deactivate</a>
                                   {% else %}
-                                      <a class="dropdown-item" href="{% url 'cfaok_url_Admin_Users_activate1' s.staff_person.id %}">Activate</a>
+                                      <a class="dropdown-item" href="{% url 'cfao_kenya:Admin_Users_activate1' s.staff_person.id %}">Activate</a>
                                   {% endif %}
-                                <a class="dropdown-item" href="{% url 'cfaok_url_Admin_Users_reset_password' s.staff_person.id %}">Reset Password</a>
+                                <a class="dropdown-item" href="{% url 'cfao_kenya:Admin_Users_reset_password' s.staff_person.id %}">Reset Password</a>
 
                               </div>
                             </div>

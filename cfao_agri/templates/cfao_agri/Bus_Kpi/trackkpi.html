@@ -1,0 +1,62 @@
+{% extends "cfao_agri/Bus_Kpi/default.html" %}
+{% block pagetitle %}Track my Staff KPIs{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Track/search all submitted  KPI</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        {% if bus %}
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>Staff</th>
+                <th>Approved</th>
+                <th>Pending</th>
+                <th>Rejected</th>
+                <th>Total</th>
+              </tr>
+              </thead>
+              <tbody>
+            {% for bu in bus_kpi %}
+              {% if bu is not None %}
+                <tr>
+                  <td>
+                    <a href="{% url 'cfao_agri:BUs_Track_Kpi_BUs' bu.0.bu_id %}" >{{ bu.0.bu_name }}</a>
+                  </td>
+                  <td>
+                    {{ bu.1 }}
+                  </td>
+                  <td>
+                    {{ bu.2 }}
+                  </td>
+                  <td>
+                    {{ bu.3 }}
+                  </td>
+                  <td>
+                    {{ bu.4 }}
+                  </td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+              </tbody>
+              <tfoot>
+
+              </tfoot>
+            </table>
+          {% else %}
+            <div class="alert alert-warning">
+              <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
+              It Appears you've you've got no team bus
+            </div>
+          {% endif %}
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends "Admin/default.html" %}
+{% extends "cfao_agri/Admin/default.html" %}
 {% block kpicontent %}
 
   <div class="col-md-10">
@@ -14,7 +14,7 @@
               <tbody>
                 <tr class="bg-info">
                     <th colspan="4">
-                        User Info <a class="float-right btn btn-default text-dark" href="{% url 'cfaok_url_Admin_Users_One_Edit_User' user.id %}">Edit User info</a>
+                        User Info <a class="float-right btn btn-default text-dark" href="{% url 'cfao_kenya:Admin_Users_One_Edit_User' user.id %}">Edit User info</a>
                     </th>
                 </tr>
                 <tr>
@@ -68,7 +68,7 @@
               <tbody>
                 <tr class="bg-info">
                     <th colspan="4">
-                        Staff Info <a class="float-right btn btn-default text-dark" href="{% url 'cfaok_url_Admin_Users_One_Edit_Staff' user.id %}">Edit staff info</a>
+                        Staff Info <a class="float-right btn btn-default text-dark" href="{% url 'cfao_kenya:Admin_Users_One_Edit_Staff' user.id %}">Edit staff info</a>
                     </th>
                 </tr>
                 <tr>

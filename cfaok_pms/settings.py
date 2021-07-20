@@ -43,11 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cfao_kenya.apps.CfaoKenyaConfig',
     'cfao_agri.apps.CfaoAgriConfig',
     'tamk.apps.TamkConfig',
-    'tydia.apps.TydiaConfig',
-    'toyota_kenya.apps.ToyotaKenyaConfig',
 ]
 
 MIDDLEWARE = [
@@ -94,7 +91,7 @@ WSGI_APPLICATION = 'cfaok_pms.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cfaok_pms',
+        'NAME': 'cfaok_pms2',
         'USER': 'cfaok_pms',
         'PASSWORD': 'ChangemeHR*12',
         'HOST': '127.0.0.1',
@@ -163,3 +160,10 @@ EMAIL_USE_SSL = False
 
 ACCOUNT_PASSWORD_EXPIRY = 5
 ACCOUNT_PASSWORD_USE_HISTORY = True
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+ADMINS = (
+    ('Kenani Chris', 'kenanichris@outlook.com'),
+)
+
+MANAGERS = ADMINS

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <!-- {% if pms is None %}
-    <meta http-equiv="REFRESH" content="0;url={% url 'cfaok_url_ck_no_active_pms' %}">
+    <meta http-equiv="REFRESH" content="0;url={% url 'cfao_kenya:ck_no_active_pms' %}">
 {% endif %}-->
   {% block title %}<title>Online PMS</title>{% endblock %}
   <!-- Tell the browser to be responsive to screen width -->
@@ -72,7 +72,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="{% url 'cfaok_url_index' %}" class="nav-link">Home</a>
+        <a href="{% url 'cfao_kenya:index' %}" class="nav-link">Home</a>
       </li>
     </ul>
     <!-- Right navbar links -->
@@ -91,13 +91,13 @@
               <img src="{% static 'dist/img/user.png' %}" class="img-circle float-left" alt="User Image" style="width:100%">
             </div>
             <div class=" float-right col-md-8 text-left">
-                <a href="{% url 'cfaok_url_Profile' %}">{% firstof request.user.get_full_name %}</a>
+                <a href="{% url 'cfao_kenya:Profile' %}">{% firstof request.user.get_full_name %}</a>
               <small>{% firstof request.user.email %}</small>
             </div>
           </li>
           <li class="user-footer" style="margin-top: -80px">
             <a href="{% url 'logout'%}" class="btn btn-small btn-danger float-right">Sign out</a>
-            <a href="{% url 'cfaok_url_Profile'%}" class="btn btn-default btn-info">Profile</a>
+            <a href="{% url 'cfao_kenya:Profile'%}" class="btn btn-default btn-info">Profile</a>
           </li>
 
         </ul>
@@ -110,7 +110,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{% url 'cfaok_url_index' %}" class="brand-link">
+    <a href="{% url 'cfao_kenya:index' %}" class="brand-link">
       <img src="{% static 'dist/img/cfao_kenya.png' %}" alt="CFAO Kenya Logo" class="brand-image elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">ONLINE <b>PMS</b></span>
@@ -124,7 +124,7 @@
           <img src="{% static 'dist/img/user3.png' %}" class="elevation-2 img-circle" alt="User Image">
         </div>
         <div class="info">
-          <a href="{% url 'cfaok_url_Profile' %}" class="d-block">{% firstof request.user.get_full_name%}</a>
+          <a href="{% url 'cfao_kenya:Profile' %}" class="d-block">{% firstof request.user.get_full_name%}</a>
         </div>
       </div>
 
@@ -134,7 +134,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="{% url 'cfaok_url_index' %}" class="nav-link bg-white">
+            <a href="{% url 'cfao_kenya:index' %}" class="nav-link bg-white">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -153,7 +153,7 @@
           <!-- My KPI LINK ========================================================================================= -->
           {% if user_is_md != "Yes" and user_is_bu_head == None %}
             <li class="nav-item">
-              <a href="{% url 'cfaok_url_Individual_Kpi_Dashboard' %}" class="nav-link">
+              <a href="{% url 'cfao_kenya:Individual_Kpi_Dashboard' %}" class="nav-link">
                 <i class="far fa-user nav-icon"></i>
                 <p>My KPIs</p>
               </a>
@@ -164,7 +164,7 @@
           <!-- My Staff KPI LINK =================================================================================== -->
           {% if user_is_tl != None %}
             <li class="nav-item">
-              <a href="{% url 'cfaok_url_Staff_Kpi_Dashboard' %}" class="nav-link">
+              <a href="{% url 'cfao_kenya:Staff_Kpi_Dashboard' %}" class="nav-link">
                 <i class="fa fa-users nav-icon"></i>
                 <p>My Staff KPIs</p>
               </a>
@@ -182,7 +182,7 @@
           {% endif %}
           {% if user_is_md == "Yes" %}
             <li class="nav-item">
-              <a href="{% url 'cfaok_url_BUs_Kpi_Dashboard' %}" class="nav-link">
+              <a href="{% url 'cfao_kenya:BUs_Kpi_Dashboard' %}" class="nav-link">
                 <i class="fa fa-users nav-icon"></i>
                 <p>BUs KPI</p>
               </a>
@@ -190,7 +190,7 @@
           {% endif %}
           {% if user_is_bu_head != None %}
             <li class="nav-item">
-              <a href="{% url 'cfaok_url_BU_Kpi_Dashboard' %}" class="nav-link">
+              <a href="{% url 'cfao_kenya:BU_Kpi_Dashboard' %}" class="nav-link">
                 <i class="fa fa-users nav-icon"></i>
                 <p>BU KPI</p>
               </a>
@@ -198,7 +198,7 @@
           {% endif %}
           <!--{% if user_is_md == "No" and user_is_bu_head is None and user_bu is not None%}
           <li class="nav-item">
-            <a href="{% url 'cfaok_url_BU_Kpi_Dashboard' %}" class="nav-link">
+            <a href="{% url 'cfao_kenya:BU_Kpi_Dashboard' %}" class="nav-link">
               <i class="fa fa-users nav-icon"></i>
               <p>BU Dashboard</p>
             </a>
@@ -208,7 +208,7 @@
           <!-- Company KPI LINK =================================================================================== -->
           {% if user_is_md == "Yes" %}
             <li class="nav-item">
-              <a href="{% url 'cfaok_url_Company_Kpi_Dashboard' %}" class="nav-link">
+              <a href="{% url 'cfao_kenya:Company_Kpi_Dashboard' %}" class="nav-link">
                 <i class="fa fa-building nav-icon"></i>
                 <p>Company KPIs</p>
               </a>
@@ -233,7 +233,7 @@
 
           <!-- Staff and TL ASSESS LINK =================================================================================== -->
           <li class="nav-item">
-              <a href="{% url 'cfaok_url_Assessment_Dashboard' %}" class="nav-link">
+              <a href="{% url 'cfao_kenya:Assessment_Dashboard' %}" class="nav-link">
                 <i class="fa fa-users nav-icon"></i>
                 <p>Staff/TL Assessment</p>
               </a>
@@ -251,7 +251,7 @@
           <!-- My ChekinLINK =================================================================================== -->
           {% if user_is_md != "Yes" %}
             <li class="nav-item">
-              <a href="{% url 'cfaok_url_Check-In_Kpi_Dashboard' %}" class="nav-link">
+              <a href="{% url 'cfao_kenya:Check-In_Kpi_Dashboard' %}" class="nav-link">
                 <i class="far fa-user nav-icon"></i>
                 <p>My Checkin</p>
               </a>
@@ -261,7 +261,7 @@
           <!-- Staff CheckIn LINK ================================================================================== -->
           {% if user_is_tl != None %}
             <li class="nav-item">
-              <a href="{% url 'cfaok_url_Staff_Check-In_Kpi_Dashboard' %}" class="nav-link">
+              <a href="{% url 'cfao_kenya:Staff_Check-In_Kpi_Dashboard' %}" class="nav-link">
                 <i class="fa fa-users nav-icon"></i>
                 <p>My Staff Checkin</p>
               </a>
@@ -277,7 +277,7 @@
                 </a>
               </li>
               <li class="nav-item">
-              <a href="{% url 'cfaok_url_Admin_Dashboard' %}" class="nav-link">
+              <a href="{% url 'cfao_kenya:Admin_Dashboard' %}" class="nav-link">
                 <i class="far fa-user nav-icon"></i>
                 <p>Admin</p>
               </a>
@@ -294,7 +294,7 @@
                 </a>
               </li>
               <li class="nav-item">
-              <a href="{% url 'cfaok_url_Reports' %}" class="nav-link">
+              <a href="{% url 'cfao_kenya:Reports' %}" class="nav-link">
                 <i class="far fa-user nav-icon"></i>
                 <p>Report</p>
               </a>

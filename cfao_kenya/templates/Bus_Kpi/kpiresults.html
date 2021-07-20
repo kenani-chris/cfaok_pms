@@ -17,7 +17,7 @@
               <div>
                 <i class="fas fa-user bg-blue"></i>
                 <div class="timeline-item">
-                  <h3 class="timeline-header"><a href="{% url 'cfaok_url_Staff_Track_Kpi_Staff' member.0 %}">{{ member.1 }}</a> </h3>
+                  <h3 class="timeline-header"><a href="{% url 'cfao_kenya:Staff_Track_Kpi_Staff' member.0 %}">{{ member.1 }}</a> </h3>
 
                   <div class="timeline-body">
                     {% if member.4 is not None %}
@@ -47,7 +47,7 @@
                         {% for kpi in member.4 %}
                           <tr>
                             <td>
-                              <a href="{% url 'cfaok_url_Staff_Track_Kpi_Staff_One' member.0 kpi.individual_kpi_id %}">{{ kpi.individual_kpi_title }}</a>
+                              <a href="{% url 'cfao_kenya:Staff_Track_Kpi_Staff_One' member.0 kpi.individual_kpi_id %}">{{ kpi.individual_kpi_title }}</a>
                             </td>
                             <td>
                               {{ kpi.individual_kpi_function }}

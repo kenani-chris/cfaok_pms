@@ -12,8 +12,8 @@
         <br>
         <ul class="list-group list-group-unbordered mb-3">
           <li class="list-group-item">
-            <a href="{% url 'cfaok_url_BUs_Approve_Kpi' %}" class="btn btn-primary btn-block"><b>Approve KPI{% if team_pending > 0 %} <span class="badge badge-danger float-right">{{ team_pending }}</span>{% endif %}</b></a>
-            <a href="{% url 'cfaok_url_BUs_Track_Kpi' %}" class="btn btn-primary btn-block"><b>Staff KPI</b></a>
+            <a href="{% url 'cfao_kenya:BUs_Approve_Kpi' %}" class="btn btn-primary btn-block"><b>Approve KPI{% if team_pending > 0 %} <span class="badge badge-danger float-right">{{ team_pending }}</span>{% endif %}</b></a>
+            <a href="{% url 'cfao_kenya:BUs_Track_Kpi' %}" class="btn btn-primary btn-block"><b>Staff KPI</b></a>
           </li>
         </ul>
       </div>
@@ -23,7 +23,7 @@
   <div class="col-md-10">
     <div class="row">
       <div class="col-md-3 col-sm-6 col-12">
-        <a href="{% url 'cfaok_url_Individual_Kpi_Detail1' %}">
+        <a href="{% url 'cfao_kenya:Individual_Kpi_Detail1' %}">
           <div class="info-box bg-info">
             <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
 
@@ -45,7 +45,7 @@
       </div>
       <!-- /.col -->
       <div class="col-md-3 col-sm-6 col-12">
-        <a href="{% url 'cfaok_url_Individual_Kpi_Detail1' %}">
+        <a href="{% url 'cfao_kenya:Individual_Kpi_Detail1' %}">
           <div class="info-box bg-success">
             <span class="info-box-icon"><i class="far fa-thumbs-up"></i></span>
             <div class="info-box-content">
@@ -66,7 +66,7 @@
       </div>
       <!-- /.col -->
       <div class="col-md-3 col-sm-6 col-12">
-        <a href="{% url 'cfaok_url_Individual_Kpi_Detail1' %}">
+        <a href="{% url 'cfao_kenya:Individual_Kpi_Detail1' %}">
           <div class="info-box bg-warning">
             <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
 
@@ -88,7 +88,7 @@
       </div>
       <!-- /.col -->
       <div class="col-md-3 col-sm-6 col-12">
-        <a href="{% url 'cfaok_url_Individual_Kpi_Detail1' %}">
+        <a href="{% url 'cfao_kenya:Individual_Kpi_Detail1' %}">
           <div class="info-box bg-danger">
             <span class="info-box-icon"><i class="fas fa-thumbs-down"></i></span>
 

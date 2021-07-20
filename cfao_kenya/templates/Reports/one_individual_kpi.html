@@ -9,11 +9,11 @@
           <div class="float-right">
               {% if individual_kpi %}
                   {% if individual_kpi.individual_kpi_status == 'Pending' or individual_kpi.individual_kpi_status == 'Rejected 1' or individual_kpi.individual_kpi_status == 'Edit'%}
-                    <a href="{% url 'cfaok_url_Individual_Kpi-Edit_One' individual_kpi.individual_kpi_id %}"><button class="btn btn-info"><i class="fa fa-edit" style="">Edit</i></button></a>
+                    <a href="{% url 'cfao_kenya:Individual_Kpi-Edit_One' individual_kpi.individual_kpi_id %}"><button class="btn btn-info"><i class="fa fa-edit" style="">Edit</i></button></a>
                     <a href=""><button class="btn btn-danger">Delete</button></a>
                   {% endif %}
                   {% if individual_kpi.individual_kpi_status == "Approved 2" %}
-                    <a href="{% url 'cfaok_url_Individual_Kpi_Result_Update' individual_kpi.individual_kpi_id%}"><button class="btn btn-info">Results</button></a>
+                    <a href="{% url 'cfao_kenya:Individual_Kpi_Result_Update' individual_kpi.individual_kpi_id%}"><button class="btn btn-info">Results</button></a>
                     {% endif %}
               {% endif %}
           </div>

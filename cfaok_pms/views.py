@@ -9,8 +9,6 @@ from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.views.generic import TemplateView
 
-from cfao_kenya.views import send_mail
-
 
 @login_required
 def home(request):
@@ -33,23 +31,23 @@ def has_group(user, group_name):
     return group in user.groups.all()
 
 
-def change_user_password(request):
+def self_change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)
+            update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated!')
-            return HttpResponseRedirect(reverse('change_user_password_done'))
+            return redirect('self_change_user_password_done')
     else:
         form = PasswordChangeForm(request.user)
-    return render(request, 'registration/change_password.html', {
+    return render(request, 'registration/change-password.html', {
         'form': form
     })
 
 
-class PasswordChangeDone(TemplateView):
-    template_name = 'registration/password_change_done.html'
+def self_password_change_done(request):
+    return render(request, 'registration/change-password-done.html',)
 
 
 '''

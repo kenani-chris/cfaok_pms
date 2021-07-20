@@ -219,21 +219,18 @@ body {
           <h1 class="cover-heading text-left border-info border-bottom ">Welcome <span style="color: #ff1493">{{ request.user.get_full_name }}</span>,</h1>
           {{ request.user.staff }}
           {% if request.user.groups.all %}
-            <p class="lead ">Let's get you there, shall we</p>
+              {% for group in user.groups.all%}
+                {% ifequal group.name "cfao_agri" %}
+                    <a href="{% url 'cfao_agri:index' %}" class="btn btn-lg btn-default">CFAO Agri PMS</a>
+                {% endifequal %}
+                {% ifequal group.name "tamk" %}
+                    <a href="{% url 'tamk:index' %}" class="btn btn-lg btn-default">Tamk PMS</a>
+                {% endifequal %}
+                {% ifequal group.name "cfao_agi" %}
+                    <a href="{% url 'cfao_agri:index' %}" class="btn btn-lg btn-default">CFAO Agri PMS</a>
+                {% endifequal %}
 
-            {% ifequal user.groups.all.0.name "cfao_kenya" %}
-                <a href="{% url 'cfao_kenya' %}" class="btn btn-lg btn-default">CFAO K PMS</a>
-            {% endifequal %}
-
-            {% ifequal user.groups.all.0.name "cfao_agri" %}
-                <a href="{% url 'cfao_agri' %}" class="btn btn-lg btn-default">CFAO Agri</a>
-            {% endifequal %}
-            {% ifequal user.groups.all.0.name "tamk" %}
-                <a href="{% url 'tamk' %}" class="btn btn-lg btn-default">Tamk</a>
-            {% endifequal %}
-            {% ifequal user.groups.all.0.name "tydia" %}
-                <a href="{% url 'tydia' %}" class="btn btn-lg btn-default">Tydia</a>
-            {% endifequal %}
+              {% endfor %}
           {% else %}
             <p class="lead text-left bg-warning " style="border-radius: 3px; padding: 10px">Error</p>
             <p class="lead text-left">It Appears you are not mapped to any company. <br>Please contact HR for assist</p>
