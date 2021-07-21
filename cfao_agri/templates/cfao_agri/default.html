@@ -88,13 +88,16 @@
               <img src="{% static 'dist/img/user.png' %}" class="img-circle float-left" alt="User Image" style="width:100%">
             </div>
             <div class=" float-right col-md-8 text-left">
-                <a href="{% url 'cfao_agri:Profile' %}">{% firstof request.user.get_full_name %}</a>
-              <small>{% firstof request.user.email %}</small>
+                <a href="{% url 'cfao_agri:Profile' %}">{% firstof request.user.get_full_name %}</a><br>
+              <small>{% firstof request.user.email %}</small><br><br>
+                <a href="{% url 'main_home' %}">Switch Company</a>
             </div>
+
+
           </li>
           <li class="user-footer" style="margin-top: -80px">
-            <a href="{% url 'logout'%}" class="btn btn-small btn-danger float-right">Sign out</a>
             <a href="{% url 'cfao_agri:Profile'%}" class="btn btn-default btn-info">Profile</a>
+              <a href="{% url 'logout'%}" class="btn btn-small btn-danger float-right">Sign out</a>
           </li>
 
         </ul>
@@ -108,7 +111,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{% url 'cfao_agri:index' %}" class="brand-link">
-      <img src="{% static 'images/cfao_agri_sign.png' %}" alt="CFAO Kenya Logo" class="brand-image elevation-3"
+      <img src="{% static 'images/cfao_agri_sign.png' %}" alt="CFAO Agri Logo" class="brand-image elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">ONLINE <b>PMS</b></span>
     </a>

@@ -1,0 +1,97 @@
+{% extends "cfao_kenya/Admin/default.html" %}
+{% block page_top %}
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'cfao_kenya:Admin_Dashboard' %}">Admin</a></li>{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">PMS <b>{{ pms.pms_name }}</b> --- CheckIn</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+
+        <form method="post">
+        {% csrf_token %}
+            {{ form.errors }}
+            {{ form.matrix_pms.as_hidden }}
+            {{ form.matrix_checkin_id.as_hidden }}
+        <table id="example" class="table table-bordered">
+            <thead>
+                <tr>
+                   <th colspan="2" class="bg-info">
+                       Checkin Scores
+                   </th>
+                </tr>
+                <tr>
+                    <th>
+                        CheckIn count
+                    </th>
+                    <th>
+                        Score
+                    </th>
+                </tr>
+            </thead>
+             <tbody>
+                <tr>
+                    <td>
+                        {{ form.matrix_checkin_no }}
+                    </td>
+                    <td>
+                        {{ form.matrix_checkin_score }}
+                    </td>
+                </tr>
+             </tbody>
+         </table>
+            <button type="submit" class="float-right btn btn-success">Create</button>
+        </form>
+        <br>
+        <br>
+        <br>
+        <br>
+         <table id="example" class="table table-bordered">
+            <thead>
+                <tr>
+                   <th colspan="2" class="bg-info">
+                       Checkin Scores
+                   </th>
+                </tr>
+                <tr>
+                    <th>
+                        CheckIn count
+                    </th>
+                    <th>
+                        Score
+                    </th>
+                </tr>
+            </thead>
+             <tbody>
+                {% for matrix in checkin_matrix %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'cfao_kenya:Admin_PMS_CheckIn_Score_One' pms.pms_id matrix.matrix_checkin_id %}">{{ matrix.matrix_checkin_no }}</a>
+                        </td>
+                        <td>
+                            {{ matrix.matrix_checkin_score }}
+                        </td>
+                    </tr>
+                {% endfor %}
+             </tbody>
+         </table>
+        <br>
+        <br>
+        <br>
+        </form>
+          <br>
+          <br>
+          <br>
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+    <script>
+        $('input').addClass('form-control');
+    </script>
+
+{% endblock %}

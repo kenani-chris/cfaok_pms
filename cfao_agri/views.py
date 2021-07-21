@@ -508,175 +508,77 @@ def bu_kpi_score(pms, bu):
 
 
 def company_kpi_score(pms):
-    kpi = company_kpi.objects.filter(company_kpi_pms=pms)
-    kpi_approved = kpi.filter(company_kpi_status='Approved')
-
-    kpi_matrix = kpi_months.objects.filter(kpi_months_class=kpi_months.kpi_class[0][0])
-    if kpi_matrix:
-        kpi_matrix = kpi_matrix.first()
-        use_months = []
-        if kpi_matrix.kpi_month_april == 'Yes':
-            use_months.append('April')
-        if kpi_matrix.kpi_month_may == 'Yes':
-            use_months.append('May')
-        if kpi_matrix.kpi_month_june == 'Yes':
-            use_months.append('June')
-        if kpi_matrix.kpi_month_july == 'Yes':
-            use_months.append('July')
-        if kpi_matrix.kpi_month_august == 'Yes':
-            use_months.append('August')
-        if kpi_matrix.kpi_month_september == 'Yes':
-            use_months.append('September')
-        if kpi_matrix.kpi_month_october == 'Yes':
-            use_months.append('October')
-        if kpi_matrix.kpi_month_november == 'Yes':
-            use_months.append('November')
-        if kpi_matrix.kpi_month_december == 'Yes':
-            use_months.append('December')
-        if kpi_matrix.kpi_month_january == 'Yes':
-            use_months.append('January')
-        if kpi_matrix.kpi_month_february == 'Yes':
-            use_months.append('February')
-        if kpi_matrix.kpi_month_march == 'Yes':
-            use_months.append('March')
-    else:
-        use_months = ['April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',
-                      'January', 'February', 'March']
-
     kpi_score = []
     sum_score = 0
-    for kpi in kpi_approved:
-        kpi_calc = []
-        target = kpi.company_kpi_target
-        if kpi.company_kpi_type == 'Addition':
-            if 'April' in use_months:
-                kpi_calc.append(kpi.company_kpi_april_score)
-            if 'May' in use_months:
-                kpi_calc.append(kpi.company_kpi_may_score)
-            if 'June' in use_months:
-                kpi_calc.append(kpi.company_kpi_june_score)
-            if 'July' in use_months:
-                kpi_calc.append(kpi.company_kpi_july_score)
-            if 'August' in use_months:
-                kpi_calc.append(kpi.company_kpi_august_score)
-            if 'September' in use_months:
-                kpi_calc.append(kpi.company_kpi_september_score)
-            if 'October' in use_months:
-                kpi_calc.append(kpi.company_kpi_october_score)
-            if 'November' in use_months:
-                kpi_calc.append(kpi.company_kpi_november_score)
-            if 'December' in use_months:
-                kpi_calc.append(kpi.company_kpi_december_score)
-            if 'January' in use_months:
-                kpi_calc.append(kpi.company_kpi_january_score)
-            if 'February' in use_months:
-                kpi_calc.append(kpi.company_kpi_february_score)
-            if 'March' in use_months:
-                kpi_calc.append(kpi.company_kpi_march_score)
+    if pms:
+        kpi = company_kpi.objects.filter(company_kpi_pms=pms)
+        kpi_approved = kpi.filter(company_kpi_status='Approved')
 
-            kpi_calc = [0 if v is None else v for v in kpi_calc]
-            score = sum(kpi_calc)
+        kpi_matrix = kpi_months.objects.filter(kpi_months_class=kpi_months.kpi_class[0][0])
+        if kpi_matrix:
+            kpi_matrix = kpi_matrix.first()
+            use_months = []
+            if kpi_matrix.kpi_month_april == 'Yes':
+                use_months.append('April')
+            if kpi_matrix.kpi_month_may == 'Yes':
+                use_months.append('May')
+            if kpi_matrix.kpi_month_june == 'Yes':
+                use_months.append('June')
+            if kpi_matrix.kpi_month_july == 'Yes':
+                use_months.append('July')
+            if kpi_matrix.kpi_month_august == 'Yes':
+                use_months.append('August')
+            if kpi_matrix.kpi_month_september == 'Yes':
+                use_months.append('September')
+            if kpi_matrix.kpi_month_october == 'Yes':
+                use_months.append('October')
+            if kpi_matrix.kpi_month_november == 'Yes':
+                use_months.append('November')
+            if kpi_matrix.kpi_month_december == 'Yes':
+                use_months.append('December')
+            if kpi_matrix.kpi_month_january == 'Yes':
+                use_months.append('January')
+            if kpi_matrix.kpi_month_february == 'Yes':
+                use_months.append('February')
+            if kpi_matrix.kpi_month_march == 'Yes':
+                use_months.append('March')
+        else:
+            use_months = ['April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',
+                          'January', 'February', 'March']
 
-            if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
-                score = (score / target) * 100
-            else:
-                if score == 0:
-                    if score <= target:
-                        score = 100
-                    else:
-                        score = 0
-                else:
-                    score = (target / score) * 100
+        kpi_score = []
+        sum_score = 0
+        for kpi in kpi_approved:
+            kpi_calc = []
+            target = kpi.company_kpi_target
+            if kpi.company_kpi_type == 'Addition':
+                if 'April' in use_months:
+                    kpi_calc.append(kpi.company_kpi_april_score)
+                if 'May' in use_months:
+                    kpi_calc.append(kpi.company_kpi_may_score)
+                if 'June' in use_months:
+                    kpi_calc.append(kpi.company_kpi_june_score)
+                if 'July' in use_months:
+                    kpi_calc.append(kpi.company_kpi_july_score)
+                if 'August' in use_months:
+                    kpi_calc.append(kpi.company_kpi_august_score)
+                if 'September' in use_months:
+                    kpi_calc.append(kpi.company_kpi_september_score)
+                if 'October' in use_months:
+                    kpi_calc.append(kpi.company_kpi_october_score)
+                if 'November' in use_months:
+                    kpi_calc.append(kpi.company_kpi_november_score)
+                if 'December' in use_months:
+                    kpi_calc.append(kpi.company_kpi_december_score)
+                if 'January' in use_months:
+                    kpi_calc.append(kpi.company_kpi_january_score)
+                if 'February' in use_months:
+                    kpi_calc.append(kpi.company_kpi_february_score)
+                if 'March' in use_months:
+                    kpi_calc.append(kpi.company_kpi_march_score)
 
-            kpi_score.append([kpi, round(score, 0)])
-
-        elif kpi.company_kpi_type == 'YTD':
-            today = datetime.date.today()
-            value = 0
-            if today >= pms.pms_end_date:
-                if 'March' in use_months :
-                    value = kpi.company_kpi_march_score
-            else:
-                month = today.strftime('%B')
-                if month == 'April':
-                    if 'April' in use_months :
-                        value = kpi.company_kpi_april_score
-                if month == 'May':
-                    if 'May' in use_months :
-                        value = kpi.company_kpi_may_score
-                if month == 'June':
-                    if 'June' in use_months :
-                        value = kpi.company_kpi_june_score
-                if month == 'July':
-                    if 'July' in use_months :
-                        value = kpi.company_kpi_july_score
-                if month == 'August':
-                    if 'August' in use_months :
-                        value = kpi.company_kpi_august_score
-                if month == 'September':
-                    if 'September' in use_months :
-                        value = kpi.company_kpi_september_score
-                if month == 'October':
-                    if 'October' in use_months :
-                        value = kpi.company_kpi_october_score
-                if month == 'November':
-                    if 'November' in use_months :
-                        value = kpi.company_kpi_november_score
-                if month == 'December':
-                    if 'December' in use_months :
-                        value = kpi.company_kpi_december_score
-                if month == 'January':
-                    if 'January' in use_months :
-                        value = kpi.company_kpi_january_score
-                if month == 'February':
-                    if 'February' in use_months :
-                        value = kpi.company_kpi_february_score
-                if month == 'March':
-                    if 'March' in use_months :
-                        value = kpi.company_kpi_march_score
-
-            if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
-                score = (value / target) * 100
-            else:
-                if value == 0:
-                    if value <= target:
-                        score = 100
-                    else:
-                        score = 0
-                else:
-                    score = (value / score) * 100
-
-            kpi_score.append([kpi, round(score, 0)])
-
-        elif kpi.company_kpi_type == 'Addition':
-            if 'April' in use_months :
-                kpi_calc.append(kpi.company_kpi_april_score)
-            if 'May' in use_months :
-                kpi_calc.append(kpi.company_kpi_may_score)
-            if 'June' in use_months :
-                kpi_calc.append(kpi.company_kpi_june_score)
-            if 'July' in use_months :
-                kpi_calc.append(kpi.company_kpi_july_score)
-            if 'August' in use_months :
-                kpi_calc.append(kpi.company_kpi_august_score)
-            if 'September' in use_months :
-                kpi_calc.append(kpi.company_kpi_september_score)
-            if 'October' in use_months :
-                kpi_calc.append(kpi.company_kpi_october_score)
-            if 'November' in use_months :
-                kpi_calc.append(kpi.company_kpi_november_score)
-            if 'December' in use_months :
-                kpi_calc.append(kpi.company_kpi_december_score)
-            if 'January' in use_months :
-                kpi_calc.append(kpi.company_kpi_january_score)
-            if 'February' in use_months :
-                kpi_calc.append(kpi.company_kpi_february_score)
-            if 'March' in use_months :
-                kpi_calc.append(kpi.company_kpi_march_score)
-
-            if len(kpi_calc) > 0:
                 kpi_calc = [0 if v is None else v for v in kpi_calc]
-                score = sum(kpi_calc) / len(kpi_calc)
+                score = sum(kpi_calc)
 
                 if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
                     score = (score / target) * 100
@@ -688,17 +590,118 @@ def company_kpi_score(pms):
                             score = 0
                     else:
                         score = (target / score) * 100
+
+                kpi_score.append([kpi, round(score, 0)])
+
+            elif kpi.company_kpi_type == 'YTD':
+                today = datetime.date.today()
+                value = 0
+                if today >= pms.pms_end_date:
+                    if 'March' in use_months :
+                        value = kpi.company_kpi_march_score
+                else:
+                    month = today.strftime('%B')
+                    if month == 'April':
+                        if 'April' in use_months :
+                            value = kpi.company_kpi_april_score
+                    if month == 'May':
+                        if 'May' in use_months :
+                            value = kpi.company_kpi_may_score
+                    if month == 'June':
+                        if 'June' in use_months :
+                            value = kpi.company_kpi_june_score
+                    if month == 'July':
+                        if 'July' in use_months :
+                            value = kpi.company_kpi_july_score
+                    if month == 'August':
+                        if 'August' in use_months :
+                            value = kpi.company_kpi_august_score
+                    if month == 'September':
+                        if 'September' in use_months :
+                            value = kpi.company_kpi_september_score
+                    if month == 'October':
+                        if 'October' in use_months :
+                            value = kpi.company_kpi_october_score
+                    if month == 'November':
+                        if 'November' in use_months :
+                            value = kpi.company_kpi_november_score
+                    if month == 'December':
+                        if 'December' in use_months :
+                            value = kpi.company_kpi_december_score
+                    if month == 'January':
+                        if 'January' in use_months :
+                            value = kpi.company_kpi_january_score
+                    if month == 'February':
+                        if 'February' in use_months :
+                            value = kpi.company_kpi_february_score
+                    if month == 'March':
+                        if 'March' in use_months :
+                            value = kpi.company_kpi_march_score
+
+                if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
+                    score = (value / target) * 100
+                else:
+                    if value == 0:
+                        if value <= target:
+                            score = 100
+                        else:
+                            score = 0
+                    else:
+                        score = (value / score) * 100
+
+                kpi_score.append([kpi, round(score, 0)])
+
+            elif kpi.company_kpi_type == 'Addition':
+                if 'April' in use_months :
+                    kpi_calc.append(kpi.company_kpi_april_score)
+                if 'May' in use_months :
+                    kpi_calc.append(kpi.company_kpi_may_score)
+                if 'June' in use_months :
+                    kpi_calc.append(kpi.company_kpi_june_score)
+                if 'July' in use_months :
+                    kpi_calc.append(kpi.company_kpi_july_score)
+                if 'August' in use_months :
+                    kpi_calc.append(kpi.company_kpi_august_score)
+                if 'September' in use_months :
+                    kpi_calc.append(kpi.company_kpi_september_score)
+                if 'October' in use_months :
+                    kpi_calc.append(kpi.company_kpi_october_score)
+                if 'November' in use_months :
+                    kpi_calc.append(kpi.company_kpi_november_score)
+                if 'December' in use_months :
+                    kpi_calc.append(kpi.company_kpi_december_score)
+                if 'January' in use_months :
+                    kpi_calc.append(kpi.company_kpi_january_score)
+                if 'February' in use_months :
+                    kpi_calc.append(kpi.company_kpi_february_score)
+                if 'March' in use_months :
+                    kpi_calc.append(kpi.company_kpi_march_score)
+
+                if len(kpi_calc) > 0:
+                    kpi_calc = [0 if v is None else v for v in kpi_calc]
+                    score = sum(kpi_calc) / len(kpi_calc)
+
+                    if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
+                        score = (score / target) * 100
+                    else:
+                        if score == 0:
+                            if score <= target:
+                                score = 100
+                            else:
+                                score = 0
+                        else:
+                            score = (target / score) * 100
+                else:
+                    score = 0
+
+                kpi_score.append([kpi, round(score, 0)])
+
             else:
                 score = 0
+                kpi_score.append([kpi, 0])
 
-            kpi_score.append([kpi, round(score, 0)])
-
-        else:
-            score = 0
-            kpi_score.append([kpi, 0])
-
-        score = round(score * (kpi.company_kpi_weight/100), 0)
-        sum_score += score
+            score = round(score * (kpi.company_kpi_weight/100), 0)
+            sum_score += score
 
     return [sum_score, kpi_score, len(kpi_score)]
 
@@ -917,11 +920,11 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if pms.objects.filter(pms_status='Active').count() != 1:
+        if not pms.objects.filter(pms_status='Active'):
             context['pms'] = None
         else:
             context['pms'] = pms.objects.get(pms_status='Active')
-            staff_person = get_object_or_404(staff, id=self.request.user.id)
+            staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
             context['user_is_bu_head'] = staff_person.staff_head_bu
             context['user_is_md'] = staff_person.staff_md
             context['user_is_tl'] = staff_person.staff_head_team
@@ -945,7 +948,7 @@ class HomeView(TemplateView):
                 else:
                     context['bu_kpi'] = [0, [], [], []]
 
-        context['assessment'] = assessment_score(context['pms'], self.request.user)
+            context['assessment'] = assessment_score(context['pms'], self.request.user)
 
         return context
 
@@ -976,7 +979,7 @@ class IndividualKpiView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1016,7 +1019,7 @@ class SubmitKpiView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1201,7 +1204,7 @@ class TrackKpiView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1245,7 +1248,7 @@ class EditKpiView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1298,7 +1301,7 @@ class DetailKpiView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1341,7 +1344,7 @@ class KpiResultView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1385,7 +1388,7 @@ class KpiResultUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1618,7 +1621,7 @@ class StaffKpiListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1688,7 +1691,7 @@ class StaffKpiPendingListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1760,7 +1763,7 @@ class StaffKpiApproveView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1898,7 +1901,7 @@ class StaffTrackKpiListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1968,7 +1971,7 @@ class StaffTrackKpiOneListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['staff'] = get_object_or_404(User, pk=self.kwargs['pk'])
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
@@ -2073,7 +2076,7 @@ class StaffKpiTrackOneView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['the_kpi'] = get_object_or_404(individual_Kpi, individual_kpi_id=self.kwargs.get('kpi_id'))
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['staff'] = User.objects.get(pk=self.kwargs['pk'])
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
@@ -2381,7 +2384,7 @@ class BuKpiDashboard(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2422,7 +2425,7 @@ class BuKpi(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2459,7 +2462,7 @@ class SubmitBuKpiView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2491,7 +2494,7 @@ class SubmitBuKpiView(CreateView):
         initial = super(SubmitBuKpiView, self).get_initial()
         initial['bu_kpi_pms'] = pms.objects.get(pms_status='Active')
         initial['bu_kpi_user'] = self.request.user
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         initial['bu_kpi_bu'] = staff_person.staff_head_bu
         initial['bu_kpi_submit_date'] = datetime.date.today()
         initial['bu_kpi_last_edit'] = datetime.date.today()
@@ -2534,7 +2537,7 @@ class TrackBuKpiView(ListView):
     template_name = 'cfao_agri/BU_Kpi/trackkpi.html'
 
     def get_queryset(self):
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         user_is_bu_head = staff_person.staff_head_bu
         user_is_md = staff_person.staff_md
         user_is_tl = staff_person.staff_head_team
@@ -2551,7 +2554,7 @@ class TrackBuKpiView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2587,7 +2590,7 @@ class TrackBuKpiDetailView(DetailView):
     template_name = 'cfao_agri/BU_Kpi/one_individual_kpi.html'
 
     def get_queryset(self):
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         user_is_bu_head = staff_person.staff_head_bu
         user_is_md = staff_person.staff_md
         user_is_tl = staff_person.staff_head_team
@@ -2604,7 +2607,7 @@ class TrackBuKpiDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2642,7 +2645,7 @@ class TrackBuKpiEditlView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2674,7 +2677,7 @@ class TrackBuKpiEditlView(UpdateView):
         initial = super(TrackBuKpiEditlView, self).get_initial()
         initial['bu_kpi_pms'] = pms.objects.get(pms_status='Active')
         initial['bu_kpi_user'] = self.request.user
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         initial['bu_kpi_bu'] = staff_person.staff_head_bu
         initial['bu_kpi_submit_date'] = datetime.date.today()
         initial['bu_kpi_last_edit'] = datetime.date.today()
@@ -2696,7 +2699,7 @@ class BuKpiResultListView(ListView):
     template_name = 'cfao_agri/BU_Kpi/kpiresults.html'
 
     def get_queryset(self):
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         user_is_bu_head = staff_person.staff_head_bu
         user_is_md = staff_person.staff_md
         user_is_tl = staff_person.staff_head_team
@@ -2713,7 +2716,7 @@ class BuKpiResultListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2752,7 +2755,7 @@ class BuKpiResultUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2985,7 +2988,7 @@ class CoKpiDashboard(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3026,7 +3029,7 @@ class CompanyKpi(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3064,7 +3067,7 @@ class SubmitCompanyKpiView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3117,7 +3120,7 @@ class EditCompanyKpiView(ListView):
     template_name = 'cfao_agri/Company_Kpi/trackkpi.html'
 
     def get_queryset(self):
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         user_is_bu_head = staff_person.staff_head_bu
         user_is_md = staff_person.staff_md
         user_is_tl = staff_person.staff_head_team
@@ -3134,7 +3137,7 @@ class EditCompanyKpiView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3172,7 +3175,7 @@ class EditCompanyKpiUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3224,7 +3227,7 @@ class CompanyKpiResultListView(ListView):
     template_name = 'cfao_agri/Company_Kpi/kpiresults.html'
 
     def get_queryset(self):
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         user_is_bu_head = staff_person.staff_head_bu
         user_is_md = staff_person.staff_md
         user_is_tl = staff_person.staff_head_team
@@ -3241,7 +3244,7 @@ class CompanyKpiResultListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3280,7 +3283,7 @@ class CompanyKpiResultUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3477,7 +3480,7 @@ class BUsKpiListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3541,7 +3544,7 @@ class BUsKpiPendingListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3607,7 +3610,7 @@ class BUsKpiApproveView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3722,7 +3725,7 @@ class BUsTrackKpiListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3787,7 +3790,7 @@ class BUsTrackKpiOneListView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3882,7 +3885,7 @@ class BUsKpiTrackOneView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['the_kpi'] = get_object_or_404(bu_kpi, bu_kpi_id=self.kwargs.get('kpi_id'))
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['bu'] = get_object_or_404(bu, bu_id=self.kwargs['pk'])
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
@@ -4185,7 +4188,7 @@ class MyCheckIn(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4223,7 +4226,7 @@ class SubmitCheckIn(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4304,7 +4307,7 @@ class TrackCheckIn(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4387,7 +4390,7 @@ class DetailCheckIn(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4467,7 +4470,7 @@ class EditCheckIn(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4529,7 +4532,7 @@ class StaffCheckIn(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4588,7 +4591,7 @@ class StaffApproveCheckIn(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4649,7 +4652,7 @@ class StaffApproveStaffCheckIn(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4718,7 +4721,7 @@ class StaffApproveStaffCheckInOne(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4804,7 +4807,7 @@ class StaffTrackCheckIn(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4865,7 +4868,7 @@ class StaffTrackStaffCheckIn(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4933,7 +4936,7 @@ class StaffTrackStaffDetailCheckIn(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5004,7 +5007,7 @@ class Assessment(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5101,7 +5104,7 @@ class AssessmentView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5181,7 +5184,7 @@ class AssessmentTlS(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5229,7 +5232,7 @@ class AssessmentTlSStaff(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5328,7 +5331,7 @@ class AssessmentSTlStaff(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5425,7 +5428,7 @@ class AssessmentPrevious(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5522,7 +5525,7 @@ class AssessmentPreviousView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5598,7 +5601,7 @@ class AssessmentSTlStaffPrevious(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5669,7 +5672,7 @@ class AssessmentTlSStaffPrevious(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5715,7 +5718,7 @@ class AssessmentTlSPreviousStaff(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5785,7 +5788,7 @@ class AdminDashboard(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5807,7 +5810,7 @@ class AdminBU(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5843,7 +5846,7 @@ class AdminBUOne(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5873,7 +5876,7 @@ class AdminBUNew(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5900,7 +5903,7 @@ class AdminTeam(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5936,7 +5939,7 @@ class AdminTeamOne(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5967,7 +5970,7 @@ class AdminTeamNew(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5993,7 +5996,7 @@ class AdminUser(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6022,7 +6025,7 @@ class AdminUserNew(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6083,7 +6086,7 @@ class AdminUserNewDetails(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6112,7 +6115,7 @@ class AdminUserNewDetailsStaff(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6219,7 +6222,7 @@ class AdminResetPasswordUser(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6247,7 +6250,7 @@ class AdminUserOne(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6298,7 +6301,7 @@ class AdminUserOneEditUser(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6331,7 +6334,7 @@ class AdminUserOneEditStaff(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6360,7 +6363,7 @@ class AdminPMS(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6385,7 +6388,7 @@ class AdminPMSEdit(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6416,7 +6419,7 @@ class AdminPMSNew(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6442,7 +6445,7 @@ class AdminPMSStaff(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6465,7 +6468,7 @@ class AdminPMSStaffOne(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6506,7 +6509,7 @@ class AdminPMSIndividual(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6555,7 +6558,7 @@ class AdminPMSIndividualStaff(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6583,7 +6586,7 @@ class AdminPMSIndividualStaffOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6618,7 +6621,7 @@ class AdminPMSIndividualStaffNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6654,7 +6657,7 @@ class AdminPMSBU(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6701,7 +6704,7 @@ class AdminPMSBUStaff(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6729,7 +6732,7 @@ class AdminPMSBUStaffOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6764,7 +6767,7 @@ class AdminPMSBUStaffNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6805,7 +6808,7 @@ class AdminPMSCompany(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6831,7 +6834,7 @@ class AdminPMSCompanyOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6863,7 +6866,7 @@ class AdminPMSCompanyNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6895,7 +6898,7 @@ class AdminPMSCheckIn(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6942,7 +6945,7 @@ class AdminPMSCheckInScoreNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6981,7 +6984,7 @@ class AdminPMSCheckInScoreOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7019,7 +7022,7 @@ class AdminPMSCheckInStaff(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7047,7 +7050,7 @@ class AdminPMSCheckInStaffOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7082,7 +7085,7 @@ class AdminPMSCheckInStaffNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7121,7 +7124,7 @@ class AdminPMSAssessment(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7166,7 +7169,7 @@ class AdminPMSAssessmentOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7202,7 +7205,7 @@ class AdminPMSAssessmentNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7236,7 +7239,7 @@ class AdminPMSAssessmentOneResponseNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7277,7 +7280,7 @@ class AdminPMSAssessmentOneResponseOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7319,7 +7322,7 @@ class AdminPMSAssessmentOneQuestionOneTlS(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7359,7 +7362,7 @@ class AdminPMSAssessmentOneQuestionNewTlS(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7404,7 +7407,7 @@ class AdminPMSAssessmentOneQuestionOneSTl(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7444,7 +7447,7 @@ class AdminPMSAssessmentOneQuestionNewSTl(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7484,7 +7487,7 @@ class AdminPMSAssessmentOneResponseSTl(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7522,7 +7525,7 @@ class AdminPMSAssessmentOneResponseSTlOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7559,7 +7562,7 @@ class AdminPMSAssessmentOneResponseTlS(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7597,7 +7600,7 @@ class AdminPMSAssessmentOneResponseTlSOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7639,7 +7642,7 @@ class AdminPMSCheckInStaffOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7674,7 +7677,7 @@ class AdminPMSCheckInStaffNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7709,7 +7712,7 @@ class Matrix(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7734,7 +7737,7 @@ class AdminPMSMatrixScore(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7768,7 +7771,7 @@ class AdminPMSMatrixScoreNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7806,7 +7809,7 @@ class AdminPMSMatrixKPI(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7829,7 +7832,7 @@ class AdminPMSMatrixKPINew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7870,7 +7873,7 @@ class AdminPMSMatrixKPIOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7904,7 +7907,7 @@ class AdminPMSMatrixAssessment(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7928,7 +7931,7 @@ class AdminPMSMatrixKPIOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7958,7 +7961,7 @@ class Report(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -8110,7 +8113,7 @@ class Profile(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team

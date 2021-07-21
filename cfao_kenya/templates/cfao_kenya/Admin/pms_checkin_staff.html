@@ -1,0 +1,85 @@
+{% extends "cfao_kenya/Admin/default.html" %}
+{% block page_top %}
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'cfao_kenya:Admin_Dashboard' %}">Admin</a></li>
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'cfao_kenya:Admin_PMS_CheckIn' pms.pms_id %}">Staff</a></li>
+{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">PMS <b>{{ pms.pms_name }}</b></h3>
+          <div class="float-right">
+            <a href="{% url 'cfao_kenya:Admin_PMS_Individual_Staff_New' pms.pms_id staff.staff_person.id %}" class="btn btn-success"><i class="fa fa-shopping-basket" style=""> New</i></a>
+          </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+          <table class="table table-bordered">
+              <tbody>
+                <tr class="bg-info">
+                    <th colspan="4">
+                        User Info
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Staff
+                    </th>
+                    <td>
+                        {{ staff.staff_person.get_full_name }}
+                    </td>
+                    <th>
+                        PF
+                    </th>
+                    <td>
+                        {{ staff.staff_Pf_Number }}
+                    </td>
+                </tr>
+
+              </tbody>
+          </table>
+          <br>
+          <table id="example1" class="table table-bordered">
+              <thead>
+                <tr>
+                    <th>
+                        Month
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Submit Date
+                    </th>
+                </tr>
+
+              </thead>
+              <tbody>
+                {% for ci in checkIn %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'cfao_kenya:Admin_PMS_CheckIn_Staff_One' pms.pms_id staff.staff_person_id ci.checkIn_id %}">{{ ci.checkIn_month }}</a>
+                        </td>
+                        <td>
+                            {{ ci.checkIn_status }}
+                        </td>
+                        <td>
+                            {{ ci.checkIn_submit_date }}
+                        </td>
+                    </tr>
+                {% endfor %}
+              </tbody>
+          </table>
+
+        </form>
+          <br>
+          <br>
+          <br>
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}

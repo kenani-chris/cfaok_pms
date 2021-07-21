@@ -1,0 +1,25 @@
+{% extends "toyota_kenya/default.html" %}
+
+{% block mykpi %}{{ my_kpi_link }}{% endblock %}
+{% block content %}
+{% if pms is not None %}
+    <meta http-equiv="REFRESH" content="0;url={% url 'toyota_kenya:index' %}">
+{% endif %}
+
+<hr><br><br>
+  <div class="row">
+    <div class="container-fluid">
+      <div class="jumbotron bg-info" style="padding: 20px 20px 20px 20px">
+        <div class="row">
+          <div class="col-md-6">
+            <h1>No Active PMS</h1>
+            <p>It appears there'snt an active PMS at the moment<br>One set from HR, it will appear here</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<br><hr>
+
+{% endblock %}
+

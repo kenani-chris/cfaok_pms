@@ -5,7 +5,7 @@ from .views import *
 app_name = 'cfao_kenya'
 
 urlpatterns = [
-    path('', HomeViewChanged.as_view(), name='index'),
+    path('', HomeView.as_view(), name='index'),
     path('No_Active_Pms', NoActivePmsView.as_view(), name='ck_no_active_pms'),
 
     # Individual Kpi Links

@@ -24,7 +24,10 @@ urlpatterns = [
     path('', views.home, name="main_home"),
 
     path('cfao_agri/', include('cfao_agri.urls'), name='cfao_agri'),
+    path('cfao_kenya/', include('cfao_kenya.urls'), name='cfao_kenya'),
     path('tamk/', include('tamk.urls'), name='tamk'),
+    path('tydia/', include('tydia.urls'), name='tydia'),
+    path('toyota_kenya/', include('toyota_kenya.urls'), name='toyota_kenya'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/self_password_change/', views.self_change_password, name='change_user_password'),
     path('accounts/self_password_change/done/', views.self_password_change_done, name='self_change_user_password_done'),

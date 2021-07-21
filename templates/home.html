@@ -226,8 +226,11 @@ body {
                 {% ifequal group.name "tamk" %}
                     <a href="{% url 'tamk:index' %}" class="btn btn-lg btn-default">Tamk PMS</a>
                 {% endifequal %}
-                {% ifequal group.name "cfao_agi" %}
-                    <a href="{% url 'cfao_agri:index' %}" class="btn btn-lg btn-default">CFAO Agri PMS</a>
+                {% ifequal group.name "cfao_kenya" %}
+                    <a href="{% url 'cfao_kenya:index' %}" class="btn btn-lg btn-default">CFAO Kenya PMS</a>
+                {% endifequal %}
+                {% ifequal group.name "tydia" %}
+                    <a href="{% url 'tydia:index' %}" class="btn btn-lg btn-default">Tydia PMS</a>
                 {% endifequal %}
 
               {% endfor %}

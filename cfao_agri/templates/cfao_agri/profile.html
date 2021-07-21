@@ -68,8 +68,15 @@
       <div class="card-header p-2">
         <ul class="nav nav-pills">
           <li class="nav-item"><div class="nav-link active" href="#my_profile" data-toggle="tab" style="cursor: pointer;">My Profile</div></li>
-          <li class="nav-item"><div class="nav-link" href="#team_members" data-toggle="tab" style="cursor: pointer;">Team Members</div></li>
-          <li class="nav-item"><div class="nav-link" href="bu_members" data-toggle="tab" style="cursor: pointer;">BU Members</div></li>
+            {% if user_is_tl %}
+                <li class="nav-item"><div class="nav-link" href="#team_members" data-toggle="tab" style="cursor: pointer;">Team Members</div></li>
+            {% endif %}
+            {% if user_is_bu_head %}
+                <li class="nav-item"><div class="nav-link" href="bu_members" data-toggle="tab" style="cursor: pointer;">BU Members</div></li>
+            {% endif %}
+            {% if user_is_bu_head %}
+                <li class="nav-item"><div class="nav-link" href="bu_members" data-toggle="tab" style="cursor: pointer;">BU Members</div></li>
+            {% endif %}
         </ul>
       </div><!-- /.card-header -->
       <div class="card-body">
@@ -79,7 +86,7 @@
               <tbody>
                 <tr class="bg-info">
                     <th colspan="4">
-                        Staff Info <a class="float-right btn btn-default text-dark" href="{% url 'Admin_Users_One_Edit_Staff' user.id %}">Edit staff info</a>
+                        Staff Info
                     </th>
                 </tr>
                 <tr>

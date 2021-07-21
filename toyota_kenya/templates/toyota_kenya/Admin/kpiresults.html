@@ -1,0 +1,95 @@
+{% extends "Individual_Kpi/default.html" %}
+{% block pagetitle %}KPI Results{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Populate KPI results for approed KPIs</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        {% if approved2_kpi %}
+            <table id="exampl1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>KPI<small>(click on KPI title)</small></th>
+                <th>Apr</th>
+                <th>May</th>
+                <th>Jun</th>
+                <th>Jul</th>
+                <th>Aug</th>
+                <th>Sep</th>
+                <th>Oct</th>
+                <th>Nov</th>
+                <th>Dec</th>
+                <th>Jan</th>
+                <th>Feb</th>
+                <th>Mar</th>
+              </tr>
+              </thead>
+              <tbody>
+            {% for kpi in approved2_kpi %}
+              {% if kpi.individual_kpi_status != "Rejected" %}
+                <tr>
+                  <td>
+                    <a href="{% url 'toyota_kenya:Individual_Kpi_Result_Update' kpi.individual_kpi_id %}"><span class="fa fa-clipboard-check"></span> {{ kpi.individual_kpi_title }}</a>
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_april_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_may_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_june_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_july_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_august_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_september_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_october_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_november_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_december_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_january_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_february_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_march_score }}
+                  </td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+              </tbody>
+              <tfoot>
+
+              </tfoot>
+            </table>
+          {% else %}
+            <div class="alert alert-warning">
+              <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
+              It Appears you've not submitted any KPIs. Or all of them have not been approved
+            </div>
+          {% endif %}
+
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}

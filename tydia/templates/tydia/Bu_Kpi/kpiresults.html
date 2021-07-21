@@ -1,0 +1,93 @@
+{% extends "tydia/Bu_Kpi/default.html" %}
+{% block pagetitle %}KPI Results{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Populate KPI results for approved KPIs</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        {% if approved %}
+            <table id="exampl1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>KPI</th>
+                <th>Apr</th>
+                <th>May</th>
+                <th>Jun</th>
+                <th>Jul</th>
+                <th>Aug</th>
+                <th>Sep</th>
+                <th>Oct</th>
+                <th>Nov</th>
+                <th>Dec</th>
+                <th>Jan</th>
+                <th>Feb</th>
+                <th>Mar</th>
+              </tr>
+              </thead>
+              <tbody>
+            {% for kpi in approved %}
+                <tr>
+                  <td>
+                    <a href="{% url 'tydia:BU_Kpi_Result_Update' kpi.bu_kpi_id %}"><span class="fa fa-clipboard-check"></span> {{ kpi.bu_kpi_title }}</a>
+                  </td>
+                  <td>
+                    {{ kpi.bu_kpi_april_score }}
+                  </td>
+                  <td>
+                    {{ kpi.bu_kpi_may_score }}
+                  </td>
+                  <td>
+                    {{ kpi.bu_kpi_june_score }}
+                  </td>
+                  <td>
+                    {{ kpi.bu_kpi_july_score }}
+                  </td>
+                  <td>
+                    {{ kpi.bu_kpi_august_score }}
+                  </td>
+                  <td>
+                    {{ kpi.bu_kpi_september_score }}
+                  </td>
+                  <td>
+                    {{ kpi.bu_kpi_october_score }}
+                  </td>
+                  <td>
+                    {{ kpi.bu_kpi_november_score }}
+                  </td>
+                  <td>
+                    {{ kpi.bu_kpi_december_score }}
+                  </td>
+                  <td>
+                    {{ kpi.bu_kpi_january_score }}
+                  </td>
+                  <td>
+                    {{ kpi.bu_kpi_february_score }}
+                  </td>
+                  <td>
+                    {{ kpi.bu_kpi_march_score }}
+                  </td>
+                </tr>
+            {% endfor %}
+              </tbody>
+              <tfoot>
+
+              </tfoot>
+            </table>
+          {% else %}
+            <div class="alert alert-warning">
+              <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
+              It Appears you do not have any approved KPIs.
+            </div>
+          {% endif %}
+
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}

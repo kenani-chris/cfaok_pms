@@ -1,0 +1,67 @@
+{% extends "toyota_kenya/default.html" %}
+{% block pagetitle %}Submit KPI{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+      <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
+        $(function() {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+          });
+          toastr.success('{{ message }}');
+        });
+      </script>
+    {% endfor %}
+{% endif %}
+<div class="row">
+  <div class="col-md-2">
+    <div class="card card-primary card-outline">
+      <div class="card-body box-profile">
+
+        <hr>
+         <div class="info-box bg-info">
+          <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-number">{{ submitted_count }} <small> out of </small> {{ pms.pms_company_kpi_number}}</span>
+            <div class="progress">
+              <div class="progress-bar" style="width: {{ percent_submitted }}%"></div>
+            </div>
+            <span class="progress-description">
+              <small>Submitted</small>
+            </span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <p class="text-center">
+          Submission Timeframe<br>
+          <small>{{ pms.pms_company_submit_start_date }} - {{ pms.pms_company_submit_end_date }}</small>
+        </p>
+        <br>
+        <ul class="list-group list-group-unbordered mb-3">
+          <li class="list-group-item">
+            <a href="{% url 'toyota_kenya:Company_Kpi_Dashboard' %}" class="btn btn-primary btn-block"><b>KPI Dashboard</b></a>
+            <a href="{% url 'toyota_kenya:Company_Kpi_Submit' %}" class="btn btn-primary btn-block"><b>Submit KPI</b></a>
+            <a href="{% url 'toyota_kenya:Company_Kpi_Edit' %}" class="btn btn-primary btn-block"><b>Edit KPI</b></a>
+            <a href="{% url 'toyota_kenya:Company_Kpi_Result' %}" class="btn btn-primary btn-block"><b>KPI Results</b></a>
+          </li>
+        </ul>
+      </div>
+      <!-- /.card-body -->
+    </div>
+  </div>
+  {% block kpicontent %} {% endblock %}
+</div>
+<!-- page script -->
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": false,
+      "autoWidth": false,
+    });
+  });
+</script>
+{% endblock %}

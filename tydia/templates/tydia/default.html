@@ -1,0 +1,430 @@
+            <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  {% block title %}<title>Online PMS</title>{% endblock %}
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% load static %}
+  <!-- Font Awesome -->
+
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bbootstrap 4 -->
+  <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="{% static 'plugins/jqvmap/jqvmap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+
+  <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+
+  <link rel="stylesheet" href="{% static 'plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css' %}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{% static 'plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">
+  <!-- summernote -->
+  <link rel="stylesheet" href="{% static 'plugins/summernote/summernote-bs4.css' %}">
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bbootstrap 4 -->
+
+  <link rel="stylesheet" href="{% static '/dist/css/adminlte.min.css' %}">
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+  <!-- jQuery -->
+  <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+  <!-- jQuery UI 1.11.4 -->
+  <script src="{% static 'plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+  <!-- preloader -->
+  <link rel="stylesheet" href="{% static 'plugins/elegant_loading/src/css/preloader.css' %}">
+  <script src="{% static 'plugins/elegant_loading/src/js/jquery.preloader.min.js' %}"></script>
+
+  <!--validate forms -->
+  <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
+</head>
+<body class="hold-transition sidebar-mini layout-fixed text-sm">
+<div class="wrapper">
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="{% url 'tydia:index' %}" class="nav-link">Home</a>
+      </li>
+    </ul>
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <!-- Notifications Dropdown Menu -->
+
+      <li class="nav-item dropdown user-menu">
+        <div href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" style="cursor: pointer;">
+          <img src="{% static 'dist/img/user.png' %}" class="user-image img-circle elevation-2" alt="User Image">
+        </div>
+        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <!-- User image -->
+          <li class="user-header" style="margin-bottom: -20px">
+
+            <div class=" float-left col-md-4">
+              <img src="{% static 'dist/img/user.png' %}" class="img-circle float-left" alt="User Image" style="width:100%">
+            </div>
+            <div class=" float-right col-md-8 text-left">
+                <a href="{% url 'tydia:Profile' %}">{% firstof request.user.get_full_name %}</a><br>
+              <small>{% firstof request.user.email %}</small><br><br>
+                <a href="{% url 'main_home' %}">Switch Company</a>
+            </div>
+
+
+          </li>
+          <li class="user-footer" style="margin-top: -80px">
+            <a href="{% url 'tydia:Profile'%}" class="btn btn-default btn-info">Profile</a>
+              <a href="{% url 'logout'%}" class="btn btn-small btn-danger float-right">Sign out</a>
+          </li>
+
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  {% block sidebar %}
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="{% url 'tydia:index' %}" class="brand-link">
+      <img src="{% static 'images/Tydia_sign.png' %}" alt="CFAO Agri Logo" class="brand-image elevation-3"
+           style="opacity: .8">
+      <span class="brand-text font-weight-light">ONLINE <b>PMS</b></span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{% static 'dist/img/user3.png' %}" class="elevation-2 img-circle" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="{% url 'tydia:Profile' %}" class="d-block">{% firstof request.user.get_full_name%}</a>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item">
+            <a href="{% url 'tydia:index' %}" class="nav-link bg-white">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Dashboard
+              </p>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                KPIs
+              </p>
+            </a>
+          </li>
+
+          <!-- My KPI LINK ========================================================================================= -->
+          {% if user_is_md != "Yes" and user_is_bu_head == None %}
+            <li class="nav-item">
+              <a href="{% url 'tydia:Individual_Kpi_Dashboard' %}" class="nav-link">
+                <i class="far fa-user nav-icon"></i>
+                <p>My KPIs</p>
+              </a>
+            </li>
+          {% endif %}
+
+
+          <!-- My Staff KPI LINK =================================================================================== -->
+          {% if user_is_tl != None %}
+            <li class="nav-item">
+              <a href="{% url 'tydia:Staff_Kpi_Dashboard' %}" class="nav-link">
+                <i class="fa fa-users nav-icon"></i>
+                <p>My Staff KPIs</p>
+              </a>
+            </li>
+          {% endif %}
+
+          <!-- BU KPI LINK =================================================================================== -->
+          {% if user_is_md == "Yes" and no_of_bu > 0 %}
+            <li class="nav-item">
+              <a href="./index2.html" class="nav-link">
+                <i class="fa fa-users nav-icon"></i>
+                <p>BUs Dashboard</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if user_is_md == "Yes" %}
+            <li class="nav-item">
+              <a href="{% url 'tydia:BUs_Kpi_Dashboard' %}" class="nav-link">
+                <i class="fa fa-users nav-icon"></i>
+                <p>BUs KPI</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if user_is_bu_head != None %}
+            <li class="nav-item">
+              <a href="{% url 'tydia:BU_Kpi_Dashboard' %}" class="nav-link">
+                <i class="fa fa-users nav-icon"></i>
+                <p>BU KPI</p>
+              </a>
+            </li>
+          {% endif %}
+          <!--{% if user_is_md == "No" and user_is_bu_head is None and user_bu is not None%}
+          <li class="nav-item">
+            <a href="{% url 'tydia:BU_Kpi_Dashboard' %}" class="nav-link">
+              <i class="fa fa-users nav-icon"></i>
+              <p>BU Dashboard</p>
+            </a>
+          </li>
+          {% endif %}-->
+
+          <!-- Company KPI LINK =================================================================================== -->
+          {% if user_is_md == "Yes" %}
+            <li class="nav-item">
+              <a href="{% url 'tydia:Company_Kpi_Dashboard' %}" class="nav-link">
+                <i class="fa fa-building nav-icon"></i>
+                <p>Company KPIs</p>
+              </a>
+            </li>
+          {% else %}
+             <!--<li class="nav-item">
+              <a href="" class="nav-link">
+                <i class="fa fa-building nav-icon"></i>
+                <p>Company Dashboard</p>
+              </a>
+            </li>-->
+          {% endif %}
+
+
+          <li>
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-edit"></i>
+              <p>
+                Assessment
+              </p>
+            </a>
+
+          <!-- Staff and TL ASSESS LINK =================================================================================== -->
+          <li class="nav-item">
+              <a href="{% url 'tydia:Assessment_Dashboard' %}" class="nav-link">
+                <i class="fa fa-users nav-icon"></i>
+                <p>Staff/TL Assessment</p>
+              </a>
+            </li>
+
+          <li>
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Checkin
+              </p>
+            </a>
+          </li>
+
+          <!-- My ChekinLINK =================================================================================== -->
+          {% if user_is_md != "Yes" %}
+            <li class="nav-item">
+              <a href="{% url 'tydia:Check-In_Kpi_Dashboard' %}" class="nav-link">
+                <i class="far fa-user nav-icon"></i>
+                <p>My Checkin</p>
+              </a>
+            </li>
+          {% endif %}
+
+          <!-- Staff CheckIn LINK ================================================================================== -->
+          {% if user_is_tl != None %}
+            <li class="nav-item">
+              <a href="{% url 'tydia:Staff_Check-In_Kpi_Dashboard' %}" class="nav-link">
+                <i class="fa fa-users nav-icon"></i>
+                <p>My Staff Checkin</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if request.user.is_superuser %}
+              <li>
+                <a href="#" class="nav-link active">
+                  <i class="nav-icon fas fa-edit"></i>
+                  <p>
+                    Management
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+              <a href="{% url 'tydia:Admin_Dashboard' %}" class="nav-link">
+                <i class="far fa-user nav-icon"></i>
+                <p>Admin</p>
+              </a>
+            </li>
+
+
+          {% endif %}
+            <li>
+                <a href="#" class="nav-link active">
+                  <i class="nav-icon fas fa-edit"></i>
+                  <p>
+                    Reports
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+              <a href="{% url 'tydia:Reports' %}" class="nav-link">
+                <i class="far fa-user nav-icon"></i>
+                <p>Report</p>
+              </a>
+            </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+  {% endblock %}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">{% block pagetitle %}{% endblock %}</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              {% block page_top %}{% endblock %}
+              {% block page_middle %}{% endblock %}
+              {% block page_bottom %}{% endblock %}
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        {% block content %}{% endblock %}
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer fixed-bottom">
+    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+      A solution of CFAO K. (<b>Version</b>-2.0)
+    </div>
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+<script>
+    $( "a").click(function() {
+          $(".btn").prop('readonly', true);
+          $('html').preloader({
+            // loading text
+            text:'Loading',
+            // from 0 to 100
+            percent:'100',
+            // duration in ms
+            duration:'30000',
+            // z-index property
+            zIndex:'1',
+            // sets relative position to preloader's parent
+            width:'100%',
+            height:'100%',
+            setRelative:false,
+          });
+      });
+    $( ":submit").click(function() {
+          $(".btn").prop('readonly', true);
+          $('html').preloader({
+            // loading text
+            text:'Loading',
+            // from 0 to 100
+            percent:'100',
+            // duration in ms
+            duration:'3000',
+            // z-index property
+            zIndex:'1',
+            // sets relative position to preloader's parent
+            width:'100%',
+            height:'100%',
+            setRelative:false,
+          });
+      });
+</script>
+
+{% load static %}
+
+<!--<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>-->
+<!-- Bootstrap 4 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables -->
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<!-- ChartJS -->
+<script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+<script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
+<script src="{% static 'plugins/sweetalert2/sweetalert2.min.js' %}"></script>
+<!-- Sparkline -->
+<script src="{% static 'plugins/sparklines/sparkline.js' %}"></script>
+<!-- JQVMap -->
+<script src="{% static 'plugins/jqvmap/jquery.vmap.min.js' %}"></script>
+<script src="{% static 'plugins/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+<!-- jQuery Knob Chart -->
+<script src="{% static 'plugins/jquery-knob/jquery.knob.min.js' %}"></script>
+<!-- daterangepicker -->
+<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<!-- Summernote -->
+<script src="{% static 'plugins/summernote/summernote-bs4.min.js' %}"></script>
+<!-- overlayScrollbars -->
+<script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.js' %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{% static 'dist/js/pages/dashboard.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'dist/js/demo.js' %}"></script>
+
+</body>
+</html>

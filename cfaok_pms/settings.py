@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cfao_agri.apps.CfaoAgriConfig',
     'tamk.apps.TamkConfig',
+    'cfao_kenya.apps.CfaoKenyaConfig',
+    'tydia.apps.TydiaConfig',
+    'toyota_kenya.apps.ToyotaKenyaConfig',
 ]
 
 MIDDLEWARE = [
@@ -163,7 +166,7 @@ ACCOUNT_PASSWORD_USE_HISTORY = True
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ADMINS = (
-    ('Kenani Chris', 'kenanichris@outlook.com'),
+    ('Kenani Chris', 'kenanichris@outlook.com'), ('Peris Oloo', 'poloo@cfao.com'), ('Kenani Chris', 'ckenani@cfao.com'), ('Rebecca Odede', 'reodede@cfao.com')
 )
 
 MANAGERS = ADMINS

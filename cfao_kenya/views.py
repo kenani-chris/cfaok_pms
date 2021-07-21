@@ -508,175 +508,77 @@ def bu_kpi_score(pms, bu):
 
 
 def company_kpi_score(pms):
-    kpi = company_kpi.objects.filter(company_kpi_pms=pms)
-    kpi_approved = kpi.filter(company_kpi_status='Approved')
-
-    kpi_matrix = kpi_months.objects.filter(kpi_months_class=kpi_months.kpi_class[0][0])
-    if kpi_matrix:
-        kpi_matrix = kpi_matrix.first()
-        use_months = []
-        if kpi_matrix.kpi_month_april == 'Yes':
-            use_months.append('April')
-        if kpi_matrix.kpi_month_may == 'Yes':
-            use_months.append('May')
-        if kpi_matrix.kpi_month_june == 'Yes':
-            use_months.append('June')
-        if kpi_matrix.kpi_month_july == 'Yes':
-            use_months.append('July')
-        if kpi_matrix.kpi_month_august == 'Yes':
-            use_months.append('August')
-        if kpi_matrix.kpi_month_september == 'Yes':
-            use_months.append('September')
-        if kpi_matrix.kpi_month_october == 'Yes':
-            use_months.append('October')
-        if kpi_matrix.kpi_month_november == 'Yes':
-            use_months.append('November')
-        if kpi_matrix.kpi_month_december == 'Yes':
-            use_months.append('December')
-        if kpi_matrix.kpi_month_january == 'Yes':
-            use_months.append('January')
-        if kpi_matrix.kpi_month_february == 'Yes':
-            use_months.append('February')
-        if kpi_matrix.kpi_month_march == 'Yes':
-            use_months.append('March')
-    else:
-        use_months = ['April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',
-                      'January', 'February', 'March']
-
     kpi_score = []
     sum_score = 0
-    for kpi in kpi_approved:
-        kpi_calc = []
-        target = kpi.company_kpi_target
-        if kpi.company_kpi_type == 'Addition':
-            if 'April' in use_months:
-                kpi_calc.append(kpi.company_kpi_april_score)
-            if 'May' in use_months:
-                kpi_calc.append(kpi.company_kpi_may_score)
-            if 'June' in use_months:
-                kpi_calc.append(kpi.company_kpi_june_score)
-            if 'July' in use_months:
-                kpi_calc.append(kpi.company_kpi_july_score)
-            if 'August' in use_months:
-                kpi_calc.append(kpi.company_kpi_august_score)
-            if 'September' in use_months:
-                kpi_calc.append(kpi.company_kpi_september_score)
-            if 'October' in use_months:
-                kpi_calc.append(kpi.company_kpi_october_score)
-            if 'November' in use_months:
-                kpi_calc.append(kpi.company_kpi_november_score)
-            if 'December' in use_months:
-                kpi_calc.append(kpi.company_kpi_december_score)
-            if 'January' in use_months:
-                kpi_calc.append(kpi.company_kpi_january_score)
-            if 'February' in use_months:
-                kpi_calc.append(kpi.company_kpi_february_score)
-            if 'March' in use_months:
-                kpi_calc.append(kpi.company_kpi_march_score)
+    if pms:
+        kpi = company_kpi.objects.filter(company_kpi_pms=pms)
+        kpi_approved = kpi.filter(company_kpi_status='Approved')
 
-            kpi_calc = [0 if v is None else v for v in kpi_calc]
-            score = sum(kpi_calc)
+        kpi_matrix = kpi_months.objects.filter(kpi_months_class=kpi_months.kpi_class[0][0])
+        if kpi_matrix:
+            kpi_matrix = kpi_matrix.first()
+            use_months = []
+            if kpi_matrix.kpi_month_april == 'Yes':
+                use_months.append('April')
+            if kpi_matrix.kpi_month_may == 'Yes':
+                use_months.append('May')
+            if kpi_matrix.kpi_month_june == 'Yes':
+                use_months.append('June')
+            if kpi_matrix.kpi_month_july == 'Yes':
+                use_months.append('July')
+            if kpi_matrix.kpi_month_august == 'Yes':
+                use_months.append('August')
+            if kpi_matrix.kpi_month_september == 'Yes':
+                use_months.append('September')
+            if kpi_matrix.kpi_month_october == 'Yes':
+                use_months.append('October')
+            if kpi_matrix.kpi_month_november == 'Yes':
+                use_months.append('November')
+            if kpi_matrix.kpi_month_december == 'Yes':
+                use_months.append('December')
+            if kpi_matrix.kpi_month_january == 'Yes':
+                use_months.append('January')
+            if kpi_matrix.kpi_month_february == 'Yes':
+                use_months.append('February')
+            if kpi_matrix.kpi_month_march == 'Yes':
+                use_months.append('March')
+        else:
+            use_months = ['April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',
+                          'January', 'February', 'March']
 
-            if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
-                score = (score / target) * 100
-            else:
-                if score == 0:
-                    if score <= target:
-                        score = 100
-                    else:
-                        score = 0
-                else:
-                    score = (target / score) * 100
+        kpi_score = []
+        sum_score = 0
+        for kpi in kpi_approved:
+            kpi_calc = []
+            target = kpi.company_kpi_target
+            if kpi.company_kpi_type == 'Addition':
+                if 'April' in use_months:
+                    kpi_calc.append(kpi.company_kpi_april_score)
+                if 'May' in use_months:
+                    kpi_calc.append(kpi.company_kpi_may_score)
+                if 'June' in use_months:
+                    kpi_calc.append(kpi.company_kpi_june_score)
+                if 'July' in use_months:
+                    kpi_calc.append(kpi.company_kpi_july_score)
+                if 'August' in use_months:
+                    kpi_calc.append(kpi.company_kpi_august_score)
+                if 'September' in use_months:
+                    kpi_calc.append(kpi.company_kpi_september_score)
+                if 'October' in use_months:
+                    kpi_calc.append(kpi.company_kpi_october_score)
+                if 'November' in use_months:
+                    kpi_calc.append(kpi.company_kpi_november_score)
+                if 'December' in use_months:
+                    kpi_calc.append(kpi.company_kpi_december_score)
+                if 'January' in use_months:
+                    kpi_calc.append(kpi.company_kpi_january_score)
+                if 'February' in use_months:
+                    kpi_calc.append(kpi.company_kpi_february_score)
+                if 'March' in use_months:
+                    kpi_calc.append(kpi.company_kpi_march_score)
 
-            kpi_score.append([kpi, round(score, 0)])
-
-        elif kpi.company_kpi_type == 'YTD':
-            today = datetime.date.today()
-            value = 0
-            if today >= pms.pms_end_date:
-                if 'March' in use_months :
-                    value = kpi.company_kpi_march_score
-            else:
-                month = today.strftime('%B')
-                if month == 'April':
-                    if 'April' in use_months :
-                        value = kpi.company_kpi_april_score
-                if month == 'May':
-                    if 'May' in use_months :
-                        value = kpi.company_kpi_may_score
-                if month == 'June':
-                    if 'June' in use_months :
-                        value = kpi.company_kpi_june_score
-                if month == 'July':
-                    if 'July' in use_months :
-                        value = kpi.company_kpi_july_score
-                if month == 'August':
-                    if 'August' in use_months :
-                        value = kpi.company_kpi_august_score
-                if month == 'September':
-                    if 'September' in use_months :
-                        value = kpi.company_kpi_september_score
-                if month == 'October':
-                    if 'October' in use_months :
-                        value = kpi.company_kpi_october_score
-                if month == 'November':
-                    if 'November' in use_months :
-                        value = kpi.company_kpi_november_score
-                if month == 'December':
-                    if 'December' in use_months :
-                        value = kpi.company_kpi_december_score
-                if month == 'January':
-                    if 'January' in use_months :
-                        value = kpi.company_kpi_january_score
-                if month == 'February':
-                    if 'February' in use_months :
-                        value = kpi.company_kpi_february_score
-                if month == 'March':
-                    if 'March' in use_months :
-                        value = kpi.company_kpi_march_score
-
-            if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
-                score = (value / target) * 100
-            else:
-                if value == 0:
-                    if value <= target:
-                        score = 100
-                    else:
-                        score = 0
-                else:
-                    score = (value / score) * 100
-
-            kpi_score.append([kpi, round(score, 0)])
-
-        elif kpi.company_kpi_type == 'Addition':
-            if 'April' in use_months :
-                kpi_calc.append(kpi.company_kpi_april_score)
-            if 'May' in use_months :
-                kpi_calc.append(kpi.company_kpi_may_score)
-            if 'June' in use_months :
-                kpi_calc.append(kpi.company_kpi_june_score)
-            if 'July' in use_months :
-                kpi_calc.append(kpi.company_kpi_july_score)
-            if 'August' in use_months :
-                kpi_calc.append(kpi.company_kpi_august_score)
-            if 'September' in use_months :
-                kpi_calc.append(kpi.company_kpi_september_score)
-            if 'October' in use_months :
-                kpi_calc.append(kpi.company_kpi_october_score)
-            if 'November' in use_months :
-                kpi_calc.append(kpi.company_kpi_november_score)
-            if 'December' in use_months :
-                kpi_calc.append(kpi.company_kpi_december_score)
-            if 'January' in use_months :
-                kpi_calc.append(kpi.company_kpi_january_score)
-            if 'February' in use_months :
-                kpi_calc.append(kpi.company_kpi_february_score)
-            if 'March' in use_months :
-                kpi_calc.append(kpi.company_kpi_march_score)
-
-            if len(kpi_calc) > 0:
                 kpi_calc = [0 if v is None else v for v in kpi_calc]
-                score = sum(kpi_calc) / len(kpi_calc)
+                score = sum(kpi_calc)
 
                 if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
                     score = (score / target) * 100
@@ -688,17 +590,118 @@ def company_kpi_score(pms):
                             score = 0
                     else:
                         score = (target / score) * 100
+
+                kpi_score.append([kpi, round(score, 0)])
+
+            elif kpi.company_kpi_type == 'YTD':
+                today = datetime.date.today()
+                value = 0
+                if today >= pms.pms_end_date:
+                    if 'March' in use_months :
+                        value = kpi.company_kpi_march_score
+                else:
+                    month = today.strftime('%B')
+                    if month == 'April':
+                        if 'April' in use_months :
+                            value = kpi.company_kpi_april_score
+                    if month == 'May':
+                        if 'May' in use_months :
+                            value = kpi.company_kpi_may_score
+                    if month == 'June':
+                        if 'June' in use_months :
+                            value = kpi.company_kpi_june_score
+                    if month == 'July':
+                        if 'July' in use_months :
+                            value = kpi.company_kpi_july_score
+                    if month == 'August':
+                        if 'August' in use_months :
+                            value = kpi.company_kpi_august_score
+                    if month == 'September':
+                        if 'September' in use_months :
+                            value = kpi.company_kpi_september_score
+                    if month == 'October':
+                        if 'October' in use_months :
+                            value = kpi.company_kpi_october_score
+                    if month == 'November':
+                        if 'November' in use_months :
+                            value = kpi.company_kpi_november_score
+                    if month == 'December':
+                        if 'December' in use_months :
+                            value = kpi.company_kpi_december_score
+                    if month == 'January':
+                        if 'January' in use_months :
+                            value = kpi.company_kpi_january_score
+                    if month == 'February':
+                        if 'February' in use_months :
+                            value = kpi.company_kpi_february_score
+                    if month == 'March':
+                        if 'March' in use_months :
+                            value = kpi.company_kpi_march_score
+
+                if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
+                    score = (value / target) * 100
+                else:
+                    if value == 0:
+                        if value <= target:
+                            score = 100
+                        else:
+                            score = 0
+                    else:
+                        score = (value / score) * 100
+
+                kpi_score.append([kpi, round(score, 0)])
+
+            elif kpi.company_kpi_type == 'Addition':
+                if 'April' in use_months :
+                    kpi_calc.append(kpi.company_kpi_april_score)
+                if 'May' in use_months :
+                    kpi_calc.append(kpi.company_kpi_may_score)
+                if 'June' in use_months :
+                    kpi_calc.append(kpi.company_kpi_june_score)
+                if 'July' in use_months :
+                    kpi_calc.append(kpi.company_kpi_july_score)
+                if 'August' in use_months :
+                    kpi_calc.append(kpi.company_kpi_august_score)
+                if 'September' in use_months :
+                    kpi_calc.append(kpi.company_kpi_september_score)
+                if 'October' in use_months :
+                    kpi_calc.append(kpi.company_kpi_october_score)
+                if 'November' in use_months :
+                    kpi_calc.append(kpi.company_kpi_november_score)
+                if 'December' in use_months :
+                    kpi_calc.append(kpi.company_kpi_december_score)
+                if 'January' in use_months :
+                    kpi_calc.append(kpi.company_kpi_january_score)
+                if 'February' in use_months :
+                    kpi_calc.append(kpi.company_kpi_february_score)
+                if 'March' in use_months :
+                    kpi_calc.append(kpi.company_kpi_march_score)
+
+                if len(kpi_calc) > 0:
+                    kpi_calc = [0 if v is None else v for v in kpi_calc]
+                    score = sum(kpi_calc) / len(kpi_calc)
+
+                    if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
+                        score = (score / target) * 100
+                    else:
+                        if score == 0:
+                            if score <= target:
+                                score = 100
+                            else:
+                                score = 0
+                        else:
+                            score = (target / score) * 100
+                else:
+                    score = 0
+
+                kpi_score.append([kpi, round(score, 0)])
+
             else:
                 score = 0
+                kpi_score.append([kpi, 0])
 
-            kpi_score.append([kpi, round(score, 0)])
-
-        else:
-            score = 0
-            kpi_score.append([kpi, 0])
-
-        score = round(score * (kpi.company_kpi_weight/100), 0)
-        sum_score += score
+            score = round(score * (kpi.company_kpi_weight/100), 0)
+            sum_score += score
 
     return [sum_score, kpi_score, len(kpi_score)]
 
@@ -911,17 +914,17 @@ def overall_score(pms, staff_u):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
-class HomeViewChanged(TemplateView):
-    template_name = 'index.html'
+class HomeView(TemplateView):
+    template_name = 'cfao_kenya/index.html'
     model = pms
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if pms.objects.filter(pms_status='Active').count() != 1:
+        if not pms.objects.filter(pms_status='Active'):
             context['pms'] = None
         else:
             context['pms'] = pms.objects.get(pms_status='Active')
-            staff_person = get_object_or_404(staff, id=self.request.user.id)
+            staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
             context['user_is_bu_head'] = staff_person.staff_head_bu
             context['user_is_md'] = staff_person.staff_md
             context['user_is_tl'] = staff_person.staff_head_team
@@ -945,7 +948,7 @@ class HomeViewChanged(TemplateView):
                 else:
                     context['bu_kpi'] = [0, [], [], []]
 
-        context['assessment'] = assessment_score(context['pms'], self.request.user)
+            context['assessment'] = assessment_score(context['pms'], self.request.user)
 
         return context
 
@@ -953,7 +956,7 @@ class HomeViewChanged(TemplateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class NoActivePmsView(TemplateView):
-    template_name = 'no_active_pms.html'
+    template_name = 'cfao_kenya/no_active_pms.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -972,11 +975,11 @@ class NoActivePmsView(TemplateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class IndividualKpiView(ListView):
     model = individual_Kpi
-    template_name = 'Individual_Kpi/mykpi.html'
+    template_name = 'cfao_kenya/Individual_Kpi/mykpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1012,11 +1015,11 @@ class IndividualKpiView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class SubmitKpiView(CreateView):
     form_class = SubmitKpiForm
-    template_name = 'Individual_Kpi/submitkpi.html'
+    template_name = 'cfao_kenya/Individual_Kpi/submitkpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1189,7 +1192,7 @@ def send_email_pms_one_reciepient(subject, receiver, e_message):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class TrackKpiView(ListView):
     model = individual_Kpi
-    template_name = 'Individual_Kpi/trackkpi.html'
+    template_name = 'cfao_kenya/Individual_Kpi/trackkpi.html'
     active_pms = pms
 
     def get_queryset(self):
@@ -1201,7 +1204,7 @@ class TrackKpiView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1240,12 +1243,12 @@ class TrackKpiView(ListView):
 class EditKpiView(UpdateView):
     model = individual_Kpi
     form_class = SubmitKpiForm
-    template_name = 'Individual_Kpi/one_individual_kpi_edit.html'
+    template_name = 'cfao_kenya/Individual_Kpi/one_individual_kpi_edit.html'
     active_pms = pms
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1286,7 +1289,7 @@ class EditKpiView(UpdateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class DetailKpiView(DetailView):
     model = individual_Kpi
-    template_name = 'Individual_Kpi/one_individual_kpi.html'
+    template_name = 'cfao_kenya/Individual_Kpi/one_individual_kpi.html'
     active_pms = pms
 
     def get_queryset(self):
@@ -1298,7 +1301,7 @@ class DetailKpiView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1336,12 +1339,12 @@ class DetailKpiView(DetailView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class KpiResultView(ListView):
     model = individual_Kpi
-    template_name = 'Individual_Kpi/kpiresults.html'
+    template_name = 'cfao_kenya/Individual_Kpi/kpiresults.html'
     active_pms = pms
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1380,12 +1383,12 @@ class KpiResultView(ListView):
 class KpiResultUpdateView(UpdateView):
     model = individual_Kpi
     form_class = IndividualKpiResultsForm
-    template_name = 'Individual_Kpi/one_individual_kpi_update.html'
+    template_name = 'cfao_kenya/Individual_Kpi/one_individual_kpi_update.html'
     active_pms = pms
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1614,11 +1617,11 @@ class KpiResultUpdateView(UpdateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class StaffKpiListView(ListView):
     model = individual_Kpi
-    template_name = 'Staff_Kpi/staffkpi.html'
+    template_name = 'cfao_kenya/Staff_Kpi/staffkpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1684,11 +1687,11 @@ class StaffKpiListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class StaffKpiPendingListView(ListView):
     model = individual_Kpi
-    template_name = 'Staff_Kpi/approvekpi.html'
+    template_name = 'cfao_kenya/Staff_Kpi/approvekpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1754,13 +1757,13 @@ class StaffKpiPendingListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class StaffKpiApproveView(DetailView):
     model = User
-    template_name = 'Staff_Kpi/one_individual_approve_kpi.html'
+    template_name = 'cfao_kenya/Staff_Kpi/one_individual_approve_kpi.html'
     active_pms = pms
     context_object_name = 'staff'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1894,11 +1897,11 @@ def approve_individual_kpi_score(request, pk, kpi_id, month):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class StaffTrackKpiListView(ListView):
     model = individual_Kpi
-    template_name = 'Staff_Kpi/trackkpi.html'
+    template_name = 'cfao_kenya/Staff_Kpi/trackkpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -1964,11 +1967,11 @@ class StaffTrackKpiListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class StaffTrackKpiOneListView(ListView):
     model = individual_Kpi
-    template_name = 'Staff_Kpi/trackkpi_staff.html'
+    template_name = 'cfao_kenya/Staff_Kpi/trackkpi_staff.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['staff'] = get_object_or_404(User, pk=self.kwargs['pk'])
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
@@ -2054,7 +2057,7 @@ class StaffTrackKpiOneListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class StaffKpiTrackOneView(UpdateView):
     form_class = IndividualKpiResultsForm
-    template_name = 'Staff_Kpi/trackkpi_staff_one.html'
+    template_name = 'cfao_kenya/Staff_Kpi/trackkpi_staff_one.html'
     active_pms = pms
     context_object_name = 'staff'
     pk_url_kwarg = 'kpi_id'
@@ -2073,7 +2076,7 @@ class StaffKpiTrackOneView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['the_kpi'] = get_object_or_404(individual_Kpi, individual_kpi_id=self.kwargs.get('kpi_id'))
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['staff'] = User.objects.get(pk=self.kwargs['pk'])
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
@@ -2376,12 +2379,12 @@ def approve_individual_kpi_score_dashboard(request, pk, kpi_id, month):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BuKpiDashboard(TemplateView):
-    template_name = 'Bu_Kpi/budashboard.html'
+    template_name = 'cfao_kenya/BU_Kpi/budashboard.html'
     model = bu_kpi
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2417,12 +2420,12 @@ class BuKpiDashboard(TemplateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BuKpi(TemplateView):
-    template_name = 'Bu_Kpi/bukpi.html'
+    template_name = 'cfao_kenya/BU_Kpi/bukpi.html'
     model = bu_kpi
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2455,11 +2458,11 @@ class BuKpi(TemplateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class SubmitBuKpiView(CreateView):
     form_class = SubmitBuKpiForm
-    template_name = 'Bu_Kpi/submitkpi.html'
+    template_name = 'cfao_kenya/BU_Kpi/submitkpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2491,7 +2494,7 @@ class SubmitBuKpiView(CreateView):
         initial = super(SubmitBuKpiView, self).get_initial()
         initial['bu_kpi_pms'] = pms.objects.get(pms_status='Active')
         initial['bu_kpi_user'] = self.request.user
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         initial['bu_kpi_bu'] = staff_person.staff_head_bu
         initial['bu_kpi_submit_date'] = datetime.date.today()
         initial['bu_kpi_last_edit'] = datetime.date.today()
@@ -2531,10 +2534,10 @@ class SubmitBuKpiView(CreateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class TrackBuKpiView(ListView):
-    template_name = 'Bu_Kpi/trackkpi.html'
+    template_name = 'cfao_kenya/BU_Kpi/trackkpi.html'
 
     def get_queryset(self):
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         user_is_bu_head = staff_person.staff_head_bu
         user_is_md = staff_person.staff_md
         user_is_tl = staff_person.staff_head_team
@@ -2551,7 +2554,7 @@ class TrackBuKpiView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2584,10 +2587,10 @@ class TrackBuKpiView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class TrackBuKpiDetailView(DetailView):
     model = bu_kpi
-    template_name = 'Bu_Kpi/one_individual_kpi.html'
+    template_name = 'cfao_kenya/BU_Kpi/one_individual_kpi.html'
 
     def get_queryset(self):
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         user_is_bu_head = staff_person.staff_head_bu
         user_is_md = staff_person.staff_md
         user_is_tl = staff_person.staff_head_team
@@ -2604,7 +2607,7 @@ class TrackBuKpiDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2638,11 +2641,11 @@ class TrackBuKpiDetailView(DetailView):
 class TrackBuKpiEditlView(UpdateView):
     model = bu_kpi
     form_class = SubmitBuKpiForm
-    template_name = 'Bu_Kpi/one_individual_kpi_edit.html'
+    template_name = 'cfao_kenya/BU_Kpi/one_individual_kpi_edit.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2674,7 +2677,7 @@ class TrackBuKpiEditlView(UpdateView):
         initial = super(TrackBuKpiEditlView, self).get_initial()
         initial['bu_kpi_pms'] = pms.objects.get(pms_status='Active')
         initial['bu_kpi_user'] = self.request.user
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         initial['bu_kpi_bu'] = staff_person.staff_head_bu
         initial['bu_kpi_submit_date'] = datetime.date.today()
         initial['bu_kpi_last_edit'] = datetime.date.today()
@@ -2693,10 +2696,10 @@ class TrackBuKpiEditlView(UpdateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BuKpiResultListView(ListView):
-    template_name = 'Bu_Kpi/kpiresults.html'
+    template_name = 'cfao_kenya/BU_Kpi/kpiresults.html'
 
     def get_queryset(self):
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         user_is_bu_head = staff_person.staff_head_bu
         user_is_md = staff_person.staff_md
         user_is_tl = staff_person.staff_head_team
@@ -2713,7 +2716,7 @@ class BuKpiResultListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2747,12 +2750,12 @@ class BuKpiResultListView(ListView):
 class BuKpiResultUpdateView(UpdateView):
     model = bu_kpi
     form_class = BuKpiResultsForm
-    template_name = 'Bu_Kpi/one_individual_kpi_update.html'
+    template_name = 'cfao_kenya/BU_Kpi/one_individual_kpi_update.html'
     active_pms = pms
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -2980,12 +2983,12 @@ class BuKpiResultUpdateView(UpdateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class CoKpiDashboard(TemplateView):
-    template_name = 'Company_Kpi/companydashboard.html'
+    template_name = 'cfao_kenya/Company_Kpi/companydashboard.html'
     model = bu_kpi
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3021,12 +3024,12 @@ class CoKpiDashboard(TemplateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class CompanyKpi(TemplateView):
-    template_name = 'Company_Kpi/companykpi.html'
+    template_name = 'cfao_kenya/Company_Kpi/companykpi.html'
     model = company_kpi
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3060,11 +3063,11 @@ class CompanyKpi(TemplateView):
 class SubmitCompanyKpiView(CreateView):
     model = company_kpi
     form_class = SubmitCompanyKpiForm
-    template_name = 'Company_Kpi/submitkpi.html'
+    template_name = 'cfao_kenya/Company_Kpi/submitkpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3114,10 +3117,10 @@ class SubmitCompanyKpiView(CreateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class EditCompanyKpiView(ListView):
-    template_name = 'Company_Kpi/trackkpi.html'
+    template_name = 'cfao_kenya/Company_Kpi/trackkpi.html'
 
     def get_queryset(self):
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         user_is_bu_head = staff_person.staff_head_bu
         user_is_md = staff_person.staff_md
         user_is_tl = staff_person.staff_head_team
@@ -3134,7 +3137,7 @@ class EditCompanyKpiView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3168,11 +3171,11 @@ class EditCompanyKpiView(ListView):
 class EditCompanyKpiUpdateView(UpdateView):
     model = company_kpi
     form_class = SubmitCompanyKpiForm
-    template_name = 'Company_Kpi/one_individual_kpi_edit.html'
+    template_name = 'cfao_kenya/Company_Kpi/one_individual_kpi_edit.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3221,10 +3224,10 @@ class EditCompanyKpiUpdateView(UpdateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class CompanyKpiResultListView(ListView):
-    template_name = 'Company_Kpi/kpiresults.html'
+    template_name = 'cfao_kenya/Company_Kpi/kpiresults.html'
 
     def get_queryset(self):
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         user_is_bu_head = staff_person.staff_head_bu
         user_is_md = staff_person.staff_md
         user_is_tl = staff_person.staff_head_team
@@ -3241,7 +3244,7 @@ class CompanyKpiResultListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3275,12 +3278,12 @@ class CompanyKpiResultListView(ListView):
 class CompanyKpiResultUpdateView(UpdateView):
     model = company_kpi
     form_class = CompanyKpiResultsForm
-    template_name = 'Company_Kpi/one_individual_kpi_update.html'
+    template_name = 'cfao_kenya/Company_Kpi/one_individual_kpi_update.html'
     active_pms = pms
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3473,11 +3476,11 @@ class CompanyKpiResultUpdateView(UpdateView):
 class BUsKpiListView(ListView):
     all_bu = bu.objects.all()
     model = individual_Kpi
-    template_name = 'Bus_Kpi/staffkpi.html'
+    template_name = 'cfao_kenya/BUs_Kpi/staffkpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3536,12 +3539,12 @@ class BUsKpiListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsKpiPendingListView(ListView):
     model = bu_kpi
-    template_name = 'Bus_Kpi/approvekpi.html'
+    template_name = 'cfao_kenya/BUs_Kpi/approvekpi.html'
     all_bu = bu.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3600,14 +3603,14 @@ class BUsKpiPendingListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsKpiApproveView(DetailView):
     model = bu
-    template_name = 'Bus_Kpi/one_individual_approve_kpi.html'
+    template_name = 'cfao_kenya/BUs_Kpi/one_individual_approve_kpi.html'
     active_pms = pms
     context_object_name = 'bu'
     all_bu = bu.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3717,12 +3720,12 @@ def reject_bu_kpi(request, pk, kpi_id):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsTrackKpiListView(ListView):
     model = bu_kpi
-    template_name = 'Bus_Kpi/trackkpi.html'
+    template_name = 'cfao_kenya/BUs_Kpi/trackkpi.html'
     all_bu = bu.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3781,13 +3784,13 @@ class BUsTrackKpiListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsTrackKpiOneListView(DetailView):
     model = bu
-    template_name = 'Bus_Kpi/trackkpi_staff.html'
+    template_name = 'cfao_kenya/BUs_Kpi/trackkpi_staff.html'
 
     all_bu = bu.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -3863,7 +3866,7 @@ class BUsTrackKpiOneListView(DetailView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsKpiTrackOneView(UpdateView):
     form_class = BuKpiResultsForm
-    template_name = 'Bus_Kpi/trackkpi_staff_one.html'
+    template_name = 'cfao_kenya/BUs_Kpi/trackkpi_staff_one.html'
     active_pms = pms
     context_object_name = 'staff'
     pk_url_kwarg = 'kpi_id'
@@ -3882,7 +3885,7 @@ class BUsKpiTrackOneView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['the_kpi'] = get_object_or_404(bu_kpi, bu_kpi_id=self.kwargs.get('kpi_id'))
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['bu'] = get_object_or_404(bu, bu_id=self.kwargs['pk'])
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
@@ -4181,11 +4184,11 @@ def approve_bu_kpi_score_dashboard(request, pk, kpi_id, month):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class MyCheckIn(TemplateView):
-    template_name = 'Check-In/checkin.html'
+    template_name = 'cfao_kenya/Check-In/checkin.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4219,11 +4222,11 @@ class MyCheckIn(TemplateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class SubmitCheckIn(CreateView):
     form_class = SubmitCheckInForm
-    template_name = 'Check-In/submitci.html'
+    template_name = 'cfao_kenya/Check-In/submitci.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4296,7 +4299,7 @@ class SubmitCheckIn(CreateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class TrackCheckIn(ListView):
-    template_name = 'Check-In/trackci.html'
+    template_name = 'cfao_kenya/Check-In/trackci.html'
 
     def get_queryset(self):
         active_pms = get_active_pms()
@@ -4304,7 +4307,7 @@ class TrackCheckIn(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4378,7 +4381,7 @@ class TrackCheckIn(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class DetailCheckIn(DetailView):
     model = checkIn
-    template_name = 'Check-In/one_individual_ci.html'
+    template_name = 'cfao_kenya/Check-In/one_individual_ci.html'
     context_object_name = 'ci'
 
     def get_queryset(self):
@@ -4387,7 +4390,7 @@ class DetailCheckIn(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4461,13 +4464,13 @@ class DetailCheckIn(DetailView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class EditCheckIn(UpdateView):
     form_class = SubmitCheckInForm
-    template_name = 'Check-In/one_individual_ci_edit.html'
+    template_name = 'cfao_kenya/Check-In/one_individual_ci_edit.html'
     model = checkIn
     context_object_name = 'ci'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4525,11 +4528,11 @@ class EditCheckIn(UpdateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class StaffCheckIn(TemplateView):
-    template_name = 'Staff_Ci/staffci.html'
+    template_name = 'cfao_kenya/Staff_Ci/staffci.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4584,11 +4587,11 @@ class StaffCheckIn(TemplateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class StaffApproveCheckIn(TemplateView):
-    template_name = 'Staff_Ci/approveci.html'
+    template_name = 'cfao_kenya/Staff_Ci/approveci.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4645,11 +4648,11 @@ class StaffApproveCheckIn(TemplateView):
 class StaffApproveStaffCheckIn(DetailView):
     context_object_name = 'staff'
     model = User
-    template_name = 'Staff_Ci/staffcistaff.html'
+    template_name = 'cfao_kenya/Staff_Ci/staffcistaff.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4713,12 +4716,12 @@ class StaffApproveStaffCheckInOne(UpdateView):
     form_class = ApproveCheckInForm
     context_object_name = 'ci'
     model = checkIn
-    template_name = 'Staff_Ci/one_individual_approve_ci.html'
+    template_name = 'cfao_kenya/Staff_Ci/one_individual_approve_ci.html'
     pk_url_kwarg = 'ci_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4800,11 +4803,11 @@ class StaffApproveStaffCheckInOne(UpdateView):
 class StaffTrackCheckIn(TemplateView):
     context_object_name = 'staff'
     model = User
-    template_name = 'Staff_Ci/trackci.html'
+    template_name = 'cfao_kenya/Staff_Ci/trackci.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4861,11 +4864,11 @@ class StaffTrackCheckIn(TemplateView):
 class StaffTrackStaffCheckIn(DetailView):
     context_object_name = 'staff'
     model = User
-    template_name = 'Staff_Ci/trackci_staff.html'
+    template_name = 'cfao_kenya/Staff_Ci/trackci_staff.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -4929,11 +4932,11 @@ class StaffTrackStaffDetailCheckIn(DetailView):
     context_object_name = 'ci'
     model = checkIn
     pk_url_kwarg = 'ci_id'
-    template_name = 'Staff_Ci/trackci_staff_one.html'
+    template_name = 'cfao_kenya/Staff_Ci/trackci_staff_one.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5000,11 +5003,11 @@ class StaffTrackStaffDetailCheckIn(DetailView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class Assessment(TemplateView):
-    template_name = 'Assessment/assessment.html'
+    template_name = 'cfao_kenya/Assessment/assessment.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5095,13 +5098,13 @@ class Assessment(TemplateView):
 class AssessmentView(DetailView):
     context_object_name = 'evaluation'
     model = evaluation
-    template_name = 'Assessment/assessment_list.html'
+    template_name = 'cfao_kenya/Assessment/assessment_list.html'
 
     pk_url_kwarg = 'as_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5175,13 +5178,13 @@ class AssessmentView(DetailView):
 class AssessmentTlS(DetailView):
     context_object_name = 'evaluation'
     model = evaluation
-    template_name = 'Assessment/assessment_tl_s_view.html'
+    template_name = 'cfao_kenya/Assessment/assessment_tl_s_view.html'
 
     pk_url_kwarg = 'as_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5225,11 +5228,11 @@ class AssessmentTlS(DetailView):
 class AssessmentTlSStaff(CreateView):
     form_class = AssessmentTlSForm
     model = done_tl_evaluates_staff
-    template_name = 'Assessment/assessment_tl_s.html'
+    template_name = 'cfao_kenya/Assessment/assessment_tl_s.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5324,11 +5327,11 @@ class AssessmentTlSStaff(CreateView):
 class AssessmentSTlStaff(CreateView):
     form_class = AsssessmentSTlForm
     model = done_staff_evaluates_tl
-    template_name = 'Assessment/assessment_s_tl.html'
+    template_name = 'cfao_kenya/Assessment/assessment_s_tl.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5421,11 +5424,11 @@ class AssessmentSTlStaff(CreateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AssessmentPrevious(TemplateView):
-    template_name = 'Assessment/assessment_previous.html'
+    template_name = 'cfao_kenya/Assessment/assessment_previous.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5516,13 +5519,13 @@ class AssessmentPrevious(TemplateView):
 class AssessmentPreviousView(DetailView):
     context_object_name = 'evaluation'
     model = evaluation
-    template_name = 'Assessment/assessment_previous_list.html'
+    template_name = 'cfao_kenya/Assessment/assessment_previous_list.html'
 
     pk_url_kwarg = 'as_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5594,11 +5597,11 @@ class AssessmentPreviousView(DetailView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AssessmentSTlStaffPrevious(TemplateView):
-    template_name = 'Assessment/assessment_s_tl_previous.html'
+    template_name = 'cfao_kenya/Assessment/assessment_s_tl_previous.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5663,13 +5666,13 @@ class AssessmentSTlStaffPrevious(TemplateView):
 class AssessmentTlSStaffPrevious(DetailView):
     context_object_name = 'evaluation'
     model = evaluation
-    template_name = 'Assessment/assessment_tl_s_view_previous.html'
+    template_name = 'cfao_kenya/Assessment/assessment_tl_s_view_previous.html'
 
     pk_url_kwarg = 'as_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5711,11 +5714,11 @@ class AssessmentTlSStaffPrevious(DetailView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AssessmentTlSPreviousStaff(TemplateView):
-    template_name = 'Assessment/assessment_tl_s_previous.html'
+    template_name = 'cfao_kenya/Assessment/assessment_tl_s_previous.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5781,11 +5784,11 @@ class AssessmentTlSPreviousStaff(TemplateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminDashboard(TemplateView):
-    template_name = 'Admin/dashboard.html'
+    template_name = 'cfao_kenya/Admin/dashboard.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5803,11 +5806,11 @@ class AdminDashboard(TemplateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminBU(TemplateView):
-    template_name = 'Admin/admin_bu.html'
+    template_name = 'cfao_kenya/Admin/admin_bu.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5836,14 +5839,14 @@ class AdminBU(TemplateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminBUOne(UpdateView):
-    template_name = 'Admin/admin_bu_one.html'
+    template_name = 'cfao_kenya/Admin/admin_bu_one.html'
     form_class = BUForm
     model = bu
     pk_url_kwarg = 'bu_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5867,13 +5870,13 @@ class AdminBUOne(UpdateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminBUNew(CreateView):
-    template_name = 'Admin/admin_bu_new.html'
+    template_name = 'cfao_kenya/Admin/admin_bu_new.html'
     form_class = BUForm
     model = bu
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5896,11 +5899,11 @@ class AdminBUNew(CreateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminTeam(TemplateView):
-    template_name = 'Admin/admin_team.html'
+    template_name = 'cfao_kenya/Admin/admin_team.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5929,14 +5932,14 @@ class AdminTeam(TemplateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminTeamOne(UpdateView):
-    template_name = 'Admin/admin_team_one.html'
+    template_name = 'cfao_kenya/Admin/admin_team_one.html'
     form_class = TeamForm
     model = team
     pk_url_kwarg = 't_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5961,13 +5964,13 @@ class AdminTeamOne(UpdateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminTeamNew(CreateView):
-    template_name = 'Admin/admin_team_new.html'
+    template_name = 'cfao_kenya/Admin/admin_team_new.html'
     form_class = TeamForm
     model = team
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -5989,11 +5992,11 @@ class AdminTeamNew(CreateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 class AdminUser(TemplateView):
-    template_name = 'Admin/admin_users.html'
+    template_name = 'cfao_kenya/Admin/admin_users.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6018,11 +6021,11 @@ class AdminUserNew(CreateView):
     model = User
     form_class = UserCreationForm
 
-    template_name = 'Admin/admin_users_new.html'
+    template_name = 'cfao_kenya/Admin/admin_users_new.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6069,7 +6072,7 @@ def new_user(request):
         else:
             form = UserCreationForm()
         context['form'] = form
-        return render(request, 'Admin/admin_users_new.html', context)
+        return render(request, 'cfao_kenya/Admin/admin_users_new.html', context)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -6078,12 +6081,12 @@ def new_user(request):
 class AdminUserNewDetails(UpdateView):
     model = UserModel
     form_class = UserForm
-    template_name = 'Admin/admin_users_new_details.html'
+    template_name = 'cfao_kenya/Admin/admin_users_new_details.html'
     context_object_name = 'user'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6108,11 +6111,11 @@ class AdminUserNewDetails(UpdateView):
 class AdminUserNewDetailsStaff(CreateView):
     model = staff
     form_class = StaffForm
-    template_name = 'Admin/admin_users_new_details_staff.html'
+    template_name = 'cfao_kenya/Admin/admin_users_new_details_staff.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6167,7 +6170,7 @@ def new_user_details(request, pk):
         else:
             form = UserForm(User.objects.filter(id=pk).first())
         context['form'] = form
-        return render(request, 'Admin/admin_users_new_details.html', context)
+        return render(request, 'cfao_kenya/Admin/admin_users_new_details.html', context)
 
 
 @login_required
@@ -6202,7 +6205,7 @@ def change_password(request, pk):
         else:
             form = SetPasswordForm(staff_u)
         context['form'] = form
-        return render(request, 'Admin/admin_users_reset_password.html', context)
+        return render(request, 'cfao_kenya/Admin/admin_users_reset_password.html', context)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -6211,7 +6214,7 @@ def change_password(request, pk):
 class AdminResetPasswordUser(UpdateView):
     model = User
     form_class = PasswordSet
-    template_name = 'Admin/admin_users_reset_password.html'
+    template_name = 'cfao_kenya/Admin/admin_users_reset_password.html'
     pk_url_kwarg = 'pk'
 
     def get_object(self, queryset=None):
@@ -6219,7 +6222,7 @@ class AdminResetPasswordUser(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6243,11 +6246,11 @@ class AdminResetPasswordUser(UpdateView):
 class AdminUserOne(DetailView):
     model = User
     context_object_name = 'user'
-    template_name = 'Admin/admin_users_one.html'
+    template_name = 'cfao_kenya/Admin/admin_users_one.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6293,12 +6296,12 @@ def reset_user_password(request, pk):
 class AdminUserOneEditUser(UpdateView):
     model = UserModel
     form_class = UserForm
-    template_name = 'Admin/admin_users_one_edit_user.html'
+    template_name = 'cfao_kenya/Admin/admin_users_one_edit_user.html'
     context_object_name = 'user'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6323,7 +6326,7 @@ class AdminUserOneEditUser(UpdateView):
 class AdminUserOneEditStaff(UpdateView):
     model = staff
     form_class = StaffForm
-    template_name = 'Admin/admin_users_one_edit_staff.html'
+    template_name = 'cfao_kenya/Admin/admin_users_one_edit_staff.html'
     context_object_name = 'staff'
 
     def get_object(self, queryset=None):
@@ -6331,7 +6334,7 @@ class AdminUserOneEditStaff(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6355,12 +6358,12 @@ class AdminUserOneEditStaff(UpdateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMS(DetailView):
     model = pms
-    template_name = 'Admin/pms.html'
+    template_name = 'cfao_kenya/Admin/pms.html'
     pk_url_kwarg = 'pms_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6377,7 +6380,7 @@ class AdminPMS(DetailView):
 class AdminPMSEdit(UpdateView):
     model = pms
     form_class = PmsForm
-    template_name = 'Admin/pms_edit.html'
+    template_name = 'cfao_kenya/Admin/pms_edit.html'
     pk_url_kwarg = 'pms_id'
 
     def get_success_url(self):
@@ -6385,7 +6388,7 @@ class AdminPMSEdit(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6408,7 +6411,7 @@ class AdminPMSEdit(UpdateView):
 class AdminPMSNew(CreateView):
     model = pms
     form_class = PmsForm
-    template_name = 'Admin/pms_new.html'
+    template_name = 'cfao_kenya/Admin/pms_new.html'
     pk_url_kwarg = 'pms_id'
 
     def get_success_url(self):
@@ -6416,7 +6419,7 @@ class AdminPMSNew(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6438,11 +6441,11 @@ class AdminPMSNew(CreateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSStaff(ListView):
     model = staff
-    template_name = 'Admin/pms_staff.html'
+    template_name = 'cfao_kenya/Admin/pms_staff.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6458,14 +6461,14 @@ class AdminPMSStaff(ListView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSStaffOne(DetailView):
-    template_name = 'Admin/pms_staff_one.html'
+    template_name = 'cfao_kenya/Admin/pms_staff_one.html'
 
     def get_object(self, queryset=None):
         return get_object_or_404(staff, staff_person=self.kwargs['s_id'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6481,7 +6484,7 @@ class AdminPMSStaffOne(DetailView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSStaffOneEdit(UpdateView):
-    template_name = 'Admin/pms_staff_edit.html'
+    template_name = 'cfao_kenya/Admin/pms_staff_edit.html'
     form_class = StaffForm
     form_class2 = UserForm
 
@@ -6502,11 +6505,11 @@ class AdminPMSStaffOneEdit(UpdateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSIndividual(ListView):
     model = staff
-    template_name = 'Admin/pms_ind_kpi.html'
+    template_name = 'cfao_kenya/Admin/pms_ind_kpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6545,7 +6548,7 @@ class AdminPMSIndividual(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSIndividualStaff(ListView):
     model = individual_Kpi
-    template_name = 'Admin/pms_ind_kpi_staff.html'
+    template_name = 'cfao_kenya/Admin/pms_ind_kpi_staff.html'
     context_object_name = 'individual_kpi'
 
     def get_queryset(self):
@@ -6555,7 +6558,7 @@ class AdminPMSIndividualStaff(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6572,7 +6575,7 @@ class AdminPMSIndividualStaff(ListView):
 class AdminPMSIndividualStaffOne(UpdateView):
     model = individual_Kpi
     form_class = IndividualKpiForm
-    template_name = 'Admin/pms_ind_kpi_staff_one.html'
+    template_name = 'cfao_kenya/Admin/pms_ind_kpi_staff_one.html'
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
@@ -6583,7 +6586,7 @@ class AdminPMSIndividualStaffOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6608,7 +6611,7 @@ class AdminPMSIndividualStaffOne(UpdateView):
 class AdminPMSIndividualStaffNew(CreateView):
     model = individual_Kpi
     form_class = IndividualKpiForm
-    template_name = 'Admin/pms_ind_kpi_staff_new.html'
+    template_name = 'cfao_kenya/Admin/pms_ind_kpi_staff_new.html'
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
@@ -6618,7 +6621,7 @@ class AdminPMSIndividualStaffNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6649,12 +6652,12 @@ class AdminPMSIndividualStaffNew(CreateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSBU(ListView):
     model = staff
-    template_name = 'Admin/pms_bu_kpi.html'
+    template_name = 'cfao_kenya/Admin/pms_bu_kpi.html'
     queryset = staff.objects.exclude(staff_head_bu=None)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6691,7 +6694,7 @@ class AdminPMSBU(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSBUStaff(ListView):
     model = bu_kpi
-    template_name = 'Admin/pms_bu_kpi_staff.html'
+    template_name = 'cfao_kenya/Admin/pms_bu_kpi_staff.html'
     context_object_name = 'bu_kpi'
 
     def get_queryset(self):
@@ -6701,7 +6704,7 @@ class AdminPMSBUStaff(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6718,7 +6721,7 @@ class AdminPMSBUStaff(ListView):
 class AdminPMSBUStaffOne(UpdateView):
     model = bu_kpi
     form_class = BUKpiForm
-    template_name = 'Admin/pms_bu_kpi_staff_one.html'
+    template_name = 'cfao_kenya/Admin/pms_bu_kpi_staff_one.html'
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
@@ -6729,7 +6732,7 @@ class AdminPMSBUStaffOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6754,7 +6757,7 @@ class AdminPMSBUStaffOne(UpdateView):
 class AdminPMSBUStaffNew(CreateView):
     model = bu_kpi
     form_class = BUKpiForm
-    template_name = 'Admin/pms_bu_kpi_staff_new.html'
+    template_name = 'cfao_kenya/Admin/pms_bu_kpi_staff_new.html'
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
@@ -6764,7 +6767,7 @@ class AdminPMSBUStaffNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6796,7 +6799,7 @@ class AdminPMSBUStaffNew(CreateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSCompany(ListView):
     model = company_kpi
-    template_name = 'Admin/pms_company_kpi.html'
+    template_name = 'cfao_kenya/Admin/pms_company_kpi.html'
     context_object_name = 'company_kpi'
 
     def get_queryset(self):
@@ -6805,7 +6808,7 @@ class AdminPMSCompany(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6821,7 +6824,7 @@ class AdminPMSCompany(ListView):
 class AdminPMSCompanyOne(UpdateView):
     model = company_kpi
     form_class = CompanyKpiForm
-    template_name = 'Admin/pms_company_kpi_one.html'
+    template_name = 'cfao_kenya/Admin/pms_company_kpi_one.html'
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
@@ -6831,7 +6834,7 @@ class AdminPMSCompanyOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6854,7 +6857,7 @@ class AdminPMSCompanyOne(UpdateView):
 class AdminPMSCompanyNew(CreateView):
     model = company_kpi
     form_class = CompanyKpiForm
-    template_name = 'Admin/pms_company_kpi_new.html'
+    template_name = 'cfao_kenya/Admin/pms_company_kpi_new.html'
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
@@ -6863,7 +6866,7 @@ class AdminPMSCompanyNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6891,11 +6894,11 @@ class AdminPMSCompanyNew(CreateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSCheckIn(ListView):
     model = staff
-    template_name = 'Admin/pms_checkin.html'
+    template_name = 'cfao_kenya/Admin/pms_checkin.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6934,7 +6937,7 @@ class AdminPMSCheckIn(ListView):
 class AdminPMSCheckInScoreNew(CreateView):
     model = matrix_checkin
     form_class = MatrixCheckIn
-    template_name = 'Admin/pms_checkin_score_new.html'
+    template_name = 'cfao_kenya/Admin/pms_checkin_score_new.html'
 
     def get_success_url(self):
         return '{}'.format(reverse('cfao_kenya:Admin_PMS_CheckIn', kwargs={"pms_id": self.kwargs["pms_id"]}))
@@ -6942,7 +6945,7 @@ class AdminPMSCheckInScoreNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -6972,7 +6975,7 @@ class AdminPMSCheckInScoreNew(CreateView):
 class AdminPMSCheckInScoreOne(UpdateView):
     model = matrix_checkin
     form_class = MatrixCheckIn
-    template_name = 'Admin/pms_checkin_score_one.html'
+    template_name = 'cfao_kenya/Admin/pms_checkin_score_one.html'
     pk_url_kwarg = 'm_id'
 
     def get_success_url(self):
@@ -6981,7 +6984,7 @@ class AdminPMSCheckInScoreOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7010,7 +7013,7 @@ class AdminPMSCheckInScoreOne(UpdateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSCheckInStaff(ListView):
     model = checkIn
-    template_name = 'Admin/pms_checkin_staff.html'
+    template_name = 'cfao_kenya/Admin/pms_checkin_staff.html'
     context_object_name = 'checkIn'
 
     def get_queryset(self):
@@ -7019,7 +7022,7 @@ class AdminPMSCheckInStaff(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7036,7 +7039,7 @@ class AdminPMSCheckInStaff(ListView):
 class AdminPMSCheckInStaffOne(UpdateView):
     model = checkIn
     form_class = CheckInForm
-    template_name = 'Admin/pms_checkin_staff_one.html'
+    template_name = 'cfao_kenya/Admin/pms_checkin_staff_one.html'
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
@@ -7047,7 +7050,7 @@ class AdminPMSCheckInStaffOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7072,7 +7075,7 @@ class AdminPMSCheckInStaffOne(UpdateView):
 class AdminPMSCheckInStaffNew(CreateView):
     model = checkIn
     form_class = CheckInForm
-    template_name = 'Admin/pms_checkin_staff_new.html'
+    template_name = 'cfao_kenya/Admin/pms_checkin_staff_new.html'
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
@@ -7082,7 +7085,7 @@ class AdminPMSCheckInStaffNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7113,7 +7116,7 @@ class AdminPMSCheckInStaffNew(CreateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSAssessment(ListView):
     model = evaluation
-    template_name = 'Admin/pms_assessment.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment.html'
     context_object_name = 'evaluation'
 
     def get_queryset(self):
@@ -7121,7 +7124,7 @@ class AdminPMSAssessment(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7159,14 +7162,14 @@ class AdminPMSAssessment(ListView):
 class AdminPMSAssessmentOne(UpdateView):
     model = evaluation
     form_class = AssessmentForm
-    template_name = 'Admin/pms_assessment_one.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment_one.html'
     context_object_name = 'evaluation'
     pk_url_kwarg = 'as_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7197,12 +7200,12 @@ class AdminPMSAssessmentOne(UpdateView):
 class AdminPMSAssessmentNew(CreateView):
     model = evaluation
     form_class = AssessmentForm
-    template_name = 'Admin/pms_assessment_new.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment_new.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7227,7 +7230,7 @@ class AdminPMSAssessmentNew(CreateView):
 class AdminPMSAssessmentOneResponseNew(CreateView):
     model = evaluation_responses
     form_class = MatrixAssessment
-    template_name = 'Admin/pms_assessment_one_response_new.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment_one_response_new.html'
 
     def get_success_url(self):
         return '{}'.format(reverse('cfao_kenya:Admin_PMS_Assessment_One',
@@ -7236,7 +7239,7 @@ class AdminPMSAssessmentOneResponseNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7267,7 +7270,7 @@ class AdminPMSAssessmentOneResponseNew(CreateView):
 class AdminPMSAssessmentOneResponseOne(UpdateView):
     model = evaluation_responses
     form_class = MatrixAssessment
-    template_name = 'Admin/pms_assessment_one_response_one.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment_one_response_one.html'
     pk_url_kwarg = 'm_id'
 
     def get_success_url(self):
@@ -7277,7 +7280,7 @@ class AdminPMSAssessmentOneResponseOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7308,7 +7311,7 @@ class AdminPMSAssessmentOneResponseOne(UpdateView):
 class AdminPMSAssessmentOneQuestionOneTlS(UpdateView):
     model = question_tl_evaluate_staff
     form_class = QuestionTlSForm
-    template_name = 'Admin/pms_assessment_one_question_one_tl_s.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment_one_question_one_tl_s.html'
     context_object_name = 'question'
     pk_url_kwarg = 'q_id'
 
@@ -7319,7 +7322,7 @@ class AdminPMSAssessmentOneQuestionOneTlS(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7348,7 +7351,7 @@ class AdminPMSAssessmentOneQuestionOneTlS(UpdateView):
 class AdminPMSAssessmentOneQuestionNewTlS(CreateView):
     model = question_tl_evaluate_staff
     form_class = QuestionTlSForm
-    template_name = 'Admin/pms_assessment_one_question_one_tl_s.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment_one_question_one_tl_s.html'
     context_object_name = 'question'
     pk_url_kwarg = 'q_id'
 
@@ -7359,7 +7362,7 @@ class AdminPMSAssessmentOneQuestionNewTlS(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7393,7 +7396,7 @@ class AdminPMSAssessmentOneQuestionNewTlS(CreateView):
 class AdminPMSAssessmentOneQuestionOneSTl(UpdateView):
     model = question_staff_evaluate_tl
     form_class = QuestionSTlForm
-    template_name = 'Admin/pms_assessment_one_question_one_s_tl.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment_one_question_one_s_tl.html'
     context_object_name = 'question'
     pk_url_kwarg = 'q_id'
 
@@ -7404,7 +7407,7 @@ class AdminPMSAssessmentOneQuestionOneSTl(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7433,7 +7436,7 @@ class AdminPMSAssessmentOneQuestionOneSTl(UpdateView):
 class AdminPMSAssessmentOneQuestionNewSTl(CreateView):
     model = question_staff_evaluate_tl
     form_class = QuestionSTlForm
-    template_name = 'Admin/pms_assessment_one_question_new_s_tl.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment_one_question_new_s_tl.html'
     context_object_name = 'question'
     pk_url_kwarg = 'q_id'
 
@@ -7444,7 +7447,7 @@ class AdminPMSAssessmentOneQuestionNewSTl(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7477,14 +7480,14 @@ class AdminPMSAssessmentOneQuestionNewSTl(CreateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSAssessmentOneResponseSTl(DetailView):
     model = evaluation
-    template_name = 'Admin/pms_assessment_one_stl.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment_one_stl.html'
     context_object_name = 'evaluation'
     pk_url_kwarg = 'as_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7515,14 +7518,14 @@ class AdminPMSAssessmentOneResponseSTl(DetailView):
 class AdminPMSAssessmentOneResponseSTlOne(UpdateView):
     model = done_staff_evaluates_tl
     form_class = DoneStaffEvaluateTl
-    template_name = 'Admin/pms_assessment_one_question_one_s_tl_one.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment_one_question_one_s_tl_one.html'
     context_object_name = 'done'
     pk_url_kwarg = 'd_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7552,14 +7555,14 @@ class AdminPMSAssessmentOneResponseSTlOne(UpdateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSAssessmentOneResponseTlS(DetailView):
     model = evaluation
-    template_name = 'Admin/pms_assessment_one_tls.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment_one_tls.html'
     context_object_name = 'evaluation'
     pk_url_kwarg = 'as_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7590,14 +7593,14 @@ class AdminPMSAssessmentOneResponseTlS(DetailView):
 class AdminPMSAssessmentOneResponseTlSOne(UpdateView):
     model = done_tl_evaluates_staff
     form_class = DoneTlEvaluateStaff
-    template_name = 'Admin/pms_assessment_one_question_one_tl_s_one.html'
+    template_name = 'cfao_kenya/Admin/pms_assessment_one_question_one_tl_s_one.html'
     context_object_name = 'done'
     pk_url_kwarg = 'd_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7628,7 +7631,7 @@ class AdminPMSAssessmentOneResponseTlSOne(UpdateView):
 class AdminPMSCheckInStaffOne(UpdateView):
     model = checkIn
     form_class = CheckInForm
-    template_name = 'Admin/pms_checkin_staff_one.html'
+    template_name = 'cfao_kenya/Admin/pms_checkin_staff_one.html'
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
@@ -7639,7 +7642,7 @@ class AdminPMSCheckInStaffOne(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7664,7 +7667,7 @@ class AdminPMSCheckInStaffOne(UpdateView):
 class AdminPMSCheckInStaffNew(CreateView):
     model = checkIn
     form_class = CheckInForm
-    template_name = 'Admin/pms_checkin_staff_new.html'
+    template_name = 'cfao_kenya/Admin/pms_checkin_staff_new.html'
     pk_url_kwarg = 'kpi_id'
 
     def get_success_url(self):
@@ -7674,7 +7677,7 @@ class AdminPMSCheckInStaffNew(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7704,12 +7707,12 @@ class AdminPMSCheckInStaffNew(CreateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class Matrix(TemplateView):
-    template_name = 'Admin/pms_matrix.html'
+    template_name = 'cfao_kenya/Admin/pms_matrix.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7728,13 +7731,13 @@ class AdminPMSMatrixScore(UpdateView):
     model = score_matrix
     form_class = MatrixScore
     context_object_name = 'one_matrix'
-    template_name = 'Admin/pms_matrix_score.html'
+    template_name = 'cfao_kenya/Admin/pms_matrix_score.html'
     pk_url_kwarg = 'm_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7763,12 +7766,12 @@ class AdminPMSMatrixScore(UpdateView):
 class AdminPMSMatrixScoreNew(CreateView):
     model = score_matrix
     form_class = MatrixScore
-    template_name = 'Admin/pms_matrix_score_new.html'
+    template_name = 'cfao_kenya/Admin/pms_matrix_score_new.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7801,12 +7804,12 @@ class AdminPMSMatrixScoreNew(CreateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSMatrixKPI(TemplateView):
-    template_name = 'Admin/pms_matrix_kpi.html'
+    template_name = 'cfao_kenya/Admin/pms_matrix_kpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7824,12 +7827,12 @@ class AdminPMSMatrixKPI(TemplateView):
 class AdminPMSMatrixKPINew(CreateView):
     model = kpi_months
     form_class = MatrixKpi
-    template_name = 'Admin/pms_matrix_kpi_new.html'
+    template_name = 'cfao_kenya/Admin/pms_matrix_kpi_new.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7864,13 +7867,13 @@ class AdminPMSMatrixKPINew(CreateView):
 class AdminPMSMatrixKPIOne(UpdateView):
     model = kpi_months
     form_class = MatrixKpi
-    template_name = 'Admin/pms_matrix_kpi_one.html'
+    template_name = 'cfao_kenya/Admin/pms_matrix_kpi_one.html'
     pk_url_kwarg = 'm_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7899,12 +7902,12 @@ class AdminPMSMatrixKPIOne(UpdateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class AdminPMSMatrixAssessment(TemplateView):
-    template_name = 'Admin/pms_matrix_assessment.html'
+    template_name = 'cfao_kenya/Admin/pms_matrix_assessment.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7922,13 +7925,13 @@ class AdminPMSMatrixAssessment(TemplateView):
 class AdminPMSMatrixKPIOne(UpdateView):
     model = kpi_months
     form_class = MatrixKpi
-    template_name = 'Admin/pms_matrix_kpi_one.html'
+    template_name = 'cfao_kenya/Admin/pms_matrix_kpi_one.html'
     pk_url_kwarg = 'm_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pms'] = get_object_or_404(pms, pms_id=self.kwargs['pms_id'])
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -7954,11 +7957,11 @@ class AdminPMSMatrixKPIOne(UpdateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class Report(TemplateView):
-    template_name = 'Reports/report.html'
+    template_name = 'cfao_kenya/Reports/report.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team
@@ -8106,11 +8109,11 @@ class Report(TemplateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class Profile(TemplateView):
-    template_name = 'profile.html'
+    template_name = 'cfao_kenya/profile.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, id=self.request.user.id)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
         context['user_is_bu_head'] = staff_person.staff_head_bu
         context['user_is_md'] = staff_person.staff_md
         context['user_is_tl'] = staff_person.staff_head_team

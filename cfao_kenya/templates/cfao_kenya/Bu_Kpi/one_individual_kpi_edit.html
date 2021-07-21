@@ -1,0 +1,213 @@
+{% extends "cfao_kenya/Bu_Kpi/default.html" %}
+{% block pagetitle %}Edit KPI{% endblock %}
+
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">View KPI</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+      {{ form.errors }}
+        {% if bu_kpi.bu_kpi_status == "Pending" or bu_kpi.bu_kpi_status == "Edit" %}
+        <form action="" method="post" id="submit_kpi_form">
+              {% csrf_token %}
+                  {{ form.bu_kpi_pms.as_hidden }}
+                  {{ form.bu_kpi_user.as_hidden }}
+                  {{ form.bu_kpi_bu.as_hidden }}
+                  {{ form.bu_kpi_submit_date.as_hidden }}
+                  {{ form.bu_kpi_last_edit.as_hidden }}
+                  {{ form.bu_kpi_status.as_hidden }}
+              <div class="card-body">
+                    <div class="row form_body">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>KPI</label>
+                                {{ form.bu_kpi_title }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>KPI Function</label>
+                              {{ form.bu_kpi_function }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>KPI criteria</label>
+                        {{ form.bu_kpi_criteria }}
+                    </div>
+                    <div class="form-group">
+                        <label>KPI Description</label>
+                        {{ form.bu_kpi_details }}
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>KPI Target</label>
+                                {{ form.bu_kpi_target }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>KPI Calculation</label>
+                                {{ form.bu_kpi_type }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>KPI Weight</label>
+                                {{ form.bu_kpi_weight    }}
+                            </div>
+                        </div>
+                    </div>
+              </div>
+              <div class="card-footer">
+                <div class="float-right" style="margin:5px">
+                    <button type="reset" class="btn btn-danger btn-block">Clear</button>
+                </div>
+                <div class="float-right" style="margin:5px">
+                    <button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Submit</button>
+                </div>
+              </div>
+              </form>
+              <script>
+              // just for the demos, avoids form submit
+              jQuery.validator.setDefaults({
+                debug: false,
+                success: "valid"
+              });
+
+
+              var form = $( "#submit_kpi_form" );
+              // form.validate();
+
+              $( "#submit_kpi_button" ).click(function() {
+                if(form.valid()){
+                  $(".btn").prop('readonly', true);
+                  $('html').preloader({
+                    // loading text
+                    text:'Submitting',
+                    // from 0 to 100
+                    percent:'100',
+                    // duration in ms
+                    duration:'30000',
+                    // z-index property
+                    zIndex:'1',
+                    // sets relative position to preloader's parent
+                    width:'100%',
+                    height:'100%',
+                    setRelative:false,
+                  });
+                }
+              });
+              </script>
+        <hr>
+
+        {% if bu_kpi %}
+          <table id="example1" class="table table-bordered table-striped">
+            <tbody>
+              <tr>
+                <th>
+                  KPI
+                </th>
+                <td colspan="3">
+                  {{ bu_kpi.bu_kpi_title }}
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Description
+                </th>
+                <td colspan="3">
+                  {{ bu_kpi.bu_kpi_details }}
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Criteria
+                </th>
+                <td colspan="3">
+                  {{ bu_kpi.bu_kpi_criteria }}
+                </td>
+              </tr>
+              <tr class="bg-info">
+                <th>
+                  Function
+                </th>
+                <th>
+                  Target
+                </th>
+                <th>
+                  Status
+                </th>
+                <th>
+                  Submit Date
+                </th>
+              </tr>
+              <tr>
+                <td>
+                  {{ bu_kpi.bu_kpi_function }}
+                </td>
+                <td>
+                  {{ bu_kpi.bu_kpi_target }}
+                </td>
+                <td>
+                  {{ bu_kpi.bu_kpi_status }}
+                </td>
+                <td>
+                  {{ bu_kpi.bu_kpi_submit_date }}
+                </td>
+              </tr>
+              <tr class="bg-info">
+                <th colspan="4">
+                  Approvals
+                </th>
+              </tr>
+              <tr>
+                <th>
+                  1st Approver
+                </th>
+                <td>
+                  {{ bu_kpi.bu_kpi_team_leader_approval }}
+                </td>
+                <td>
+                  {{ bu_kpi.bu_kpi_approval1_date }}
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  2nd Approver
+                </th>
+                <td>
+                  {{ bu_kpi.bu_kpi_bu_leader_approval }}
+                </td>
+                <td>
+                  {{ bu_kpi.bu_kpi_approval2_date }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        {% else %}
+          <div class="alert alert-warning">
+            <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
+            It Appears you've not submitted any KPIs. Or all of them have been declined
+          </div>
+        {% endif %}
+        {% else %}
+            <div class="alert alert-warning">
+            <h5><i class="icon fas fa-ban"></i> No KPIs found to Edit</h5>
+            It Appears this KPI is no longer under 'Pending' or 'Edit' Status
+            </div>
+        {% endif %}
+
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}

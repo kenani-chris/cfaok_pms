@@ -1,0 +1,312 @@
+{% extends "cfao_kenya/Admin/default.html" %}
+{% block page_top %}
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'cfao_kenya:Admin_Dashboard' %}">Admin</a></li>
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'cfao_kenya:Admin_PMS_BU' pms.pms_id %}">Staff</a></li>
+    <li class="breadcrumb-item" xmlns="http://www.w3.org/1999/html"><a href="{% url 'cfao_kenya:Admin_PMS_BU_Staff' pms.pms_id  staff.staff_person.id %}">{{ staff.staff_person.get_full_name }}</a></li>{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">PMS <b>{{ pms.pms_name }}</b></h3>
+          <form action="" method="post" id="submit_kpi_form">
+          {% csrf_token %}
+          <div class="float-right">
+              <button type="submit" class="btn btn-info"><i class="fa fa-save" style=""> Save</i></button>
+          </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+          <table class="table table-bordered">
+              <tbody>
+                <tr class="bg-info">
+                    <th colspan="4">
+                        User Info
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Staff
+                    </th>
+                    <td>
+                        {{ staff.staff_person.get_full_name }}
+                    </td>
+                    <th>
+                        PF
+                    </th>
+                    <td>
+                        {{ staff.staff_Pf_Number }}
+                    </td>
+                </tr>
+
+              </tbody>
+          </table>
+
+            {{ form.errors }}
+            {{ form.bu_kpi_id.as_hidden }}
+            {{ form.bu_kpi_pms.as_hidden }}
+            {{ form.bu_kpi_bu.as_hidden }}
+            {{ form.bu_kpi_submit_date.as_hidden }}
+            {{ form.bu_kpi_last_edit.as_hidden }}
+            {{ form.bu_kpi_team_leader_approval.as_hidden }}
+            {{ form.bu_bu_leader_approval.as_hidden }}
+
+          <br>
+          <table class="table table-bordered">
+
+              <thead><tr class="bg-info">
+                    <th colspan="6">
+                        KPI Info
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        KPI
+                    </th>
+                    <td colspan="5">
+                        {{ form.bu_kpi_title }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        KPI Details
+                    </th>
+                    <td colspan="5">
+                        {{ form.bu_kpi_details }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        KPI Criteria
+                    </th>
+                    <td colspan="5">
+                        {{ form.bu_kpi_criteria }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Weight
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Target
+                    </th>
+                    <th>
+                        Function
+                    </th>
+                    <th>
+                        Calculation
+                    </th>
+                    <th>
+                        Units
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        {{ form.bu_kpi_weight }}
+                    </td>
+                    <td>
+                        {{ form.bu_kpi_status }}
+                    </td>
+                    <td>
+                        {{ form.bu_kpi_target }}
+                    </td>
+                    <td>
+                        {{ form.bu_kpi_function }}
+                    </td>
+                    <td>
+                        {{ form.bu_kpi_type }}
+                    </td>
+                    <td>
+                        {{ form.bu_kpi_units }}
+                    </td>
+                </tr>
+
+              </thead>
+              <tbody>
+                {% for kpi in bu_lpi %}
+                    <tr>
+                        <td>
+                            {{ kpi.bu_kpi_title }}
+                        </td>
+                        <td>
+                            {{ kpi.bu_kpi_status }}
+                        </td>
+                        <td>
+                            {{ kpi.bu_kpi_target }}
+                        </td>
+                        <td>
+                            {{ kpi.bu_kpi_function }}
+                        </td>
+                        <td>
+                            {{ kpi.bu_kpi_weight }}
+                        </td>
+                        <td>
+                            {{ kpi.bu_kpi_weight }}
+                        </td>
+                    </tr>
+                {% endfor %}
+              </tbody>
+          </table>
+         <br>
+         <table class="table table-bordered">
+              <thead>
+                <tr>
+                    <th>
+                        Apr
+                    </th>
+                    <td>
+                        {{ form.bu_kpi_april_score }}
+                    </td>
+
+                    <td>
+                        {{ form.bu_kpi_april_score_approve }}
+                    </td>
+                    
+                    <th>
+                        Oct
+                    </th>
+                    <td>
+                        {{ form.bu_kpi_october_score }}
+                    </td>
+
+                    <td>
+                        {{ form.bu_kpi_october_score_approve }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        May
+                    </th>
+                    <td>
+                        {{ form.bu_kpi_may_score }}
+                    </td>
+
+                    <td>
+                        {{ form.bu_kpi_may_score_approve }}
+                    </td>
+                    
+                    <th>
+                        Nov
+                    </th>
+                    <td>
+                        {{ form.bu_kpi_november_score }}
+                    </td>
+
+                    <td>
+                        {{ form.bu_kpi_november_score_approve }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Jun
+                    </th>
+                    <td>
+                        {{ form.bu_kpi_june_score }}
+                    </td>
+
+                    <td>
+                        {{ form.bu_kpi_june_score_approve }}
+                    </td>
+                    
+                    <th>
+                        Dec
+                    </th>
+                    <td>
+                        {{ form.bu_kpi_december_score }}
+                    </td>
+
+                    <td>
+                        {{ form.bu_kpi_december_score_approve }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Jul
+                    </th>
+                    <td>
+                        {{ form.bu_kpi_july_score }}
+                    </td>
+
+                    <td>
+                        {{ form.bu_kpi_july_score_approve }}
+                    </td>
+                    
+                    <th>
+                        Jan
+                    </th>
+                    <td>
+                        {{ form.bu_kpi_january_score }}
+                    </td>
+
+                    <td>
+                        {{ form.bu_kpi_january_score_approve }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Aug
+                    </th>
+                    <td>
+                        {{ form.bu_kpi_august_score }}
+                    </td>
+
+                    <td>
+                        {{ form.bu_kpi_august_score_approve }}
+                    </td>
+                    
+                    <th>
+                        Feb
+                    </th>
+                    <td>
+                        {{ form.bu_kpi_february_score }}
+                    </td>
+
+                    <td>
+                        {{ form.bu_kpi_february_score_approve }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Sep
+                    </th>
+                    <td>
+                        {{ form.bu_kpi_september_score }}
+                    </td>
+
+                    <td>
+                        {{ form.bu_kpi_september_score_approve }}
+                    </td>
+                    
+                    <th>
+                        Mar
+                    </th>
+                    <td>
+                        {{ form.bu_kpi_march_score }}
+                    </td>
+
+                    <td>
+                        {{ form.bu_kpi_march_score_approve }}
+                    </td>
+                </tr>
+              </thead>
+         </table>
+
+        </form>
+          <br>
+          <br>
+          <br>
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+    <script>
+        $( "input" ).addClass( 'form-control');
+        $( "textarea" ).addClass( 'form-control');
+        $( "select" ).addClass( 'form-control');
+    </script>
+
+{% endblock %}
