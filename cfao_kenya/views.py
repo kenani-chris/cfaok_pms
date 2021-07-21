@@ -36,16 +36,21 @@ def reset_all_password(request):
     for staff_u in staffs:
         user = get_object_or_404(User, id=staff_u.staff_person.id)
         # 'password_reset_confirm' ''' + str(user.id) + ''' ''' + default_token_generator.make_token(user) + ''' %
-        # message = format_html('Click On the following <a href="{}">HERE</a>to reset your PMS password the following', reverse('cfao_kenya:password_reset_confirm', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.id)), 'token': default_token_generator.make_token(user)}))
+        # message = format_html('Click On the following <a href="{}">HERE</a>to reset your PMS password the following', reverse('tydia:password_reset_confirm', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.id)), 'token': default_token_generator.make_token(user)}))
 
-        message = format_html(
-            '''Click On the following <a href="https://ck-pms.com{%'password_reset_confirm ''' + urlsafe_base64_encode(
-                force_bytes(user.id)) + ''' ''' + default_token_generator.make_token(
-                user) + ''' %}">HERE</a>to reset your PMS password the following''')
+
+        encoded_uid = urlsafe_base64_encode(force_bytes(user.id))
+        token = default_token_generator.make_token(user)
+
+        link = format_html(str('<a href="https://ck-pms.com/accounts/reset/' + encoded_uid + '/' + token + '">PMS Link</a>'))
+
+        msg = format_html('We are glad to have you on board<br>Your username: <b>' + user.username + '</b><br><br>Click on this ' + link + ' to reset your password<br>')
+
+        message = msg
         if user.is_active and user.email:
-            send_email_pms_one_reciepient('Password Reset', user, message)
+            send_email_pms_one_reciepient('Welcome to PMS FY 2021-2022', user, message)
 
-    return HttpResponseRedirect(reverse('cfao_kenya:index'))
+    return HttpResponseRedirect(reverse('tydia:index'))
 
 
 def checkin_score(pms, staff):
