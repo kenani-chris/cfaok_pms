@@ -720,7 +720,7 @@ def company_kpi_score(pms):
 
 
 def assessment_score(pms, staff_u):
-    staff_person = get_object_or_404(staff, id=staff_u.id)
+    staff_person = get_object_or_404(staff, staff_person=staff_u.id)
     user_is_md = staff_person.staff_md
     user_is_tl = staff_person.staff_head_team
     default_score = {'Strongly Agree': 10, 'Agree': 5, 'Disagree': -5, 'Strongly Disagree': -10, None: 0}
@@ -767,7 +767,7 @@ def assessment_score(pms, staff_u):
 def tl_s_score_fun(staff_u, eval, default_score):
     tl_s_team_score = 0
     # TL_S_Score
-    staff_u = get_object_or_404(staff, id=staff_u.id)
+    staff_u = get_object_or_404(staff, staff_person=staff_u.id)
 
     tl_responses = done_tl_evaluates_staff.objects.filter(done_staff=staff_u.staff_person)
     for response in tl_responses:
@@ -824,7 +824,7 @@ def tl_s_score_fun(staff_u, eval, default_score):
 def s_tl_score_fun(staff_u, eval, default_score):
     s_tl_team_score = 0
     # S_TL_Score
-    staff_u = get_object_or_404(staff, id=staff_u.id)
+    staff_u = get_object_or_404(staff, staff_person=staff_u.id)
     staff_responses = done_staff_evaluates_tl.objects.filter(done_team_leader=staff_u.staff_person)
     for response in staff_responses:
         q1_score = evaluation_responses.objects.filter(response_evaluation=eval, response=response.score_q1)
@@ -879,7 +879,7 @@ def s_tl_score_fun(staff_u, eval, default_score):
 
 
 def get_matrix(pms, staff_u):
-    staff_person = get_object_or_404(staff, id=staff_u.id)
+    staff_person = get_object_or_404(staff, staff_person=staff_u.id)
     user_is_md = staff_person.staff_md
     user_is_tl = staff_person.staff_head_team
     user_is_bu_head = staff_person.staff_head_bu
@@ -923,6 +923,7 @@ def get_matrix(pms, staff_u):
 
 def overall_score(pms, staff_u):
     matrix = get_matrix(pms, staff_u)
+
 
 
 @method_decorator(login_required, name='dispatch')
