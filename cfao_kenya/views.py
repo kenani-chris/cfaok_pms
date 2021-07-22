@@ -247,8 +247,11 @@ def ind_kpi_score(pms, staff):
                     else:
                         if 'February' in use_months and kpi.individual_kpi_february_score_approve == 'Approved':
                             value = kpi.individual_kpi_february_score
-                        
+            if value is None:
+                value = 0
+
             if kpi.individual_kpi_function == "Maximize" or kpi.individual_kpi_function == "maximize":
+
                 score = (value / target) * 100
             else:
                 if value == 0:
@@ -443,6 +446,9 @@ def bu_kpi_score(pms, bu):
                 if month == 'March':
                     if 'March' in use_months and kpi.bu_kpi_march_score_approve == 'Approved':
                         value = kpi.bu_kpi_march_score
+
+            if value is None:
+                value = 0
 
             if kpi.bu_kpi_function == "Maximize" or kpi.bu_kpi_function == "maximize":
                 score = (value / target) * 100
@@ -642,8 +648,10 @@ def company_kpi_score(pms):
                     if month == 'March':
                         if 'March' in use_months :
                             value = kpi.company_kpi_march_score
-
+                if value is None:
+                    value = 0
                 if kpi.company_kpi_function == "Maximize" or kpi.company_kpi_function == "maximize":
+
                     score = (value / target) * 100
                 else:
                     if value == 0:
@@ -656,7 +664,7 @@ def company_kpi_score(pms):
 
                 kpi_score.append([kpi, round(score, 0)])
 
-            elif kpi.company_kpi_type == 'Addition':
+            elif kpi.company_kpi_type == 'Average':
                 if 'April' in use_months :
                     kpi_calc.append(kpi.company_kpi_april_score)
                 if 'May' in use_months :

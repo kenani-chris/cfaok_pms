@@ -91,13 +91,24 @@ WSGI_APPLICATION = 'cfaok_pms.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
+'''DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cfaok_pms2',
         'USER': 'cfaok_pms',
         'PASSWORD': 'ChangemeHR*12',
         'HOST': '127.0.0.1',
+        'PORT': '3306',
+    }
+}'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cfaok_pms',
+        'USER': 'cfaok_pms',
+        'PASSWORD': 'XJ;&z[|Fgt!(1~S|t*QlZ9u9kWVsPt2N',
+        'HOST': 'ls-fcd4a90cb760069e747f52d43c81980f8213bf57.cull5gpq2pfe.ap-south-1.rds.amazonaws.com',
         'PORT': '3306',
     }
 }
