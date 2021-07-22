@@ -30,7 +30,7 @@
                   {% if member.4 > 0 %}
                       <tr>
                           <td>
-                            <a href="{% url 'Staff_Approve_Kpi_Detail' member.0.staff_person.id %}">{{ member.0.staff_person.get_full_name }}</a>
+                            <a href="{% url 'cfao_kenya:Staff_Approve_Kpi_Detail' member.0.staff_person.id %}">{{ member.0.staff_person.get_full_name }}</a>
                           </td>
                           <td>
                             {{ member.1 }}

@@ -62,10 +62,10 @@
           </table>
           <div class="card-footer">
             <div class="float-right" style="margin:5px">
-              <a href="{% url 'Staff_Reject_Individual_Kpi' staff.id  kpi.individual_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
+              <a href="{% url 'tamk:Staff_Reject_Individual_Kpi' staff.id  kpi.individual_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
             </div>
             <div class="float-right" style="margin:5px">
-              <a href="{% url 'Staff_Approve_Individual_Kpi' staff.id  kpi.individual_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
+              <a href="{% url 'tamk:Staff_Approve_Individual_Kpi' staff.id  kpi.individual_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
             </div>
           </div>
           <br>

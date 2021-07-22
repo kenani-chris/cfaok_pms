@@ -12,7 +12,7 @@
       <br>
       <div class="row">
         <div class="col-md-3 col-sm-6 col-12">
-          <a href="{% url 'Individual_Kpi_Detail1' %}">
+          <a href="{% url 'cfao_kenya:Individual_Kpi_Detail1' %}">
             <div class="info-box bg-info">
               <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
 
@@ -31,7 +31,7 @@
         </div>
         <!-- /.col -->
         <div class="col-md-3 col-sm-6 col-12">
-          <a href="{% url 'Individual_Kpi_Detail1' %}">
+          <a href="{% url 'cfao_kenya:Individual_Kpi_Detail1' %}">
             <div class="info-box bg-success">
               <span class="info-box-icon"><i class="far fa-thumbs-up"></i></span>
               <div class="info-box-content">
@@ -49,7 +49,7 @@
         </div>
         <!-- /.col -->
         <div class="col-md-3 col-sm-6 col-12">
-          <a href="{% url 'Individual_Kpi_Detail1' %}">
+          <a href="{% url 'cfao_kenya:Individual_Kpi_Detail1' %}">
             <div class="info-box bg-warning">
               <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
 
@@ -68,7 +68,7 @@
         </div>
         <!-- /.col -->
         <div class="col-md-3 col-sm-6 col-12">
-          <a href="{% url 'Individual_Kpi_Detail1' %}">
+          <a href="{% url 'cfao_kenya:Individual_Kpi_Detail1' %}">
             <div class="info-box bg-danger">
               <span class="info-box-icon"><i class="fas fa-thumbs-down"></i></span>
 
@@ -117,7 +117,7 @@
               {% if kpi.individual_kpi_status == "Approved 2" %}
                 <tr>
                   <td rowspan="2">
-                    <a href="{% url 'Staff_Track_Kpi_Staff_One' staff.id kpi.individual_kpi_id %}"> {{ kpi.individual_kpi_title }}</a>
+                    <a href="{% url 'cfao_kenya:Staff_Track_Kpi_Staff_One' staff.id kpi.individual_kpi_id %}"> {{ kpi.individual_kpi_title }}</a>
                   </td>
                   <td rowspan="2">
                     {{ kpi.individual_kpi_function }}
@@ -292,7 +292,7 @@
               {% else%}
                 <tr>
                   <td>
-                    <a href="{% url 'Staff_Track_Kpi_Staff_One' staff.id kpi.individual_kpi_id %}"> {{ kpi.individual_kpi_title }}</a>
+                    <a href="{% url 'cfao_kenya:Staff_Track_Kpi_Staff_One' staff.id kpi.individual_kpi_id %}"> {{ kpi.individual_kpi_title }}</a>
                   </td>
                   <td>
                     {{ kpi.individual_kpi_function }}
