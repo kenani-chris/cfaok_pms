@@ -461,6 +461,19 @@ class individual_Kpi(models.Model):
     individual_kpi_february_score = models.FloatField(null=True, blank=True)
     individual_kpi_march_score = models.FloatField(null=True, blank=True)
 
+    individual_kpi_april_target = models.FloatField(null=True, blank=True)
+    individual_kpi_may_target = models.FloatField(null=True, blank=True)
+    individual_kpi_june_target = models.FloatField(null=True, blank=True)
+    individual_kpi_july_target = models.FloatField(null=True, blank=True)
+    individual_kpi_august_target = models.FloatField(null=True, blank=True)
+    individual_kpi_september_target = models.FloatField(null=True, blank=True)
+    individual_kpi_october_target = models.FloatField(null=True, blank=True)
+    individual_kpi_november_target = models.FloatField(null=True, blank=True)
+    individual_kpi_december_target = models.FloatField(null=True, blank=True)
+    individual_kpi_january_target = models.FloatField(null=True, blank=True)
+    individual_kpi_february_target = models.FloatField(null=True, blank=True)
+    individual_kpi_march_target = models.FloatField(null=True, blank=True)
+
     approve = (
         ('Approved', 'Approved'),
         ('Not Approved', 'Not Approved'),

@@ -27,7 +27,7 @@
               {% if member is not None %}
                 <tr>
                   <td>
-                    <a href="{% url 'Staff_Track_Kpi_Staff' member.0.staff_person.id %}" >{{ member.0.staff_person.get_full_name }}</a>
+                    <a href="{% url 'toyota_kenya:Staff_Track_Kpi_Staff' member.0.staff_person.id %}" >{{ member.0.staff_person.get_full_name }}</a>
                   </td>
                   <td>
                     {{ member.1 }}

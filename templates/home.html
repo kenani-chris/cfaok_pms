@@ -232,6 +232,9 @@ body {
                 {% ifequal group.name "tydia" %}
                     <a href="{% url 'tydia:index' %}" class="btn btn-lg btn-default">Tydia PMS</a>
                 {% endifequal %}
+                {% ifequal group.name "toyota_kenya" %}
+                    <a href="{% url 'toyota_kenya:index' %}" class="btn btn-lg btn-default">TKEN PMS</a>
+                {% endifequal %}
 
               {% endfor %}
           {% else %}
