@@ -34,6 +34,20 @@ urlpatterns = [
     path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>/<int:month>', approve_individual_kpi_score_dashboard,
          name='Staff_Approve_Kpi_score_dashboard'),
 
+    path('Staff-Kpi-BU/Approve-Kpi', BUStaffKpiPendingListView.as_view(), name='Staff_BU_Approve_Kpi'),
+    path('Staff-Kpi-BU/Approve-Kpi/<int:pk>', BUStaffKpiApproveView.as_view(), name='Staff_BU_Approve_Kpi_Detail'),
+    path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>', approve_individual_kpi,
+         name='Staff_Approve_Individual_Kpi'),
+    path('Staff-Kpi/Approve-Kpi/Reject/<int:pk>/<uuid:kpi_id>', reject_individual_kpi,
+         name='Staff_Reject_Individual_Kpi'),
+    path('Staff-Kpi/Track-Kpi', StaffTrackKpiListView.as_view(), name='Staff_Track_Kpi'),
+    path('Staff-Kpi/Track-Kpi/<int:pk>', StaffTrackKpiOneListView.as_view(), name='Staff_Track_Kpi_Staff'),
+    path('Staff-Kpi/Track-Kpi/<int:pk>/<uuid:kpi_id>', StaffKpiTrackOneView.as_view(), name='Staff_Track_Kpi_Staff_One'),
+    path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>/<int:month>', approve_individual_kpi_score,
+         name='Staff_Approve_Kpi_score'),
+    path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>/<int:month>', approve_individual_kpi_score_dashboard,
+         name='Staff_Approve_Kpi_score_dashboard'),
+
     
     # BU Kpi Links
     path('BU/', BuKpiDashboard.as_view(), name='BU_Dashboard'),
