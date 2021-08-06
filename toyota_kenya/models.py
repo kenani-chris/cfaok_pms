@@ -438,7 +438,6 @@ class individual_Kpi(models.Model):
     individual_kpi_title = models.CharField(max_length=200)
     individual_kpi_details = models.TextField(null=True, blank=True)
     individual_kpi_criteria = models.CharField(max_length=100)
-    individual_kpi_target = models.FloatField()
     individual_kpi_weight = models.FloatField(default=20)
     individual_kpi_units = models.CharField(max_length=5, null=True, blank=True)
 
@@ -461,18 +460,18 @@ class individual_Kpi(models.Model):
     individual_kpi_february_score = models.FloatField(null=True, blank=True)
     individual_kpi_march_score = models.FloatField(null=True, blank=True)
 
-    individual_kpi_april_target = models.FloatField(null=True, blank=True)
-    individual_kpi_may_target = models.FloatField(null=True, blank=True)
-    individual_kpi_june_target = models.FloatField(null=True, blank=True)
-    individual_kpi_july_target = models.FloatField(null=True, blank=True)
-    individual_kpi_august_target = models.FloatField(null=True, blank=True)
-    individual_kpi_september_target = models.FloatField(null=True, blank=True)
-    individual_kpi_october_target = models.FloatField(null=True, blank=True)
-    individual_kpi_november_target = models.FloatField(null=True, blank=True)
-    individual_kpi_december_target = models.FloatField(null=True, blank=True)
-    individual_kpi_january_target = models.FloatField(null=True, blank=True)
-    individual_kpi_february_target = models.FloatField(null=True, blank=True)
-    individual_kpi_march_target = models.FloatField(null=True, blank=True)
+    individual_kpi_april_target = models.FloatField(default=None)
+    individual_kpi_may_target = models.FloatField(default=None)
+    individual_kpi_june_target = models.FloatField(default=None)
+    individual_kpi_july_target = models.FloatField(default=None)
+    individual_kpi_august_target = models.FloatField(default=None)
+    individual_kpi_september_target = models.FloatField(default=None)
+    individual_kpi_october_target = models.FloatField(default=None)
+    individual_kpi_november_target = models.FloatField(default=None)
+    individual_kpi_december_target = models.FloatField(default=None)
+    individual_kpi_january_target = models.FloatField(default=None)
+    individual_kpi_february_target = models.FloatField(default=None)
+    individual_kpi_march_target = models.FloatField(default=None)
 
     approve = (
         ('Approved', 'Approved'),
@@ -517,13 +516,6 @@ class individual_Kpi(models.Model):
     )
     individual_kpi_status = models.CharField(max_length=40, choices=status, blank=True, default='Pending',
                                              help_text='KPI categorize function')
-    type = (
-        ('', ''),
-        ('Addition', 'Addition'),
-        ('Average', 'Average'),
-        ('YTD', 'YTD'),
-    )
-    individual_kpi_type = models.CharField(max_length=10, choices=type, blank=True, default='Average', )
 
     def get_absolute_url(self):
         return reverse('kpi-detail', args=[self.individual_kpi_id])

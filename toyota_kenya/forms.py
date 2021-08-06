@@ -6,9 +6,13 @@ class SubmitKpiForm(forms.ModelForm):
     class Meta:
         model = individual_Kpi
         fields = ['individual_kpi_title', 'individual_kpi_criteria', 'individual_kpi_function',
-                  'individual_kpi_details', 'individual_kpi_target', 'individual_kpi_weight', 'individual_kpi_type',
-                  'individual_kpi_pms', 'individual_kpi_user', 'individual_kpi_submit_date', 'individual_kpi_last_edit',
-                  'individual_kpi_status']
+                  'individual_kpi_details', 'individual_kpi_weight', 'individual_kpi_pms',
+                  'individual_kpi_user', 'individual_kpi_submit_date', 'individual_kpi_last_edit',
+                  'individual_kpi_status', 'individual_kpi_april_target', 'individual_kpi_may_target',
+                  'individual_kpi_june_target', 'individual_kpi_july_target', 'individual_kpi_august_target',
+                  'individual_kpi_september_target', 'individual_kpi_october_target', 'individual_kpi_november_target',
+                  'individual_kpi_december_target', 'individual_kpi_january_target', 'individual_kpi_february_target',
+                  'individual_kpi_march_target']
 
     individual_kpi_title = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}),
                                            required=True)
@@ -16,24 +20,10 @@ class SubmitKpiForm(forms.ModelForm):
                                               required=True)
     individual_kpi_function = forms.ChoiceField(choices=individual_Kpi.function,
                                                 widget=forms.Select(attrs={'class': 'form-control'}))
-    individual_kpi_type = forms.ChoiceField(choices=individual_Kpi.type,
-                                            widget=forms.Select(attrs={'class': 'form-control'}))
     individual_kpi_details = forms.CharField(
         widget=forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 80px'}), required=True)
-    individual_kpi_target = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}), required=True)
     individual_kpi_weight = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}), required=True)
 
-    def clean(self):
-        cleaned_data = super(SubmitKpiForm, self).clean()
-        title = cleaned_data.get('individual_kpi_title')
-        criteria = cleaned_data.get('individual_kpi_criteria')
-        function = cleaned_data.get('individual_kpi_function')
-        details = cleaned_data.get('individual_kpi_details')
-        target = cleaned_data.get('individual_kpi_target')
-        k_type = cleaned_data.get('individual_kpi_type')
-        weight = cleaned_data.get('individual_kpi_weight')
-        if not title or not criteria or not function or not details or not target or not weight or not k_type:
-            raise forms.ValidationError('You have some blank fields')
 
 
 class IndividualKpiUpdateForm(forms.ModelForm):

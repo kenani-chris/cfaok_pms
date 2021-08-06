@@ -127,10 +127,9 @@
               <tr>
                 <th>KPI</th>
                 <th>Function</th>
-                <th>Target</th>
                 <th>Status</th>
-                <th>Calculation</th>
                 <th>Weight</th>
+                <th></th>
                 <th>Apr</th>
                 <th>May</th>
                 <th>Jun</th>
@@ -147,7 +146,6 @@
               </thead>
               <tbody>
             {% for kpi in my_kpi %}
-              {% if kpi.individual_kpi_status == "Approved 2" %}
                 <tr>
                   <td rowspan="2">
                     {{ kpi.individual_kpi_title }}
@@ -156,239 +154,88 @@
                     {{ kpi.individual_kpi_function }}
                   </td>
                   <td rowspan="2">
-                    {{ kpi.individual_kpi_target }}
-                  </td>
-                  <td rowspan="2">
                      {{ kpi.individual_kpi_status }}
-                  </td>
-                  <td rowspan="2">
-                    {{ kpi.individual_kpi_type }}
                   </td>
                   <td rowspan="2">
                     {{ kpi.individual_kpi_weight }}
                   </td>
+                    <td>TGT</td>
                   <td>
-                    {{ kpi.individual_kpi_april_score }}
+                    {{ kpi.individual_kpi_april_target }}
                   </td>
                   <td>
-                    {{ kpi.individual_kpi_may_score }}
+                    {{ kpi.individual_kpi_may_target }}
                   </td>
                   <td>
-                    {{ kpi.individual_kpi_june_score }}
+                    {{ kpi.individual_kpi_june_target }}
                   </td>
                   <td>
-                    {{ kpi.individual_kpi_july_score }}
+                    {{ kpi.individual_kpi_july_target }}
                   </td>
                   <td>
-                    {{ kpi.individual_kpi_august_score }}
+                    {{ kpi.individual_kpi_august_target }}
                   </td>
                   <td>
-                    {{ kpi.individual_kpi_september_score }}
+                    {{ kpi.individual_kpi_september_target }}
                   </td>
                   <td>
-                    {{ kpi.individual_kpi_october_score }}
+                    {{ kpi.individual_kpi_october_target }}
                   </td>
                   <td>
-                    {{ kpi.individual_kpi_november_score }}
+                    {{ kpi.individual_kpi_november_target }}
                   </td>
                   <td>
-                    {{ kpi.individual_kpi_december_score }}
+                    {{ kpi.individual_kpi_december_target }}
                   </td>
                   <td>
-                    {{ kpi.individual_kpi_january_score }}
+                    {{ kpi.individual_kpi_january_target }}
                   </td>
                   <td>
-                    {{ kpi.individual_kpi_february_score }}
+                    {{ kpi.individual_kpi_february_target }}
                   </td>
                   <td>
-                    {{ kpi.individual_kpi_march_score }}
+                    {{ kpi.individual_kpi_march_target }}
                   </td>
                 </tr>
                 <tr>
-
-                    {% if kpi.individual_kpi_april_score_approve == 'Approved' %}
-                        <td class="text-center bg-success">
-                            <i class="fa fa-check-circle"></i>
-                        </td>
-                    {% else %}
-                        <td class="text-center bg-gray-light">
-                            --
-                        </td>
-                    {% endif %}
-
-                    {% if kpi.individual_kpi_may_score_approve == 'Approved' %}
-                        <td class="text-center bg-success">
-                            <i class="fa fa-check-circle"></i>
-                        </td>
-                    {% else %}
-                        <td class="text-center bg-gray-light">
-                            --
-                        </td>
-                    {% endif %}
-
-                    {% if kpi.individual_kpi_june_score_approve == 'Approved' %}
-                        <td class="text-center bg-success">
-                            <i class="fa fa-check-circle"></i>
-                        </td>
-                    {% else %}
-                        <td class="text-center bg-gray-light">
-                            --
-                        </td>
-                    {% endif %}
-
-                    {% if kpi.individual_kpi_july_score_approve == 'Approved' %}
-                        <td class="text-center bg-success">
-                            <i class="fa fa-check-circle"></i>
-                        </td>
-                    {% else %}
-                        <td class="text-center bg-gray-light">
-                            --
-                        </td>
-                    {% endif %}
-
-
-                    {% if kpi.individual_kpi_august_score_approve == 'Approved' %}
-                        <td class="text-center bg-success">
-                            <i class="fa fa-check-circle"></i>
-                        </td>
-                    {% else %}
-                        <td class="text-center bg-gray-light">
-                            --
-                        </td>
-                    {% endif %}
-
-                    {% if kpi.individual_kpi_september_score_approve == 'Approved' %}
-                        <td class="text-center bg-success">
-                            <i class="fa fa-check-circle"></i>
-                        </td>
-                    {% else %}
-                        <td class="text-center bg-gray-light">
-                            --
-                        </td>
-                    {% endif %}
-
-                    {% if kpi.individual_kpi_october_score_approve == 'Approved' %}
-                        <td class="text-center bg-success">
-                            <i class="fa fa-check-circle"></i>
-                        </td>
-                    {% else %}
-                        <td class="text-center bg-gray-light">
-                            --
-                        </td>
-                    {% endif %}
-
-                    {% if kpi.individual_kpi_november_score_approve == 'Approved' %}
-                        <td class="text-center bg-success">
-                            <i class="fa fa-check-circle"></i>
-                        </td>
-                    {% else %}
-                        <td class="text-center bg-gray-light">
-                            --
-                        </td>
-                    {% endif %}
-
-                    {% if kpi.individual_kpi_december_score_approve == 'Approved' %}
-                        <td class="text-center bg-success">
-                            <i class="fa fa-check-circle"></i>
-                        </td>
-                    {% else %}
-                        <td class="text-center bg-gray-light">
-                            --
-                        </td>
-                    {% endif %}
-
-                    {% if kpi.individual_kpi_january_score_approve == 'Approved' %}
-                        <td class="text-center bg-success">
-                            <i class="fa fa-check-circle"></i>
-                        </td>
-                    {% else %}
-                        <td class="text-center bg-gray-light">
-                            --
-                        </td>
-                    {% endif %}
-
-                    {% if kpi.individual_kpi_february_score_approve == 'Approved' %}
-                        <td class="text-center bg-success">
-                            <i class="fa fa-check-circle"></i>
-                        </td>
-                    {% else %}
-                        <td class="text-center bg-gray-light">
-                            --
-                        </td>
-                    {% endif %}
-
-                    {% if kpi.individual_kpi_march_score_approve == 'Approved' %}
-                        <td class="text-center bg-success">
-                            <i class="fa fa-check-circle"></i>
-                        </td>
-                    {% else %}
-                        <td class="text-center bg-gray-light">
-                            --
-                        </td>
-                    {% endif %}
-
-                </tr>
-              {% endif %}
-            {% endfor %}
-            {% for kpi in my_kpi %}
-              {% if kpi.individual_kpi_status != "Approved 2" %}
-                <tr>
-                  <td >
-                    {{ kpi.individual_kpi_title }}
-                  </td>
-                  <td >
-                    {{ kpi.individual_kpi_function }}
-                  </td>
-                  <td >
-                    {{ kpi.individual_kpi_target }}
-                  </td>
-                  <td >
-                     {{ kpi.individual_kpi_status }}
-                  </td>
-                  <td >
-                    {{ kpi.individual_kpi_type }}
-                  </td>
-                  <td >
-                    {{ kpi.individual_kpi_weight }}
-                  </td>
-                  <td>
+                  <td>ACT</td>
+                  <td {% if kpi.individual_kpi_april_score_approve == "Approved" %}class="bg-success" {% endif %}>
                     {{ kpi.individual_kpi_april_score }}
                   </td>
-                  <td>
+                  <td {% if kpi.individual_kpi_may_score_approve == "Approved" %}class="bg-success" {% endif %}>
                     {{ kpi.individual_kpi_may_score }}
                   </td>
-                  <td>
+                  <td {% if kpi.individual_kpi_june_score_approve == "Approved" %}class="bg-success" {% endif %}>
                     {{ kpi.individual_kpi_june_score }}
                   </td>
-                  <td>
+                  <td {% if kpi.individual_kpi_july_score_approve == "Approved" %}class="bg-success" {% endif %}>
                     {{ kpi.individual_kpi_july_score }}
                   </td>
-                  <td>
+                  <td {% if kpi.individual_kpi_august_score_approve == "Approved" %}class="bg-success" {% endif %}>
                     {{ kpi.individual_kpi_august_score }}
                   </td>
-                  <td>
+                  <td {% if kpi.individual_kpi_september_score_approve == "Approved" %}class="bg-success" {% endif %}>
                     {{ kpi.individual_kpi_september_score }}
                   </td>
-                  <td>
+                  <td {% if kpi.individual_kpi_october_score_approve == "Approved" %}class="bg-success" {% endif %}>
                     {{ kpi.individual_kpi_october_score }}
                   </td>
-                  <td>
+                  <td {% if kpi.individual_kpi_november_score_approve == "Approved" %}class="bg-success" {% endif %}>
                     {{ kpi.individual_kpi_november_score }}
                   </td>
-                  <td>
+                  <td {% if kpi.individual_kpi_december_score_approve == "Approved" %}class="bg-success" {% endif %}>
                     {{ kpi.individual_kpi_december_score }}
                   </td>
-                  <td>
+                  <td {% if kpi.individual_kpi_january_score_approve == "Approved" %}class="bg-success" {% endif %}>
                     {{ kpi.individual_kpi_january_score }}
                   </td>
-                  <td>
+                  <td {% if kpi.individual_kpi_february_score_approve == "Approved" %}class="bg-success" {% endif %}>
                     {{ kpi.individual_kpi_february_score }}
                   </td>
-                  <td>
+                  <td {% if kpi.individual_kpi_march_score_approve == "Approved" %}class="bg-success" {% endif %}>
                     {{ kpi.individual_kpi_march_score }}
                   </td>
                 </tr>
-              {% endif %}
             {% endfor %}
               </tbody>
               <tfoot>

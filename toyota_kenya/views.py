@@ -1202,6 +1202,17 @@ def send_email_pms_one_reciepient(subject, receiver, e_message):
     msg.send()
 
 
+@login_required
+def delete_individual_kpi(request, kpi_id):
+
+    kpi = individual_Kpi.objects.get(individual_kpi_id=kpi_id)
+    kpi.delete()
+
+    messages.success(request, 'KPI Deleted Successfully')
+
+    return HttpResponseRedirect(reverse("toyota_kenya:Individual_Kpi_Detail1"))
+
+
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class TrackKpiView(ListView):
@@ -1294,6 +1305,13 @@ class EditKpiView(UpdateView):
                                        context['edit_kpi'].count()
             context['now'] = datetime.date.today()
         return context
+
+    def get_initial(self):
+        initial = super(EditKpiView, self).get_initial()
+        initial['individual_kpi_status'] = 'Pending'
+
+        return initial
+
 
     def get_success_url(self):
         return '{}'.format(reverse('toyota_kenya:kpi-detail', kwargs={"pk": self.kwargs["pk"]}))
@@ -1668,8 +1686,8 @@ class StaffKpiListView(ListView):
                     required_count = pms.pms_individual_kpi_number
                     submitted_count = approved1_kpi.count() + approved2_kpi.count() + pending_kpi.count() + \
                                       edit_kpi.count() + rejected1_kpi.count()
-                    rejected_count = rejected2_kpi.count()
-                    pending_count = pending_kpi.count() + rejected1_kpi.count() + edit_kpi.count()
+                    rejected_count = rejected2_kpi.count() + rejected1_kpi.count()
+                    pending_count = pending_kpi.count()
 
                     team_members_kpi.append([member.staff_person.get_full_name(), member.staff_Pf_Number,
                                              approved2_kpi.count, approved1_kpi.count, pending_count, rejected_count,
@@ -1738,8 +1756,8 @@ class StaffKpiPendingListView(ListView):
                     required_count = pms.pms_individual_kpi_number
                     submitted_count = approved1_kpi.count() + approved2_kpi.count() + pending_kpi.count() + \
                                       edit_kpi.count() + rejected1_kpi.count()
-                    rejected_count = rejected2_kpi.count()
-                    pending_count = pending_kpi.count() + rejected1_kpi.count() + edit_kpi.count()
+                    rejected_count = rejected2_kpi.count() + rejected1_kpi.count()
+                    pending_count = pending_kpi.count()
 
                     team_members_kpi.append([member, member.staff_Pf_Number,
                                              approved2_kpi.count, approved1_kpi.count, pending_count, rejected_count,
@@ -1804,9 +1822,8 @@ class StaffKpiApproveView(DetailView):
             context['submitted_count'] = context['approved1_kpi'].count() + context['approved2_kpi'].count() + \
                                          context['pending_kpi'].count() + context['edit_kpi'].count() + \
                                          context['rejected1_kpi'].count()
-            context['rejected_count'] = context['rejected2_kpi'].count()
-            context['pending_count'] = context['pending_kpi'].count() + context['rejected1_kpi'].count() + \
-                                       context['edit_kpi'].count()
+            context['rejected_count'] = context['rejected2_kpi'].count() + context['rejected1_kpi'].count()
+            context['pending_count'] = context['pending_kpi'].count()
             context['now'] = datetime.date.today()
         return context
 
@@ -1841,7 +1858,7 @@ def approve_individual_kpi(request, pk, kpi_id):
                                                          "approval"
         send_email_pms('KPI Approved', User.objects.get(id=pk), request.user, message)
 
-    return HttpResponseRedirect(reverse("Staff_Approve_Kpi_Detail", kwargs={'pk': pk}))
+    return HttpResponseRedirect(reverse("toyota_kenya:Staff_Approve_Kpi_Detail", kwargs={'pk': pk}))
 
 
 @login_required
@@ -1854,24 +1871,23 @@ def reject_individual_kpi(request, pk, kpi_id):
 
     if user_is_bu_head is not None or user_is_md is not None:
         individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
-            individual_kpi_status=individual_Kpi.status[0][0],
-            individual_kpi_bu_leader_approval=request.user.id,
+            individual_kpi_status=individual_Kpi.status[3][0],
         )
 
         messages.success(request, 'KPI Rejected successful')
         message = "KPI <b>" + kpi.individual_kpi_title + "</b> has been Rejected<br> KPI status has changed to" \
-                                                         " <b>Pending</b> to allow you to edit the KPI approval"
+                                                         " <b>Rejected 1</b> to allow you to edit the KPI approval"
         send_email_pms('KPI Rejected', User.objects.get(id=pk), request.user, message)
     elif user_is_tl is not None:
         individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
-            individual_kpi_status=individual_Kpi.status[0][0], individual_kpi_team_leader_approval=request.user.id)
+            individual_kpi_status=individual_Kpi.status[3][0], individual_kpi_team_leader_approval=request.user.id)
 
         messages.success(request, 'KPI Rejected successful')
         message = "KPI <b>" + kpi.individual_kpi_title + "</b> has been Rejected<br> KPI status has changed to" \
-                                                         " <b>Pending</b> to allow you to edit the KPI approval"
+                                                         " <b>Rejected 1</b> to allow you to edit the KPI approval"
         send_email_pms('KPI Rejected', User.objects.get(id=pk), request.user, message)
 
-    return HttpResponseRedirect(reverse("Staff_Approve_Kpi_Detail", kwargs={'pk': pk}))
+    return HttpResponseRedirect(reverse("toyota_kenya:Staff_Approve_Kpi_Detail", kwargs={'pk': pk}))
 
 
 @login_required
@@ -1904,7 +1920,7 @@ def approve_individual_kpi_score(request, pk, kpi_id, month):
                                                          "approval"
         send_email_pms('KPI Approved', User.objects.get(id=pk), request.user, message)
 
-    return HttpResponseRedirect(reverse("Staff_Approve_Kpi_Detail", kwargs={'pk': pk}))
+    return HttpResponseRedirect(reverse("toyota_kenya:Staff_Approve_Kpi_Detail", kwargs={'pk': pk}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1948,8 +1964,8 @@ class StaffTrackKpiListView(ListView):
                     required_count = pms.pms_individual_kpi_number
                     submitted_count = approved1_kpi.count() + approved2_kpi.count() + pending_kpi.count() + \
                                       edit_kpi.count() + rejected1_kpi.count()
-                    rejected_count = rejected2_kpi.count()
-                    pending_count = pending_kpi.count() + rejected1_kpi.count() + edit_kpi.count()
+                    rejected_count = rejected2_kpi.count() + rejected1_kpi.count()
+                    pending_count = pending_kpi.count()
 
                     team_members_kpi.append([member, member.staff_Pf_Number,
                                              approved2_kpi.count, approved1_kpi.count, pending_count, rejected_count,
@@ -2013,8 +2029,7 @@ class StaffTrackKpiOneListView(ListView):
                                          context['pending_kpi'].count() + context['edit_kpi'].count() + \
                                          context['rejected1_kpi'].count()
             context['rejected_count'] = context['rejected2_kpi'].count()
-            context['pending_count'] = context['pending_kpi'].count() + context['rejected1_kpi'].count() + \
-                                       context['edit_kpi'].count()
+            context['pending_count'] = context['pending_kpi'].count()
 
         tl = context['user_is_tl']
         team_approved = 0
@@ -2037,8 +2052,8 @@ class StaffTrackKpiOneListView(ListView):
                 required_count = pms.pms_individual_kpi_number
                 submitted_count = approved1_kpi.count() + approved2_kpi.count() + pending_kpi.count() + \
                                   edit_kpi.count() + rejected1_kpi.count()
-                rejected_count = rejected2_kpi.count()
-                pending_count = pending_kpi.count() + rejected1_kpi.count() + edit_kpi.count()
+                rejected_count = rejected2_kpi.count() + rejected1_kpi.count()
+                pending_count = pending_kpi.count()
 
                 team_members_kpi.append([member.staff_person.get_full_name(), member.staff_Pf_Number,
                                          approved2_kpi.count, approved1_kpi.count, pending_count, rejected_count,
@@ -2214,8 +2229,7 @@ class StaffKpiTrackOneView(UpdateView):
                                          context['pending_kpi'].count() + context['edit_kpi'].count() + \
                                          context['rejected1_kpi'].count()
             context['rejected_count'] = context['rejected2_kpi'].count()
-            context['pending_count'] = context['pending_kpi'].count() + context['rejected1_kpi'].count() + \
-                                       context['edit_kpi'].count()
+            context['pending_count'] = context['pending_kpi'].count()
             context['now'] = datetime.date.today()
 
         tl = context['user_is_tl']
@@ -2239,8 +2253,8 @@ class StaffKpiTrackOneView(UpdateView):
                 required_count = pms.pms_individual_kpi_number
                 submitted_count = approved1_kpi.count() + approved2_kpi.count() + pending_kpi.count() + \
                                   edit_kpi.count() + rejected1_kpi.count()
-                rejected_count = rejected2_kpi.count()
-                pending_count = pending_kpi.count() + rejected1_kpi.count() + edit_kpi.count()
+                rejected_count = rejected2_kpi.count() + rejected1_kpi.count()
+                pending_count = pending_kpi.count()
 
                 team_members_kpi.append([member.staff_person.get_full_name(), member.staff_Pf_Number,
                                          approved2_kpi.count, approved1_kpi.count, pending_count, rejected_count,

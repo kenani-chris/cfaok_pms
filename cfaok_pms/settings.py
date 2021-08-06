@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'cfaok_pms.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-'''DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cfaok_pms2',
@@ -100,8 +100,8 @@ WSGI_APPLICATION = 'cfaok_pms.wsgi.application'
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
-}'''
-
+}
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -112,7 +112,7 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-
+'''
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
