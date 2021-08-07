@@ -23,7 +23,7 @@
 
 
           {% if user_is_bu_head is not None %}
-              <li class="list-group-item">BU Staff KPI</li>
+              <li class="list-group-item">BU Staff KPI
                 <a href="{% url 'toyota_kenya:Staff_BU_Approve_Kpi' %}" class="btn btn-primary btn-block"><b>Approve KPI{% if bu_pending > 0 %} <span class="badge badge-danger float-right">{{ bu_pending }}</span>{% endif %}</b></a>
                 <a href="{% url 'toyota_kenya:Staff_Track_Kpi' %}" class="btn btn-primary btn-block"><b>BU Staff KPI</b></a>
               </li>
