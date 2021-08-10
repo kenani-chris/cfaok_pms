@@ -419,6 +419,29 @@ class team(models.Model):
         return self.team_name
 
 
+# BSC
+class bsc(models.Model):
+    bsc_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique id for bsc")
+    bsc_pms = models.ForeignKey('pms', on_delete=models.RESTRICT)
+    bsc_name = models.CharField(max_length=50)
+    bsc_weight = models.FloatField()
+
+    def __str__(self):
+        return self.bsc_name
+
+
+# BSC KPIS
+class bsc_kpi(models.Model):
+    bsc_kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique id for bsc kpi")
+    bsc_kpi_name = models.CharField(max_length=100)
+    bsc_kpi_description = models.TextField()
+    bsc_kpi_weight = models.FloatField()
+    bsc_kpi_target = models.FloatField()
+
+    def __str__(self):
+        return self.bsc_kpi_name
+
+
 # KPIs ===============================================================================================================
 class individual_Kpi(models.Model):
     individual_kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
