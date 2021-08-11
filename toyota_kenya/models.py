@@ -34,6 +34,7 @@ class staff(models.Model):
         ('No', 'No'),
     )
     staff_md = models.CharField(max_length=10, choices=md, blank=True, default='No', help_text='If user is MD')
+    staff_bsc = models.CharField(max_length=10, choices=md, blank=True, default='No', help_text='If user is uses bsc')
 
     grade = {
         ('T1', 'T1'),
@@ -422,24 +423,11 @@ class team(models.Model):
 # BSC
 class bsc(models.Model):
     bsc_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique id for bsc")
-    bsc_pms = models.ForeignKey('pms', on_delete=models.RESTRICT)
     bsc_name = models.CharField(max_length=50)
     bsc_weight = models.FloatField()
 
     def __str__(self):
         return self.bsc_name
-
-
-# BSC KPIS
-class bsc_kpi(models.Model):
-    bsc_kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique id for bsc kpi")
-    bsc_kpi_name = models.CharField(max_length=100)
-    bsc_kpi_description = models.TextField()
-    bsc_kpi_weight = models.FloatField()
-    bsc_kpi_target = models.FloatField()
-
-    def __str__(self):
-        return self.bsc_kpi_name
 
 
 # KPIs ===============================================================================================================
@@ -550,6 +538,7 @@ class individual_Kpi(models.Model):
 class bu_kpi(models.Model):
     bu_kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique Identifier for BU KPI")
     bu_kpi_pms = models.ForeignKey('pms', on_delete=models.RESTRICT)
+    bu_kpi_bsc = models.ForeignKey('bsc', on_delete=models.RESTRICT, default=None)
     bu_kpi_bu = models.ForeignKey('bu', on_delete=models.RESTRICT, related_name="toyota_kenya_Bu_identity")
     # Approvals
     bu_kpi_user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="toyota_kenya_Bu_submitting",
@@ -644,12 +633,12 @@ class company_kpi(models.Model):
     company_kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                                       help_text="Unique Identifier for company KPI")
     company_kpi_pms = models.ForeignKey('pms', on_delete=models.RESTRICT)
+    company_kpi_bsc = models.ForeignKey('bsc', on_delete=models.RESTRICT, default=None)
     company_kpi_user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="toyota_kenya_person_submitting",
                                          null=True,
                                          blank=True)
     company_kpi_title = models.CharField(max_length=200)
     company_kpi_details = models.TextField()
-    company_kpi_criteria = models.CharField(max_length=100, null=True, blank=True)
     company_kpi_target = models.FloatField()
     company_kpi_weight = models.FloatField(null=True, blank=True)
     company_kpi_units = models.CharField(max_length=5, null=True, blank=True)

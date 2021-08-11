@@ -947,7 +947,7 @@ class HomeView(TemplateView):
             context['checkin'] = checkin_score(context['pms'], self.request.user)
             context['matrix'] = get_matrix(context['pms'], self.request.user)
 
-            if context['user_is_md'] == 'Yes':
+            """if context['user_is_md'] == 'Yes':
                 context['kpi'] = company_kpi_score(context['pms'])
                 context['company_kpi'] = company_kpi_score(context['pms'])
             elif context['user_is_bu_head']:
@@ -962,7 +962,7 @@ class HomeView(TemplateView):
                 else:
                     context['bu_kpi'] = [0, [], [], []]
 
-            context['assessment'] = assessment_score(context['pms'], self.request.user)
+            context['assessment'] = assessment_score(context['pms'], self.request.user)"""
 
         return context
 
@@ -2922,9 +2922,13 @@ class BuKpi(TemplateView):
         else:
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
-
-            kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_head_bu, bu_kpi_pms=active_pms)
-            context['my_kpi'] = kpi
+            kpis = []
+            for pillar in bsc.objects.all():
+                kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_head_bu, bu_kpi_pms=active_pms,
+                                            bu_kpi_bsc=pillar.bsc_id)
+                kpis.append([pillar, kpi])
+            kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_head_bu, bu_kpi_pms=active_pms,)
+            context['my_kpi'] = kpis
             context['approved'] = kpi.filter(bu_kpi_status='Approved')
             context['pending'] = kpi.filter(bu_kpi_status='Pending')
             context['edit_kpi'] = kpi.filter(bu_kpi_status='Edit')
@@ -2943,7 +2947,7 @@ class BuKpi(TemplateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class SubmitBuKpiView(CreateView):
     form_class = SubmitBuKpiForm
-    template_name = 'toyota_kenya/BU_Kpi/submitkpi.html'
+    template_name = 'toyota_kenya/Bu_Kpi/submitkpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -3019,7 +3023,7 @@ class SubmitBuKpiView(CreateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class TrackBuKpiView(ListView):
-    template_name = 'toyota_kenya/BU_Kpi/trackkpi.html'
+    template_name = 'toyota_kenya/Bu_Kpi/trackkpi.html'
 
     def get_queryset(self):
         staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
@@ -3072,7 +3076,7 @@ class TrackBuKpiView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class TrackBuKpiDetailView(DetailView):
     model = bu_kpi
-    template_name = 'toyota_kenya/BU_Kpi/one_individual_kpi.html'
+    template_name = 'toyota_kenya/Bu_Kpi/one_individual_kpi.html'
 
     def get_queryset(self):
         staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
@@ -3126,7 +3130,7 @@ class TrackBuKpiDetailView(DetailView):
 class TrackBuKpiEditlView(UpdateView):
     model = bu_kpi
     form_class = SubmitBuKpiForm
-    template_name = 'toyota_kenya/BU_Kpi/one_individual_kpi_edit.html'
+    template_name = 'toyota_kenya/Bu_Kpi/one_individual_kpi_edit.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -3181,7 +3185,7 @@ class TrackBuKpiEditlView(UpdateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BuKpiResultListView(ListView):
-    template_name = 'toyota_kenya/BU_Kpi/kpiresults.html'
+    template_name = 'toyota_kenya/Bu_Kpi/kpiresults.html'
 
     def get_queryset(self):
         staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
@@ -3235,7 +3239,7 @@ class BuKpiResultListView(ListView):
 class BuKpiResultUpdateView(UpdateView):
     model = bu_kpi
     form_class = BuKpiResultsForm
-    template_name = 'toyota_kenya/BU_Kpi/one_individual_kpi_update.html'
+    template_name = 'toyota_kenya/Bu_Kpi/one_individual_kpi_update.html'
     active_pms = pms
 
     def get_context_data(self, **kwargs):
@@ -3526,9 +3530,12 @@ class CompanyKpi(TemplateView):
         else:
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
-
+            kpis = []
+            for pillars in bsc.objects.all():
+                kpi = company_kpi.objects.filter(company_kpi_pms=active_pms, company_kpi_bsc=pillars.bsc_id)
+                kpis.append([pillars, kpi])
             kpi = company_kpi.objects.filter(company_kpi_pms=active_pms)
-            context['my_kpi'] = kpi
+            context['my_kpi'] = kpis
             context['approved'] = kpi.filter(company_kpi_status='Approved')
             context['pending'] = kpi.filter(company_kpi_status='Pending')
             context['edit_kpi'] = kpi.filter(company_kpi_status='Edit')
@@ -3961,7 +3968,7 @@ class CompanyKpiResultUpdateView(UpdateView):
 class BUsKpiListView(ListView):
     all_bu = bu.objects.all()
     model = individual_Kpi
-    template_name = 'toyota_kenya/BUs_Kpi/staffkpi.html'
+    template_name = 'toyota_kenya/Bus_Kpi/staffkpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -3996,8 +4003,9 @@ class BUsKpiListView(ListView):
                     submitted_count = approved_kpi.count() + pending_kpi.count() + edit_kpi.count()
                     rejected_count = rejected_kpi.count()
                     pending_count = pending_kpi.count() + edit_kpi.count()
+                    bu_leader = staff.objects.filter(staff_head_bu=bu)
 
-                    bus_kpi.append([bu.bu_name, approved_kpi.count, pending_count, rejected_count, submitted_count])
+                    bus_kpi.append([bu.bu_name, approved_kpi.count, pending_count, rejected_count, submitted_count, bu_leader])
 
                     if approved_kpi.count() > 0:
                         team_approved = team_approved + 1
@@ -4024,7 +4032,7 @@ class BUsKpiListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsKpiPendingListView(ListView):
     model = bu_kpi
-    template_name = 'toyota_kenya/BUs_Kpi/approvekpi.html'
+    template_name = 'toyota_kenya/Bus_Kpi/approvekpi.html'
     all_bu = bu.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -4060,8 +4068,9 @@ class BUsKpiPendingListView(ListView):
                     submitted_count = approved_kpi.count() + pending_kpi.count() + edit_kpi.count()
                     rejected_count = rejected_kpi.count()
                     pending_count = pending_kpi.count() + edit_kpi.count()
+                    bu_leader = staff.objects.filter(staff_head_bu=bu)
 
-                    bus_kpi.append([bu, approved_kpi.count, pending_count, rejected_count, submitted_count])
+                    bus_kpi.append([bu, approved_kpi.count, pending_count, rejected_count, submitted_count, bu_leader])
 
                     if approved_kpi.count() > 0:
                         team_approved = team_approved + 1
@@ -4088,7 +4097,7 @@ class BUsKpiPendingListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsKpiApproveView(DetailView):
     model = bu
-    template_name = 'toyota_kenya/BUs_Kpi/one_individual_approve_kpi.html'
+    template_name = 'toyota_kenya/Bus_Kpi/one_individual_approve_kpi.html'
     active_pms = pms
     context_object_name = 'bu'
     all_bu = bu.objects.all()
@@ -4170,7 +4179,7 @@ class BUsKpiApproveView(DetailView):
 @login_required
 def approve_bu_kpi(request, pk, kpi_id):
     bu_is = get_object_or_404(bu, bu_id=pk)
-    bu_heads = staff.objects.filter(staff_head_bu=bu_is)
+    bu_heads = staff.objects.filter(staff_head_bu=pk)
     kpi = get_object_or_404(bu_kpi, bu_kpi_id=kpi_id)
     bu_kpi.objects.filter(bu_kpi_id=kpi_id).update(bu_kpi_status=bu_kpi.status[1][0])
     mds = staff.objects.filter(staff_md='Yes')
@@ -4181,31 +4190,31 @@ def approve_bu_kpi(request, pk, kpi_id):
             send_email_pms('KPI Approved', User.objects.get(id=buh.id), User.objects.get(id=md.id), message)
 
     messages.success(request, 'KPI Approved successful')
-    return HttpResponseRedirect(reverse("BUs_Approve_Kpi_Detail", kwargs={'pk': pk}))
+    return HttpResponseRedirect(reverse("toyota_kenya:BUs_Approve_Kpi_Detail", kwargs={'pk': pk}))
 
 
 @login_required
 def reject_bu_kpi(request, pk, kpi_id):
     bu_is = get_object_or_404(bu, bu_id=pk)
-    bu_heads = staff.objects.filter(staff_head_bu=bu_is)
+    bu_heads = staff.objects.filter(staff_head_bu=pk)
     kpi = get_object_or_404(bu_kpi, bu_kpi_id=kpi_id)
     bu_kpi.objects.filter(bu_kpi_id=kpi_id).update(bu_kpi_status=bu_kpi.status[2][0])
     mds = staff.objects.filter(staff_md='Yes')
 
-    message = "KPI <b>" + kpi.bu_kpi_title + "</b> has been Rejected"
+    message = "KPI <b>" + kpi.bu_kpi_title + "</b> has been Rejected and status has dropped to rejected for your editting"
     for md in mds:
         for buh in bu_heads:
-            send_email_pms('KPI Approved', User.objects.get(id=buh.id), User.objects.get(id=md.id), message)
+            send_email_pms('KPI Rejected', User.objects.get(id=buh.id), User.objects.get(id=md.id), message)
 
-    messages.success(request, 'KPI Approved successful')
-    return HttpResponseRedirect(reverse("BUs_Approve_Kpi_Detail", kwargs={'pk': pk}))
+    messages.success(request, 'KPI Rejected successful')
+    return HttpResponseRedirect(reverse("toyota_kenya:BUs_Approve_Kpi_Detail", kwargs={'pk': pk}))
 
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsTrackKpiListView(ListView):
     model = bu_kpi
-    template_name = 'toyota_kenya/BUs_Kpi/trackkpi.html'
+    template_name = 'toyota_kenya/Bus_Kpi/trackkpi.html'
     all_bu = bu.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -4241,8 +4250,9 @@ class BUsTrackKpiListView(ListView):
                     submitted_count = approved_kpi.count() + pending_kpi.count() + edit_kpi.count()
                     rejected_count = rejected_kpi.count()
                     pending_count = pending_kpi.count() + edit_kpi.count()
+                    bu_leader = staff.objects.filter(staff_head_bu=bu)
 
-                    bus_kpi.append([bu, approved_kpi.count, pending_count, rejected_count, submitted_count])
+                    bus_kpi.append([bu, approved_kpi.count, pending_count, rejected_count, submitted_count, bu_leader])
 
                     if approved_kpi.count() > 0:
                         team_approved = team_approved + 1
@@ -4269,7 +4279,7 @@ class BUsTrackKpiListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsTrackKpiOneListView(DetailView):
     model = bu
-    template_name = 'toyota_kenya/BUs_Kpi/trackkpi_staff.html'
+    template_name = 'toyota_kenya/Bus_Kpi/trackkpi_staff.html'
 
     all_bu = bu.objects.all()
 
@@ -4307,6 +4317,7 @@ class BUsTrackKpiOneListView(DetailView):
                     rejected_count = rejected_kpi.count()
                     pending_count = pending_kpi.count() + edit_kpi.count()
 
+
                     bus_kpi.append([bu.bu_name, approved_kpi.count, pending_count, rejected_count, submitted_count])
 
                     if approved_kpi.count() > 0:
@@ -4330,15 +4341,18 @@ class BUsTrackKpiOneListView(DetailView):
 
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
-
-            kpi = bu_kpi.objects.filter(bu_kpi_bu=self.kwargs['pk'], bu_kpi_pms=active_pms)
-            context['my_kpi'] = kpi
+            kpis = []
+            for pillars in bsc.objects.all():
+                kpi = bu_kpi.objects.filter(bu_kpi_bu=self.kwargs['pk'], bu_kpi_pms=active_pms, bu_kpi_bsc=pillars.bsc_id)
+                kpis.append([pillars, kpi])
+            context['my_kpi'] = kpis
+            kpi = bu_kpi.objects.filter(bu_kpi_bu=self.kwargs['pk'], bu_kpi_pms=active_pms,)
             context['approved_kpi'] = kpi.filter(bu_kpi_status='Approved')
             context['pending_kpi'] = kpi.filter(bu_kpi_status='Pending')
             context['edit_kpi'] = kpi.filter(bu_kpi_status='Edit')
             context['rejected_kpi'] = kpi.filter(bu_kpi_status='Rejected')
 
-            context['required_count'] = pms.pms_individual_kpi_number
+            context['required_count'] = pms.pms_bu_kpi_number
             context['submitted_count'] = context['approved_kpi'].count() + context['pending_kpi'].count() + \
                                          context['edit_kpi'].count()
             context['rejected_count'] = context['rejected_kpi'].count()
@@ -4351,7 +4365,7 @@ class BUsTrackKpiOneListView(DetailView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsKpiTrackOneView(UpdateView):
     form_class = BuKpiResultsForm
-    template_name = 'toyota_kenya/BUs_Kpi/trackkpi_staff_one.html'
+    template_name = 'toyota_kenya/Bus_Kpi/trackkpi_staff_one.html'
     active_pms = pms
     context_object_name = 'staff'
     pk_url_kwarg = 'kpi_id'

@@ -10,9 +10,10 @@
       <!-- /.card-header -->
       <div class="card-body">
         {% if approved %}
-            <table id="exampl1" class="table table-bordered table-striped">
+            <table id="example1" class="table table-bordered table-striped">
               <thead>
               <tr>
+                <th>Pillar</th>
                 <th>KPI</th>
                 <th>Apr</th>
                 <th>May</th>
@@ -31,6 +32,9 @@
               <tbody>
             {% for kpi in approved %}
                 <tr>
+                  <td>
+                      {{ kpi.bu_kpi_bsc }}
+                  </td>
                   <td>
                     <a href="{% url 'toyota_kenya:BU_Kpi_Result_Update' kpi.bu_kpi_id %}"><span class="fa fa-clipboard-check"></span> {{ kpi.bu_kpi_title }}</a>
                   </td>
