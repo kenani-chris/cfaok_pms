@@ -43,8 +43,9 @@ def reset_all_password(request):
         token = default_token_generator.make_token(user)
 
         link = format_html(str('<a href="https://ck-pms.com/accounts/reset/' + encoded_uid + '/' + token + '">PMS Link</a>'))
+        pms_link = format_html(str('<a href="https://ck-pms.com/'))
 
-        msg = format_html('We are glad to have you on board<br>Your username: <b>' + user.username + '</b><br><br>Click on this ' + link + ' to reset your password<br>')
+        msg = format_html('We are glad to have you onboard<br>' + pms_link + '<br>Your username: <b>' + user.username + '</b><br><br>Click on this ' + link + ' to reset your password<br>')
 
         message = msg
         if user.is_active and user.email:
