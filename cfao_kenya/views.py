@@ -36,21 +36,22 @@ def reset_all_password(request):
     for staff_u in staffs:
         user = get_object_or_404(User, id=staff_u.staff_person.id)
         # 'password_reset_confirm' ''' + str(user.id) + ''' ''' + default_token_generator.make_token(user) + ''' %
-        # message = format_html('Click On the following <a href="{}">HERE</a>to reset your PMS password the following', reverse('tydia:password_reset_confirm', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.id)), 'token': default_token_generator.make_token(user)}))
+        # message = format_html('Click On the following <a href="{}">HERE</a>to reset your PMS password the following', reverse('toyota_kenya:password_reset_confirm', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.id)), 'token': default_token_generator.make_token(user)}))
 
 
         encoded_uid = urlsafe_base64_encode(force_bytes(user.id))
         token = default_token_generator.make_token(user)
 
         link = format_html(str('<a href="https://ck-pms.com/accounts/reset/' + encoded_uid + '/' + token + '">PMS Link</a>'))
+        pms_link = format_html(str('<a href="https://ck-pms.com/">Online PMS</a>'))
 
-        msg = format_html('We are glad to have you on board<br>Your username: <b>' + user.username + '</b><br><br>Click on this ' + link + ' to reset your password<br>')
+        msg = format_html('We are glad to have you onboard ' + pms_link + '<br><br>Your username: <b>' + user.username + '</b><br>Click on this ' + link + ' to reset your password<br>')
 
         message = msg
-        if user.is_active and user.email:
+        if user.is_active and user.email and user.id == 1:
             send_email_pms_one_reciepient('Welcome to PMS FY 2021-2022', user, message)
 
-    return HttpResponseRedirect(reverse('tydia:index'))
+    return HttpResponseRedirect(reverse('cfao_kenya:index'))
 
 
 def checkin_score(pms, staff):
@@ -933,20 +934,22 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if not pms.objects.filter(pms_status='Active'):
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
             context['pms'] = None
         else:
-            context['pms'] = pms.objects.get(pms_status='Active')
-            staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
-            context['user_is_bu_head'] = staff_person.staff_head_bu
-            context['user_is_md'] = staff_person.staff_md
-            context['user_is_tl'] = staff_person.staff_head_team
-            context['user_team'] = staff_person.staff_team
-            context['user_bu'] = staff_person.staff_bu
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
             context['checkin'] = checkin_score(context['pms'], self.request.user)
             context['matrix'] = get_matrix(context['pms'], self.request.user)
 
-            if context['user_is_md'] == 'Yes':
+            '''if context['user_is_md'] == 'Yes':
                 context['kpi'] = company_kpi_score(context['pms'])
                 context['company_kpi'] = company_kpi_score(context['pms'])
             elif context['user_is_bu_head']:
@@ -961,7 +964,7 @@ class HomeView(TemplateView):
                 else:
                     context['bu_kpi'] = [0, [], [], []]
 
-            context['assessment'] = assessment_score(context['pms'], self.request.user)
+            context['assessment'] = assessment_score(context['pms'], self.request.user)'''
 
         return context
 
@@ -1164,7 +1167,6 @@ def send_email_pms_one_reciepient(subject, receiver, e_message):
                 <br>
                 <br>
                 ''' + e_message + '''
-                Kind regards,
                 <br>
                 <br>
                 <hr>
@@ -2392,7 +2394,7 @@ def approve_individual_kpi_score_dashboard(request, pk, kpi_id, month):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BuKpiDashboard(TemplateView):
-    template_name = 'cfao_kenya/BU_Kpi/budashboard.html'
+    template_name = 'cfao_kenya/Bu_Kpi/budashboard.html'
     model = bu_kpi
 
     def get_context_data(self, **kwargs):
@@ -2410,24 +2412,58 @@ class BuKpiDashboard(TemplateView):
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
 
-            kpi = individual_Kpi.objects.filter(individual_kpi_user=self.request.user,
-                                                individual_kpi_pms=active_pms)
+            kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_bu, bu_kpi_pms=active_pms)
             context['my_kpi'] = kpi
-            context['approved1_kpi'] = kpi.filter(individual_kpi_status='Approved 1')
-            context['approved2_kpi'] = kpi.filter(individual_kpi_status='Approved 2')
-            context['pending_kpi'] = kpi.filter(individual_kpi_status='Pending')
-            context['edit_kpi'] = kpi.filter(individual_kpi_status='Edit')
-            context['rejected1_kpi'] = kpi.filter(individual_kpi_status='Rejected 1')
-            context['rejected2_kpi'] = kpi.filter(individual_kpi_status='Rejected 2')
+            context['approved'] = kpi.filter(bu_kpi_status='Approved')
+            context['pending'] = kpi.filter(bu_kpi_status='Pending')
+            context['edit_kpi'] = kpi.filter(bu_kpi_status='Edit')
+            context['rejected'] = kpi.filter(bu_kpi_status='Rejected')
 
             context['required_count'] = pms.pms_individual_kpi_number
-            context['submitted_count'] = context['approved1_kpi'].count() + context['approved2_kpi'].count() + \
-                                         context['pending_kpi'].count() + context['edit_kpi'].count() + \
-                                         context['rejected1_kpi'].count()
-            context['rejected_count'] = context['rejected2_kpi'].count()
-            context['pending_count'] = context['pending_kpi'].count() + context['rejected1_kpi'].count() + \
-                                       context['edit_kpi'].count()
+            context['submitted_count'] = context['approved'].count() + context['pending'].count() + \
+                                         context['edit_kpi'].count()
+            context['rejected_count'] = context['rejected'].count()
+            context['pending_count'] = context['pending'].count() + context['edit_kpi'].count()
+            context['now'] = datetime.date.today()
         return context
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class BuDashboardKpiDetailView(DetailView):
+    model = bu_kpi
+    template_name = 'cfao_kenya/Bu_Kpi/bu_one_individual_kpi.html'
+    pk_url_kwarg = 'pk'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_bu, bu_kpi_pms=active_pms)
+            context['my_kpi'] = kpi
+            context['approved'] = kpi.filter(bu_kpi_status='Approved')
+            context['pending'] = kpi.filter(bu_kpi_status='Pending')
+            context['edit_kpi'] = kpi.filter(bu_kpi_status='Edit')
+            context['rejected'] = kpi.filter(bu_kpi_status='Rejected')
+
+            context['required_count'] = pms.pms_individual_kpi_number
+            context['submitted_count'] = context['approved'].count() + context['pending'].count() + \
+                                         context['edit_kpi'].count()
+            context['rejected_count'] = context['rejected'].count()
+            context['pending_count'] = context['pending'].count() + context['edit_kpi'].count()
+            context['now'] = datetime.date.today()
+        return context
+
 
 
 @method_decorator(login_required, name='dispatch')
@@ -2995,7 +3031,7 @@ class BuKpiResultUpdateView(UpdateView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
-class CoKpiDashboard(TemplateView):
+class ComapanyKpiDashboard(TemplateView):
     template_name = 'cfao_kenya/Company_Kpi/companydashboard.html'
     model = bu_kpi
 
@@ -3014,23 +3050,57 @@ class CoKpiDashboard(TemplateView):
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
 
-            kpi = individual_Kpi.objects.filter(individual_kpi_user=self.request.user,
-                                                individual_kpi_pms=active_pms)
+            kpi = company_kpi.objects.filter(company_kpi_pms=active_pms)
             context['my_kpi'] = kpi
-            context['approved1_kpi'] = kpi.filter(individual_kpi_status='Approved 1')
-            context['approved2_kpi'] = kpi.filter(individual_kpi_status='Approved 2')
-            context['pending_kpi'] = kpi.filter(individual_kpi_status='Pending')
-            context['edit_kpi'] = kpi.filter(individual_kpi_status='Edit')
-            context['rejected1_kpi'] = kpi.filter(individual_kpi_status='Rejected 1')
-            context['rejected2_kpi'] = kpi.filter(individual_kpi_status='Rejected 2')
+            context['approved'] = kpi.filter(company_kpi_status='Approved')
+            context['pending'] = kpi.filter(company_kpi_status='Pending')
+            context['edit_kpi'] = kpi.filter(company_kpi_status='Edit')
+            context['rejected'] = kpi.filter(company_kpi_status='Rejected')
 
             context['required_count'] = pms.pms_individual_kpi_number
-            context['submitted_count'] = context['approved1_kpi'].count() + context['approved2_kpi'].count() + \
-                                         context['pending_kpi'].count() + context['edit_kpi'].count() + \
-                                         context['rejected1_kpi'].count()
-            context['rejected_count'] = context['rejected2_kpi'].count()
-            context['pending_count'] = context['pending_kpi'].count() + context['rejected1_kpi'].count() + \
-                                       context['edit_kpi'].count()
+            context['submitted_count'] = context['approved'].count() + context['pending'].count() + \
+                                         context['edit_kpi'].count()
+            context['rejected_count'] = context['rejected'].count()
+            context['pending_count'] = context['pending'].count() + context['edit_kpi'].count()
+            context['now'] = datetime.date.today()
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class CompanyDashboardKpiDetailView(DetailView):
+    model = company_kpi
+    template_name = 'cfao_kenya/Company_Kpi/company_one_individual_kpi.html'
+    pk_url_kwarg = 'pk'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            kpi = company_kpi.objects.filter(company_kpi_pms=active_pms)
+            context['my_kpi'] = kpi
+            context['approved'] = kpi.filter(company_kpi_status='Approved')
+            context['pending'] = kpi.filter(company_kpi_status='Pending')
+            context['edit_kpi'] = kpi.filter(company_kpi_status='Edit')
+            context['rejected'] = kpi.filter(company_kpi_status='Rejected')
+
+            context['required_count'] = pms.pms_individual_kpi_number
+            context['submitted_count'] = context['approved'].count() + context['pending'].count() + \
+                                         context['edit_kpi'].count()
+            context['rejected_count'] = context['rejected'].count()
+            context['pending_count'] = context['pending'].count() + context['edit_kpi'].count()
+            context['now'] = datetime.date.today()
         return context
 
 

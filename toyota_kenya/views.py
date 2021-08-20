@@ -2924,10 +2924,16 @@ class BuKpi(TemplateView):
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
             kpis = []
-            for pillar in bsc.objects.all():
+            for pillar in bsc.objects.filter(bsc_pms=active_pms):
+                bu_pillar_weight = bu_bsc.objects.filter(bu_bsc_pillar=pillar, bu_bsc_bu=staff_person.staff_head_bu)
+                if bu_pillar_weight:
+                    bu_pillar_weight = bu_pillar_weight.first()
+                    bu_pillar_weight = bu_pillar_weight.bsc_pillar_weight
+                else:
+                    bu_pillar_weight = pillar.bsc_weight
                 kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_head_bu, bu_kpi_pms=active_pms,
                                             bu_kpi_bsc=pillar.bsc_id)
-                kpis.append([pillar, kpi])
+                kpis.append([pillar, kpi, bu_pillar_weight])
             kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_head_bu, bu_kpi_pms=active_pms,)
             context['my_kpi'] = kpis
             context['approved'] = kpi.filter(bu_kpi_status='Approved')

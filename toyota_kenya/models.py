@@ -423,11 +423,22 @@ class team(models.Model):
 # BSC
 class bsc(models.Model):
     bsc_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique id for bsc")
+    bsc_pms = models.ForeignKey('pms', on_delete=models.RESTRICT, null=True)
     bsc_name = models.CharField(max_length=50)
     bsc_weight = models.FloatField()
 
     def __str__(self):
         return self.bsc_name
+
+
+class bu_bsc(models.Model):
+    bu_bsc_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    bu_bsc_pillar = models.ForeignKey('bsc', on_delete=models.RESTRICT)
+    bu_bsc_bu = models.ForeignKey('bu', on_delete=models.RESTRICT)
+    bsc_pillar_weight = models.FloatField()
+
+    def __str__(self):
+        return str(self.bu_bsc_bu) + " - " + str(self.bu_bsc_pillar)
 
 
 # KPIs ===============================================================================================================
@@ -624,6 +635,12 @@ class bu_kpi(models.Model):
         ('YTD', 'YTD'),
     )
     bu_kpi_type = models.CharField(max_length=10, choices=type, blank=True, default='cumulative', )
+
+    bu_kpi_s_score = models.FloatField(null=True, blank=True)
+    bu_kpi_a_score = models.FloatField(null=True, blank=True)
+    bu_kpi_b_score = models.FloatField(null=True, blank=True)
+    bu_kpi_c_score = models.FloatField(null=True, blank=True)
+    bu_kpi_d_score = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.bu_kpi_title
