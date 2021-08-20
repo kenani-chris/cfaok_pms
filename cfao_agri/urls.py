@@ -36,6 +36,7 @@ urlpatterns = [
     
     # BU Kpi Links
     path('BU/', BuKpiDashboard.as_view(), name='BU_Dashboard'),
+    path('BU/<uuid:pk>', BuDashboardKpiDetailView.as_view(), name='BU_dashboard-detail'),
     path('BU-Kpi/', BuKpi.as_view(), name='BU_Kpi_Dashboard'),
     path('BU-Kpi/Submit-Kpi/', SubmitBuKpiView.as_view(), name='BU_Kpi_Submit'),
     path('BU-Kpi/Track-Kpi/', TrackBuKpiView.as_view(), name='BU_Kpi_Detail1'),
@@ -46,7 +47,8 @@ urlpatterns = [
 
 
     # Company Kpi Links
-    # path('Company/', views.company, name='Company_Dashboard'),
+    path('Company/', ComapanyKpiDashboard.as_view(), name='Company_Dashboard'),
+    path('Company-Kpi/<uuid:pk>', CompanyDashboardKpiDetailView.as_view(), name='Company_Dashboard_Detail'),
     path('Company-Kpi/', CompanyKpi.as_view(), name='Company_Kpi_Dashboard'),
     path('Company-Kpi/Submit-Kpi/', SubmitCompanyKpiView.as_view(), name='Company_Kpi_Submit'),
     path('Company-Kpi/Edit-Kpi/', EditCompanyKpiView.as_view(), name='Company_Kpi_Edit'),

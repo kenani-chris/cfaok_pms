@@ -2469,7 +2469,7 @@ class BuDashboardKpiDetailView(DetailView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BuKpi(TemplateView):
-    template_name = 'cfao_kenya/BU_Kpi/bukpi.html'
+    template_name = 'cfao_kenya/Bu_Kpi/bukpi.html'
     model = bu_kpi
 
     def get_context_data(self, **kwargs):
@@ -2507,7 +2507,7 @@ class BuKpi(TemplateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class SubmitBuKpiView(CreateView):
     form_class = SubmitBuKpiForm
-    template_name = 'cfao_kenya/BU_Kpi/submitkpi.html'
+    template_name = 'cfao_kenya/Bu_Kpi/submitkpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -2583,7 +2583,7 @@ class SubmitBuKpiView(CreateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class TrackBuKpiView(ListView):
-    template_name = 'cfao_kenya/BU_Kpi/trackkpi.html'
+    template_name = 'cfao_kenya/Bu_Kpi/trackkpi.html'
 
     def get_queryset(self):
         staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
@@ -2636,7 +2636,7 @@ class TrackBuKpiView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class TrackBuKpiDetailView(DetailView):
     model = bu_kpi
-    template_name = 'cfao_kenya/BU_Kpi/one_individual_kpi.html'
+    template_name = 'cfao_kenya/Bu_Kpi/one_individual_kpi.html'
 
     def get_queryset(self):
         staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
@@ -2690,7 +2690,7 @@ class TrackBuKpiDetailView(DetailView):
 class TrackBuKpiEditlView(UpdateView):
     model = bu_kpi
     form_class = SubmitBuKpiForm
-    template_name = 'cfao_kenya/BU_Kpi/one_individual_kpi_edit.html'
+    template_name = 'cfao_kenya/Bu_Kpi/one_individual_kpi_edit.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -2745,7 +2745,7 @@ class TrackBuKpiEditlView(UpdateView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BuKpiResultListView(ListView):
-    template_name = 'cfao_kenya/BU_Kpi/kpiresults.html'
+    template_name = 'cfao_kenya/Bu_Kpi/kpiresults.html'
 
     def get_queryset(self):
         staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
@@ -2799,7 +2799,7 @@ class BuKpiResultListView(ListView):
 class BuKpiResultUpdateView(UpdateView):
     model = bu_kpi
     form_class = BuKpiResultsForm
-    template_name = 'cfao_kenya/BU_Kpi/one_individual_kpi_update.html'
+    template_name = 'cfao_kenya/Bu_Kpi/one_individual_kpi_update.html'
     active_pms = pms
 
     def get_context_data(self, **kwargs):
