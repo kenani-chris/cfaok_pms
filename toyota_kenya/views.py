@@ -2212,7 +2212,7 @@ class BUStaffKpiApproveView(DetailView):
 
 @login_required
 def approve_individual_kpi(request, pk, kpi_id):
-    staff_person = get_object_or_404(staff, id=request.user.id)
+    staff_person = get_object_or_404(staff, staff_person=request.user.id)
     user_is_bu_head = staff_person.staff_head_bu
     user_is_md = staff_person.staff_md
     user_is_tl = staff_person.staff_head_team
@@ -2247,7 +2247,7 @@ def approve_individual_kpi(request, pk, kpi_id):
 
 @login_required
 def reject_individual_kpi(request, pk, kpi_id):
-    staff_person = get_object_or_404(staff, id=request.user.id)
+    staff_person = get_object_or_404(staff, staff_person=request.user.id)
     user_is_bu_head = staff_person.staff_head_bu
     user_is_md = staff_person.staff_md
     user_is_tl = staff_person.staff_head_team
@@ -2278,7 +2278,7 @@ def reject_individual_kpi(request, pk, kpi_id):
 
 @login_required
 def approve_individual_kpi_score(request, pk, kpi_id, month):
-    staff_person = get_object_or_404(staff, id=request.user.id)
+    staff_person = get_object_or_404(staff, staff_person=request.user.id)
     user_is_bu_head = staff_person.staff_head_bu
     user_is_md = staff_person.staff_md
     user_is_tl = staff_person.staff_head_team
