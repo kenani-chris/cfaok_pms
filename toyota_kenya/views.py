@@ -4784,7 +4784,7 @@ class SubmitCheckIn(CreateView):
             if team_leader:
                 e_message = 'you have one CheckIn from ' + self.request.user.get_full_name() + ' that requires your approval'
                 for tl in team_leader:
-                    send_email_pms('KPI Approval', User.objects.get(pk=tl.id), self.request.user, e_message)
+                    send_email_pms('KPI Approval', User.objects.get(pk=tl.staff_person.id), self.request.user, e_message)
 
             else:
                 team_leader = None

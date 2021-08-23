@@ -1087,13 +1087,13 @@ class SubmitKpiView(CreateView):
 
     def form_valid(self, form):
         super(SubmitKpiView, self).form_valid(form)
-        user_team = get_object_or_404(staff, pk=self.request.user.id)
+        user_team = get_object_or_404(staff, staff_person=self.request.user.id)
         user_team = user_team.staff_team
         e_message = ""
         if user_team is not None:
             team_leader = staff.objects.filter(staff_head_team=user_team)
             if team_leader:
-                team_leader = team_leader.get()
+                team_leader = get_object_or_404(User, id=team_leader.first().staff_person.id)
                 e_message = 'you have one KPI from ' + self.request.user.get_full_name() + ' that requires your approval'
             else:
                 team_leader = None
@@ -4367,7 +4367,7 @@ class SubmitCheckIn(CreateView):
             if team_leader:
                 e_message = 'you have one CheckIn from ' + self.request.user.get_full_name() + ' that requires your approval'
                 for tl in team_leader:
-                    send_email_pms('KPI Approval', User.objects.get(pk=tl.id), self.request.user, e_message)
+                    send_email_pms('KPI Approval', User.objects.get(pk=tl.staff_person.id), self.request.user, e_message)
 
             else:
                 team_leader = None
