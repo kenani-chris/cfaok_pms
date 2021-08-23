@@ -35,6 +35,8 @@ def reset_all_password(request):
 
     for staff_u in staffs:
         user = get_object_or_404(User, id=staff_u.staff_person.id)
+        print("now on: "+user.get_full_name()+"\n")
+
         # 'password_reset_confirm' ''' + str(user.id) + ''' ''' + default_token_generator.make_token(user) + ''' %
         # message = format_html('Click On the following <a href="{}">HERE</a>to reset your PMS password the following', reverse('toyota_kenya:password_reset_confirm', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.id)), 'token': default_token_generator.make_token(user)}))
 
@@ -48,8 +50,12 @@ def reset_all_password(request):
         msg = format_html('We are glad to have you onboard ' + pms_link + '<br><br>Your username: <b>' + user.username + '</b><br>Click on this ' + link + ' to reset your password<br>')
 
         message = msg
-        if user.is_active and user.email and user.id == 1:
-            send_email_pms_one_reciepient('Welcome to PMS FY 2021-2022', user, message)
+        if user.is_active and user.email:
+            try:
+                send_email_pms_one_reciepient('Welcome to PMS FY 2021-2022', user, message)
+                print("done for: " + user.get_full_name()+"\n")
+            except:
+                print("failed for: "+user.get_full_name()+"\n")
 
     return HttpResponseRedirect(reverse('cfao_kenya:index'))
 
