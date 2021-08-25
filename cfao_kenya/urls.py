@@ -107,6 +107,10 @@ urlpatterns = [
 
 
     path('Report/', Report.as_view(), name='Reports'),
+    path('Report/KPI', ReportKPI.as_view(), name='Reports_KPI'),
+    path('Report/CheckIn', ReportCheckIn.as_view(), name='Reports_CheckIn'),
+    path('Report/Assessment', ReportAssessment.as_view(), name='Reports_Assessment'),
+    path('Report/Assessment/<uuid:pk>', ReportAssessmentDetail.as_view(), name='Reports_Assessment_Detail'),
     path('Profile/', Profile.as_view(), name='Profile'),
 
 

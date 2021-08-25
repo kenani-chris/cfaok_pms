@@ -8063,132 +8063,297 @@ class Report(TemplateView):
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
 
-            all_records =[]
+            all_records=[]
 
-            staff_u = get_object_or_404(staff, staff_person=self.request.user.id)
+            co_kpi = company_kpi.objects.filter(company_kpi_pms=active_pms)
 
-
-
-            # kpi_score
-            if staff_u.staff_md == 'Yes':
-                ind_kpi_scores = 0
-                bu_kpi_scores = 0
-            elif staff_u.staff_head_bu:
-                ind_kpi_scores = 0
-                bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_head_bu)
+            if context['user_is_md']=="Yes" or staff_person.staff_person.is_superuser:
+                all_staff = staff.objects.filter(staff_person__is_active=True)
+            elif context['user_is_bu_head'] is not None:
+                all_staff = staff.objects.filter(staff_person__is_active=True, staff_bu=context['user_is_bu_head'])
+            elif context['user_is_tl'] is not None:
+                all_staff = staff.objects.filter(staff_person__is_active=True, staff_team=context['user_is_tl'])
             else:
-                ind_kpi_scores = ind_kpi_score(context['pms'], staff_u.staff_person)
-                if staff_u.staff_bu:
-                    bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_bu)
+                all_staff = staff.objects.filter(staff_person__is_active=True, staff_person=staff_person)
+
+            role = kpi = tl_s = s_tl = checkin = None
+
+            evals = evaluation.objects.filter(evaluation_pms=active_pms)
+
+            for staff_u in all_staff:
+                if staff_u.staff_md == "Yes":
+                    role = "MD"
+                    kpi = co_kpi.count()
+                    checkin = "N/A"
+                    s_tl = "N/A"
+                    if staff_u.staff_head_team is not None:
+                        count = 0
+                        for eval in evals:
+                            if done_tl_evaluates_staff.objects.filter(done_evaluation=eval, done_staff=staff_u.staff_person):
+                                count = count + 1
+
+                        tl_s = str(count) + "/" + str(evals.count())
+                    else:
+                        tl_s = "N/A"
+
+                elif staff_u.staff_head_bu is not None:
+                    kpi = bu_kpi.objects.filter(bu_kpi_pms=active_pms, bu_kpi_bu=staff_u.staff_head_bu).count()
+                    role = "BU Head"
+                    checkin = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=staff_u.staff_person).count()
+
+                    count = 0
+                    count1 = 0
+                    for eval in evals:
+                        if done_tl_evaluates_staff.objects.filter(done_evaluation=eval, done_staff=staff_u.staff_person):
+                            count = count + 1
+                        if done_staff_evaluates_tl.objects.filter(done_evaluation=eval, done_staff=staff_u.staff_person):
+                            count1 = count1 + 1
+                    if staff_u.staff_head_team is not None:
+                        tl_s = str(count) + "/" + str(evals.count())
+                    else:
+                        tl_s = None
+                    s_tl = str(count1) + "/" + str(evals.count())
                 else:
-                    bu_kpi_scores = 0
-            company_kpi_scores = kpi_score = company_kpi_score(context['pms'])
+                    kpi = individual_Kpi.objects.filter(individual_kpi_user=staff_u.staff_person, individual_kpi_pms=active_pms).count()
+                    role = "Staff"
+                    checkin = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=staff_u.staff_person).count()
 
-            # Assessment Score
-            ass_score = assessment_score(context['pms'], staff_u)
-
-            # Checkin Score
-            ci_score = checkin_score(context['pms'], staff_u.staff_person)
-
-            ov_score = overall_score(context['pms'], staff_u)
-
-            all_records.append(
-                [staff_u, company_kpi_scores, bu_kpi_scores, ind_kpi_scores, ass_score, ci_score, ov_score])
-
-
-            if context['user_is_md'] == 'Yes' or self.request.user.is_superuser:
-                all_staff = staff.objects.all()
-
-                for staff_u in all_staff:
-
-                    # kpi_score
-                    if staff_u.staff_md == 'Yes':
-                        ind_kpi_scores = 0
-                        bu_kpi_scores = 0
-                    elif staff_u.staff_head_bu:
-                        ind_kpi_scores = 0
-                        bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_head_bu)
+                    count = 0
+                    count1 = 0
+                    for eval in evals:
+                        if done_tl_evaluates_staff.objects.filter(done_evaluation=eval, done_staff=staff_u.staff_person):
+                            count = count + 1
+                        if done_staff_evaluates_tl.objects.filter(done_evaluation=eval, done_staff=staff_u.staff_person):
+                            count1 = count1 + 1
+                    if staff_u.staff_head_team is not None:
+                        tl_s = str(count) + "/" + str(evals.count())
                     else:
-                        ind_kpi_scores = ind_kpi_score(context['pms'], staff_u.staff_person)
-                        if staff_u.staff_bu:
-                            bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_bu)
-                        else:
-                            bu_kpi_scores = 0
-                    company_kpi_scores = kpi_score = company_kpi_score(context['pms'])
+                        tl_s = None
+                    s_tl = str(count1) + "/" + str(evals.count())
 
-                    # Assessment Score
-                    ass_score = assessment_score(context['pms'], staff_u)
+                all_records.append([staff_u, role, kpi, checkin, tl_s, s_tl])
 
-                    # Checkin Score
-                    ci_score = checkin_score(context['pms'], staff_u.staff_person)
+            context['all_records'] = all_records
 
-                    ov_score = overall_score(context['pms'], staff_u)
+        return context
 
-                    all_records.append([staff_u, company_kpi_scores, bu_kpi_scores, ind_kpi_scores, ass_score, ci_score, ov_score])
 
-            elif context['user_is_bu_head']:
-                all_staff = staff.objects.filter(staff_bu=context['user_is_bu_head'])
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class ReportKPI(TemplateView):
+    template_name = 'cfao_kenya/Reports/report_kpi.html'
 
-                for staff_u in all_staff:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
 
-                    # kpi_score
-                    if staff_u.staff_md == 'Yes':
-                        ind_kpi_scores = 0
-                        bu_kpi_scores = 0
-                    elif staff_u.staff_head_bu:
-                        ind_kpi_scores = 0
-                        bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_head_bu)
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            all_records=[]
+
+            co_kpi = company_kpi.objects.filter(company_kpi_pms=active_pms)
+
+            if context['user_is_md']=="Yes" or staff_person.staff_person.is_superuser:
+                all_staff = staff.objects.filter(staff_person__is_active=True)
+            elif context['user_is_bu_head'] is not None:
+                all_staff = staff.objects.filter(staff_person__is_active=True, staff_bu=context['user_is_bu_head'])
+            elif context['user_is_tl'] is not None:
+                all_staff = staff.objects.filter(staff_person__is_active=True, staff_team=context['user_is_tl'])
+            else:
+                all_staff = staff.objects.filter(staff_person__is_active=True, staff_person=staff_person)
+
+            approved1 = approved2 = pending =rejected = None
+
+            evals = evaluation.objects.filter(evaluation_pms=active_pms)
+
+            for staff_u in all_staff:
+                if staff_u.staff_md == "Yes":
+                    role = "MD"
+                    approved2 = co_kpi.filter(company_kpi_status="Approved").count()
+                    pending = co_kpi.filter(company_kpi_status="Pending").count()
+                    rejected = co_kpi.filter(company_kpi_status="Rejected").count()
+
+                elif staff_u.staff_head_bu is not None:
+                    kpi = bu_kpi.objects.filter(bu_kpi_pms=active_pms, bu_kpi_bu=staff_u.staff_head_bu)
+                    role = "BU Head"
+                    approved2 = kpi.filter(bu_kpi_status="Approved").count()
+                    pending = kpi.filter(bu_kpi_status="Pending").count()
+                    rejected = kpi.filter(bu_kpi_status="Rejected").count()
+                    
+                else:
+                    kpi = individual_Kpi.objects.filter(individual_kpi_user=staff_u.staff_person, individual_kpi_pms=active_pms)
+                    role = "Staff"
+                    approved1 = kpi.filter(individual_kpi_status="Approved").count()
+                    approved2 = kpi.filter(individual_kpi_status="Approved").count()
+                    pending = kpi.filter(individual_kpi_status="Pending").count()
+                    rejected = kpi.filter(individual_kpi_status="Rejected").count()
+                    
+                all_records.append([staff_u, role, approved1, approved2, rejected, pending])
+
+            context['all_records'] = all_records
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class ReportCheckIn(TemplateView):
+    template_name = 'cfao_kenya/Reports/report_checkin.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            all_records = []
+
+            if context['user_is_md'] == "Yes" or staff_person.staff_person.is_superuser:
+                all_staff = staff.objects.filter(staff_person__is_active=True)
+            elif context['user_is_bu_head'] is not None:
+                all_staff = staff.objects.filter(staff_person__is_active=True, staff_bu=context['user_is_bu_head'])
+            elif context['user_is_tl'] is not None:
+                all_staff = staff.objects.filter(staff_person__is_active=True, staff_team=context['user_is_tl'])
+            else:
+                all_staff = staff.objects.filter(staff_person__is_active=True, staff_person=staff_person)
+
+            approved1 = approved2 = pending = rejected = None
+
+            evals = evaluation.objects.filter(evaluation_pms=active_pms)
+
+            for staff_u in all_staff:
+                checkin = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=staff_u.staff_person)
+                if staff_u.staff_md == "Yes":
+                    role = "MD"
+                    approved = "N/A"
+                    pending = "N/A"
+                    rejected = "N/A"
+
+                elif staff_u.staff_head_bu is not None:
+                    kpi = bu_kpi.objects.filter(bu_kpi_pms=active_pms, bu_kpi_bu=staff_u.staff_head_bu)
+                    role = "BU Head"
+                    approved = checkin.filter(checkIn_status="Confirmed").count()
+                    pending = checkin.filter(checkIn_status="Pending").count()
+                    rejected = checkin.filter(checkIn_status="Rejected").count()
+
+                else:
+                    kpi = individual_Kpi.objects.filter(individual_kpi_user=staff_u.staff_person,
+                                                        individual_kpi_pms=active_pms)
+                    role = "Staff"
+                    approved = checkin.filter(checkIn_status="Confirmed").count()
+                    pending = checkin.filter(checkIn_status="Pending").count()
+                    rejected = checkin.filter(checkIn_status="Rejected").count()
+
+                all_records.append([staff_u, role, approved, rejected, pending, checkin.count()])
+
+            context['all_records'] = all_records
+
+        return context
+
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class ReportAssessment(TemplateView):
+    template_name = 'cfao_kenya/Reports/report_assessment.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            evals = evaluation.objects.filter(evaluation_pms=active_pms)
+            context['evals'] = evals
+
+
+        return context
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class ReportAssessmentDetail(TemplateView):
+    template_name = 'cfao_kenya/Reports/report_assessment_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+
+            all_records=[]
+
+            if context['user_is_md']=="Yes" or staff_person.staff_person.is_superuser:
+                all_staff = staff.objects.filter(staff_person__is_active=True)
+            elif context['user_is_bu_head'] is not None:
+                all_staff = staff.objects.filter(staff_person__is_active=True, staff_bu=context['user_is_bu_head'])
+            elif context['user_is_tl'] is not None:
+                all_staff = staff.objects.filter(staff_person__is_active=True, staff_team=context['user_is_tl'])
+            else:
+                all_staff = staff.objects.filter(staff_person__is_active=True, staff_person=staff_person)
+
+            role = kpi = tl_s = s_tl = checkin = None
+
+            eval = get_object_or_404(evaluation, evaluation_id=self.kwargs['pk'])
+
+            for staff_u in all_staff:
+                if staff_u.staff_md == "Yes":
+                    role = "MD"
+                    s_tl = "N/A"
+                    if staff_u.staff_head_team is not None:
+                        count = 0
+
+                        if done_tl_evaluates_staff.objects.filter(done_evaluation=eval, done_staff=staff_u.staff_person):
+                            tl_s = "Done"
                     else:
-                        ind_kpi_scores = ind_kpi_score(context['pms'], staff_u.staff_person)
-                        if staff_u.staff_bu:
-                            bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_bu)
-                        else:
-                            bu_kpi_scores = 0
-                    company_kpi_scores = kpi_score = company_kpi_score(context['pms'])
+                        tl_s = "N/A"
 
-                    # Assessment Score
-                    ass_score = assessment_score(context['pms'], staff_u)
-
-                    # Checkin Score
-                    ci_score = checkin_score(context['pms'], staff_u.staff_person)
-
-                    ov_score = overall_score(context['pms'], staff_u)
-
-                    all_records.append(
-                        [staff_u, company_kpi_scores, bu_kpi_scores, ind_kpi_scores, ass_score, ci_score, ov_score])
-
-
-            elif context['user_is_tl']:
-                all_staff = staff.objects.filter(staff_bu=context['user_is_tl'])
-
-                for staff_u in all_staff:
-
-                    # kpi_score
-                    if staff_u.staff_md == 'Yes':
-                        ind_kpi_scores = 0
-                        bu_kpi_scores = 0
-                    elif staff_u.staff_head_bu:
-                        ind_kpi_scores = 0
-                        bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_head_bu)
+                else:
+                    role = "Staff"
+                    if done_staff_evaluates_tl.objects.filter(done_evaluation=eval, done_staff=staff_u.staff_person):
+                        s_tl = "Done"
+                    if staff_u.staff_head_team is not None:
+                        if done_tl_evaluates_staff.objects.filter(done_evaluation=eval, done_staff=staff_u.staff_person):
+                            tl_s = "Done"
                     else:
-                        ind_kpi_scores = ind_kpi_score(context['pms'], staff_u.staff_person)
-                        if staff_u.staff_bu:
-                            bu_kpi_scores = bu_kpi_score(context['pms'], staff_u.staff_bu)
-                        else:
-                            bu_kpi_scores = 0
-                    company_kpi_scores = kpi_score = company_kpi_score(context['pms'])
+                        tl_s = "N/A"
 
-                    # Assessment Score
-                    ass_score = assessment_score(context['pms'], staff_u)
-
-                    # Checkin Score
-                    ci_score = checkin_score(context['pms'], staff_u.staff_person)
-
-                    ov_score = overall_score(context['pms'], staff_u)
-
-                    all_records.append(
-                        [staff_u, company_kpi_scores, bu_kpi_scores, ind_kpi_scores, ass_score, ci_score, ov_score])
-
+                all_records.append([staff_u, role, tl_s, s_tl])
 
             context['all_records'] = all_records
 
