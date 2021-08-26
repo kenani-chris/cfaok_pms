@@ -4353,7 +4353,7 @@ class SubmitCheckIn(CreateView):
 
     def form_valid(self, form):
         super(SubmitCheckIn, self).form_valid(form)
-        user_team = get_object_or_404(staff, pk=self.request.user.id)
+        user_team = get_object_or_404(staff, staff_person=self.request.user.id)
         user_team = user_team.staff_team
         e_message = ""
         if user_team is not None:
