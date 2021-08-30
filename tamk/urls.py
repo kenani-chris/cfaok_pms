@@ -14,6 +14,7 @@ urlpatterns = [
     path('Individual-Kpi/Track-Kpi/', TrackKpiView.as_view(), name='Individual_Kpi_Detail1'),
     path('Individual-Kpi/Track-Kpi/<uuid:pk>', DetailKpiView.as_view(), name='kpi-detail'),
     path('Individual-Kpi/Edit-Kpi/<uuid:pk>', views.EditKpiView.as_view(), name='Individual_Kpi-Edit_One'),
+    path('Individual-Kpi/Delete/<uuid:kpi_id>', views.delete_individual_kpi, name='Individual_Kpi_Delete'),
     path('Individual-Kpi/Kpi-Results/', KpiResultView.as_view(), name='Individual_Kpi_Result'),
     path('Individual-Kpi/Kpi-Results/<uuid:pk>', KpiResultUpdateView.as_view(), name='Individual_Kpi_Result_Update'),
 
@@ -33,10 +34,23 @@ urlpatterns = [
     path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>/<int:month>', approve_individual_kpi_score_dashboard,
          name='Staff_Approve_Kpi_score_dashboard'),
 
+    path('Staff-Kpi-BU/Approve-Kpi', BUStaffKpiPendingListView.as_view(), name='Staff_BU_Approve_Kpi'),
+    path('Staff-Kpi-BU/Approve-Kpi/<int:pk>', BUStaffKpiApproveView.as_view(), name='Staff_BU_Approve_Kpi_Detail'),
+    path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>', approve_individual_kpi,
+         name='Staff_Approve_Individual_Kpi'),
+    path('Staff-Kpi/Approve-Kpi/Reject/<int:pk>/<uuid:kpi_id>', reject_individual_kpi,
+         name='Staff_Reject_Individual_Kpi'),
+    path('Staff-Kpi/Track-Kpi', StaffTrackKpiListView.as_view(), name='Staff_Track_Kpi'),
+    path('Staff-Kpi/Track-Kpi/<int:pk>', StaffTrackKpiOneListView.as_view(), name='Staff_Track_Kpi_Staff'),
+    path('Staff-Kpi/Track-Kpi/<int:pk>/<uuid:kpi_id>', StaffKpiTrackOneView.as_view(), name='Staff_Track_Kpi_Staff_One'),
+    path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>/<int:month>', approve_individual_kpi_score,
+         name='Staff_Approve_Kpi_score'),
+    path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>/<int:month>', approve_individual_kpi_score_dashboard,
+         name='Staff_Approve_Kpi_score_dashboard'),
+
     
     # BU Kpi Links
     path('BU/', BuKpiDashboard.as_view(), name='BU_Dashboard'),
-    path('BU/<uuid:pk>', BuDashboardKpiDetailView.as_view(), name='BU_dashboard-detail'),
     path('BU-Kpi/', BuKpi.as_view(), name='BU_Kpi_Dashboard'),
     path('BU-Kpi/Submit-Kpi/', SubmitBuKpiView.as_view(), name='BU_Kpi_Submit'),
     path('BU-Kpi/Track-Kpi/', TrackBuKpiView.as_view(), name='BU_Kpi_Detail1'),
@@ -47,7 +61,7 @@ urlpatterns = [
 
 
     # Company Kpi Links
-    path('Company/', ComapanyKpiDashboard.as_view(), name='Company_Dashboard'),
+    path('Company/', CompanyKpiDashboard.as_view(), name='Company_Dashboard'),
     path('Company-Kpi/<uuid:pk>', CompanyDashboardKpiDetailView.as_view(), name='Company_Dashboard_Detail'),
     path('Company-Kpi/', CompanyKpi.as_view(), name='Company_Kpi_Dashboard'),
     path('Company-Kpi/Submit-Kpi/', SubmitCompanyKpiView.as_view(), name='Company_Kpi_Submit'),
@@ -86,9 +100,7 @@ urlpatterns = [
     path('Check-In/Staff-CI/Approve-CI/<int:pk>', StaffApproveStaffCheckIn.as_view(), name='Staff_Approve_CI_list'),
     path('Check-In/Staff-CI/Approve-CI/<int:pk>/<uuid:ci_id>', StaffApproveStaffCheckInOne.as_view(), name='Staff_Approve_CI_Detail1'),
     path('Check-In/Staff-CI/Track-CI/', StaffTrackCheckIn.as_view(), name='Staff_Track_CI'),
-    path('Check-In/Staff-CI/Track-CI/BU', StaffTrackCheckInBU.as_view(), name='Staff_Track_CI_BU'),
     path('Check-In/Staff-CI/Track-CI/<int:pk>', StaffTrackStaffCheckIn.as_view(), name='Staff_Track_CI_Staff'),
-    path('Check-In/Staff-CI/Track-CI/<int:pk>/BU', StaffTrackStaffCheckInBU.as_view(), name='Staff_Track_CI_Staff_BU'),
     path('Check-In/Staff-CI/Track-CI/<int:pk>/<uuid:ci_id>', StaffTrackStaffDetailCheckIn.as_view(), name='Staff_Track_CI_Detail'),
 
     # My Checkin Kpi Links
@@ -109,10 +121,6 @@ urlpatterns = [
 
 
     path('Report/', Report.as_view(), name='Reports'),
-    path('Report/KPI', ReportKPI.as_view(), name='Reports_KPI'),
-    path('Report/CheckIn', ReportCheckIn.as_view(), name='Reports_CheckIn'),
-    path('Report/Assessment', ReportAssessment.as_view(), name='Reports_Assessment'),
-    path('Report/Assessment/<uuid:pk>', ReportAssessmentDetail.as_view(), name='Reports_Assessment_Detail'),
     path('Profile/', Profile.as_view(), name='Profile'),
 
 

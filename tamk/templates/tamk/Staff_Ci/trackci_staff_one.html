@@ -1,5 +1,5 @@
 {% extends "tamk/Staff_Ci/default.html" %}
-{% block pagetitle %}View KPI{% endblock %}
+{% block pagetitle %}View CI{% endblock %}
 {% block kpicontent %}
 
   <div class="col-md-10">
@@ -93,7 +93,18 @@
           </table>
 
           <br>
-
+        {% if ci.checkIn_status == 'Pending' %}
+          <div class="card-footer">
+            <div class="float-right" style="margin:5px">
+              <a href="{% url 'tamk:Staff_Reject_Individual_CI' staff_u.id  ci.checkIn_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
+            </div>
+            <div class="float-right" style="margin:5px">
+              <a href="{% url 'tamk:Staff_Approve_Individual_CI' staff_u.id  ci.checkIn_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
+            </div>
+          </div>
+        <br>
+        <br>
+        {% endif %}
         {% else %}
           <div class="alert alert-warning">
             <h5><i class="icon fas fa-ban"></i> CI not found</h5>

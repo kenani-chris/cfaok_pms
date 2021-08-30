@@ -11,13 +11,12 @@
       <br>
       <div class="row">
         <div class="col-md-3 col-sm-6 col-12">
-          <a href="{% url 'tamk:Individual_Kpi_Detail1' %}">
             <div class="info-box bg-info">
               <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
 
               <div class="info-box-content">
                 <span class="info-box-text">Required</span>
-                <span class="info-box-number">{{ required_count }} KPIs</span>
+                <span class="info-box-number"> KPIs</span>
 
                 <div class="progress">
                   <div class="progress-bar" style="width: 100%"></div>
@@ -25,12 +24,10 @@
               </div>
               <!-- /.info-box-content -->
             </div>
-          </a>
           <!-- /.info-box -->
         </div>
         <!-- /.col -->
         <div class="col-md-3 col-sm-6 col-12">
-          <a href="{% url 'tamk:Individual_Kpi_Detail1' %}">
             <div class="info-box bg-success">
               <span class="info-box-icon"><i class="far fa-thumbs-up"></i></span>
               <div class="info-box-content">
@@ -43,12 +40,10 @@
               </div>
               <!-- /.info-box-content -->
             </div>
-          </a>
           <!-- /.info-box -->
         </div>
         <!-- /.col -->
         <div class="col-md-3 col-sm-6 col-12">
-          <a href="{% url 'tamk:Individual_Kpi_Detail1' %}">
             <div class="info-box bg-warning">
               <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
 
@@ -62,12 +57,10 @@
               </div>
               <!-- /.info-box-content -->
             </div>
-          </a>
           <!-- /.info-box -->
         </div>
         <!-- /.col -->
         <div class="col-md-3 col-sm-6 col-12">
-          <a href="{% url 'tamk:Individual_Kpi_Detail1' %}">
             <div class="info-box bg-danger">
               <span class="info-box-icon"><i class="fas fa-thumbs-down"></i></span>
 
@@ -81,7 +74,6 @@
               </div>
               <!-- /.info-box-content -->
             </div>
-          </a>
           <!-- /.info-box -->
         </div>
         <!-- /.col -->
@@ -90,8 +82,14 @@
       <div class="card-body">
         <div style="overflow-x:scroll">
         {% if my_kpi %}
-          <table id="example" class="table table-bordered table-striped">
+            <table id="example" class="table table-bordered table-striped">
+          {% for kpi in my_kpi %}
+
             <thead>
+            <tr>
+                <th>Pillar</th>
+                <th colspan="15" class="bg-info">kpi.0</th>
+            </tr>
             <tr>
               <th>KPI</th>
               <th>Function</th>
@@ -112,61 +110,61 @@
             </tr>
             </thead>
             <tbody>
-          {% for kpi in my_kpi %}
-              {% if kpi.bu_kpi_status == "Approved" %}
+              {% for kpis in kpi.1 %}
+              {% if kpis.bu_kpi_status == "Approved" %}
                 <tr>
                   <td rowspan="2">
-                    <a href="{% url 'tamk:BUs_Track_Kpi_BUs_One' bu.bu_id kpi.bu_kpi_id %}"> {{ kpi.bu_kpi_title }}</a>
+                    <a href="{% url 'tamk:BUs_Track_Kpi_BUs_One' bu.bu_id kpis.bu_kpi_id %}"> {{ kpis.bu_kpi_title }}</a>
                   </td>
                   <td rowspan="2">
-                    {{ kpi.bu_kpi_function }}
+                    {{ kpis.bu_kpi_function }}
                   </td>
                   <td rowspan="2">
-                    {{ kpi.bu_kpi_target }}
+                    {{ kpis.bu_kpi_target }}
                   </td>
                   <td rowspan="2">
-                    {{ kpi.bu_kpi_status }}
+                    {{ kpis.bu_kpi_status }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_april_score }}
+                    {{ kpis.bu_kpi_april_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_may_score }}
+                    {{ kpis.bu_kpi_may_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_june_score }}
+                    {{ kpis.bu_kpi_june_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_july_score }}
+                    {{ kpis.bu_kpi_july_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_august_score }}
+                    {{ kpis.bu_kpi_august_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_september_score }}
+                    {{ kpis.bu_kpi_september_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_october_score }}
+                    {{ kpis.bu_kpi_october_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_november_score }}
+                    {{ kpis.bu_kpi_november_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_december_score }}
+                    {{ kpis.bu_kpi_december_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_january_score }}
+                    {{ kpis.bu_kpi_january_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_february_score }}
+                    {{ kpis.bu_kpi_february_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_march_score }}
+                    {{ kpis.bu_kpi_march_score }}
                   </td>
                 </tr>
                 <tr>
 
-                    {% if kpi.bu_kpi_april_score_approve == 'Approved' %}
+                    {% if kpis.bu_kpi_april_score_approve == 'Approved' %}
                         <td class="text-center bg-success">
                             <i class="fa fa-check-circle"></i>
                         </td>
@@ -176,7 +174,7 @@
                         </td>
                     {% endif %}
 
-                    {% if kpi.bu_kpi_may_score_approve == 'Approved' %}
+                    {% if kpis.bu_kpi_may_score_approve == 'Approved' %}
                         <td class="text-center bg-success">
                             <i class="fa fa-check-circle"></i>
                         </td>
@@ -186,7 +184,7 @@
                         </td>
                     {% endif %}
 
-                    {% if kpi.bu_kpi_june_score_approve == 'Approved' %}
+                    {% if kpis.bu_kpi_june_score_approve == 'Approved' %}
                         <td class="text-center bg-success">
                             <i class="fa fa-check-circle"></i>
                         </td>
@@ -196,7 +194,7 @@
                         </td>
                     {% endif %}
 
-                    {% if kpi.bu_kpi_july_score_approve == 'Approved' %}
+                    {% if kpis.bu_kpi_july_score_approve == 'Approved' %}
                         <td class="text-center bg-success">
                             <i class="fa fa-check-circle"></i>
                         </td>
@@ -207,7 +205,7 @@
                     {% endif %}
 
 
-                    {% if kpi.bu_kpi_august_score_approve == 'Approved' %}
+                    {% if kpis.bu_kpi_august_score_approve == 'Approved' %}
                         <td class="text-center bg-success">
                             <i class="fa fa-check-circle"></i>
                         </td>
@@ -217,7 +215,7 @@
                         </td>
                     {% endif %}
 
-                    {% if kpi.bu_kpi_september_score_approve == 'Approved' %}
+                    {% if kpis.bu_kpi_september_score_approve == 'Approved' %}
                         <td class="text-center bg-success">
                             <i class="fa fa-check-circle"></i>
                         </td>
@@ -227,7 +225,7 @@
                         </td>
                     {% endif %}
 
-                    {% if kpi.bu_kpi_october_score_approve == 'Approved' %}
+                    {% if kpis.bu_kpi_october_score_approve == 'Approved' %}
                         <td class="text-center bg-success">
                             <i class="fa fa-check-circle"></i>
                         </td>
@@ -237,7 +235,7 @@
                         </td>
                     {% endif %}
 
-                    {% if kpi.bu_kpi_november_score_approve == 'Approved' %}
+                    {% if kpis.bu_kpi_november_score_approve == 'Approved' %}
                         <td class="text-center bg-success">
                             <i class="fa fa-check-circle"></i>
                         </td>
@@ -247,7 +245,7 @@
                         </td>
                     {% endif %}
 
-                    {% if kpi.bu_kpi_december_score_approve == 'Approved' %}
+                    {% if kpis.bu_kpi_december_score_approve == 'Approved' %}
                         <td class="text-center bg-success">
                             <i class="fa fa-check-circle"></i>
                         </td>
@@ -257,7 +255,7 @@
                         </td>
                     {% endif %}
 
-                    {% if kpi.bu_kpi_january_score_approve == 'Approved' %}
+                    {% if kpis.bu_kpi_january_score_approve == 'Approved' %}
                         <td class="text-center bg-success">
                             <i class="fa fa-check-circle"></i>
                         </td>
@@ -267,7 +265,7 @@
                         </td>
                     {% endif %}
 
-                    {% if kpi.bu_kpi_february_score_approve == 'Approved' %}
+                    {% if kpis.bu_kpi_february_score_approve == 'Approved' %}
                         <td class="text-center bg-success">
                             <i class="fa fa-check-circle"></i>
                         </td>
@@ -277,7 +275,7 @@
                         </td>
                     {% endif %}
 
-                    {% if kpi.bu_kpi_march_score_approve == 'Approved' %}
+                    {% if kpis.bu_kpi_march_score_approve == 'Approved' %}
                         <td class="text-center bg-success">
                             <i class="fa fa-check-circle"></i>
                         </td>
@@ -291,56 +289,57 @@
               {% else%}
                 <tr>
                   <td>
-                    <a href="{% url 'tamk:BUs_Track_Kpi_BUs_One' bu.bu_id kpi.bu_kpi_id %}"> {{ kpi.bu_kpi_title }}</a>
+                    <a href="{% url 'tamk:BUs_Track_Kpi_BUs_One' bu.bu_id kpis.bu_kpi_id %}"> {{ kpis.bu_kpi_title }}</a>
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_function }}
+                    {{ kpis.bu_kpi_function }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_target }}
+                    {{ kpis.bu_kpi_target }}
                   </td>
                   <td class="bg-warning">
-                    {{ kpi.bu_kpi_status }}
+                    {{ kpis.bu_kpi_status }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_april_score }}
+                    {{ kpis.bu_kpi_april_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_may_score }}
+                    {{ kpis.bu_kpi_may_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_june_score }}
+                    {{ kpis.bu_kpi_june_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_july_score }}
+                    {{ kpis.bu_kpi_july_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_august_score }}
+                    {{ kpis.bu_kpi_august_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_september_score }}
+                    {{ kpis.bu_kpi_september_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_october_score }}
+                    {{ kpis.bu_kpi_october_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_november_score }}
+                    {{ kpis.bu_kpi_november_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_december_score }}
+                    {{ kpis.bu_kpi_december_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_january_score }}
+                    {{ kpis.bu_kpi_january_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_february_score }}
+                    {{ kpis.bu_kpi_february_score }}
                   </td>
                   <td>
-                    {{ kpi.bu_kpi_march_score }}
+                    {{ kpis.bu_kpi_march_score }}
                   </td>
 
                 </tr>
               {% endif %}
+              {% endfor %}
           {% endfor %}
             </tbody>
             <tfoot>

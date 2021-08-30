@@ -1,162 +1,209 @@
 {% extends "toyota_kenya/default.html" %}
-
-{% block mykpi %}{{ my_kpi_link }}{% endblock %}
-
+{% block pagetitle %}BU KPI{% endblock %}
 {% block content %}
-
-  <div class="row">
-      <div class="col-md-3 col-sm-6 col-12">
-        <a href="{% url 'toyota_kenya:BU_Kpi_Detail1' %}">
-          <div class="info-box bg-info">
-            <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
-
-            <div class="info-box-content">
-              <span class="info-box-text">Required</span>
-              <span class="info-box-number">{{ active_pms.bu_individual_kpi_number }} KPIs</span>
-
-              <div class="progress">
-                <div class="progress-bar" style="width: 100%"></div>
-              </div>
-              <span class="progress-description">
-                <small>Required no of KPIs by HR</small>
-              </span>
-            </div>
-            <!-- /.info-box-content -->
-          </div>
-        </a>
-        <!-- /.info-box -->
-      </div>
-      <!-- /.col -->
-      <div class="col-md-3 col-sm-6 col-12">
-        <a href="{% url 'toyota_kenya:BU_Kpi_Detail1' %}">
-          <div class="info-box bg-success">
-            <span class="info-box-icon"><i class="far fa-thumbs-up"></i></span>
-            <div class="info-box-content">
-              <span class="info-box-text">Approved</span>
-              <span class="info-box-number">{{ approved_kpi.count }} KPIs</span>
-
-              <div class="progress">
-                <div class="progress-bar" style="width:100%"></div>
-              </div>
-              <span class="progress-description">
-                <small>Approved KPIs in all levels</small>
-              </span>
-            </div>
-            <!-- /.info-box-content -->
-          </div>
-        </a>
-        <!-- /.info-box -->
-      </div>
-      <!-- /.col -->
-      <div class="col-md-3 col-sm-6 col-12">
-        <a href="{% url 'toyota_kenya:BU_Kpi_Detail1' %}">
-          <div class="info-box bg-warning">
-            <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
-
-            <div class="info-box-content">
-              <span class="info-box-text">Pending</span>
-              <span class="info-box-number">{{ total_pending }} KPIs</span>
-
-              <div class="progress">
-                <div class="progress-bar" style="width: 100%"></div>
-              </div>
-              <span class="progress-description">
-                <small>Total Pending KPIs</small>
-              </span>
-            </div>
-            <!-- /.info-box-content -->
-          </div>
-        </a>
-        <!-- /.info-box -->
-      </div>
-      <!-- /.col -->
-      <div class="col-md-3 col-sm-6 col-12">
-        <a href="{% url 'toyota_kenya:BU_Kpi_Detail1' %}">
-          <div class="info-box bg-danger">
-            <span class="info-box-icon"><i class="fas fa-thumbs-down"></i></span>
-
-            <div class="info-box-content">
-              <span class="info-box-text">Rejected</span>
-              <span class="info-box-number">{{ total_rejected }} KPIs</span>
-
-              <div class="progress">
-                <div class="progress-bar" style="width: 100%"></div>
-              </div>
-              <span class="progress-description">
-                <small>Total Rejected KPIs</small>
-              </span>
-            </div>
-            <!-- /.info-box-content -->
-          </div>
-        </a>
-        <!-- /.info-box -->
-      </div>
-      <!-- /.col -->
-    </div>
-  <div class="row">
-    <div class="col-md-9">
-    <div class="card card-info card-outline card-outline-tabs">
-      <div class="card-header p-0 border-bottom-0">
-        <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">BU Perfomance</a>
+<div class="row">
+  <div class="col-md-2">
+    <div class="card card-primary card-outline">
+      <div class="card-body box-profile">
+        <h2 class="profile-username text-center">MY KPIs</h2>
+        <hr>
+        <br>
+        <br>
+        <ul class="list-group list-group-unbordered mb-3">
+          <li class="list-group-item">
+            <a href="{% url 'toyota_kenya:BU_Dashboard' %}" class="btn btn-primary btn-block"><b>BU KPI Overview</b></a>
           </li>
         </ul>
       </div>
-      <div class="card-body">
-        <div class="tab-content" id="custom-tabs-four-tabContent">
-          <div class="tab-pane fade show active" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
-            <div class="card card-info">
-              <div class="card-header">
-                <small>(Target & actuals Normalized to 100%)</small>
+      <!-- /.card-body -->
+    </div>
+  </div>
+  <div class="col-md-10">
+   <div class="card-body">
+    {% if per_kpi_score|length > 0 %}
+      <div class="chart">
+        <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+      </div>
+    {% else %}
+      <div class="callout callout-danger">
+        <h5>Error plotting graph</h5>
+
+        <!--<p>It seems you've got no approved KPIs</p>-->
+      </div>
+    {% endif %}
+  </div>
+    <div class="card card-primary card-outline card-outline-tabs">
+              <div class="card-header p-0 border-bottom-0">
+                <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                  <li class="nav-item">
+                    <div class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">BSC Template</div>
+                  </li>
+                  <li class="nav-item">
+                    <div class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">KPIs</div>
+                  </li>
+                </ul>
               </div>
               <div class="card-body">
-                {% if per_kpi_score|length > 0 %}
-                  <div class="chart">
-                    <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                  </div>
-                {% else %}
-                  <div class="callout callout-danger">
-                    <h5>No Kpis found</h5>
+                <div class="tab-content" id="custom-tabs-four-tabContent">
+                  <div class="tab-pane fade show active" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                    {% if my_kpi %}
+                        <table id="example1" class="table table-bordered table-striped">
+                          <thead>
+                            <tr>
+                                <th>Pillar</th>
+                                <th>Objective</th>
+                                <th>Weight</th>
+                                <th>S</th>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>C</th>
+                                <th>D</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                     {% for kpi in my_kpi %}
 
-                    <p>It seems you've got no approved KPIs</p>
+                          <tr>
+                              <th rowspan="{{ kpi.1.count }}"class="bg-info">{{ kpi.0 }}</th>
+                              {% if kpi.1.count > 0 %}
+                                  <th>{{ kpi.1.0.bu_kpi_title }}</th>
+                                  <td>{{ kpi.1.0.bu_kpi_weight }}</td>
+                                  <td>{{ kpi.1.0.bu_kpi_s_score }}</td>
+                                  <td>{{ kpi.1.0.bu_kpi_a_score }}</td>
+                                  <td>{{ kpi.1.0.bu_kpi_b_score }}</td>
+                                  <td>{{ kpi.1.0.bu_kpi_c_score }}</td>
+                                  <td>{{ kpi.1.0.bu_kpi_d_score }}</td>
+                              {% endif %}
+                          </tr>
+                          {% if kpi.1.count > 1 %}
+                              {% for k in kpi.1 %}
+                                  {% if k == kpi.1.0  %}
+                                  {% else %}
+                                      <tr>
+                                        <th>{{ k.bu_kpi_title }}</th>
+                                        <td>{{ k.bu_kpi_weight }}</td>
+                                        <td>{{ k.bu_kpi_s_score }}</td>
+                                        <td>{{ k.bu_kpi_a_score }}</td>
+                                        <td>{{ k.bu_kpi_b_score }}</td>
+                                        <td>{{ k.bu_kpi_c_score }}</td>
+                                        <td>{{ k.bu_kpi_d_score }}</td>
+                                      </tr>
+                                  {% endif %}
+                              {% endfor %}
+                          {% endif %}
+
+                    {% endfor %}
+                        </tbody>
+
+                        </table>
+                   {% endif %}
                   </div>
-                {% endif %}
+                  <div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                     {% if my_kpi %}
+                        <table id="example1" class="table table-bordered table-striped">
+
+                          <tbody>
+                        {% for kpi in my_kpi %}
+                            <thead>
+                          <tr class="bg-info">
+                              <th>Pillar</th>
+                              <th colspan="10">{{ kpi.0 }}</th>
+                              <th colspan="2"> Weight </th>
+                              <th colspan="3"> {{ kpi.0.bsc_weight }}</th>
+                          </tr>
+                          <tr>
+                            <th>KPI</th>
+                            <th>Function</th>
+                            <th>Status</th>
+                            <th>Apr</th>
+                            <th>May</th>
+                            <th>Jun</th>
+                            <th>Jul</th>
+                            <th>Aug</th>
+                            <th>Sep</th>
+                            <th>Oct</th>
+                            <th>Nov</th>
+                            <th>Dec</th>
+                            <th>Jan</th>
+                            <th>Feb</th>
+                            <th>Mar</th>
+                          </tr>
+                          </thead>
+
+                            {% for kpis in kpi.1 %}
+                                {% if kpi.bu_kpi_status != "Rejected" %}
+                                <tr>
+                                  <td>
+                                    {{ kpis.bu_kpi_title }}
+                                  </td>
+                                  <td>
+                                    {{ kpis.bu_kpi_function }}
+                                  </td>
+                                  {% if kpis.bu_kpi_status == "Pending" %}
+                                    <td class="bg-warning">
+                                      {{ kpis.bu_kpi_status }}
+                                    </td>
+                                  {% else %}
+                                    <td>
+                                      {{ kpis.bu_kpi_status }}
+                                    </td>
+                                  {% endif %}
+                                  <td>
+                                    {{ kpis.bu_kpi_april_score }}
+                                  </td>
+                                  <td>
+                                    {{ kpis.bu_kpi_may_score }}
+                                  </td>
+                                  <td>
+                                    {{ kpis.bu_kpi_june_score }}
+                                  </td>
+                                  <td>
+                                    {{ kpis.bu_kpi_july_score }}
+                                  </td>
+                                  <td>
+                                    {{ kpis.bu_kpi_august_score }}
+                                  </td>
+                                  <td>
+                                    {{ kpis.bu_kpi_september_score }}
+                                  </td>
+                                  <td>
+                                    {{ kpis.bu_kpi_october_score }}
+                                  </td>
+                                  <td>
+                                    {{ kpis.bu_kpi_november_score }}
+                                  </td>
+                                  <td>
+                                    {{ kpis.bu_kpi_december_score }}
+                                  </td>
+                                  <td>
+                                    {{ kpis.bu_kpi_january_score }}
+                                  </td>
+                                  <td>
+                                    {{ kpis.bu_kpi_february_score }}
+                                  </td>
+                                  <td>
+                                    {{ kpis.bu_kpi_march_score }}
+                                  </td>
+                                </tr>
+                          {% endif %}
+                            {% endfor %}
+
+                    {% endfor %}
+                         </tbody>
+                        </table>
+                     {% else %}
+                         <div class="alert alert-warning">
+                          <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
+                          It Appears you've not submitted any KPIs. Or all of them have been declined
+                        </div>
+                     {% endif %}
+                  </div>
+                </div>
               </div>
-              <!-- /.card-body -->
+              <!-- /.card -->
             </div>
-          </div>
-          <div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-             Mauris tincidunt mi at erat gravida, eget tristique urna bibendum. Mauris pharetra purus ut ligula tempor, et vulputate metus facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas sollicitudin, nisi a luctus interdum, nisl ligula placerat mi, quis posuere purus ligula eu lectus. Donec nunc tellus, elementum sit amet ultricies at, posuere nec nunc. Nunc euismod pellentesque diam.
-          </div>
-          <div class="tab-pane fade" id="custom-tabs-four-messages" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
-             Morbi turpis dolor, vulputate vitae felis non, tincidunt congue mauris. Phasellus volutpat augue id mi placerat mollis. Vivamus faucibus eu massa eget condimentum. Fusce nec hendrerit sem, ac tristique nulla. Integer vestibulum orci odio. Cras nec augue ipsum. Suspendisse ut velit condimentum, mattis urna a, malesuada nunc. Curabitur eleifend facilisis velit finibus tristique. Nam vulputate, eros non luctus efficitur, ipsum odio volutpat massa, sit amet sollicitudin est libero sed ipsum. Nulla lacinia, ex vitae gravida fermentum, lectus ipsum gravida arcu, id fermentum metus arcu vel metus. Curabitur eget sem eu risus tincidunt eleifend ac ornare magna.
-          </div>
-          <div class="tab-pane fade" id="custom-tabs-four-settings" role="tabpanel" aria-labelledby="custom-tabs-four-settings-tab">
-             Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna, iaculis tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor. Quisque tincidunt venenatis vulputate. Morbi euismod molestie tristique. Vestibulum consectetur dolor a vestibulum pharetra. Donec interdum placerat urna nec pharetra. Etiam eget dapibus orci, eget aliquet urna. Nunc at consequat diam. Nunc et felis ut nisl commodo dignissim. In hac habitasse platea dictumst. Praesent imperdiet accumsan ex sit amet facilisis.
-          </div>
-        </div>
-      </div>
-      <!-- /.card -->
-    </div>
-
   </div>
-    <div class="col-md-3">
-      <div class="small-box bg-info">
-        <div class="inner">
-          <h3>{{ total_kpi_score }}</h3>
-          <p>BU perfomance<a href="#" class="small-box-footer">
-            </p>
-        </a>
-        </div>
-      </div>
-    </div>
-  </div>
-<br>
-<br>
-<br>
-<!-- ./wrapper -->
-
+</div>
 <!-- page script -->
 <script>
   $(function () {
@@ -252,7 +299,6 @@
 <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{% static 'dist/js/demo.js' %}"></script>
-
 
 {% endblock %}
 

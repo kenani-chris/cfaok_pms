@@ -61,7 +61,8 @@ urlpatterns = [
 
 
     # Company Kpi Links
-    # path('Company/', views.company, name='Company_Dashboard'),
+    path('Company/', CompanyKpiDashboard.as_view(), name='Company_Dashboard'),
+    path('Company-Kpi/<uuid:pk>', CompanyDashboardKpiDetailView.as_view(), name='Company_Dashboard_Detail'),
     path('Company-Kpi/', CompanyKpi.as_view(), name='Company_Kpi_Dashboard'),
     path('Company-Kpi/Submit-Kpi/', SubmitCompanyKpiView.as_view(), name='Company_Kpi_Submit'),
     path('Company-Kpi/Edit-Kpi/', EditCompanyKpiView.as_view(), name='Company_Kpi_Edit'),

@@ -563,7 +563,6 @@ class bu_kpi(models.Model):
 
     bu_kpi_title = models.CharField(max_length=200)
     bu_kpi_details = models.TextField()
-    bu_kpi_target = models.FloatField()
     bu_kpi_weight = models.FloatField(null=True, blank=True)
     bu_kpi_units = models.CharField(max_length=5, null=True, blank=True)
 
@@ -656,7 +655,6 @@ class company_kpi(models.Model):
                                          blank=True)
     company_kpi_title = models.CharField(max_length=200)
     company_kpi_details = models.TextField()
-    company_kpi_target = models.FloatField()
     company_kpi_weight = models.FloatField(null=True, blank=True)
     company_kpi_units = models.CharField(max_length=5, null=True, blank=True)
 

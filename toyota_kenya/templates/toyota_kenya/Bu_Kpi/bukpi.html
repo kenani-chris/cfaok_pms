@@ -187,10 +187,11 @@
                   </div>
                   <div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
                      {% if my_kpi %}
-
-                        {% for kpi in my_kpi %}
                         <table id="example1" class="table table-bordered table-striped">
-                          <thead>
+
+                          <tbody>
+                        {% for kpi in my_kpi %}
+                            <thead>
                           <tr class="bg-info">
                               <th>Pillar</th>
                               <th colspan="10">{{ kpi.0 }}</th>
@@ -200,7 +201,6 @@
                           <tr>
                             <th>KPI</th>
                             <th>Function</th>
-                            <th>Target</th>
                             <th>Status</th>
                             <th>Apr</th>
                             <th>May</th>
@@ -216,7 +216,7 @@
                             <th>Mar</th>
                           </tr>
                           </thead>
-                          <tbody>
+
                             {% for kpis in kpi.1 %}
                                 {% if kpi.bu_kpi_status != "Rejected" %}
                                 <tr>
@@ -225,9 +225,6 @@
                                   </td>
                                   <td>
                                     {{ kpis.bu_kpi_function }}
-                                  </td>
-                                  <td>
-                                    {{ kpis.bu_kpi_target }}
                                   </td>
                                   {% if kpis.bu_kpi_status == "Pending" %}
                                     <td class="bg-warning">
@@ -277,9 +274,10 @@
                                 </tr>
                           {% endif %}
                             {% endfor %}
-                          </tbody>
-                        </table>
+
                     {% endfor %}
+                         </tbody>
+                        </table>
                      {% else %}
                          <div class="alert alert-warning">
                           <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>

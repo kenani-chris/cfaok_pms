@@ -15,6 +15,7 @@
               <table class="table table-bordered table-striped">
                 <thead>
                 <tr>
+                    <th>BU Leader</th>
                     <th>BU</th>
                     <th>Approved</th>
                     <th>Pending</th>
@@ -27,6 +28,13 @@
                 {% if bu is not None %}
                   {% if bu.2 > 0 %}
                       <tr>
+                          <td>
+                              <a href="{% url 'tamk:BUs_Approve_Kpi_Detail' bu.0.bu_id %}">
+                                  {% for staff in bu.5 %}
+                                        {{ staff.staff_person.get_full_name }},
+                                    {% endfor %}
+                              </a>
+                          </td>
                           <td>
                             <a href="{% url 'tamk:BUs_Approve_Kpi_Detail' bu.0.bu_id %}">{{ bu.0.bu_name }}</a>
                           </td>

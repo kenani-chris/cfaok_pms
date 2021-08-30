@@ -111,7 +111,7 @@ class SubmitBuKpiForm(forms.ModelForm):
     class Meta:
         model = bu_kpi
         fields = ['bu_kpi_bu', 'bu_kpi_title','bu_kpi_function', 'bu_kpi_details',
-                  'bu_kpi_target', 'bu_kpi_weight', 'bu_kpi_type', 'bu_kpi_pms', 'bu_kpi_bsc','bu_kpi_user', 'bu_kpi_submit_date',
+                  'bu_kpi_weight', 'bu_kpi_type', 'bu_kpi_pms', 'bu_kpi_bsc','bu_kpi_user', 'bu_kpi_submit_date',
                   'bu_kpi_last_edit', 'bu_kpi_status']
 
     bu_kpi_title = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}),
@@ -121,7 +121,6 @@ class SubmitBuKpiForm(forms.ModelForm):
     bu_kpi_type = forms.ChoiceField(choices=bu_kpi.type, widget=forms.Select(attrs={'class': 'form-control'}))
     bu_kpi_details = forms.CharField(
         widget=forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 80px'}), required=True)
-    bu_kpi_target = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}), required=True)
     bu_kpi_weight = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control'}), required=True)
 
 

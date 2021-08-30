@@ -2865,7 +2865,7 @@ class StaffBUKpiListView(ListView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BuKpiDashboard(TemplateView):
-    template_name = 'toyota_kenya/BU_Kpi/budashboard.html'
+    template_name = 'toyota_kenya/Bu_Kpi/budashboard.html'
     model = bu_kpi
 
     def get_context_data(self, **kwargs):
@@ -2882,25 +2882,32 @@ class BuKpiDashboard(TemplateView):
         else:
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
-
-            kpi = individual_Kpi.objects.filter(individual_kpi_user=self.request.user,
-                                                individual_kpi_pms=active_pms)
-            context['my_kpi'] = kpi
-            context['approved1_kpi'] = kpi.filter(individual_kpi_status='Approved 1')
-            context['approved2_kpi'] = kpi.filter(individual_kpi_status='Approved 2')
-            context['pending_kpi'] = kpi.filter(individual_kpi_status='Pending')
-            context['edit_kpi'] = kpi.filter(individual_kpi_status='Edit')
-            context['rejected1_kpi'] = kpi.filter(individual_kpi_status='Rejected 1')
-            context['rejected2_kpi'] = kpi.filter(individual_kpi_status='Rejected 2')
+            kpis = []
+            for pillar in bsc.objects.filter(bsc_pms=active_pms):
+                bu_pillar_weight = bu_bsc.objects.filter(bu_bsc_pillar=pillar, bu_bsc_bu=staff_person.staff_bu)
+                if bu_pillar_weight:
+                    bu_pillar_weight = bu_pillar_weight.first()
+                    bu_pillar_weight = bu_pillar_weight.bsc_pillar_weight
+                else:
+                    bu_pillar_weight = pillar.bsc_weight
+                kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_bu, bu_kpi_pms=active_pms,
+                                            bu_kpi_bsc=pillar.bsc_id)
+                kpis.append([pillar, kpi, bu_pillar_weight])
+            kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_head_bu, bu_kpi_pms=active_pms,)
+            context['my_kpi'] = kpis
+            context['approved'] = kpi.filter(bu_kpi_status='Approved')
+            context['pending'] = kpi.filter(bu_kpi_status='Pending')
+            context['edit_kpi'] = kpi.filter(bu_kpi_status='Edit')
+            context['rejected'] = kpi.filter(bu_kpi_status='Rejected')
 
             context['required_count'] = pms.pms_individual_kpi_number
-            context['submitted_count'] = context['approved1_kpi'].count() + context['approved2_kpi'].count() + \
-                                         context['pending_kpi'].count() + context['edit_kpi'].count() + \
-                                         context['rejected1_kpi'].count()
-            context['rejected_count'] = context['rejected2_kpi'].count()
-            context['pending_count'] = context['pending_kpi'].count() + context['rejected1_kpi'].count() + \
-                                       context['edit_kpi'].count()
+            context['submitted_count'] = context['approved'].count() + context['pending'].count() + \
+                                         context['edit_kpi'].count()
+            context['rejected_count'] = context['rejected'].count()
+            context['pending_count'] = context['pending'].count() + context['edit_kpi'].count()
+            context['now'] = datetime.date.today()
         return context
+
 
 
 @method_decorator(login_required, name='dispatch')
@@ -3478,9 +3485,51 @@ class BuKpiResultUpdateView(UpdateView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
-class CoKpiDashboard(TemplateView):
+class CompanyKpiDashboard(TemplateView):
     template_name = 'toyota_kenya/Company_Kpi/companydashboard.html'
-    model = bu_kpi
+    model = company_kpi
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
+        context['user_is_bu_head'] = staff_person.staff_head_bu
+        context['user_is_md'] = staff_person.staff_md
+        context['user_is_tl'] = staff_person.staff_head_team
+        context['user_team'] = staff_person.staff_team
+        context['user_bu'] = staff_person.staff_bu
+
+        if pms.objects.filter(pms_status='Active').count() != 1:
+            context['pms'] = None
+        else:
+            active_pms = pms.objects.get(pms_status='Active')
+            context['pms'] = active_pms
+            kpis = []
+            for pillars in bsc.objects.all():
+                kpi = company_kpi.objects.filter(company_kpi_pms=active_pms, company_kpi_bsc=pillars.bsc_id)
+                kpis.append([pillars, kpi])
+            kpi = company_kpi.objects.filter(company_kpi_pms=active_pms)
+            context['my_kpi'] = kpis
+            context['approved'] = kpi.filter(company_kpi_status='Approved')
+            context['pending'] = kpi.filter(company_kpi_status='Pending')
+            context['edit_kpi'] = kpi.filter(company_kpi_status='Edit')
+            context['rejected'] = kpi.filter(company_kpi_status='Rejected')
+
+            context['required_count'] = pms.pms_individual_kpi_number
+            context['submitted_count'] = context['approved'].count() + context['pending'].count() + \
+                                         context['edit_kpi'].count()
+            context['rejected_count'] = context['rejected'].count()
+            context['pending_count'] = context['pending'].count() + context['edit_kpi'].count()
+            context['now'] = datetime.date.today()
+        return context
+
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class CompanyDashboardKpiDetailView(DetailView):
+    model = company_kpi
+    template_name = 'toyota_kenya/Company_Kpi/company_one_individual_kpi.html'
+    pk_url_kwarg = 'pk'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -3497,23 +3546,19 @@ class CoKpiDashboard(TemplateView):
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
 
-            kpi = individual_Kpi.objects.filter(individual_kpi_user=self.request.user,
-                                                individual_kpi_pms=active_pms)
+            kpi = company_kpi.objects.filter(company_kpi_pms=active_pms)
             context['my_kpi'] = kpi
-            context['approved1_kpi'] = kpi.filter(individual_kpi_status='Approved 1')
-            context['approved2_kpi'] = kpi.filter(individual_kpi_status='Approved 2')
-            context['pending_kpi'] = kpi.filter(individual_kpi_status='Pending')
-            context['edit_kpi'] = kpi.filter(individual_kpi_status='Edit')
-            context['rejected1_kpi'] = kpi.filter(individual_kpi_status='Rejected 1')
-            context['rejected2_kpi'] = kpi.filter(individual_kpi_status='Rejected 2')
+            context['approved'] = kpi.filter(company_kpi_status='Approved')
+            context['pending'] = kpi.filter(company_kpi_status='Pending')
+            context['edit_kpi'] = kpi.filter(company_kpi_status='Edit')
+            context['rejected'] = kpi.filter(company_kpi_status='Rejected')
 
             context['required_count'] = pms.pms_individual_kpi_number
-            context['submitted_count'] = context['approved1_kpi'].count() + context['approved2_kpi'].count() + \
-                                         context['pending_kpi'].count() + context['edit_kpi'].count() + \
-                                         context['rejected1_kpi'].count()
-            context['rejected_count'] = context['rejected2_kpi'].count()
-            context['pending_count'] = context['pending_kpi'].count() + context['rejected1_kpi'].count() + \
-                                       context['edit_kpi'].count()
+            context['submitted_count'] = context['approved'].count() + context['pending'].count() + \
+                                         context['edit_kpi'].count()
+            context['rejected_count'] = context['rejected'].count()
+            context['pending_count'] = context['pending'].count() + context['edit_kpi'].count()
+            context['now'] = datetime.date.today()
         return context
 
 
@@ -4776,7 +4821,7 @@ class SubmitCheckIn(CreateView):
 
     def form_valid(self, form):
         super(SubmitCheckIn, self).form_valid(form)
-        user_team = get_object_or_404(staff, pk=self.request.user.id)
+        user_team = get_object_or_404(staff, staff_person=self.request.user.id)
         user_team = user_team.staff_team
         e_message = ""
         if user_team is not None:
@@ -4784,7 +4829,8 @@ class SubmitCheckIn(CreateView):
             if team_leader:
                 e_message = 'you have one CheckIn from ' + self.request.user.get_full_name() + ' that requires your approval'
                 for tl in team_leader:
-                    send_email_pms('KPI Approval', User.objects.get(pk=tl.staff_person.id), self.request.user, e_message)
+                    send_email_pms('KPI Approval', User.objects.get(pk=tl.staff_person.id), self.request.user,
+                                   e_message)
 
             else:
                 team_leader = None
@@ -5059,11 +5105,11 @@ class StaffCheckIn(TemplateView):
                 ci_pending_count = 0
                 ci_zero_count = 0
                 for member in team_members:
-                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Confirmed').count()
-                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                               checkIn_status='Pending').count()
-                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Rejected').count()
 
                     total_ci = staff_approved_ci + staff_pending_ci
@@ -5118,11 +5164,11 @@ class StaffApproveCheckIn(TemplateView):
                 ci_pending_count = 0
                 ci_zero_count = 0
                 for member in team_members:
-                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Confirmed').count()
-                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                               checkIn_status='Pending').count()
-                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Rejected').count()
 
                     total_ci = staff_approved_ci + staff_pending_ci
@@ -5179,11 +5225,11 @@ class StaffApproveStaffCheckIn(DetailView):
                 ci_pending_count = 0
                 ci_zero_count = 0
                 for member in team_members:
-                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Confirmed').count()
-                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                               checkIn_status='Pending').count()
-                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Rejected').count()
 
                     total_ci = staff_approved_ci + staff_pending_ci
@@ -5249,11 +5295,11 @@ class StaffApproveStaffCheckInOne(UpdateView):
                 ci_pending_count = 0
                 ci_zero_count = 0
                 for member in team_members:
-                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Confirmed').count()
-                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                               checkIn_status='Pending').count()
-                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Rejected').count()
 
                     total_ci = staff_approved_ci + staff_pending_ci
@@ -5334,11 +5380,11 @@ class StaffTrackCheckIn(TemplateView):
                 ci_pending_count = 0
                 ci_zero_count = 0
                 for member in team_members:
-                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Confirmed').count()
-                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                               checkIn_status='Pending').count()
-                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Rejected').count()
 
                     total_ci = staff_approved_ci + staff_pending_ci
@@ -5395,11 +5441,11 @@ class StaffTrackStaffCheckIn(DetailView):
                 ci_pending_count = 0
                 ci_zero_count = 0
                 for member in team_members:
-                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Confirmed').count()
-                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                               checkIn_status='Pending').count()
-                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Rejected').count()
 
                     total_ci = staff_approved_ci + staff_pending_ci
@@ -5463,11 +5509,11 @@ class StaffTrackStaffDetailCheckIn(DetailView):
                 ci_pending_count = 0
                 ci_zero_count = 0
                 for member in team_members:
-                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_approved_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Confirmed').count()
-                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_pending_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                               checkIn_status='Pending').count()
-                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.id, checkIn_pms_id=active_pms,
+                    staff_rejected_ci = checkIn.objects.filter(checkIn_staff=member.staff_person, checkIn_pms_id=active_pms,
                                                                checkIn_status='Rejected').count()
 
                     total_ci = staff_approved_ci + staff_pending_ci

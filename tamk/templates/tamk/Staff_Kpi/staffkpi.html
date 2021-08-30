@@ -5,7 +5,7 @@
   <div class="col-md-2">
     <div class="card card-primary card-outline">
       <div class="card-body box-profile">
-        <h2 class="profile-username text-center">MY Staff KPIs</h2>
+        <h2 class="profile-username text-center">Staff KPIs</h2>
         <hr>
         <br>
         <p class="text-center">
@@ -14,25 +14,21 @@
         </p>
         <br>
         <ul class="list-group list-group-unbordered mb-3">
-          {% if user_is_bu_head is not None %}
-              <li class="list-group-item">
-                My Staff KPI
-              </li>
-          {% endif %}
+          <li class="list-group-item">My Staff</li>
           <li class="list-group-item">
+
             <a href="{% url 'tamk:Staff_Approve_Kpi' %}" class="btn btn-primary btn-block"><b>Approve KPI{% if team_pending > 0 %} <span class="badge badge-danger float-right">{{ team_pending }}</span>{% endif %}</b></a>
             <a href="{% url 'tamk:Staff_Track_Kpi' %}" class="btn btn-primary btn-block"><b>Staff KPI</b></a>
           </li>
-          {% if user_is_bu_head is not None %}
-              <li class="list-group-item">
-                BU members KPI
-              </li>
-              <li class="list-group-item">
-                <a href="{% url 'tamk:Staff_Approve_Kpi' %}" class="btn btn-primary btn-block"><b>Approve KPI{% if team_pending > 0 %} <span class="badge badge-danger float-right">{{ team_pending }}</span>{% endif %}</b></a>
-                <a href="{% url 'tamk:Staff_Track_Kpi' %}" class="btn btn-primary btn-block"><b>Staff KPI</b></a>
-              </li>
 
-          {% endif %}
+
+          {% if user_is_bu_head is not None %}
+              <li class="list-group-item">BU Staff KPI
+                <a href="{% url 'tamk:Staff_BU_Approve_Kpi' %}" class="btn btn-primary btn-block"><b>Approve KPI{% if bu_pending > 0 %} <span class="badge badge-danger float-right">{{ bu_pending }}</span>{% endif %}</b></a>
+                <!--<a href="{% url 'tamk:Staff_Track_Kpi' %}" class="btn btn-primary btn-block"><b>BU Staff KPI</b></a>-->
+              </li>
+            {% endif %}
+
         </ul>
       </div>
       <!-- /.card-body -->
@@ -41,7 +37,7 @@
   <div class="col-md-10">
     <div class="row">
       <div class="col-md-3 col-sm-6 col-12">
-        <a href="{% url 'tamk:Individual_Kpi_Detail1' %}">
+        <a href="{% url 'tamk:Staff_Track_Kpi' %}">
           <div class="info-box bg-info">
             <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
 
@@ -63,7 +59,7 @@
       </div>
       <!-- /.col -->
       <div class="col-md-3 col-sm-6 col-12">
-        <a href="{% url 'tamk:Individual_Kpi_Detail1' %}">
+        <a href="{% url 'tamk:Staff_Track_Kpi' %}">
           <div class="info-box bg-success">
             <span class="info-box-icon"><i class="far fa-thumbs-up"></i></span>
             <div class="info-box-content">
@@ -84,7 +80,7 @@
       </div>
       <!-- /.col -->
       <div class="col-md-3 col-sm-6 col-12">
-        <a href="{% url 'tamk:Individual_Kpi_Detail1' %}">
+        <a href="{% url 'tamk:Staff_Track_Kpi' %}">
           <div class="info-box bg-warning">
             <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
 
@@ -106,7 +102,7 @@
       </div>
       <!-- /.col -->
       <div class="col-md-3 col-sm-6 col-12">
-        <a href="{% url 'tamk:Individual_Kpi_Detail1' %}">
+        <a href="{% url 'tamk:Staff_Track_Kpi' %}">
           <div class="info-box bg-danger">
             <span class="info-box-icon"><i class="fas fa-thumbs-down"></i></span>
 
@@ -128,6 +124,97 @@
       </div>
       <!-- /.col -->
     </div>
+    {% if user_is_bu_head %}
+        <div class="row">
+      <div class="col-md-3 col-sm-6 col-12">
+        <a href="{% url 'tamk:Staff_Track_Kpi' %}">
+          <div class="info-box bg-info">
+            <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">BU Menbers</span>
+              <span class="info-box-number">{{ bu_members.count }}</span>
+
+              <div class="progress">
+                <div class="progress-bar" style="width: 100%"></div>
+              </div>
+              <span class="progress-description">
+                <small>Number of BU members</small>
+              </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+        </a>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-md-3 col-sm-6 col-12">
+        <a href="{% url 'tamk:Staff_Track_Kpi' %}">
+          <div class="info-box bg-success">
+            <span class="info-box-icon"><i class="far fa-thumbs-up"></i></span>
+            <div class="info-box-content">
+              <span class="info-box-text">Approved</span>
+              <span class="info-box-number">{{ bu_approved }} Staff</span>
+
+              <div class="progress">
+                <div class="progress-bar" style="width:100%"></div>
+              </div>
+              <span class="progress-description">
+                <small>BU Members with KPIs approved</small>
+              </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+        </a>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-md-3 col-sm-6 col-12">
+        <a href="{% url 'tamk:Staff_Track_Kpi' %}">
+          <div class="info-box bg-warning">
+            <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Pending</span>
+              <span class="info-box-number">{{ bu_pending }} Staff</span>
+
+              <div class="progress">
+                <div class="progress-bar" style="width: 100%"></div>
+              </div>
+              <span class="progress-description">
+                <small>BU Members with KPIs pending</small>
+              </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+        </a>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-md-3 col-sm-6 col-12">
+        <a href="{% url 'tamk:Staff_Track_Kpi' %}">
+          <div class="info-box bg-danger">
+            <span class="info-box-icon"><i class="fas fa-thumbs-down"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Zero</span>
+              <span class="info-box-number">{{ bu_zero }} Staff</span>
+
+              <div class="progress">
+                <div class="progress-bar" style="width: 100%"></div>
+              </div>
+              <span class="progress-description">
+                <small>BU Members with no KPIs</small>
+              </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+        </a>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+    </div>
+    {% endif %}
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">My Staff KPIs</h3>
@@ -136,7 +223,7 @@
       <div class="card-body">
         <div style="overflow-x:scroll">
           {% if team_members %}
-            <table id="example1" class="table table-bordered table-striped">
+            <table id="example" class="table table-bordered table-striped">
               <thead>
               <tr>
                 <th>Staff</th>
@@ -288,6 +375,169 @@
       </div>
       <!-- /.card-body -->
     </div>
+
+    {% if user_is_bu_head %}
+        <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">BU Members KPIs</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        <div style="overflow-x:scroll">
+          {% if bu_members %}
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>Staff</th>
+                <th>PF</th>
+                <th>Approved 2</th>
+                <th>Approved 1</th>
+                <th>Pending</th>
+                <th>Rejected</th>
+                <th>Total</th>
+              </tr>
+              </thead>
+              <tbody>
+            {% for member in bu_members_kpi %}
+              {% if member is not None %}
+                <tr>
+                  <td>
+                    {{ member.0 }}
+                  </td>
+                  <td>
+                    {{ member.1 }}
+                  </td>
+                  <td>
+                    {{ member.2 }}
+                  </td>
+                  <td>
+                    {{ member.3 }}
+                  </td>
+                  <td>
+                    {{ member.4 }}
+                  </td>
+                  <td>
+                    {{ member.5 }}
+                  </td>
+                  <td>
+                    {{ member.6 }}
+                  </td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+              </tbody>
+              <tfoot>
+
+              </tfoot>
+            </table>
+          {% else %}
+            <div class="alert alert-warning">
+              <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
+              It Appears you've you've got no team members
+            </div>
+          {% endif %}
+
+
+          <!--{% if my_kpi %}
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>KPI</th>
+                <th>Function</th>
+                <th>Target</th>
+                <th>Status</th>
+                <th>Apr</th>
+                <th>May</th>
+                <th>Jun</th>
+                <th>Jul</th>
+                <th>Aug</th>
+                <th>Sep</th>
+                <th>Oct</th>
+                <th>Nov</th>
+                <th>Dec</th>
+                <th>Jan</th>
+                <th>Feb</th>
+                <th>Mar</th>
+              </tr>
+              </thead>
+              <tbody>
+            {% for kpi in my_kpi %}
+              {% if kpi.individual_kpi_status != "Rejected" %}
+                <tr>
+                  <td>
+                    {{ kpi.individual_kpi_title }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_function }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_target }}
+                  </td>
+                  {% if kpi.individual_kpi_status == "Pending" %}
+                    <td class="bg-warning">
+                      {{ kpi.individual_kpi_status }}
+                    </td>
+                  {% else %}
+                    <td>
+                      {{ kpi.individual_kpi_status }}
+                    </td>
+                  {% endif %}
+                  <td>
+                    {{ kpi.individual_kpi_april_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_may_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_june_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_july_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_august_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_september_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_october_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_november_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_december_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_january_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_february_score }}
+                  </td>
+                  <td>
+                    {{ kpi.individual_kpi_march_score }}
+                  </td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+              </tbody>
+              <tfoot>
+
+              </tfoot>
+            </table>
+          {% else %}
+            <div class="alert alert-warning">
+              <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
+              It Appears you've not submitted any KPIs. Or all of them have been declined
+            </div>
+          {% endif %}
+          -->
+        </div>
+      </div>
+      <!-- /.card-body -->
+    </div>
+    {% endif %}
   </div>
 </div>
 <script>

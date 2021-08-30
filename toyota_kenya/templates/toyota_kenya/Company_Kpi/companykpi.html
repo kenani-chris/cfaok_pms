@@ -121,106 +121,177 @@
       <!-- /.card-header -->
       <div class="card-body">
         <div style="overflow-x:scroll">
-          {% if my_kpi %}
-            {% for kpi in my_kpi %}
-                <table id="example1" class="table table-bordered table-striped">
-              <thead>
-              <tr>
-                  <th>Pillar</th>
-                  <th colspan="15" class="bg-info">{{ kpi.0 }}</th>
-              </tr>
-              <tr>
-                <th>KPI</th>
-                <th>Function</th>
-                <th>Target</th>
-                <th>Status</th>
-                <th>Apr</th>
-                <th>May</th>
-                <th>Jun</th>
-                <th>Jul</th>
-                <th>Aug</th>
-                <th>Sep</th>
-                <th>Oct</th>
-                <th>Nov</th>
-                <th>Dec</th>
-                <th>Jan</th>
-                <th>Feb</th>
-                <th>Mar</th>
-              </tr>
-              </thead>
-              <tbody>
-                {% for kpis in kpi.1 %}
-                    {% if kpis.company_kpi_status != "Rejected" %}
-                <tr>
-                  <td>
-                    {{ kpis.company_kpi_title }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_function }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_target }}
-                  </td>
-                  {% if kpis.company_kpi_status == "Pending" %}
-                    <td class="bg-warning">
-                      {{ kpis.company_kpi_status }}
-                    </td>
-                  {% else %}
-                    <td>
-                      {{ kpis.company_kpi_status }}
-                    </td>
-                  {% endif %}
-                  <td>
-                    {{ kpis.company_kpi_april_score }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_may_score }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_june_score }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_july_score }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_august_score }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_september_score }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_october_score }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_november_score }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_december_score }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_january_score }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_february_score }}
-                  </td>
-                  <td>
-                    {{ kpis.company_kpi_march_score }}
-                  </td>
-                </tr>
-              {% endif %}
-                {% endfor %}
-            {% endfor %}
-              </tbody>
-              <tfoot>
+          <div class="card card-primary card-outline card-outline-tabs">
+              <div class="card-header p-0 border-bottom-0">
+                <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                  <li class="nav-item">
+                    <div class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">BSC Template</div>
+                  </li>
+                  <li class="nav-item">
+                    <div class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">KPIs</div>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-body">
+                <div class="tab-content" id="custom-tabs-four-tabContent">
+                  <div class="tab-pane fade show active" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                      {% if my_kpi %}
+                            <table id="example1" class="table table-bordered table-striped">
+                              <thead>
+                                <tr>
+                                    <th>Pillar</th>
+                                    <th>Objective</th>
+                                    <th>Weight</th>
+                                    <th>S</th>
+                                    <th>A</th>
+                                    <th>B</th>
+                                    <th>C</th>
+                                    <th>D</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                         {% for kpi in my_kpi %}
 
-              </tfoot>
-            </table>
+                              <tr>
+                                  <th rowspan="{{ kpi.1.count }}"class="bg-info">{{ kpi.0 }}</th>
+                                  {% if kpi.1.count > 0 %}
+                                      <th>{{ kpi.1.0.company_kpi_title }}</th>
+                                      <td>{{ kpi.1.0.company_kpi_weight }}</td>
+                                      <td>{{ kpi.1.0.company_kpi_s_score }}</td>
+                                      <td>{{ kpi.1.0.company_kpi_a_score }}</td>
+                                      <td>{{ kpi.1.0.company_kpi_b_score }}</td>
+                                      <td>{{ kpi.1.0.company_kpi_c_score }}</td>
+                                      <td>{{ kpi.1.0.company_kpi_d_score }}</td>
+                                  {% endif %}
+                              </tr>
+                              {% if kpi.1.count > 1 %}
+                                  {% for k in kpi.1 %}
+                                      {% if k == kpi.1.0  %}
+                                      {% else %}
+                                          <tr>
+                                            <th>{{ k.company_kpi_title }}</th>
+                                            <td>{{ k.company_kpi_weight }}</td>
+                                            <td>{{ k.company_kpi_s_score }}</td>
+                                            <td>{{ k.company_kpi_a_score }}</td>
+                                            <td>{{ k.company_kpi_b_score }}</td>
+                                            <td>{{ k.company_kpi_c_score }}</td>
+                                            <td>{{ k.company_kpi_d_score }}</td>
+                                          </tr>
+                                      {% endif %}
+                                  {% endfor %}
+                              {% endif %}
+
+                        {% endfor %}
+                            </tbody>
+
+                            </table>
+                       {% endif %}
+
+                  </div>
+                <div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                 {% if my_kpi %}
+                     <table id="example1" class="table table-bordered table-striped">
+                    {% for kpi in my_kpi %}
+
+                      <thead>
+                      <tr>
+                          <th>Pillar</th>
+                          <th colspan="15" class="bg-info">{{ kpi.0 }}</th>
+                      </tr>
+                      <tr>
+                        <th>KPI</th>
+                        <th>Function</th>
+                        <th>Target</th>
+                        <th>Status</th>
+                        <th>Apr</th>
+                        <th>May</th>
+                        <th>Jun</th>
+                        <th>Jul</th>
+                        <th>Aug</th>
+                        <th>Sep</th>
+                        <th>Oct</th>
+                        <th>Nov</th>
+                        <th>Dec</th>
+                        <th>Jan</th>
+                        <th>Feb</th>
+                        <th>Mar</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                        {% for kpis in kpi.1 %}
+                            {% if kpis.company_kpi_status != "Rejected" %}
+                        <tr>
+                          <td>
+                            {{ kpis.company_kpi_title }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_function }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_target }}
+                          </td>
+                          {% if kpis.company_kpi_status == "Pending" %}
+                            <td class="bg-warning">
+                              {{ kpis.company_kpi_status }}
+                            </td>
+                          {% else %}
+                            <td>
+                              {{ kpis.company_kpi_status }}
+                            </td>
+                          {% endif %}
+                          <td>
+                            {{ kpis.company_kpi_april_score }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_may_score }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_june_score }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_july_score }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_august_score }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_september_score }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_october_score }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_november_score }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_december_score }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_january_score }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_february_score }}
+                          </td>
+                          <td>
+                            {{ kpis.company_kpi_march_score }}
+                          </td>
+                        </tr>
+                      {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                      </tbody>
+                      <tfoot>
+
+                      </tfoot>
+
           {% else %}
+                     </table>
             <div class="alert alert-warning">
               <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
               It Appears you've not submitted any KPIs. Or all of them have been declined
             </div>
           {% endif %}
+                </div>
         </div>
       </div>
       <!-- /.card-body -->

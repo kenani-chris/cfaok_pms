@@ -25,12 +25,22 @@
                 <form action="" method="post">
                   {% csrf_token %}
                   <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>TGT</th>
+                            <th>ACT</th>
+                        </tr>
+                    </thead>
                     <tbody>
 
                       <tr>
                         <th>
                           Apr
                         </th>
+                        <td>
+                            {{ individual_kpi.individual_kpi_april_target }}
+                        </td>
                         <td>
                             {% if april == 'reveal' %}
                                 {{ form.individual_kpi_april_score }}
@@ -44,6 +54,10 @@
                         <th>
                           May
                         </th>
+
+                        <td>
+                            {{ individual_kpi.individual_kpi_may_target }}
+                        </td>
                         <td>
                             {% if may == 'reveal' %}
                                 {{ form.individual_kpi_may_score }}
@@ -57,6 +71,10 @@
                         <th>
                           Jun
                         </th>
+
+                        <td>
+                            {{ individual_kpi.individual_kpi_june_target }}
+                        </td>
                         <td>
                             {% if june == 'reveal' %}
                                 {{ form.individual_kpi_june_score }}
@@ -70,6 +88,10 @@
                         <th>
                           Jul
                         </th>
+
+                        <td>
+                            {{ individual_kpi.individual_kpi_july_target }}
+                        </td>
                         <td>
                             {% if july == 'reveal' %}
                                 {{ form.individual_kpi_july_score }}
@@ -83,6 +105,10 @@
                         <th>
                           Aug
                         </th>
+
+                        <td>
+                            {{ individual_kpi.individual_kpi_august_target }}
+                        </td>
                         <td>
                             {% if august == 'reveal' %}
                                 {{ form.individual_kpi_august_score }}
@@ -96,6 +122,10 @@
                         <th>
                           Sep
                         </th>
+
+                        <td>
+                            {{ individual_kpi.individual_kpi_september_target }}
+                        </td>
                         <td>
                             {% if september == 'reveal' %}
                                 {{ form.individual_kpi_september_score }}
@@ -109,6 +139,10 @@
                         <th>
                           Oct
                         </th>
+
+                        <td>
+                            {{ individual_kpi.individual_kpi_october_target }}
+                        </td>
                         <td>
                             {% if october == 'reveal' %}
                                 {{ form.individual_kpi_october_score }}
@@ -122,6 +156,10 @@
                         <th>
                           Nov
                         </th>
+
+                        <td>
+                            {{ individual_kpi.individual_kpi_november_target }}
+                        </td>
                         <td>
                             {% if november == 'reveal' %}
                                 {{ form.individual_kpi_november_score }}
@@ -135,6 +173,10 @@
                         <th>
                           Dec
                         </th>
+
+                        <td>
+                            {{ individual_kpi.individual_kpi_december_target }}
+                        </td>
                         <td>
                             {% if december == 'reveal' %}
                                 {{ form.individual_kpi_december_score }}
@@ -148,6 +190,10 @@
                         <th>
                           Jan
                         </th>
+
+                        <td>
+                            {{ individual_kpi.individual_kpi_january_target }}
+                        </td>
                         <td>
                             {% if january == 'reveal' %}
                                 {{ form.individual_kpi_january_score }}
@@ -161,6 +207,10 @@
                         <th>
                           Feb
                         </th>
+
+                        <td>
+                            {{ individual_kpi.individual_kpi_february_target }}
+                        </td>
                         <td>
                             {% if february == 'reveal' %}
                                 {{ form.individual_kpi_february_score }}
@@ -174,6 +224,10 @@
                         <th>
                           Mar
                         </th>
+
+                        <td>
+                            {{ individual_kpi.individual_kpi_march_target }}
+                        </td>
                         <td>
                             {% if march == 'reveal' %}
                                 {{ form.individual_kpi_march_score }}
@@ -315,7 +369,7 @@
           pointStrokeColor    : 'rgba(60,141,188,1)',
           pointHighlightFill  : '#fff',
           pointHighlightStroke: 'rgba(60,141,188,1)',
-          data                : [{{ individual_kpi.individual_kpi_target }}, {{ individual_kpi.individual_kpi_target }}, {{ individual_kpi.individual_kpi_target }}, {{ individual_kpi.individual_kpi_target }}, {{ individual_kpi.individual_kpi_target }}, {{ individual_kpi.individual_kpi_target }}, {{ individual_kpi.individual_kpi_target }}, {{ individual_kpi.individual_kpi_target }}, {{ individual_kpi.individual_kpi_target }}, {{ individual_kpi.individual_kpi_target }}, {{ individual_kpi.individual_kpi_target }}, {{ individual_kpi.individual_kpi_target }}]
+          data                : [{{ individual_kpi.individual_kpi_april_target }}, {{ individual_kpi.individual_kpi_may_target }}, {{ individual_kpi.individual_kpi_june_target }}, {{ individual_kpi.individual_kpi_july_target }}, {{ individual_kpi.individual_kpi_august_target }}, {{ individual_kpi.individual_kpi_september_target }}, {{ individual_kpi.individual_kpi_october_target }}, {{ individual_kpi.individual_kpi_november_target }}, {{ individual_kpi.individual_kpi_december_target }}, {{ individual_kpi.individual_kpi_january_target }}, {{ individual_kpi.individual_kpi_february_target }}, {{ individual_kpi.individual_kpi_march_target }}]
         },
         {
           label               : 'Electronics',
