@@ -20,17 +20,30 @@
   <div class="col-md-2">
     <div class="card card-primary card-outline">
       <div class="card-body box-profile">
-        <h2 class="profile-username text-center">MY Staff KPIs</h2>
+        <h2 class="profile-username text-center">MY Staff CIs</h2>
         <hr>
         <br>
 
         <br>
         <ul class="list-group list-group-unbordered mb-3">
+          {% if user_is_bu_head is not None %}
+              <li class="list-group-item">
+                My Staff CI
+              </li>
+          {% endif %}
           <li class="list-group-item">
             <a href="{% url 'cfao_kenya:Staff_Check-In_Kpi_Dashboard' %}" class="btn btn-primary btn-block"><b>CI Dashboard</b></a>
             <a href="{% url 'cfao_kenya:Staff_Approve_CI' %}" class="btn btn-primary btn-block"><b>Approve CI {% if ci_pending_count > 0 %} <span class="badge badge-danger float-right">{{ ci_pending_count }}</span>{% endif %}</b></a>
             <a href="{% url 'cfao_kenya:Staff_Track_CI' %}" class="btn btn-primary btn-block"><b>Track CI</b></a>
           </li>
+          {% if user_is_bu_head is not None %}
+              <li class="list-group-item">
+                Bu Members CI
+              </li>
+              <li class="list-group-item">
+              <a href="{% url 'cfao_kenya:Staff_Track_CI_BU' %}" class="btn btn-primary btn-block"><b>Track CI</b></a>
+              </li>
+          {% endif %}
         </ul>
       </div>
       <!-- /.card-body -->

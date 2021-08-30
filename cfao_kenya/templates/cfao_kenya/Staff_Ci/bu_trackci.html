@@ -1,5 +1,5 @@
 {% extends "cfao_kenya/Staff_Ci/default.html" %}
-{% block pagetitle %}Track my Staff CIs{% endblock %}
+{% block pagetitle %}Track BU CIs{% endblock %}
 {% block kpicontent %}
 
   <div class="col-md-10">
@@ -26,7 +26,7 @@
               {% if member is not None %}
                 <tr>
                   <td>
-                    <a href="{% url 'cfao_kenya:Staff_Track_CI_Staff' member.0.id %}" >{{ member.0.get_full_name }}</a>
+                    <a href="{% url 'cfao_kenya:Staff_Track_CI_Staff_BU' member.0.id %}" >{{ member.0.get_full_name }}</a>
                   </td>
                   <td>
                     {{ member.1 }}
