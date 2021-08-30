@@ -82,9 +82,6 @@
           </table>
             <div class="card-footer">
             <div class="float-right" style="margin:5px">
-              <a href="{% url 'tydia:Staff_Reject_Individual_CI' staff_u.id  ci.checkIn_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
-            </div>
-            <div class="float-right" style="margin:5px">
               <a href="{% url 'tydia:Staff_Approve_Individual_CI' staff_u.id  ci.checkIn_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
             </div>
           </div>

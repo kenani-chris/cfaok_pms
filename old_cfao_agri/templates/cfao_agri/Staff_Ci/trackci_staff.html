@@ -1,0 +1,55 @@
+{% extends "cfao_agri/Staff_Ci/default.html" %}
+{% block pagetitle %}Track CI{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ staff.get_full_name }} Check-Ins</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        <div style="overflow-x:scroll">
+            {% if all_ci %}
+              <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>Staff</th>
+                  <th>Status</th>
+                  <th>Submit Date</th>
+                </tr>
+                </thead>
+                <tbody>
+              {% for ci in all_ci %}
+                <tr>
+                  <td>
+                    <a href="{% url 'cfao_agri:Staff_Track_CI_Detail' staff.id ci.checkIn_id %}">{{ ci.checkIn_month }} CheckIn</a>
+                  </td>
+                  <td>
+                    {{ ci.checkIn_status }}
+                  </td>
+                  <td>
+                    {{ ci.checkIn_submit_date }}
+                  </td>
+                  </td>
+                </tr>
+              {% endfor %}
+                </tbody>
+                <tfoot>
+
+                </tfoot>
+              </table>
+            {% else %}
+              <div class="alert alert-warning">
+                <h5><i class="icon fas fa-ban"></i> No CIs found</h5>
+                It Appears {{ staff_u.get_full_name }} got no Pending Check-Ins from your team members
+              </div>
+            {% endif %}
+
+        </div>
+      </div>
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}

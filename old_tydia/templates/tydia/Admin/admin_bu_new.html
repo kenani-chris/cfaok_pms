@@ -1,0 +1,46 @@
+{% extends "tydia/Admin/default.html" %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">New BU</h4>
+        </div>
+      <div class="card-body">
+
+        <div style="overflow-x:scroll">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.errors }}
+                {{ form.bu_id.as_hidden }}
+            <table id="example1" class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>
+                            BU Name
+                        </th>
+                        <td>
+                            {{ form.bu_name }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            BU Abbr
+                        </th>
+                        <td>
+                            {{ form.bu_abbreviation }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+                <button class="btn btn-success" type="submit">Save</button>
+            </form>
+        </div>
+      </div>
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}
+

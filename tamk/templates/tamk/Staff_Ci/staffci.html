@@ -9,10 +9,23 @@
         <br>
         <br>
         <ul class="list-group list-group-unbordered mb-3">
+          {% if user_is_bu_head is not None %}
+              <li class="list-group-item">
+                My Staff CI
+              </li>
+          {% endif %}
           <li class="list-group-item">
             <a href="{% url 'tamk:Staff_Approve_CI' %}" class="btn btn-primary btn-block"><b>Approve CI {% if ci_pending_count > 0 %} <span class="badge badge-danger float-right">{{ ci_pending_count }}</span>{% endif %}</b></a>
             <a href="{% url 'tamk:Staff_Track_CI' %}" class="btn btn-primary btn-block"><b>Track CI</b></a>
           </li>
+          {% if user_is_bu_head is not None %}
+              <li class="list-group-item">
+                Bu Members CI
+              </li>
+              <li class="list-group-item">
+              <a href="{% url 'tamk:Staff_Track_CI_BU' %}" class="btn btn-primary btn-block"><b>Track CI</b></a>
+              </li>
+          {% endif %}
         </ul>
       </div>
       <!-- /.card-body -->
@@ -123,7 +136,7 @@
                 <th>Staff</th>
                 <th>PF</th>
                 <th>Approved</th>
-                <th>Pending 1</th>
+                <th>Pending</th>
                 <th>Rejected</th>
                 <th>Total(Excl Rejected)</th>
               </tr>

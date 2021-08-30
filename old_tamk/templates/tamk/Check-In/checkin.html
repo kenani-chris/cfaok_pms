@@ -1,0 +1,248 @@
+{% extends "tamk/default.html" %}
+{% block pagetitle %}My Check-Ins{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-2">
+    <div class="card card-primary card-outline">
+      <div class="card-body box-profile">
+        <hr>
+        <br>
+        <br>
+        <ul class="list-group list-group-unbordered mb-3">
+          <li class="list-group-item">
+            <a href="{% url 'tamk:Check-In_Submit' %}" class="btn btn-primary btn-block"><b>Submit CI</b></a>
+            <a href="{% url 'tamk:Check-In_Detail1' %}" class="btn btn-primary btn-block"><b>Edit/Track CI</b></a>
+          </li>
+        </ul>
+      </div>
+      <!-- /.card-body -->
+    </div>
+  </div>
+  <div class="col-md-10">
+    <div class="row">
+      <div class="col-md-3 col-sm-6 col-12">
+        <a href="{% url 'tamk:Check-In_Detail1' %}">
+          <div class="info-box bg-info">
+            <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Required</span>
+              <span class="info-box-number">{{ pms.checkin_number }} CIs</span>
+
+              <div class="progress">
+                <div class="progress-bar" style="width: 100%"></div>
+              </div>
+              <span class="progress-description">
+                <small>Required no of Check-Ins</small>
+              </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+        </a>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-md-3 col-sm-6 col-12">
+        <a href="{% url 'tamk:Check-In_Detail1' %}">
+          <div class="info-box bg-success">
+            <span class="info-box-icon"><i class="far fa-thumbs-up"></i></span>
+            <div class="info-box-content">
+              <span class="info-box-text">Confirmed</span>
+              <span class="info-box-number">{{ confirmed_ci.count }} CIs</span>
+
+              <div class="progress">
+                <div class="progress-bar" style="width:100%"></div>
+              </div>
+              <span class="progress-description">
+                <small>Confirmed CIs by TL</small>
+              </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+        </a>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-md-3 col-sm-6 col-12">
+        <a href="{% url 'tamk:Check-In_Detail1' %}">
+          <div class="info-box bg-warning">
+            <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Pending</span>
+              <span class="info-box-number">{{ total_pending }} CIs</span>
+
+              <div class="progress">
+                <div class="progress-bar" style="width: 100%"></div>
+              </div>
+              <span class="progress-description">
+                <small>Total Pending CIs</small>
+              </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+        </a>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-md-3 col-sm-6 col-12">
+        <a href="{% url 'tamk:Check-In_Detail1' %}">
+          <div class="info-box bg-danger">
+            <span class="info-box-icon"><i class="fas fa-thumbs-down"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Rejected</span>
+              <span class="info-box-number">{{ total_rejected }} CIs</span>
+
+              <div class="progress">
+                <div class="progress-bar" style="width: 100%"></div>
+              </div>
+              <span class="progress-description">
+                <small>Total Rejected CIs</small>
+              </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+        </a>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <table class="table table-bordered table-striped">
+      <tbody>
+      <tr class="text-center">
+        {% if ci_months is not None %}
+          {% if 'April' in ci_months %}
+            <th class="bg-success">Apr</th>
+          {% else %}
+            <th class="bg-default">Apr</th>
+          {% endif %}
+          {% if 'May' in ci_months %}
+            <th class="bg-success">May</th>
+          {% else %}
+            <th class="bg-default">May</th>
+          {% endif %}
+          {% if 'June' in ci_months %}
+            <th class="bg-success">Jun</th>
+          {% else %}
+            <th class="bg-default">Jun</th>
+          {% endif %}
+          {% if 'July' in ci_months %}
+            <th class="bg-success">Jul</th>
+          {% else %}
+            <th class="bg-default">Jul</th>
+          {% endif %}
+          {% if 'August' in ci_months %}
+            <th class="bg-success">Aug</th>
+          {% else %}
+            <th class="bg-default">Aug</th>
+          {% endif %}
+          {% if 'September' in ci_months %}
+            <th class="bg-success">Sep</th>
+          {% else %}
+            <th class="bg-default">Sep</th>
+          {% endif %}
+          {% if 'October' in ci_months %}
+            <th class="bg-success">Oct</th>
+          {% else %}
+            <th class="bg-default">Oct</th>
+          {% endif %}
+          {% if 'November' in ci_months %}
+            <th class="bg-success">Nov</th>
+          {% else %}
+            <th class="bg-default">Nov</th>
+          {% endif %}
+          {% if 'December' in ci_months %}
+            <th class="bg-success">Dec</th>
+          {% else %}
+            <th class="bg-default">Dec</th>
+          {% endif %}
+          {% if 'January' in ci_months %}
+            <th class="bg-success">Jan</th>
+          {% else %}
+            <th class="bg-default">Jan</th>
+          {% endif %}
+          {% if 'February' in ci_months %}
+            <th class="bg-success">Feb</th>
+          {% else %}
+            <th class="bg-default">Feb</th>
+          {% endif %}
+          {% if 'March' in ci_months %}
+            <th class="bg-success">Mar</th>
+          {% else %}
+            <th class="bg-default">Mar</th>
+          {% endif %}
+        {% else %}
+          <th class="bg-default">Apr</th>
+          <th class="bg-default">May</th>
+          <th class="bg-default">Jun</th>
+          <th class="bg-default">Jul</th>
+          <th class="bg-default">Aug</th>
+          <th class="bg-default">Sep</th>
+          <th class="bg-default">Oct</th>
+          <th class="bg-default">Nov</th>
+          <th class="bg-default">Dec</th>
+          <th class="bg-default">Jan</th>
+          <th class="bg-default">Feb</th>
+          <th class="bg-default">Mar</th>
+        {% endif %}
+      </tr>
+      </tbody>
+      <tfoot>
+
+      </tfoot>
+    </table>
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">My Checkins</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        <div style="overflow-x:scroll">
+
+        </div>
+        <div style="overflow-x:scroll">
+          {% if all_ci %}
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>Month</th>
+                <th>Status</th>
+                <th>Submit Date</th>
+              </tr>
+              </thead>
+              <tbody>
+            {% for ci in all_ci %}
+              {% if kpi.company_kpi_status != "Rejected" %}
+                <tr>
+                  <td>
+                    {{ ci.checkIn_month }} Check-In
+                  </td>
+                  <td>
+                    {{ ci.checkIn_status }}
+                  </td>
+                  <td>
+                    {{ ci.checkIn_submit_date }}
+                  </td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+              </tbody>
+              <tfoot>
+
+              </tfoot>
+            </table>
+          {% else %}
+            <div class="alert alert-warning">
+              <h5><i class="icon fas fa-ban"></i> No CIs found</h5>
+              It Appears you've not submitted any check-Ins. Or all of them have been declined
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      <!-- /.card-body -->
+    </div>
+  </div>
+</div>
+{% endblock %}
+
