@@ -23,6 +23,7 @@
   <div class="col-md-10">
     <div class="row">
       <div class="col-md-3 col-sm-6 col-12">
+        <a href="{% url 'tamk:Individual_Kpi_Detail1' %}">
           <div class="info-box bg-info">
             <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
 
@@ -39,10 +40,12 @@
             </div>
             <!-- /.info-box-content -->
           </div>
+        </a>
         <!-- /.info-box -->
       </div>
       <!-- /.col -->
       <div class="col-md-3 col-sm-6 col-12">
+        <a href="{% url 'tamk:Individual_Kpi_Detail1' %}">
           <div class="info-box bg-success">
             <span class="info-box-icon"><i class="far fa-thumbs-up"></i></span>
             <div class="info-box-content">
@@ -58,10 +61,12 @@
             </div>
             <!-- /.info-box-content -->
           </div>
+        </a>
         <!-- /.info-box -->
       </div>
       <!-- /.col -->
       <div class="col-md-3 col-sm-6 col-12">
+        <a href="{% url 'tamk:Individual_Kpi_Detail1' %}">
           <div class="info-box bg-warning">
             <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
 
@@ -78,10 +83,12 @@
             </div>
             <!-- /.info-box-content -->
           </div>
+        </a>
         <!-- /.info-box -->
       </div>
       <!-- /.col -->
       <div class="col-md-3 col-sm-6 col-12">
+        <a href="{% url 'tamk:Individual_Kpi_Detail1' %}">
           <div class="info-box bg-danger">
             <span class="info-box-icon"><i class="fas fa-thumbs-down"></i></span>
 
@@ -98,6 +105,7 @@
             </div>
             <!-- /.info-box-content -->
           </div>
+        </a>
         <!-- /.info-box -->
       </div>
       <!-- /.col -->
@@ -113,7 +121,6 @@
             <table id="example1" class="table table-bordered table-striped">
               <thead>
               <tr>
-                <th>BU Head</th>
                 <th>BU</th>
                 <th>Approved</th>
                 <th>Pending</th>
@@ -125,11 +132,6 @@
             {% for bu in bus_kpi %}
               {% if bu is not None %}
                 <tr>
-                  <td>
-                      {% for staff in bu.5 %}
-                        {{ staff.staff_person.get_full_name }},
-                      {% endfor %}
-                  </td>
                   <td>
                     {{ bu.0 }}
                   </td>

@@ -1,0 +1,459 @@
+{% extends "tamk/Assessment/default.html" %}
+{% block pagetitle %}Assessment{% endblock %}
+{% block page_top %}<li class="breadcrumb-item"><a href="{% url 'tamk:Assessment_Dashboard' %}">Assessment</a></li>{% endblock %}
+{% block page_middle %}<li class="breadcrumb-item"><a href="{% url 'tamk:Assessment_View' evaluation.evaluation_id %}">Evaluations</a></li>{% endblock %}
+{% block page_bottom %}<li class="breadcrumb-item"><a href="{% url 'tamk:Assessment_S' evaluation.evaluation_id %}">Staff Evaluations</a></li>{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <!-- /.card-header -->
+      <div class="card-body">
+        {% if ev_done == 'Not Done' %}
+          {% if staff is not None %}
+            <div class="alert alert-info">
+              Evaluating staff <h5><b>{{ staff.get_full_name }}</b></h5>
+            </div>
+            {% if questions %}
+              <form method="POST">
+                {% csrf_token %}
+                {{ form.errors }}
+                {{ form.done_evaluation.as_hidden }}
+                {{ form.done_staff.as_hidden }}
+                {{ form.done_team_leader.as_hidden }}
+                {{ form.done_q1.as_hidden }}
+                {{ form.done_q2.as_hidden }}
+                {{ form.done_q3.as_hidden }}
+                {{ form.done_q4.as_hidden }}
+                {{ form.done_q5.as_hidden }}
+                {{ form.done_q6.as_hidden }}
+                {{ form.done_q7.as_hidden }}
+
+
+                <div class="card-body" style="margin-top: -20px">
+                  <!-- QUESTION 1 ==================================================================================== -->
+                  {% if questions.0 %}
+                    <script>
+                       window.onload=myfunction();
+                       function myfunction()
+                      {
+                        $('.score_q1').prop('required',false);
+                      }
+                    </script>
+                    <p>{{ questions.0 }}</p>
+                    <div class="row form-group" style="margin: 0px 20px 0px 20px">
+                      <div class="col-md-6">
+                        <div class="form-check text-success">{{ form.score_q1.0 }}</div>
+                        <div class="form-check text-info">{{ form.score_q1.1 }}</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-check text-warning">{{ form.score_q1.2 }}</div>
+                        <div class="form-check text-danger">{{ form.score_q1.3 }}</div>
+                      </div>
+                    </div>
+                  <textarea id="mot_q1" name="score_q1_comment" class="form-control" style="display: none" rows="3" placeholder="Motivation is required for Reply Strongly Agree and Strongly disagree :)" required></textarea>
+                  <hr>
+                  {% endif %}
+
+
+                  <!-- QUESTION 2 ==================================================================================== -->
+                  {% if questions.1 %}
+
+                    <p>{{ questions.1 }}</p>
+                    <div class="row form-group" style="margin: 0px 20px 0px 20px">
+                      <div class="col-md-6">
+                        <div class="form-check text-success">{{ form.score_q2.0 }}</div>
+                        <div class="form-check text-info">{{ form.score_q2.1 }}</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-check text-warning">{{ form.score_q2.2 }}</div>
+                        <div class="form-check text-danger">{{ form.score_q2.3 }}</div>
+                      </div>
+                    </div>
+                  <textarea id="mot_q2" name="score_q2_comment" class="form-control" style="display: none" rows="3" placeholder="Motivation is required for Reply Strongly Agree and Strongly disagree :)" required></textarea>
+                  <hr>
+                  {% endif %}
+
+                  <!-- QUESTION 3 ==================================================================================== -->
+                  {% if questions.2 %}
+                    <p>{{ questions.2 }}</p>
+                    <div class="row form-group" style="margin: 0px 20px 0px 20px">
+                      <div class="col-md-6">
+                        <div class="form-check text-success">{{ form.score_q3.0 }}</div>
+                        <div class="form-check text-info">{{ form.score_q3.1 }}</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-check text-warning">{{ form.score_q3.2 }}</div>
+                        <div class="form-check text-danger">{{ form.score_q3.3 }}</div>
+                      </div>
+                    </div>
+                  <textarea id="mot_q3" name="score_q3_comment" class="form-control" style="display: none" rows="3" placeholder="Motivation is required for Reply Strongly Agree and Strongly disagree :)" required></textarea>
+                  <hr>
+                  {% endif %}
+
+                  <!-- QUESTION 4 ==================================================================================== -->
+                  {% if questions.3 %}
+                    <p>{{ questions.3 }}</p>
+                    <div class="row form-group" style="margin: 0px 20px 0px 20px">
+                      <div class="col-md-6">
+                        <div class="form-check text-success">{{ form.score_q4.0 }}</div>
+                        <div class="form-check text-info">{{ form.score_q4.1 }}</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-check text-warning">{{ form.score_q4.2 }}</div>
+                        <div class="form-check text-danger">{{ form.score_q4.3 }}</div>
+                      </div>
+                    </div>
+                  <textarea id="mot_q4" name="score_q4_comment" class="form-control" style="display: none" rows="3" placeholder="Motivation is required for Reply Strongly Agree and Strongly disagree :)" required></textarea>
+                  <hr>
+                  {% endif %}
+
+                  <!-- QUESTION 5 ==================================================================================== -->
+                  {% if questions.4 %}
+                    <p>{{ questions.4 }}</p>
+                    <div class="row form-group" style="margin: 0px 20px 0px 20px">
+                      <div class="col-md-6">
+                        <div class="form-check text-success">{{ form.score_q5.0 }}</div>
+                        <div class="form-check text-info">{{ form.score_q5.1 }}</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-check text-warning">{{ form.score_q5.2 }}</div>
+                        <div class="form-check text-danger">{{ form.score_q5.3 }}</div>
+                      </div>
+                    </div>
+                  <textarea id="mot_q5" name="score_q5_comment" class="form-control" style="display: none" rows="3" placeholder="Motivation is required for Reply Strongly Agree and Strongly disagree :)" required></textarea>
+                  <hr>
+                  {% endif %}
+
+                  <!-- QUESTION 6 ==================================================================================== -->
+                  {% if questions.5 %}
+                    <p>{{ questions.5 }}</p>
+                    <div class="row form-group" style="margin: 0px 20px 0px 20px">
+                      <div class="col-md-6">
+                        <div class="form-check text-success">{{ form.score_q6.0 }}</div>
+                        <div class="form-check text-info">{{ form.score_q6.1 }}</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-check text-warning">{{ form.score_q6.2 }}</div>
+                        <div class="form-check text-danger">{{ form.score_q6.3 }}</div>
+                      </div>
+                    </div>
+                  <textarea id="mot_q6" name="score_q6_comment" class="form-control" style="display: none" rows="3" placeholder="Motivation is required for Reply Strongly Agree and Strongly disagree :)" required></textarea>
+                  <hr>
+                  {% endif %}
+
+                  <!-- QUESTION 7 ==================================================================================== -->
+                  {% if questions.6 %}
+                    <p>{{ questions.6 }}</p>
+                    <div class="row form-group" style="margin: 0px 20px 0px 20px">
+                      <div class="col-md-6">
+                        <div class="form-check text-success">{{ form.score_q7.0 }}</div>
+                        <div class="form-check text-info">{{ form.score_q7.1 }}</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-check text-warning">{{ form.score_q7.2 }}</div>
+                        <div class="form-check text-danger">{{ form.score_q7.3 }}</div>
+                      </div>
+                    </div>
+                  <textarea id="mot_q7" name="score_q7_comment" class="form-control" style="display: none" rows="3" placeholder="Motivation is required for Reply Strongly Agree and Strongly disagree :)" required></textarea>
+                  <hr>
+                  {% endif %}
+
+
+                </div>
+
+                <div class="card-footer bg-default">
+                  <div class="float-right" style="margin:5px">
+                      <button type="reset" class="btn btn-danger btn-block" >Clear</button>
+                  </div>
+                  <div class="float-right" style="margin:5px">
+                      <button type="submit" class="btn btn-primary btn-block" id="submit" disabled>Submit</button>
+                  </div>
+                </div>
+                </form>
+
+
+                <style>
+                  .error {
+                    color: #F00;
+                    background-color: #FFF;
+                    font-family: Helvetica, sans-serif;
+                    font-size:13px;
+                  }
+                </style>
+                <script>
+                  $(document).ready(function() {
+                      $('input:radio').change(function() {
+
+                        var q1 = "{{ questions.0 }}";
+                        var q2 = "{{ questions.1 }}";
+                        var q3 = "{{ questions.2 }}";
+                        var q4 = "{{ questions.3 }}";
+                        var q5 = "{{ questions.4 }}";
+                        var q6 = "{{ questions.5 }}";
+                        var q7 = "{{ questions.6 }}";
+
+                        score_q1 = $('.score_q1:checked').val();
+                        score_q2 = $('.score_q2:checked').val();
+                        score_q3 = $('.score_q3:checked').val();
+                        score_q4 = $('.score_q4:checked').val();
+                        score_q5 = $('.score_q5:checked').val();
+                        score_q6 = $('.score_q6:checked').val();
+                        score_q7 = $('.score_q7:checked').val();
+
+                        var q1_er=q2_er=q3_er=q4_er=q5_er=q6_er=q7_er="";
+
+                        if(q1){
+                          if(score_q1===undefined){
+                            q1_er= "Q1 not filled";
+                          }
+                          else if(score_q1==="Strongly Agree" || score_q1 === "Strongly Disagree"){
+                            $('#mot_q1').show();
+                            $('#mot_q1').prop('required',true);
+                          }
+                          else {
+                            $('#mot_q1').hide();
+                            $('#mot_q1').prop('required',false);
+                          }
+                        }
+                        if(q2){
+                          if(score_q2===undefined){
+                            q2_er = "Q2 not filled";
+                          }
+                          else if(score_q2==="Strongly Agree" || score_q2 === "Strongly Disagree"){
+                            $('#mot_q2').show();
+                            $('#mot_q2').prop('required',true);
+                          }
+                          else {
+                            $('#mot_q2').hide();
+                            $('#mot_q2').prop('required',false);
+                          }
+                        }
+                        if(q3){
+                          if(score_q3===undefined){
+                            q3_er = "Q3 not filled";
+                          }
+                          else if(score_q3==="Strongly Agree" || score_q3 === "Strongly Disagree"){
+                            $('#mot_q3').show();
+                            $('#mot_q3').prop('required',true);
+                          }
+                          else {
+                            $('#mot_q3').hide();
+                            $('#mot_q3').prop('required',false);
+                          }
+                        }
+                        if(q4){
+                          if(score_q4===undefined){
+                            q4_er = "Q4 not filled";
+                          }
+                          else if(score_q4==="Strongly Agree" || score_q4 === "Strongly Disagree"){
+                            $('#mot_q4').show();
+                            $('#mot_q4').prop('required',true);
+                          }
+                          else {
+                            $('#mot_q4').hide();
+                            $('#mot_q4').prop('required',false);
+                          }
+                        }
+                        if(q5){
+                          if(score_q5===undefined){
+                            q5_er = "Q5 not filled";
+                          }
+                          else if(score_q5==="Strongly Agree" || score_q5 === "Strongly Disagree"){
+                            $('#mot_q5').show();
+                            $('#mot_q5').prop('required',true);
+                          }
+                          else {
+                            $('#mot_q5').hide();
+                            $('#mot_q5').prop('required',false);
+                          }
+                        }
+                        if(q6){
+                          if(score_q6===undefined){
+                            q6_er = "Q6 not filled";
+                          }
+                          else if(score_q6==="Strongly Agree" || score_q6 === "Strongly Disagree"){
+                            $('#mot_q6').show();
+                            $('#mot_q6').prop('required',true);
+                          }
+                          else {
+                            $('#mot_q6').hide();
+                            $('#mot_q6').prop('required',false);
+                          }
+                        }
+                        if(q7){
+                          if(score_q7===undefined){
+                            q7_er = "Q7 not filled";
+                          }
+                          else if(score_q7==="Strongly Agree" || score_q7 === "Strongly Disagree"){
+                            $('#mot_q7').show();
+                            $('#mot_q7').prop('required',true);
+                          }
+                          else {
+                            $('#mot_q7').hide();
+                            $('#mot_q7').prop('required',false);
+                          }
+                        }
+                        console.log(q1_er+q2_er+q3_er+q4_er+q5_er+q6_er+q7_er);
+                        if(q1_er === "" && q2_er === ""  && q3_er === ""  && q4_er === ""  && q5_er === ""  && q6_er === ""  && q7_er === "" ){
+                          $('#submit').prop('disabled', false);
+                        }
+                        else {
+                          $('#submit').prop('disabled', true);
+                        }
+
+                      });
+                  });
+                </script>
+                <script>
+                  window.onload=myfunction();
+                  function myfunction()
+                  {
+
+                      if(q1){
+                        if(score_q2==""){
+                          $(function() {
+                            const Toast = Swal.mixin({
+                              toast: true,
+                              position: 'top-end',
+                              showConfirmButton: false,
+                              timer: 3000
+                            });
+                            toastr.danger('Q1 not filled');
+                          });
+                        }
+                        else{
+                          alert(score_q2);
+                        }
+                      }
+                  }
+                </script>
+
+
+                <script>
+                // just for the demos, avoids form submit
+                jQuery.validator.setDefaults({
+                  debug: false,
+                  success: "valid"
+                });
+
+
+                var form = $( "#submit_kpi_form" );
+                // form.validate();
+
+                $("#submit_kpi_button").click(function() {
+                  var q1 = "{{ questions.0 }}"
+                  var q2 = "{{ questions.1 }}"
+                  var q3 = "{{ questions.2 }}"
+                  var q4 = "{{ questions.3 }}"
+                  var q5 = "{{ questions.4 }}"
+                  var q6 = "{{ questions.5 }}"
+                  var q7 = "{{ questions.6 }}"
+
+
+                  if(q1){
+                    if(score_q2==""){
+                      $(function() {
+                        const Toast = Swal.mixin({
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 3000
+                        });
+                        toastr.danger('Q1 not filled');
+                      });
+                    }
+                    else{
+                      alert(score_q2);
+                    }
+                  }
+
+
+
+
+                  if(q1){
+                    alert(score_q2);
+                    alert(q1);
+                    // $('#score_q1').removeAttr('required');
+                    $('.score_q1').remove;
+                  }
+
+                  if(form.valid()){
+                    $(".btn").prop('readonly', true);
+                    $('.form_body').preloader({
+                      // loading text
+                      text:'Loading stuff i say',
+                      // from 0 to 100
+                      percent:'100',
+                      // duration in ms
+                      duration:'30000',
+                      // z-index property
+                      zIndex:'1',
+                      // sets relative position to preloader's parent
+                      setRelative:false
+                    });
+                  }
+                });
+
+                </script>
+          <br>
+          <br>
+          <br>
+
+            {% else %}
+              <div class="alert alert-warning">
+                <h5><i class="icon fas fa-ban"></i> No Questions found</h5>
+                It Appears Evaluation questions are not set
+              </div>
+            {% endif %}
+          {% else %}
+            <div class="alert alert-warning">
+              <h5><i class="icon fas fa-ban"></i> Staff not found</h5>
+              It Appears I could not get your Staff
+            </div>
+          {% endif %}
+          {% else %}
+            <div class="alert alert-success">
+              <h5><i class="icon fas fa-ban"></i> Staff Evaluated</h5>
+              It Appears You've already Evaluated your Staff
+
+            </div>
+            <div class="col-md-12">
+                <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Question
+                        </th>
+                        <th>
+                            Response
+                        </th>
+                        <th>
+                            Comment
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resp in ev_results %}
+                        <tr>
+                            <td>
+                                {{ resp.0 }}
+                            </td>
+                            <td>
+                                {{ resp.1 }}
+                            </td>
+                            <td>
+                                {{ resp.2 }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+          {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

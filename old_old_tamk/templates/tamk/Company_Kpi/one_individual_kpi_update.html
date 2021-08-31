@@ -1,0 +1,352 @@
+{% extends "tamk/Company_Kpi/default.html" %}
+{% block pagetitle %}KPI Result{% endblock %}
+
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ company_kpi.company_kpi_title }}</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        {% if company_kpi is None%}
+        <div class="alert alert-warning">
+        <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
+        It Appears this KPI is no longer under 'Approved' Status
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-md-4">
+                {% now "F" as current_month %}
+                {% now "j" as current_date %}
+
+                <form action="" method="post">
+                  {% csrf_token %}
+                  <table class="table table-bordered table-striped">
+                    <tbody>
+
+                      <tr>
+                        <th>
+                          Apr
+                        </th>
+                        <td>
+                            {% if april == 'reveal' %}
+                                {{ form.company_kpi_april_score }}
+                            {% else %}
+                                {{ form.company_kpi_april_score.value }}
+                                {{ form.company_kpi_april_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          May
+                        </th>
+                        <td>
+                            {% if may == 'reveal' %}
+                                {{ form.company_kpi_may_score }}
+                            {% else %}
+                                {{ form.company_kpi_may_score.value }}
+                                {{ form.company_kpi_may_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          Jun
+                        </th>
+                        <td>
+                            {% if june == 'reveal' %}
+                                {{ form.company_kpi_june_score }}
+                            {% else %}
+                                {{ form.company_kpi_june_score.value }}
+                                {{ form.company_kpi_june_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          Jul
+                        </th>
+                        <td>
+                            {% if july == 'reveal' %}
+                                {{ form.company_kpi_july_score }}
+                            {% else %}
+                                {{ form.company_kpi_july_score.value }}
+                                {{ form.company_kpi_july_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          Aug
+                        </th>
+                        <td>
+                            {% if august == 'reveal' %}
+                                {{ form.company_kpi_august_score }}
+                            {% else %}
+                                {{ form.company_kpi_august_score.value }}
+                                {{ form.company_kpi_august_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          Sep
+                        </th>
+                        <td>
+                            {% if september == 'reveal' %}
+                                {{ form.company_kpi_september_score }}
+                            {% else %}
+                                {{ form.company_kpi_september_score.value }}
+                                {{ form.company_kpi_september_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          Oct
+                        </th>
+                        <td>
+                            {% if october == 'reveal' %}
+                                {{ form.company_kpi_october_score }}
+                            {% else %}
+                                {{ form.company_kpi_october_score.value }}
+                                {{ form.company_kpi_october_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          Nov
+                        </th>
+                        <td>
+                            {% if november == 'reveal' %}
+                                {{ form.company_kpi_november_score }}
+                            {% else %}
+                                {{ form.company_kpi_november_score.value }}
+                                {{ form.company_kpi_november_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          Dec
+                        </th>
+                        <td>
+                            {% if december == 'reveal' %}
+                                {{ form.company_kpi_december_score }}
+                            {% else %}
+                                {{ form.company_kpi_december_score.value }}
+                                {{ form.company_kpi_december_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          Jan
+                        </th>
+                        <td>
+                            {% if january == 'reveal' %}
+                                {{ form.company_kpi_january_score }}
+                            {% else %}
+                                {{ form.company_kpi_january_score.value }}
+                                {{ form.company_kpi_january_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          Feb
+                        </th>
+                        <td>
+                            {% if february == 'reveal' %}
+                                {{ form.company_kpi_february_score }}
+                            {% else %}
+                                {{ form.company_kpi_february_score.value }}
+                                {{ form.company_kpi_february_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          Mar
+                        </th>
+                        <td>
+                            {% if march == 'reveal' %}
+                                {{ form.company_kpi_march_score }}
+                            {% else %}
+                                {{ form.company_kpi_march_score.value }}
+                                {{ form.company_kpi_march_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class="card-footer">
+                    <div class="float-right" style="margin:5px">
+                        <button type="reset" class="btn btn-danger btn-block">Clear</button>
+                    </div>
+                    <div class="float-right" style="margin:5px">
+                        <button type="submit" class="btn btn-primary btn-block" id="submit">Submit</button>
+                    </div>
+                  </div>
+              </form>
+            </div>
+            <div class="col-md-8">
+                <!-- LINE CHART -->
+                <div class="card card-info">
+                      <div class="card-header">
+                        <h3 class="card-title">Progress Over time</h3>
+                      </div>
+                      <div class="card-body">
+                        <div class="chart">
+                          <canvas id="lineChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                      </div>
+                      <!-- /.card-body -->
+                    </div>
+
+                <table id="exam1" class="table table-bordered table-striped">
+                    <tbody>
+                      <tr>
+                        <th>
+                          Pillar
+                        </th>
+                        <td colspan="3">
+                          {{ company_kpi.company_kpi_bsc }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          KPI
+                        </th>
+                        <td colspan="3">
+                          {{ company_kpi.company_kpi_title }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          Description
+                        </th>
+                        <td colspan="3">
+                          {{ company_kpi.company_kpi_details }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          Criteria
+                        </th>
+                        <td colspan="3">
+                          {{ company_kpi.company_kpi_criteria }}
+                        </td>
+                      </tr>
+                      <tr class="bg-info">
+                        <th>
+                          Function
+                        </th>
+                        <th>
+                          Target
+                        </th>
+                        <th>
+                          Status
+                        </th>
+                        <th>
+                          Submit Date
+                        </th>
+                      </tr>
+                      <tr>
+                        <td>
+                          {{ company_kpi.company_kpi_function }}
+                        </td>
+                        <td>
+                          {{ company_kpi.company_kpi_target }}
+                        </td>
+                        <td>
+                          {{ company_kpi.company_kpi_status }}
+                        </td>
+                        <td>
+                          {{ company_kpi.company_kpi_submit_date }}
+                        </td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+
+        {% endif %}
+
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+<script>
+  $(function () {
+
+    //-------------
+    //- LINE CHART -
+    //--------------
+    var lineChartCanvas = $('#lineChart').get(0).getContext('2d')
+    var lineChartOptions = {
+      maintainAspectRatio : false,
+      responsive : true,
+      legend: {
+        display: false
+      },
+      scales: {
+        xAxes: [{
+          gridLines : {
+            display : false,
+          }
+        }],
+        yAxes: [{
+          gridLines : {
+            display : false,
+          }
+        }]
+      }
+    }
+    var lineChartData = {
+      labels  : ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar' ],
+      datasets: [
+        {
+          label               : 'Target',
+          backgroundColor     : 'rgba(60,141,188,0.9)',
+          borderColor         : 'rgba(60,141,188,0.8)',
+          pointRadius          : false,
+          pointColor          : '#3b8bba',
+          pointStrokeColor    : 'rgba(60,141,188,1)',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data                : [{{ company_kpi.company_kpi_target }}, {{ company_kpi.company_kpi_target }}, {{ company_kpi.company_kpi_target }}, {{ company_kpi.company_kpi_target }}, {{ company_kpi.company_kpi_target }}, {{ company_kpi.company_kpi_target }}, {{ company_kpi.company_kpi_target }}, {{ company_kpi.company_kpi_target }}, {{ company_kpi.company_kpi_target }}, {{ company_kpi.company_kpi_target }}, {{ company_kpi.company_kpi_target }}, {{ company_kpi.company_kpi_target }}]
+        },
+        {
+          label               : 'Electronics',
+          backgroundColor     : 'rgba(210, 214, 222, 1)',
+          borderColor         : 'rgba(210, 214, 222, 1)',
+          pointRadius         : false,
+          pointColor          : 'rgba(210, 214, 222, 1)',
+          pointStrokeColor    : '#c1c7d1',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(220,220,220,1)',
+          data                : ['{{ company_kpi.company_kpi_april_score }}', '{{ company_kpi.company_kpi_may_score }}', '{{ company_kpi.company_kpi_june_score }}', '{{ company_kpi.company_kpi_july_score }}', '{{ company_kpi.company_kpi_august_score }}', '{{ company_kpi.company_kpi_september_score }}', '{{ company_kpi.company_kpi_october_score }}', '{{ company_kpi.company_kpi_november_score }}', '{{ company_kpi.company_kpi_december_score }}', '{{ company_kpi.company_kpi_january_score }}', '{{ company_kpi.company_kpi_february_score }}', '{{ company_kpi.company_kpi_march_score }}' ]
+        },
+      ]
+    }
+    lineChartData.datasets[0].fill = false;
+    lineChartData.datasets[1].fill = false;
+    lineChartOptions.datasetFill = false
+
+    var lineChart = new Chart(lineChartCanvas, {
+      type: 'line',
+      data: lineChartData,
+      options: lineChartOptions
+    })
+  })
+</script>
+
+{% endblock %}

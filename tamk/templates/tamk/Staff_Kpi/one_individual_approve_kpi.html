@@ -11,13 +11,10 @@
       <div class="card-body">
         {% if pending_kpi %}
           {% for kpi in pending_kpi %}
-              <table id="example1" class="table table-bordered table-striped">
+            <table id="example1" class="table table-bordered table-striped">
             <tbody>
-              <tr>
-                <th>
-                  KPI
-                </th>
-                <td colspan="3">
+              <tr class="bg-info">
+                <td colspan="4">
                   {{ kpi.individual_kpi_title }}
                 </td>
               </tr>
@@ -37,112 +34,32 @@
                   {{ kpi.individual_kpi_criteria }}
                 </td>
               </tr>
-            </tbody>
-          </table>
-              <table class="table table-bordered">
-                <tbody>
-                    <tr class="bg-info">
-                        <th>--</th>
-                        <th>Apr</th>
-                        <th>May</th>
-                        <th>Jun</th>
-                        <th>Jul</th>
-                        <th>Aug</th>
-                        <th>Sep</th>
-                        <th>Oct</th>
-                        <th>Nov</th>
-                        <th>Dec</th>
-                        <th>Jan</th>
-                        <th>Feb</th>
-                        <th>Mar</th>
-                    </tr>
-                    <tr>
-                        <th>TGT</th>
-                        <td>{{ kpi.individual_kpi_april_target }}</td>
-                        <td>{{ kpi.individual_kpi_may_target }}</td>
-                        <td>{{ kpi.individual_kpi_june_target }}</td>
-                        <td>{{ kpi.individual_kpi_july_target }}</td>
-                        <td>{{ kpi.individual_kpi_august_target }}</td>
-                        <td>{{ kpi.individual_kpi_september_target }}</td>
-                        <td>{{ kpi.individual_kpi_october_target }}</td>
-                        <td>{{ kpi.individual_kpi_november_target }}</td>
-                        <td>{{ kpi.individual_kpi_january_target }}</td>
-                        <td>{{ kpi.individual_kpi_february_target }}</td>
-                        <td>{{ kpi.individual_kpi_march_target }}</td>
-                        <td>{{ kpi.individual_kpi_april_target }}</td>
-                    </tr>
-                    <tr>
-                        <th>ACT</th>
-                        <td>{{ kpi.individual_kpi_april_score }}</td>
-                        <td>{{ kpi.individual_kpi_may_score }}</td>
-                        <td>{{ kpi.individual_kpi_june_score }}</td>
-                        <td>{{ kpi.individual_kpi_july_score }}</td>
-                        <td>{{ kpi.individual_kpi_august_score }}</td>
-                        <td>{{ kpi.individual_kpi_september_score }}</td>
-                        <td>{{ kpi.individual_kpi_october_score }}</td>
-                        <td>{{ kpi.individual_kpi_november_score }}</td>
-                        <td>{{ kpi.individual_kpi_january_score }}</td>
-                        <td>{{ kpi.individual_kpi_february_score }}</td>
-                        <td>{{ kpi.individual_kpi_march_score }}</td>
-                        <td>{{ kpi.individual_kpi_april_score }}</td>
-                    </tr>
-                </tbody>
-              </table>
-                <br>
-              <table class="table table-bordered">
-            <tbody>
-              <tr class="bg-info">
+              <tr>
                 <th>
                   Function
                 </th>
+                <td colspan="3">
+                  {{ kpi.individual_kpi_function }}
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Target
+                </th>
+                <td colspan="3">
+                  {{ kpi.individual_kpi_target }}
+                </td>
+              </tr>
+              <tr>
                 <th>
                   Status
                 </th>
-                <th>
-                  Submit Date
-                </th>
-              </tr>
-              <tr>
-                <td>
-                  {{ kpi.individual_kpi_function }}
-                </td>
-                <td>
+                <td colspan="3">
                   {{ kpi.individual_kpi_status }}
-                </td>
-                <td>
-                  {{ kpi.individual_kpi_submit_date }}
-                </td>
-              </tr>
-              <tr class="bg-info">
-                <th colspan="4">
-                  Approvals
-                </th>
-              </tr>
-              <tr>
-                <th>
-                  1st Approver
-                </th>
-                <td>
-                  {{ kpi.individual_kpi_team_leader_approval }}
-                </td>
-                <td>
-                  {{ kpi.individual_kpi_approval1_date }}
-                </td>
-              </tr>
-              <tr>
-                <th>
-                  2nd Approver
-                </th>
-                <td>
-                  {{ kpi.individual_kpi_bu_leader_approval }}
-                </td>
-                <td>
-                  {{ kpi.individual_kpi_approval2_date }}
                 </td>
               </tr>
             </tbody>
           </table>
-
           <div class="card-footer">
             <div class="float-right" style="margin:5px">
               <a href="{% url 'tamk:Staff_Reject_Individual_Kpi' staff.id  kpi.individual_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
@@ -152,8 +69,6 @@
             </div>
           </div>
           <br>
-          <hr>
-          <hr>
           {% endfor %}
         {% else %}
           <div class="alert alert-warning">

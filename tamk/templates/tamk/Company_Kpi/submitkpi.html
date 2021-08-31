@@ -21,10 +21,6 @@
                   {{ form.company_kpi_last_edit.as_hidden }}
                   {{ form.company_kpi_status.as_hidden }}
               <div class="card-body">
-                   <div class="form-group">
-                        <label>Pillar</label>
-                        {{ form.company_kpi_bsc }}
-                    </div>
                     <div class="row form_body">
                         <div class="col-sm-6">
                             <div class="form-group">
@@ -38,6 +34,11 @@
                               {{ form.company_kpi_function }}
                             </div>
                         </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>KPI criteria</label>
+                        {{ form.company_kpi_criteria }}
                     </div>
                     <div class="form-group">
                         <label>KPI Description</label>

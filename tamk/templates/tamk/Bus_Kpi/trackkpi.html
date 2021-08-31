@@ -13,8 +13,7 @@
             <table id="example1" class="table table-bordered table-striped">
               <thead>
               <tr>
-                <th>BU Leader</th>
-                <th>BU</th>
+                <th>Staff</th>
                 <th>Approved</th>
                 <th>Pending</th>
                 <th>Rejected</th>
@@ -25,13 +24,6 @@
             {% for bu in bus_kpi %}
               {% if bu is not None %}
                 <tr>
-                  <td>
-                      <a href="{% url 'tamk:BUs_Track_Kpi_BUs' bu.0.bu_id %}" >
-                            {% for staff in bu.5 %}
-                                {{ staff.staff_person.get_full_name }},
-                            {% endfor %}
-                      </a>
-                  </td>
                   <td>
                     <a href="{% url 'tamk:BUs_Track_Kpi_BUs' bu.0.bu_id %}" >{{ bu.0.bu_name }}</a>
                   </td>

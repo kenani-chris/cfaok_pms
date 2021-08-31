@@ -14,7 +14,6 @@
           <table id="example1" class="table table-bordered table-striped">
           <thead>
           <tr>
-            <th>Pillar</th>
             <th>KPI<small> (Click)</small></th>
             <th>Function</th>
             <th>Target</th>
@@ -26,9 +25,6 @@
           <tbody>
         {% for kpi in my_kpi %}
             <tr>
-              <td>
-                  {{ kpi.bu_kpi_bsc }}
-              </td>
               <td>
                 <a href="{% url 'tamk:BU_kpi-detail' kpi.bu_kpi_id %}"> {{ kpi.bu_kpi_title }} </a>
               </td>
