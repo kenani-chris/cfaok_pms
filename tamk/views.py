@@ -38,7 +38,7 @@ def reset_all_password(request):
         print("now on: "+user.get_full_name()+"\n")
 
         # 'password_reset_confirm' ''' + str(user.id) + ''' ''' + default_token_generator.make_token(user) + ''' %
-        # message = format_html('Click On the following <a href="{}">HERE</a>to reset your PMS password the following', reverse('toyota_kenya:password_reset_confirm', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.id)), 'token': default_token_generator.make_token(user)}))
+        # message = format_html('Click On the following <a href="{}">HERE</a>to reset your PMS password the following', reverse('tamk:password_reset_confirm', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.id)), 'token': default_token_generator.make_token(user)}))
 
 
         encoded_uid = urlsafe_base64_encode(force_bytes(user.id))
@@ -2417,46 +2417,19 @@ class BuKpiDashboard(TemplateView):
         else:
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
-
-            kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_bu, bu_kpi_pms=active_pms)
-            context['my_kpi'] = kpi
-            context['approved'] = kpi.filter(bu_kpi_status='Approved')
-            context['pending'] = kpi.filter(bu_kpi_status='Pending')
-            context['edit_kpi'] = kpi.filter(bu_kpi_status='Edit')
-            context['rejected'] = kpi.filter(bu_kpi_status='Rejected')
-
-            context['required_count'] = pms.pms_individual_kpi_number
-            context['submitted_count'] = context['approved'].count() + context['pending'].count() + \
-                                         context['edit_kpi'].count()
-            context['rejected_count'] = context['rejected'].count()
-            context['pending_count'] = context['pending'].count() + context['edit_kpi'].count()
-            context['now'] = datetime.date.today()
-        return context
-
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_passes_test(is_member_company), name='dispatch')
-class BuDashboardKpiDetailView(DetailView):
-    model = bu_kpi
-    template_name = 'tamk/Bu_Kpi/bu_one_individual_kpi.html'
-    pk_url_kwarg = 'pk'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        staff_person = get_object_or_404(staff, staff_person=self.request.user.id)
-        context['user_is_bu_head'] = staff_person.staff_head_bu
-        context['user_is_md'] = staff_person.staff_md
-        context['user_is_tl'] = staff_person.staff_head_team
-        context['user_team'] = staff_person.staff_team
-        context['user_bu'] = staff_person.staff_bu
-
-        if pms.objects.filter(pms_status='Active').count() != 1:
-            context['pms'] = None
-        else:
-            active_pms = pms.objects.get(pms_status='Active')
-            context['pms'] = active_pms
-
-            kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_bu, bu_kpi_pms=active_pms)
-            context['my_kpi'] = kpi
+            kpis = []
+            for pillar in bsc.objects.filter(bsc_pms=active_pms):
+                bu_pillar_weight = bu_bsc.objects.filter(bu_bsc_pillar=pillar, bu_bsc_bu=staff_person.staff_bu)
+                if bu_pillar_weight:
+                    bu_pillar_weight = bu_pillar_weight.first()
+                    bu_pillar_weight = bu_pillar_weight.bsc_pillar_weight
+                else:
+                    bu_pillar_weight = pillar.bsc_weight
+                kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_bu, bu_kpi_pms=active_pms,
+                                            bu_kpi_bsc=pillar.bsc_id)
+                kpis.append([pillar, kpi, bu_pillar_weight])
+            kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_head_bu, bu_kpi_pms=active_pms,)
+            context['my_kpi'] = kpis
             context['approved'] = kpi.filter(bu_kpi_status='Approved')
             context['pending'] = kpi.filter(bu_kpi_status='Pending')
             context['edit_kpi'] = kpi.filter(bu_kpi_status='Edit')
@@ -2492,9 +2465,19 @@ class BuKpi(TemplateView):
         else:
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
-
-            kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_head_bu, bu_kpi_pms=active_pms)
-            context['my_kpi'] = kpi
+            kpis = []
+            for pillar in bsc.objects.filter(bsc_pms=active_pms):
+                bu_pillar_weight = bu_bsc.objects.filter(bu_bsc_pillar=pillar, bu_bsc_bu=staff_person.staff_head_bu)
+                if bu_pillar_weight:
+                    bu_pillar_weight = bu_pillar_weight.first()
+                    bu_pillar_weight = bu_pillar_weight.bsc_pillar_weight
+                else:
+                    bu_pillar_weight = pillar.bsc_weight
+                kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_head_bu, bu_kpi_pms=active_pms,
+                                            bu_kpi_bsc=pillar.bsc_id)
+                kpis.append([pillar, kpi, bu_pillar_weight])
+            kpi = bu_kpi.objects.filter(bu_kpi_bu=staff_person.staff_head_bu, bu_kpi_pms=active_pms,)
+            context['my_kpi'] = kpis
             context['approved'] = kpi.filter(bu_kpi_status='Approved')
             context['pending'] = kpi.filter(bu_kpi_status='Pending')
             context['edit_kpi'] = kpi.filter(bu_kpi_status='Edit')
@@ -3037,9 +3020,9 @@ class BuKpiResultUpdateView(UpdateView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
-class ComapanyKpiDashboard(TemplateView):
+class CompanyKpiDashboard(TemplateView):
     template_name = 'tamk/Company_Kpi/companydashboard.html'
-    model = bu_kpi
+    model = company_kpi
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -3055,9 +3038,12 @@ class ComapanyKpiDashboard(TemplateView):
         else:
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
-
+            kpis = []
+            for pillars in bsc.objects.all():
+                kpi = company_kpi.objects.filter(company_kpi_pms=active_pms, company_kpi_bsc=pillars.bsc_id)
+                kpis.append([pillars, kpi])
             kpi = company_kpi.objects.filter(company_kpi_pms=active_pms)
-            context['my_kpi'] = kpi
+            context['my_kpi'] = kpis
             context['approved'] = kpi.filter(company_kpi_status='Approved')
             context['pending'] = kpi.filter(company_kpi_status='Pending')
             context['edit_kpi'] = kpi.filter(company_kpi_status='Edit')
@@ -3070,6 +3056,7 @@ class ComapanyKpiDashboard(TemplateView):
             context['pending_count'] = context['pending'].count() + context['edit_kpi'].count()
             context['now'] = datetime.date.today()
         return context
+
 
 
 @method_decorator(login_required, name='dispatch')
@@ -3130,9 +3117,12 @@ class CompanyKpi(TemplateView):
         else:
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
-
+            kpis = []
+            for pillars in bsc.objects.all():
+                kpi = company_kpi.objects.filter(company_kpi_pms=active_pms, company_kpi_bsc=pillars.bsc_id)
+                kpis.append([pillars, kpi])
             kpi = company_kpi.objects.filter(company_kpi_pms=active_pms)
-            context['my_kpi'] = kpi
+            context['my_kpi'] = kpis
             context['approved'] = kpi.filter(company_kpi_status='Approved')
             context['pending'] = kpi.filter(company_kpi_status='Pending')
             context['edit_kpi'] = kpi.filter(company_kpi_status='Edit')

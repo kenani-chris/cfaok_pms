@@ -34,6 +34,7 @@ class staff(models.Model):
         ('No', 'No'),
     )
     staff_md = models.CharField(max_length=10, choices=md, blank=True, default='No', help_text='If user is MD')
+    staff_bsc = models.CharField(max_length=10, choices=md, blank=True, default='No', help_text='If user is uses bsc')
 
     grade = {
         ('T1', 'T1'),
@@ -419,6 +420,27 @@ class team(models.Model):
         return self.team_name
 
 
+# BSC
+class bsc(models.Model):
+    bsc_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique id for bsc")
+    bsc_pms = models.ForeignKey('pms', on_delete=models.RESTRICT, null=True)
+    bsc_name = models.CharField(max_length=50)
+    bsc_weight = models.FloatField()
+
+    def __str__(self):
+        return self.bsc_name
+
+
+class bu_bsc(models.Model):
+    bu_bsc_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    bu_bsc_pillar = models.ForeignKey('bsc', on_delete=models.RESTRICT)
+    bu_bsc_bu = models.ForeignKey('bu', on_delete=models.RESTRICT)
+    bsc_pillar_weight = models.FloatField()
+
+    def __str__(self):
+        return str(self.bu_bsc_bu) + " - " + str(self.bu_bsc_pillar)
+
+
 # KPIs ===============================================================================================================
 class individual_Kpi(models.Model):
     individual_kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
@@ -438,7 +460,7 @@ class individual_Kpi(models.Model):
     individual_kpi_title = models.CharField(max_length=200)
     individual_kpi_details = models.TextField(null=True, blank=True)
     individual_kpi_criteria = models.CharField(max_length=100)
-    individual_kpi_target = models.FloatField()
+    individual_kpi_target = models.FloatField(null=True)
     individual_kpi_weight = models.FloatField(default=20)
     individual_kpi_units = models.CharField(max_length=5, null=True, blank=True)
 
@@ -522,6 +544,7 @@ class individual_Kpi(models.Model):
 class bu_kpi(models.Model):
     bu_kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique Identifier for BU KPI")
     bu_kpi_pms = models.ForeignKey('pms', on_delete=models.RESTRICT)
+    bu_kpi_bsc = models.ForeignKey('bsc', on_delete=models.RESTRICT, default=None)
     bu_kpi_bu = models.ForeignKey('bu', on_delete=models.RESTRICT, related_name="tamk_Bu_identity")
     # Approvals
     bu_kpi_user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="tamk_Bu_submitting",
@@ -535,7 +558,6 @@ class bu_kpi(models.Model):
 
     bu_kpi_title = models.CharField(max_length=200)
     bu_kpi_details = models.TextField()
-    bu_kpi_target = models.FloatField()
     bu_kpi_weight = models.FloatField(null=True, blank=True)
     bu_kpi_units = models.CharField(max_length=5, null=True, blank=True)
 
@@ -585,7 +607,7 @@ class bu_kpi(models.Model):
     bu_kpi_february_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
                                                              default='Not Approved', )
     bu_kpi_march_score_approve = models.CharField(max_length=13, choices=approve, blank=True,
-                                                          default='Not Approved', )    
+                                                          default='Not Approved', )
 
     bu_kpi_submit_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     bu_kpi_approval_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
@@ -608,6 +630,12 @@ class bu_kpi(models.Model):
     )
     bu_kpi_type = models.CharField(max_length=10, choices=type, blank=True, default='cumulative', )
 
+    bu_kpi_s_score = models.FloatField(null=True, blank=True)
+    bu_kpi_a_score = models.FloatField(null=True, blank=True)
+    bu_kpi_b_score = models.FloatField(null=True, blank=True)
+    bu_kpi_c_score = models.FloatField(null=True, blank=True)
+    bu_kpi_d_score = models.FloatField(null=True, blank=True)
+
     def __str__(self):
         return self.bu_kpi_title
 
@@ -616,13 +644,12 @@ class company_kpi(models.Model):
     company_kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                                       help_text="Unique Identifier for company KPI")
     company_kpi_pms = models.ForeignKey('pms', on_delete=models.RESTRICT)
+    company_kpi_bsc = models.ForeignKey('bsc', on_delete=models.RESTRICT, default=None)
     company_kpi_user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="tamk_person_submitting",
                                          null=True,
                                          blank=True)
     company_kpi_title = models.CharField(max_length=200)
     company_kpi_details = models.TextField()
-    company_kpi_criteria = models.CharField(max_length=100, null=True, blank=True)
-    company_kpi_target = models.FloatField()
     company_kpi_weight = models.FloatField(null=True, blank=True)
     company_kpi_units = models.CharField(max_length=5, null=True, blank=True)
 

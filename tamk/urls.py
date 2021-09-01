@@ -33,10 +33,8 @@ urlpatterns = [
     path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>/<int:month>', approve_individual_kpi_score_dashboard,
          name='Staff_Approve_Kpi_score_dashboard'),
 
-    
     # BU Kpi Links
     path('BU/', BuKpiDashboard.as_view(), name='BU_Dashboard'),
-    path('BU/<uuid:pk>', BuDashboardKpiDetailView.as_view(), name='BU_dashboard-detail'),
     path('BU-Kpi/', BuKpi.as_view(), name='BU_Kpi_Dashboard'),
     path('BU-Kpi/Submit-Kpi/', SubmitBuKpiView.as_view(), name='BU_Kpi_Submit'),
     path('BU-Kpi/Track-Kpi/', TrackBuKpiView.as_view(), name='BU_Kpi_Detail1'),
@@ -45,9 +43,8 @@ urlpatterns = [
     path('BU-Kpi/Kpi-Results/', BuKpiResultListView.as_view(), name='BU_Kpi_Result'),
     path('BU-Kpi/Kpi-Results/<uuid:pk>', views.BuKpiResultUpdateView.as_view(), name='BU_Kpi_Result_Update'),
 
-
     # Company Kpi Links
-    path('Company/', ComapanyKpiDashboard.as_view(), name='Company_Dashboard'),
+    path('Company/', CompanyKpiDashboard.as_view(), name='Company_Dashboard'),
     path('Company-Kpi/<uuid:pk>', CompanyDashboardKpiDetailView.as_view(), name='Company_Dashboard_Detail'),
     path('Company-Kpi/', CompanyKpi.as_view(), name='Company_Kpi_Dashboard'),
     path('Company-Kpi/Submit-Kpi/', SubmitCompanyKpiView.as_view(), name='Company_Kpi_Submit'),

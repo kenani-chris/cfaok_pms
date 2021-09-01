@@ -4338,18 +4338,45 @@ class SubmitCheckIn(CreateView):
             context['total_pending'] = context['pending_ci'].count()
             context['total_rejected'] = context['rejected_ci'].count()
             context['percent_submitted'] = context['total_submitted'] / active_pms.checkin_number * 100
-            context['month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+            d1 = datetime.datetime.strptime('03/09/2021', "%d/%m/%Y").date()
+            d2 = datetime.datetime.now().date()
+
+            # context['month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
             ci_months = []
             for ci in context['submitted_ci']:
                 ci_months.append(ci.checkIn_month)
             context['ci_months'] = ci_months
+
+            if "August" in ci_months:
+                context['month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+            else:
+                if d2 <= d1:
+                    context['month'] = "August"
+                else:
+                    context['month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+
+
         return context
 
     def get_initial(self):
+
+        active_pms = pms.objects.get(pms_status='Active')
+        all_ci = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=self.request.user)
+        d1 = datetime.datetime.strptime('03/09/2021', "%d/%m/%Y").date()
+        d2 = datetime.datetime.now().date()
+
         initial = super(SubmitCheckIn, self).get_initial()
+        if all_ci.filter(checkIn_month="August"):
+            initial['checkIn_month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+        else:
+            if d2 <= d1:
+                initial['checkIn_month'] = "August"
+            else:
+                initial['checkIn_month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+
         initial['checkIn_pms'] = pms.objects.get(pms_status='Active')
         initial['checkIn_submit_date'] = datetime.date.today()
-        initial['checkIn_month'] = datetime.datetime.strftime(datetime.datetime.now(), '%B')
+
         initial['checkIn_staff'] = self.request.user
         initial['checkIn_status'] = 'Pending'
         return initial
@@ -4367,18 +4394,18 @@ class SubmitCheckIn(CreateView):
             if team_leader:
                 e_message = 'you have one CheckIn from ' + self.request.user.get_full_name() + ' that requires your approval'
                 for tl in team_leader:
-                    send_email_pms('KPI Approval', User.objects.get(pk=tl.staff_person.id), self.request.user, e_message)
+                    send_email_pms('CheckIn Confirmation', User.objects.get(pk=tl.staff_person.id), self.request.user, e_message)
 
             else:
                 team_leader = None
                 e_message = 'Your CheckIn has been submitted successfully but i keep on failing contacting your immediate ' \
                             'supervisor.<br>Please raise the issue with HR for support'
-                send_email_pms('KPI Approval', team_leader, self.request.user, e_message)
+                send_email_pms('CheckIn Confirmation', team_leader, self.request.user, e_message)
         else:
             team_leader = None
             e_message = 'Your CheckIn has been submitted successfully but i keep on failing contacting your immediate ' \
                         'supervisor.<br>Please raise the issue with HR for support'
-            send_email_pms('KPI Approval', team_leader, self.request.user, e_message)
+            send_email_pms('CheckIn Confirmation', team_leader, self.request.user, e_message)
 
         messages.success(self.request, 'Checkin submit successful')
 
