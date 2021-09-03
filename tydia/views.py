@@ -8599,4 +8599,16 @@ class Profile(TemplateView):
         context['user_bu'] = staff_person.staff_bu
         context['staff'] = get_object_or_404(staff, staff_person=self.request.user.id)
 
+        if context['user_is_md'] == "Yes":
+            staff_list = staff.objects.all()
+        elif context['user_is_bu_head'] is not None:
+            staff_list = staff.objects.filter(staff_bu=context['user_is_bu_head'])
+        elif context['user_is_tl'] is not None:
+            staff_list = staff.objects.filter(staff_team=context['user_is_tl'])
+        else:
+            staff_list = None
+
+        context['staff_list'] = staff_list
+
         return context
+

@@ -68,14 +68,14 @@
       <div class="card-header p-2">
         <ul class="nav nav-pills">
           <li class="nav-item"><div class="nav-link active" href="#my_profile" data-toggle="tab" style="cursor: pointer;">My Profile</div></li>
-            {% if user_is_tl %}
+            {% if user_is_tl is not None %}
                 <li class="nav-item"><div class="nav-link" href="#team_members" data-toggle="tab" style="cursor: pointer;">Team Members</div></li>
             {% endif %}
-            {% if user_is_bu_head %}
-                <li class="nav-item"><div class="nav-link" href="bu_members" data-toggle="tab" style="cursor: pointer;">BU Members</div></li>
+            {% if user_is_bu_head is not None%}
+                <li class="nav-item"><div class="nav-link" href="#bu_members" data-toggle="tab" style="cursor: pointer;">BU Members</div></li>
             {% endif %}
-            {% if user_is_bu_head %}
-                <li class="nav-item"><div class="nav-link" href="bu_members" data-toggle="tab" style="cursor: pointer;">BU Members</div></li>
+            {% if user_is_md == 'Yes' %}
+                <li class="nav-item"><div class="nav-link" href="#company_members" data-toggle="tab" style="cursor: pointer;">Company Members</div></li>
             {% endif %}
         </ul>
       </div><!-- /.card-header -->
@@ -175,10 +175,140 @@
   </table>
               </div>
               <div class="tab-pane" id="team_members">
+                <table id="example1" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                PF
+                            </th>
+                            <th>
+                                Team
+                            </th>
+                            <th>
+                                BU
+                            </th>
+                            <th>
+                                Grade
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for staff_u in staff_list %}
+                            <tr>
+                                <td>
+                                    {{ staff_u.staff_person.get_full_name }}
+                                </td>
+                                <td>
+                                    {{ staff_u.staff_Pf_Number }}
+                                </td>
+                                <td>
+                                    {{ staff_u.staff_team }}
+                                </td>
+                                <td>
+                                    {{ staff_u.staff_bu }}
+                                </td>
+                                <td>
+                                    {{ staff_u.staff_grade }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
 
               </div>
               <div class="tab-pane" id="bu_members">
+                <table id="example1" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                PF
+                            </th>
+                            <th>
+                                Team
+                            </th>
+                            <th>
+                                BU
+                            </th>
+                            <th>
+                                Grade
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
+                        {% for staff_u in staff_list %}
+                            <tr>
+                                <td>
+                                    {{ staff_u.staff_person.get_full_name }}
+                                </td>
+                                <td>
+                                    {{ staff_u.staff_Pf_Number }}
+                                </td>
+                                <td>
+                                    {{ staff_u.staff_team }}
+                                </td>
+                                <td>
+                                    {{ staff_u.staff_bu }}
+                                </td>
+                                <td>
+                                    {{ staff_u.staff_grade }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+              </div>
+              <div class="tab-pane" id="company_members">
+`                  <table id="example1" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                PF
+                            </th>
+                            <th>
+                                Team
+                            </th>
+                            <th>
+                                BU
+                            </th>
+                            <th>
+                                Grade
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for staff in staff_list %}
+                            <tr>
+                                <td>
+                                    {{ staff_u.staff_person.get_full_name }}
+                                </td>
+                                <td>
+                                    {{ staff_u.staff_Pf_Number }}
+                                </td>
+                                <td>
+                                    {{ staff_u.staff_team }}
+                                </td>
+                                <td>
+                                    {{ staff_u.staff_bu }}
+                                </td>
+                                <td>
+                                    {{ staff_u.staff_grade }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
               </div>
 
           </div>
