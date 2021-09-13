@@ -625,7 +625,7 @@ class bu_kpi(models.Model):
     type = (
         ('', ''),
         ('Addition', 'Addition'),
-        ('cumulative', 'cumulative'),
+        ('Average', 'Average'),
         ('YTD', 'YTD'),
     )
     bu_kpi_type = models.CharField(max_length=10, choices=type, blank=True, default='cumulative', )
@@ -683,7 +683,7 @@ class company_kpi(models.Model):
     )
     company_kpi_status = models.CharField(max_length=10, choices=status, blank=True, default='Approved')
     type = (
-        ('cumulative', 'cumulative'),
+        ('Average', 'Average'),
         ('YTD', 'YTD'),
         ('Addition', 'Addition'),
     )
