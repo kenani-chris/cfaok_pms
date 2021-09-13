@@ -1880,7 +1880,7 @@ def reject_individual_kpi(request, pk, kpi_id):
 
     return HttpResponseRedirect(reverse("Staff_Approve_Kpi_Detail", kwargs={'pk': pk}))
 
-
+'''
 @login_required
 def approve_individual_kpi_score(request, pk, kpi_id, month):
     staff_person = get_object_or_404(staff, staff_person=request.user.id)
@@ -1912,7 +1912,7 @@ def approve_individual_kpi_score(request, pk, kpi_id, month):
         send_email_pms('KPI Approved', User.objects.get(id=pk), request.user, message)
 
     return HttpResponseRedirect(reverse("Staff_Approve_Kpi_Detail", kwargs={'pk': pk}))
-
+'''
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
@@ -2328,10 +2328,65 @@ def approve_individual_kpi_score(request, pk, kpi_id, month):
             individual_kpi_march_score_approve="Approved"
         )
     messages.success(request, 'KPI score approved successful')
-    message = "KPI <b>" + kpi.individual_kpi_title + "</b> has been approved"
-    send_email_pms('KPI Approved', User.objects.get(id=pk), request.user, message)
+    message = "KPI <b>" + kpi.individual_kpi_title + "</b> result has been approved<br>" + '''
+             <table>
+                <thead>
+                    <tr>
+                        <th>KPI</th>
+                        <th>Apr</th>
+                        <th>May</th>
+                        <th>Jun</th>
+                        <th>Aug</th>
+                        <th>Sep</th>
+                        <th>Oct</th>
+                        <th>Nov</th>
+                        <th>Dec</th>
+                        <th>Jan</th>
+                        <th>Feb</th>
+                        <th>Mar</th>
+                    </tr>
+                </thead>
+                <tbpdy>
+                    <tr>
+                        <td rowspan="2">KPI</td>
+                        <td>''' + kpi.individual_kpi_march_score + '''</td>
+                        <td>''' + kpi.individual_kpi_april_score + '''</td>
+                        <td>''' + kpi.individual_kpi_may_score + '''</td>
+                        <td>''' + kpi.individual_kpi_june_score + '''</td>
+                        <td>''' + kpi.individual_kpi_july_score + '''</td>
+                        <td>''' + kpi.individual_kpi_august_score + '''</td>
+                        <td>''' + kpi.individual_kpi_october_score + '''</td>
+                        <td>''' + kpi.individual_kpi_november_score + '''</td>
+                        <td>''' + kpi.individual_kpi_december_score + '''</td>
+                        <td>''' + kpi.individual_kpi_january_score + '''</td>
+                        <td>''' + kpi.individual_kpi_february_score + '''</td>
+                        <td>''' + kpi.individual_kpi_march_score + '''</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">KPI</td>
+                        <td>''' + kpi.individual_kpi_march_score_approve + '''</td>
+                        <td>''' + kpi.individual_kpi_april_score_approve + '''</td>
+                        <td>''' + kpi.individual_kpi_may_score_approve + '''</td>
+                        <td>''' + kpi.individual_kpi_june_score_approve + '''</td>
+                        <td>''' + kpi.individual_kpi_july_score_approve + '''</td>
+                        <td>''' + kpi.individual_kpi_august_score_approve + '''</td>
+                        <td>''' + kpi.individual_kpi_october_score_approve + '''</td>
+                        <td>''' + kpi.individual_kpi_november_score_approve + '''</td>
+                        <td>''' + kpi.individual_kpi_december_score_approve + '''</td>
+                        <td>''' + kpi.individual_kpi_january_score_approve + '''</td>
+                        <td>''' + kpi.individual_kpi_february_score_approve + '''</td>
+                        <td>''' + kpi.individual_kpi_march_score_approve + '''</td>
+                    </tr>
+                </tbpdy>
+            </table>
 
-    return HttpResponseRedirect(reverse("Staff_Track_Kpi_Staff_One", kwargs={'pk': pk, 'kpi_id': kpi_id}))
+             '''
+    try:
+        send_email_pms('KPI Approved', User.objects.get(id=pk), request.user, message)
+    except():
+        pass
+
+    return HttpResponseRedirect(reverse("tydia:Staff_Track_Kpi_Staff_One", kwargs={'pk': pk, 'kpi_id': kpi_id}))
 
 
 @login_required

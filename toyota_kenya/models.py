@@ -693,6 +693,11 @@ class company_kpi(models.Model):
         ('Addition', 'Addition'),
     )
     company_kpi_type = models.CharField(max_length=10, choices=type, blank=True, default='cumulative', )
+    company_kpi_s_score = models.FloatField(null=True, blank=True)
+    company_kpi_a_score = models.FloatField(null=True, blank=True)
+    company_kpi_b_score = models.FloatField(null=True, blank=True)
+    company_kpi_c_score = models.FloatField(null=True, blank=True)
+    company_kpi_d_score = models.FloatField(null=True, blank=True)
 
 
 # Notifications =====================================================================================================
