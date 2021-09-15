@@ -2277,7 +2277,6 @@ class StaffKpiTrackOneView(UpdateView):
 
 @login_required
 def approve_individual_kpi_score(request, pk, kpi_id, month):
-    staff_person = get_object_or_404(staff, id=request.user.id)
     kpi = get_object_or_404(individual_Kpi, individual_kpi_id=kpi_id)
     if month == 4:
         individual_Kpi.objects.filter(individual_kpi_id=kpi_id).update(
