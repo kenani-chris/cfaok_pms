@@ -2720,7 +2720,7 @@ def approve_individual_kpi_score(request, pk, kpi_id, month):
             individual_kpi_march_score_approve="Approved"
         )
     messages.success(request, 'KPI score approved successful')
-    message = "KPI <b>" + kpi.individual_kpi_title + "</b> result has been approved<br>" + '''
+    message = "KPI <b>" + str(kpi.individual_kpi_title) + "</b> result has been approved<br>" + '''
              <table>
                 <thead>
                     <tr>
@@ -2741,33 +2741,33 @@ def approve_individual_kpi_score(request, pk, kpi_id, month):
                 <tbpdy>
                     <tr>
                         <td rowspan="2">KPI</td>
-                        <td>''' + kpi.individual_kpi_march_score + '''</td>
-                        <td>''' + kpi.individual_kpi_april_score + '''</td>
-                        <td>''' + kpi.individual_kpi_may_score + '''</td>
-                        <td>''' + kpi.individual_kpi_june_score + '''</td>
-                        <td>''' + kpi.individual_kpi_july_score + '''</td>
-                        <td>''' + kpi.individual_kpi_august_score + '''</td>
-                        <td>''' + kpi.individual_kpi_october_score + '''</td>
-                        <td>''' + kpi.individual_kpi_november_score + '''</td>
-                        <td>''' + kpi.individual_kpi_december_score + '''</td>
-                        <td>''' + kpi.individual_kpi_january_score + '''</td>
-                        <td>''' + kpi.individual_kpi_february_score + '''</td>
-                        <td>''' + kpi.individual_kpi_march_score + '''</td>
+                        <td>''' + str(kpi.individual_kpi_march_score) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_april_score) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_may_score) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_june_score) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_july_score) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_august_score) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_october_score) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_november_score) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_december_score) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_january_score) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_february_score) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_march_score) + '''</td>
                     </tr>
                     <tr>
                         <td rowspan="2">KPI</td>
-                        <td>''' + kpi.individual_kpi_march_score_approve + '''</td>
-                        <td>''' + kpi.individual_kpi_april_score_approve + '''</td>
-                        <td>''' + kpi.individual_kpi_may_score_approve + '''</td>
-                        <td>''' + kpi.individual_kpi_june_score_approve + '''</td>
-                        <td>''' + kpi.individual_kpi_july_score_approve + '''</td>
-                        <td>''' + kpi.individual_kpi_august_score_approve + '''</td>
-                        <td>''' + kpi.individual_kpi_october_score_approve + '''</td>
-                        <td>''' + kpi.individual_kpi_november_score_approve + '''</td>
-                        <td>''' + kpi.individual_kpi_december_score_approve + '''</td>
-                        <td>''' + kpi.individual_kpi_january_score_approve + '''</td>
-                        <td>''' + kpi.individual_kpi_february_score_approve + '''</td>
-                        <td>''' + kpi.individual_kpi_march_score_approve + '''</td>
+                        <td>''' + str(kpi.individual_kpi_march_score_approve) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_april_score_approve) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_may_score_approve) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_june_score_approve) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_july_score_approve) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_august_score_approve) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_october_score_approve) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_november_score_approve) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_december_score_approve) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_january_score_approve) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_february_score_approve) + '''</td>
+                        <td>''' + str(kpi.individual_kpi_march_score_approve) + '''</td>
                     </tr>
                 </tbpdy>
             </table>
