@@ -1,0 +1,755 @@
+{% extends "cfao_agri/Staff_Kpi/default.html" %}
+{% block pagetitle %}View KPI{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+
+      <div class="card-header">
+        <h3 class="card-title">{{ staff.get_full_name }}'s one KPI</h3>
+      </div>
+      <div class="card-header bg-warning">
+          <h3 class="card-title">This approval section is left available in the event the immediate supervisor is not in a position to approve the result<br><b>Please consult immediate supervisor before approving or changing the value</b></h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+
+        {% now "j" as current_date %}
+
+        {% if the_kpi %}
+            {% if the_kpi.individual_kpi_status == "Pending" %}
+              <table id="example1" class="table table-bordered table-striped">
+              <tbody>
+                <tr class="bg-info">
+                  <td colspan="4">
+                    {{ the_kpi.individual_kpi_title }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Description
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_details }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Criteria
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_criteria }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Function
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_function }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Target
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_target }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Status
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_status }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="card-footer">
+              <div class="float-right" style="margin:5px">
+                <a href="{% url 'cfao_agri:Staff_Reject_Individual_Kpi' staff.id  the_kpi.individual_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
+              </div>
+              <div class="float-right" style="margin:5px">
+                <a href="{% url 'cfao_agri:Staff_Approve_Individual_Kpi' staff.id  the_kpi.individual_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
+              </div>
+            </div>
+            {% elif the_kpi.individual_kpi_status == "Rejected 1" or the_kpi.individual_kpi_status == "Rejected 2" %}
+              <table id="example1" class="table table-bordered table-striped">
+              <tbody>
+                <tr class="bg-info">
+                  <td colspan="4">
+                    {{ the_kpi.individual_kpi_title }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Description
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_details }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Criteria
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_criteria }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Function
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_function }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Target
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_target }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Status
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_status }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            {% elif the_kpi.individual_kpi_status == "Approved 1" %}
+              <table id="example1" class="table table-bordered table-striped">
+              <tbody>
+                <tr class="bg-info">
+                  <td colspan="4">
+                    {{ the_kpi.individual_kpi_title }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Description
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_details }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Criteria
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_criteria }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Function
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_function }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Target
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_target }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Status
+                  </th>
+                  <td colspan="3">
+                    {{ the_kpi.individual_kpi_status }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            {% if user_is_bu_head is not None or user_is_md is not None%}
+            <div class="card-footer">
+              <div class="float-right" style="margin:5px">
+                <a href="{% url 'cfao_agri:Staff_Reject_Individual_Kpi' staff.id  the_kpi.individual_kpi_id  %}"><button type="reset" class="btn btn-danger btn-block">Reject</button></a>
+              </div>
+              <div class="float-right" style="margin:5px">
+                <a href="{% url 'cfao_agri:Staff_Approve_Individual_Kpi' staff.id  the_kpi.individual_kpi_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
+              </div>
+            </div>
+            {% endif %}
+          {% else %}
+            <div class="card-body">
+            <div class="row">
+            <div class="col-md-6">
+                <table class="table table-bordered table-striped">
+                  <tbody>
+                  <form action="" method="post">
+                  {% csrf_token %}
+                      <tr>
+                        <th>
+                          Apr
+                        </th>
+                        <td>
+                            {% if april == 'reveal' %}
+                                {{ form.individual_kpi_april_score }}
+                            {% else %}
+                                {{ form.individual_kpi_april_score.value }}
+                                {{ form.individual_kpi_april_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                        {% if current_month < 4 %}
+                            <td class="text-center">
+                                ----
+                            </td>
+                        {% else %}
+                            {% if the_kpi.individual_kpi_april_score_approve == "Approved" %}
+                                <td class="text-center bg-success">
+                                    <i class="fa fa-check-circle"></i>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-primary btn-block" id="submit">Submit</button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'cfao_agri:Staff_Approve_Kpi_score_bu_members' request.user.id the_kpi.individual_kpi_id 4 %}"><small>Approve</small></a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+
+
+                      </tr>
+                      <tr>
+                        <th>
+                          May
+                        </th>
+                        <td>
+                            {% if may == 'reveal' %}
+                                {{ form.individual_kpi_may_score }}
+                            {% else %}
+                                {{ form.individual_kpi_may_score.value }}
+                                {{ form.individual_kpi_may_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                        {% if current_month < 5 %}
+                            <td class="text-center">
+                                ----
+                            </td>
+                        {% else %}
+                            {% if the_kpi.individual_kpi_may_score_approve == "Approved" %}
+                                <td class="text-center bg-success">
+                                    <i class="fa fa-check-circle"></i>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'cfao_agri:Staff_Approve_Kpi_score_bu_members' request.user.id the_kpi.individual_kpi_id 5 %}"><small>Approve</small></a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+                      <tr>
+                        <th>
+                          Jun
+                        </th>
+                        <td>
+                            {% if june == 'reveal' %}
+                                {{ form.individual_kpi_june_score }}
+                            {% else %}
+                                {{ form.individual_kpi_june_score.value }}
+                                {{ form.individual_kpi_june_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                        {% if current_month < 6 %}
+                            <td class="text-center">
+                                ----
+                            </td>
+                        {% else %}
+                            {% if the_kpi.individual_kpi_june_score_approve == "Approved" %}
+                                <td class="text-center bg-success">
+                                    <i class="fa fa-check-circle"></i>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'cfao_agri:Staff_Approve_Kpi_score_bu_members' request.user.id the_kpi.individual_kpi_id 6 %}"><small>Approve</small></a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+                      <tr>
+                        <th>
+                          Jul
+                        </th>
+                        <td>
+                            {% if july == 'reveal' %}
+                                {{ form.individual_kpi_july_score }}
+                            {% else %}
+                                {{ form.individual_kpi_july_score.value }}
+                                {{ form.individual_kpi_july_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                        {% if current_month < 7 %}
+
+                            <td class="text-center">
+                                ----
+                            </td>
+                        {% else %}
+                            {% if the_kpi.individual_kpi_july_score_approve == "Approved" %}
+                                <td class="text-center bg-success">
+                                    <i class="fa fa-check-circle"></i>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'cfao_agri:Staff_Approve_Kpi_score_bu_members' request.user.id the_kpi.individual_kpi_id 7 %}"><small>Approve</small></a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+                      <tr>
+                        <th>
+                          Aug
+                        </th>
+                        <td>
+                            {% if august == 'reveal' %}
+                                {{ form.individual_kpi_august_score }}
+                            {% else %}
+                                {{ form.individual_kpi_august_score.value }}
+                                {{ form.individual_kpi_august_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                        {% if current_month < 8 %}
+
+                            <td class="text-center">
+                                ----
+                            </td>
+                        {% else %}
+                            {% if the_kpi.individual_kpi_august_score_approve == "Approved" %}
+                                <td class="text-center bg-success">
+                                    <i class="fa fa-check-circle"></i>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'cfao_agri:Staff_Approve_Kpi_score_bu_members' request.user.id the_kpi.individual_kpi_id 8 %}"><small>Approve</small></a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+                      <tr>
+                        <th>
+                          Sep
+                        </th>
+                        <td>
+                            {% if september == 'reveal' %}
+                                {{ form.individual_kpi_september_score }}
+                            {% else %}
+                                {{ form.individual_kpi_september_score.value }}
+                                {{ form.individual_kpi_september_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                        {% if current_month < 9 %}
+
+                            <td class="text-center">
+                                ----
+                            </td>
+                        {% else %}
+                            {% if the_kpi.individual_kpi_september_score_approve == "Approved" %}
+                                <td class="text-center bg-success">
+                                    <i class="fa fa-check-circle"></i>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'cfao_agri:Staff_Approve_Kpi_score_bu_members' request.user.id the_kpi.individual_kpi_id 9 %}"><small>Approve</small></a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+                      <tr>
+                        <th>
+                          Oct
+                        </th>
+                        <td>
+                            {% if october == 'reveal' %}
+                                {{ form.individual_kpi_october_score }}
+                            {% else %}
+                                {{ form.individual_kpi_october_score.value }}
+                                {{ form.individual_kpi_october_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                        {% if current_month < 10 %}
+
+                            <td class="text-center">
+                                ----
+                            </td>
+                        {% else %}
+                            {% if the_kpi.individual_kpi_october_score_approve == "Approved" %}
+                                <td class="text-center bg-success">
+                                    <i class="fa fa-check-circle"></i>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'cfao_agri:Staff_Approve_Kpi_score_bu_members' request.user.id the_kpi.individual_kpi_id 10 %}"><small>Approve</small></a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+                      <tr>
+                        <th>
+                          Nov
+                        </th>
+                        <td>
+                            {% if november == 'reveal' %}
+                                {{ form.individual_kpi_november_score }}
+                            {% else %}
+                                {{ form.individual_kpi_november_score.value }}
+                                {{ form.individual_kpi_november_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                        {% if current_month < 11 %}
+
+                            <td class="text-center">
+                                ----
+                            </td>
+                        {% else %}
+                            {% if the_kpi.individual_kpi_november_score_approve == "Approved" %}
+                                <td class="text-center bg-success">
+                                    <i class="fa fa-check-circle"></i>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'cfao_agri:Staff_Approve_Kpi_score_bu_members' request.user.id the_kpi.individual_kpi_id 11 %}"><small>Approve</small></a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+                      <tr>
+                        <th>
+                          Dec
+                        </th>
+                        <td>
+                            {% if december == 'reveal' %}
+                                {{ form.individual_kpi_december_score }}
+                            {% else %}
+                                {{ form.individual_kpi_december_score.value }}
+                                {{ form.individual_kpi_december_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                        {% if current_month < 12 %}
+
+                            <td class="text-center">
+                                ----
+                            </td>
+                        {% else %}
+                            {% if the_kpi.individual_kpi_december_score_approve == "Approved" %}
+                                <td class="text-center bg-success">
+                                    <i class="fa fa-check-circle"></i>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'cfao_agri:Staff_Approve_Kpi_score_bu_members' request.user.id the_kpi.individual_kpi_id 12 %}"><small>Approve</small></a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+                      <tr>
+                        <th>
+                          Jan
+                        </th>
+                        <td>
+                            {% if january == 'reveal' %}
+                                {{ form.individual_kpi_january_score }}
+                            {% else %}
+                                {{ form.individual_kpi_january_score.value }}
+                                {{ form.individual_kpi_january_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                        {% if current_month < 13 %}
+
+                            <td class="text-center">
+                                ----
+                            </td>
+                        {% else %}
+                            {% if the_kpi.individual_kpi_january_score_approve == "Approved" %}
+                                <td class="text-center bg-success">
+                                    <i class="fa fa-check-circle"></i>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'cfao_agri:Staff_Approve_Kpi_score_bu_members' request.user.id the_kpi.individual_kpi_id 1 %}"><small>Approve</small></a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+                      <tr>
+                        <th>
+                          Feb
+                        </th>
+                        <td>
+                            {% if february == 'reveal' %}
+                                {{ form.individual_kpi_february_score }}
+                            {% else %}
+                                {{ form.individual_kpi_february_score.value }}
+                                {{ form.individual_kpi_february_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                        {% if current_month < 14 %}
+
+                            <td class="text-center">
+                                ----
+                            </td>
+                        {% else %}
+                            {% if the_kpi.individual_kpi_february_score_approve == "Approved" %}
+                                <td class="text-center bg-success">
+                                    <i class="fa fa-check-circle"></i>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'cfao_agri:Staff_Approve_Kpi_score_bu_members' request.user.id the_kpi.individual_kpi_id 2 %}"><small>Approve</small></a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+                      <tr>
+                        <th>
+                          Mar
+                        </th>
+                        <td>
+                            {% if march == 'reveal' %}
+                                {{ form.individual_kpi_march_score }}
+                            {% else %}
+                                {{ form.individual_kpi_march_score.value }}
+                                {{ form.individual_kpi_march_score.as_hidden }}
+                            {% endif %}
+                        </td>
+                        {% if current_month < 15 %}
+
+                            <td class="text-center">
+                                ----
+                            </td>
+                        {% else %}
+                            {% if the_kpi.individual_kpi_march_score_approve == "Approved" %}
+                                <td class="text-center bg-success">
+                                    <i class="fa fa-check-circle"></i>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-sm btn-primary" id="submit">Change</button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'cfao_agri:Staff_Approve_Kpi_score_bu_members' request.user.id the_kpi.individual_kpi_id 3 %}"><small>Approve</small></a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+              </form>
+
+
+                  </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <!-- LINE CHART -->
+                <div class="card card-info">
+                  <div class="card-header">
+                    <h3 class="card-title">Progress Over time</h3>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart">
+                      <canvas id="lineChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+
+                <table id="exam1" class="table table-bordered table-striped">
+                  <tbody>
+                    <tr>
+                      <th>
+                        KPI
+                      </th>
+                      <td colspan="3">
+                        {{ the_kpi.individual_kpi_title }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>
+                        Description
+                      </th>
+                      <td colspan="3">
+                        {{ the_kpi.individual_kpi_details }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>
+                        Criteria
+                      </th>
+                      <td colspan="3">
+                        {{ the_kpi.individual_kpi_criteria }}
+                      </td>
+                    </tr>
+                    <tr class="bg-info">
+                      <th>
+                        Function
+                      </th>
+                      <th>
+                        Target
+                      </th>
+                      <th>
+                        Status
+                      </th>
+                      <th>
+                        Submit Date
+                      </th>
+                    </tr>
+                    <tr>
+                      <td>
+                        {{ the_kpi.individual_kpi_function }}
+                      </td>
+                      <td>
+                        {{ the_kpi.individual_kpi_target }}
+                      </td>
+                      <td>
+                        {{ the_kpi.individual_kpi_status }}
+                      </td>
+                      <td>
+                        {{ the_kpi.individual_kpi_submit_date }}
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+
+                <script>
+                  $(function () {
+
+                    //-------------
+                    //- LINE CHART -
+                    //--------------
+
+                    //Values
+                    var april = "{{the_kpi.individual_kpi_april_score}}";
+                    var may = "{{the_kpi.individual_kpi_april_score}}";
+                    var june = "{{the_kpi.individual_kpi_april_score}}";
+                    var july = "{{the_kpi.individual_kpi_april_score}}";
+                    var august = "{{the_kpi.individual_kpi_april_score}}";
+                    var september = "{{the_kpi.individual_kpi_april_score}}";
+                    var october = "{{the_kpi.individual_kpi_april_score}}";
+                    var november = "{{the_kpi.individual_kpi_april_score}}";
+                    var december = "{{the_kpi.individual_kpi_april_score}}";
+                    var january = "{{the_kpi.individual_kpi_april_score}}";
+                    var february = "{{the_kpi.individual_kpi_april_score}}";
+                    var march = "{{the_kpi.individual_kpi_april_score}}";
+
+
+                    var lineChartCanvas = $('#lineChart').get(0).getContext('2d')
+                    var lineChartOptions = {
+                      maintainAspectRatio : false,
+                      responsive : true,
+                      legend: {
+                        display: false
+                      },
+                      scales: {
+                        xAxes: [{
+                          gridLines : {
+                            display : false,
+                          }
+                        }],
+                        yAxes: [{
+                          gridLines : {
+                            display : false,
+                          }
+                        }]
+                      }
+                    }
+                    var lineChartData = {
+                      labels  : ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar' ],
+                      datasets: [
+                        {
+                          label               : 'Target',
+                          backgroundColor     : 'rgba(60,141,188,0.9)',
+                          borderColor         : 'rgba(60,141,188,0.8)',
+                          pointRadius          : false,
+                          pointColor          : '#3b8bba',
+                          pointStrokeColor    : 'rgba(60,141,188,1)',
+                          pointHighlightFill  : '#fff',
+                          pointHighlightStroke: 'rgba(60,141,188,1)',
+                          data                : [{{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}, {{ the_kpi.individual_kpi_target }}]
+                        },
+                        {
+                          label               : 'Electronics',
+                          backgroundColor     : 'rgba(210, 214, 222, 1)',
+                          borderColor         : 'rgba(210, 214, 222, 1)',
+                          pointRadius         : false,
+                          pointColor          : 'rgba(210, 214, 222, 1)',
+                          pointStrokeColor    : '#c1c7d1',
+                          pointHighlightFill  : '#fff',
+                          pointHighlightStroke: 'rgba(220,220,220,1)',
+                          data                : ['{{ the_kpi.individual_kpi_april_score }}', '{{ the_kpi.individual_kpi_may_score }}', '{{ the_kpi.individual_kpi_june_score }}', '{{ the_kpi.individual_kpi_july_score }}', '{{ the_kpi.individual_kpi_august_score }}', '{{ the_kpi.individual_kpi_september_score }}', '{{ the_kpi.individual_kpi_october_score }}', '{{ the_kpi.individual_kpi_november_score }}', '{{ the_kpi.individual_kpi_december_score }}', '{{ the_kpi.individual_kpi_january_score }}', '{{ the_kpi.individual_kpi_february_score }}', '{{ the_kpi.individual_kpi_march_score }}' ]
+                        },
+                      ]
+                    }
+                    lineChartData.datasets[0].fill = false;
+                    lineChartData.datasets[1].fill = false;
+                    lineChartOptions.datasetFill = false
+
+                    var lineChart = new Chart(lineChartCanvas, {
+                      type: 'line',
+                      data: lineChartData,
+                      options: lineChartOptions
+                    })
+                  })
+                </script>
+            </div>
+        </div>
+
+
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="alert alert-warning">
+            <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
+            It Appears {{ staff.get_full_name }} has no pending KPIs
+          </div>
+        {% endif %}
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}

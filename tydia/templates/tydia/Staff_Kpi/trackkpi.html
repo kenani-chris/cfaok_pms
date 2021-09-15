@@ -27,7 +27,12 @@
               {% if member is not None %}
                 <tr>
                   <td>
-                    <a href="{% url 'tydia:Staff_Track_Kpi_Staff' member.0.staff_person.id %}" >{{ member.0.staff_person.get_full_name }}</a>
+                      {% if member.0.staff_head_bu is not None %}
+                          <a href="{% url 'tydia:Staff_Track_Kpi_Staff_BU' member.0.staff_head_bu.bu_id %}" >{{ member.0.staff_person.get_full_name }}</a>
+                      {% else %}
+                          <a href="{% url 'tydia:Staff_Track_Kpi_Staff' member.0.staff_person.id %}" >{{ member.0.staff_person.get_full_name }}</a>
+                      {% endif %}
+
                   </td>
                   <td>
                     {{ member.1 }}

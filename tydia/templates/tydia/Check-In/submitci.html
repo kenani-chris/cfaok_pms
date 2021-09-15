@@ -7,7 +7,7 @@
         {{ form.errors }}
       <div class="card-body">
         {% if month not in ci_months %}
-        <blockquote class="bg-info " style="margin:-20px -20px 0px -20px ;"><h2 class="text-white">{% now 'F' %} Check-In</h2></blockquote>
+        <blockquote class="bg-info " style="margin:-20px -20px 0px -20px ;"><h2 class="text-white">{{ month }} Check-In</h2></blockquote>
           <form action="" method="post" id="submit_Check_In_Form">
           {% csrf_token %}
 
