@@ -3619,7 +3619,7 @@ class CompanyKpiResultUpdateView(UpdateView):
 class BUsKpiListView(ListView):
     all_bu = bu.objects.all()
     model = individual_Kpi
-    template_name = 'cfao_agri/BUs_Kpi/staffkpi.html'
+    template_name = 'cfao_agri/Bus_Kpi/staffkpi.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -3682,7 +3682,7 @@ class BUsKpiListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsKpiPendingListView(ListView):
     model = bu_kpi
-    template_name = 'cfao_agri/BUs_Kpi/approvekpi.html'
+    template_name = 'cfao_agri/Bus_Kpi/approvekpi.html'
     all_bu = bu.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -3746,7 +3746,7 @@ class BUsKpiPendingListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsKpiApproveView(DetailView):
     model = bu
-    template_name = 'cfao_agri/BUs_Kpi/one_individual_approve_kpi.html'
+    template_name = 'cfao_agri/Bus_Kpi/one_individual_approve_kpi.html'
     active_pms = pms
     context_object_name = 'bu'
     all_bu = bu.objects.all()
@@ -3863,7 +3863,7 @@ def reject_bu_kpi(request, pk, kpi_id):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsTrackKpiListView(ListView):
     model = bu_kpi
-    template_name = 'cfao_agri/BUs_Kpi/trackkpi.html'
+    template_name = 'cfao_agri/Bus_Kpi/trackkpi.html'
     all_bu = bu.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -3927,7 +3927,7 @@ class BUsTrackKpiListView(ListView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsTrackKpiOneListView(DetailView):
     model = bu
-    template_name = 'cfao_agri/BUs_Kpi/trackkpi_staff.html'
+    template_name = 'cfao_agri/Bus_Kpi/trackkpi_staff.html'
 
     all_bu = bu.objects.all()
 
@@ -4009,7 +4009,7 @@ class BUsTrackKpiOneListView(DetailView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class BUsKpiTrackOneView(UpdateView):
     form_class = BuKpiResultsForm
-    template_name = 'cfao_agri/BUs_Kpi/trackkpi_staff_one.html'
+    template_name = 'cfao_agri/Bus_Kpi/trackkpi_staff_one.html'
     active_pms = pms
     context_object_name = 'staff'
     pk_url_kwarg = 'kpi_id'

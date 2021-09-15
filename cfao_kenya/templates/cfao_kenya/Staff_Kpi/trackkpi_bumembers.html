@@ -1,5 +1,5 @@
 {% extends "cfao_kenya/Staff_Kpi/default.html" %}
-{% block pagetitle %}Track my Staff KPIs{% endblock %}
+{% block pagetitle %}Track BU Members KPIs{% endblock %}
 {% block kpicontent %}
 
   <div class="col-md-10">
@@ -30,7 +30,7 @@
                       {% if member.0.staff_head_bu is not None %}
                           <a href="{% url 'cfao_kenya:Staff_Track_Kpi_Staff_BU' member.0.staff_head_bu.bu_id %}" >{{ member.0.staff_person.get_full_name }}</a>
                       {% else %}
-                          <a href="{% url 'cfao_kenya:Staff_Track_Kpi_Staff' member.0.staff_person.id %}" >{{ member.0.staff_person.get_full_name }}</a>
+                          <a href="{% url 'cfao_kenya:Staff_Track_Kpi_Staff_bu_members' member.0.staff_person.id %}" >{{ member.0.staff_person.get_full_name }}</a>
                       {% endif %}
 
                   </td>
