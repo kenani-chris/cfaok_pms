@@ -1772,7 +1772,6 @@ class StaffKpiListView(ListView):
 
                 context['team_members'] = team_members
                 context['team_members_kpi'] = team_members_kpi
-                context['team_members2'] = team_members2
                 context['team_members2_kpi'] = team_members2_kpi
                 context['bu_members'] = bu_members
                 context['bu_members_kpi'] = bu_members_kpi
@@ -1849,7 +1848,6 @@ class StaffKpiListView(ListView):
 
                 context['team_members'] = team_members
                 context['team_members_kpi'] = team_members_kpi
-                context['team_members2'] = team_members2
                 context['team_members2_kpi'] = team_members2_kpi
             else:
                 team_members = None
@@ -1961,7 +1959,6 @@ class StaffKpiPendingListView(ListView):
 
                 context['team_members'] = team_members
                 context['team_members_kpi'] = team_members_kpi
-                context['team_members2'] = team_members2
                 context['team_members2_kpi'] = team_members2_kpi
             else:
                 team_members = None
@@ -2281,7 +2278,6 @@ class BUStaffKpiApproveView(DetailView):
 
                 context['team_members'] = team_members
                 context['team_members_kpi'] = team_members_kpi
-                context['team_members2'] = team_members2
                 context['team_members2_kpi'] = team_members2_kpi
 
                 context['team_members'] = team_members
@@ -2514,7 +2510,6 @@ class StaffTrackKpiListView(ListView):
 
                 context['team_members'] = team_members
                 context['team_members_kpi'] = team_members_kpi
-                context['team_members2'] = team_members2
                 context['team_members2_kpi'] = team_members2_kpi
             else:
                 team_members = None
@@ -2643,7 +2638,6 @@ class StaffTrackKpiOneListView(ListView):
 
             context['team_members'] = team_members
             context['team_members_kpi'] = team_members_kpi
-            context['team_members2'] = team_members2
             context['team_members2_kpi'] = team_members2_kpi
 
         else:
@@ -2885,7 +2879,6 @@ class StaffKpiTrackOneView(UpdateView):
 
             context['team_members'] = team_members
             context['team_members_kpi'] = team_members_kpi
-            context['team_members2'] = team_members2
             context['team_members2_kpi'] = team_members2_kpi
         else:
             team_members = None

@@ -182,7 +182,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.c-k.co.ke'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'pms_notifier@c-k.co.ke'
-EMAIL_HOST_PASSWORD = 'Kenani1997.'
+EMAIL_HOST_PASSWORD = 'xQ25m)S!yc.(eGg@$%iOJOG!3Udq74A9'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
