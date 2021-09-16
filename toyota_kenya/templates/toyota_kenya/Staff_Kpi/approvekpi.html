@@ -54,6 +54,36 @@
                   {% endif %}
                 {% endif %}
               {% endfor %}
+                {% for member in team_members2_kpi %}
+                {% if member is not None %}
+                  {% if member.3 > 0 %}
+                      <tr>
+                          <td>
+                            <a href="{% url 'toyota_kenya:Staff_BU_Approve_Kpi_Detail' member.0.staff_person.id %}">{{ member.0.staff_person.get_full_name }}</a>
+                          </td>
+                          <td>
+                            {{ member.1 }}
+                          </td>
+                          <td>
+                            {{ member.2 }}
+                          </td>
+
+                          <td class="bg-info">
+                            {{ member.3 }} - Pending
+                          </td>
+                          <td>
+                            {{ member.4 }}
+                          </td>
+                          <td>
+                            {{ member.5 }}
+                          </td>
+                          <td>
+                            {{ member.6 }}
+                          </td>
+                        </tr>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
                 </tbody>
                 <tfoot>
 

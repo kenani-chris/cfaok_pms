@@ -23,8 +23,8 @@
 
 
           {% if user_is_bu_head is not None %}
-              <li class="list-group-item">BU Staff KPI
-                <a href="{% url 'toyota_kenya:Staff_BU_Approve_Kpi' %}" class="btn btn-primary btn-block"><b>Approve KPI{% if bu_pending > 0 %} <span class="badge badge-danger float-right">{{ bu_pending }}</span>{% endif %}</b></a>
+              <!--<li class="list-group-item">BU Staff KPI-->
+                <!--<a href="{% url 'toyota_kenya:Staff_BU_Approve_Kpi' %}" class="btn btn-primary btn-block"><b>Approve KPI{% if bu_pending > 0 %} <span class="badge badge-danger float-right">{{ bu_pending }}</span>{% endif %}</b></a>-->
                 <!--<a href="{% url 'toyota_kenya:Staff_Track_Kpi' %}" class="btn btn-primary btn-block"><b>BU Staff KPI</b></a>-->
               </li>
             {% endif %}
@@ -274,8 +274,65 @@
               It Appears you've you've got no team members
             </div>
           {% endif %}
+        </div>
+      </div>
+      <div class="card-header">
+        <h3 class="card-title">2nd Level down Staff KPIs</h3>
+      </div>
+      <div class="card-body">
+        <div style="overflow-x:scroll">
+          {% if team_members2 %}
+            <table id="example" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>Staff</th>
+                <th>PF</th>
+                <th>Approved 2</th>
+                <th>Approved 1</th>
+                <th>Pending</th>
+                <th>Rejected</th>
+                <th>Total</th>
+              </tr>
+              </thead>
+              <tbody>
+            {% for member in team_members2_kpi %}
+              {% if member is not None %}
+                <tr>
+                  <td>
+                    {{ member.0 }}
+                  </td>
+                  <td>
+                    {{ member.1 }}
+                  </td>
+                  <td>
+                    {{ member.2 }}
+                  </td>
+                  <td>
+                    {{ member.3 }}
+                  </td>
+                  <td>
+                    {{ member.4 }}
+                  </td>
+                  <td>
+                    {{ member.5 }}
+                  </td>
+                  <td>
+                    {{ member.6 }}
+                  </td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+              </tbody>
+              <tfoot>
 
-
+              </tfoot>
+            </table>
+          {% else %}
+            <div class="alert alert-warning">
+              <h5><i class="icon fas fa-ban"></i> No KPIs found</h5>
+              It Appears you've you've got no team members
+            </div>
+          {% endif %}
           <!--{% if my_kpi %}
             <table id="example1" class="table table-bordered table-striped">
               <thead>
