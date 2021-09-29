@@ -1,34 +1,31 @@
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django import template
-from django.contrib.auth.models import Group
-from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
+from django.apps import apps
 
 
-@login_required
-def home(request):
-    context = {
-        '': 'that'
-    }
-    return render(request, 'home.html', context)
+@method_decorator(login_required, name='dispatch')
+class Home(TemplateView):
+    template_name = 'home.html'
 
-
-register = template.Library()
-
-
-@register.filter(name='has_group')
-def has_group(user, group_name):
-    try:
-        group = Group.objects.get(name=group_name)
-    except Group.DoesNotExist:
-        return False
-
-    return group in user.groups.all()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        result = []
+        model = None
+        for name, app in apps.app_configs.items():
+            try:
+                model = apps.get_model(name, model_name='Staff')
+                staff = model.objects.filter(staff_person=self.request.user, staff_active=True)
+                if staff:
+                    result.append([name, staff])
+            except Exception as e:
+                pass
+        context['result'] = result
+        return context
 
 
 def self_change_password(request):
@@ -48,12 +45,3 @@ def self_change_password(request):
 
 def self_password_change_done(request):
     return render(request, 'registration/change-password-done.html',)
-
-
-'''
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_passes_test(is_member_company), name='dispatch')
-class HomeView(TemplateView):
-    template_name = '../re'
-    model = pms
-    form_class = PasswordChangeForm'''

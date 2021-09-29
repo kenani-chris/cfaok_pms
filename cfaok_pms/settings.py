@@ -43,11 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cfao_agri.apps.CfaoAgriConfig',
-    'tamk.apps.TamkConfig',
     'cfao_kenya.apps.CfaoKenyaConfig',
-    'tydia.apps.TydiaConfig',
-    'toyota_kenya.apps.ToyotaKenyaConfig',
+    'colorfield'
 ]
 
 MIDDLEWARE = [
@@ -70,8 +67,6 @@ ROOT_URLCONF = 'cfaok_pms.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -94,7 +89,7 @@ WSGI_APPLICATION = 'cfaok_pms.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cfaok_pms2',
+        'NAME': 'cfaok_pms_v3',
         'USER': 'cfaok_pms',
         'PASSWORD': 'ChangemeHR*12',
         'HOST': '127.0.0.1',
@@ -113,7 +108,6 @@ DATABASES = {
     }
 }
 '''
-
 
 
 # Password validation
@@ -157,6 +151,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
 LOGIN_REDIRECT_URL = '/'
 
 # Default primary key field type
@@ -179,7 +176,8 @@ ACCOUNT_PASSWORD_USE_HISTORY = True
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ADMINS = (
-    ('Kenani Chris', 'kenanichris@outlook.com'), ('Peris Oloo', 'poloo@cfao.com'), ('Kenani Chris', 'ckenani@cfao.com'), ('Rebecca Odede', 'reodede@cfao.com')
+    ('Kenani Chris', 'kenanichris@outlook.com'), ('Peris Oloo', 'poloo@cfao.com'), ('Kenani Chris', 'ckenani@cfao.com'),
+    ('Rebecca Odede', 'reodede@cfao.com')
 )
 
 MANAGERS = ADMINS

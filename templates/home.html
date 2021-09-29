@@ -214,25 +214,23 @@ body {
           </div>
         </div>
 
-
         <div class="inner cover container">
           <h1 class="cover-heading text-left border-info border-bottom ">Welcome <span style="color: #ff1493">{{ request.user.get_full_name }}</span>,</h1>
-          {{ request.user.staff }}
-          {% if request.user.groups.all %}
-              {% for group in user.groups.all%}
-                {% ifequal group.name "cfao_agri" %}
+          {% if result %}
+              {% for re in result %}
+                {% ifequal re.0 "cfao_agri" %}
                     <a href="{% url 'cfao_agri:index' %}" class="btn btn-lg btn-default">CFAO Agri PMS</a>
                 {% endifequal %}
-                {% ifequal group.name "tamk" %}
+                {% ifequal re.0 "tamk" %}
                     <a href="{% url 'tamk:index' %}" class="btn btn-lg btn-default">Tamk PMS</a>
                 {% endifequal %}
-                {% ifequal group.name "cfao_kenya" %}
-                    <a href="{% url 'cfao_kenya:index' %}" class="btn btn-lg btn-default">CFAO Kenya PMS</a>
+                {% ifequal re.0 "cfao_kenya" %}
+                    <a href="{% url 'cfao_kenya:Dashboard' %}" class="btn btn-lg btn-default">CFAO Kenya PMS</a>
                 {% endifequal %}
-                {% ifequal group.name "tydia" %}
+                {% ifequal re.0 "tydia" %}
                     <a href="{% url 'tydia:index' %}" class="btn btn-lg btn-default">Tydia PMS</a>
                 {% endifequal %}
-                {% ifequal group.name "toyota_kenya" %}
+                {% ifequal re.0 "toyota_kenya" %}
                     <a href="{% url 'toyota_kenya:index' %}" class="btn btn-lg btn-default">TKEN PMS</a>
                 {% endifequal %}
 
@@ -252,7 +250,7 @@ body {
     <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      A solution of CFAO K. (<b>Version</b>-2.0)
+      A solution of CFAO K. (<b>Version</b>-3.0)
     </div>
   </footer>
 

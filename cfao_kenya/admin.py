@@ -1,28 +1,23 @@
+from django.apps import apps
 from django.contrib import admin
 from .models import *
-
-# Register your models here.
-# Register your models here.
+from .urls import app_name
 
 
-admin.site.register(pms)
-admin.site.register(staff)
-admin.site.register(department)
-admin.site.register(branch)
-admin.site.register(team)
-admin.site.register(bu)
-admin.site.register(checkIn)
-admin.site.register(evaluation)
-admin.site.register(done_tl_evaluates_staff)
-admin.site.register(done_staff_evaluates_tl)
-admin.site.register(question_tl_evaluate_staff)
-admin.site.register(question_staff_evaluate_tl)
-admin.site.register(responses_tl_evaluate_staff)
-admin.site.register(responses_staff_evaluate_tl)
-admin.site.register(bu_kpi)
-admin.site.register(individual_Kpi)
-admin.site.register(company_kpi)
-admin.site.register(notification)
-admin.site.register(score_matrix)
-admin.site.register(staff_grade)
-admin.site.register(matrix_checkin)
+excempt_list = ['Staff']
+
+for name, app in apps.app_configs.items():
+    if name == app_name:
+        models = app.get_models()
+        for model in models:
+            if model.__name__ not in excempt_list:
+                admin.site.register(model)
+
+
+class StaffAdmin(admin.ModelAdmin):
+    list_display = ('staff_person', 'staff_Pf_Number', 'staff_grade', 'staff_active', 'staff_superuser',
+                    'staff_visibility')
+    list_filter = ('staff_active', 'staff_superuser', 'staff_visibility')
+
+
+admin.site.register(Staff, StaffAdmin)

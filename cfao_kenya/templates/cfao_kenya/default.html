@@ -1,130 +1,197 @@
-            <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  {% block title %}<title>Online PMS</title>{% endblock %}
+  <title>{% block title %}PMS | Online{% endblock %}</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  {% load static %}
   <!-- Font Awesome -->
-
-  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+    {% load static %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Tempusdominus Bbootstrap 4 -->
-  <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" integrity="sha512-3JRrEUwaCkFUBLK1N8HehwQgu8e23jTH4np5NHOmQOobuC4ROQxFwFgBLTnhcnQRMs84muMh0PnnwXlPq5MGjg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- iCheck -->
-  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css" integrity="sha512-8vq2g5nHE062j3xor4XxPeZiPjmRDh6wlufQlfC6pdQ/9urJkU07NM0tEREeymP++NczacJ/Q59ul+/K2eYvcg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- JQVMap -->
-  <link rel="stylesheet" href="{% static 'plugins/jqvmap/jqvmap.min.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jqvmap.min.css" integrity="sha512-RPxGl20NcAUAq1+Tfj8VjurpvkZaep2DeCgOfQ6afXSEgcvrLE6XxDG2aacvwjdyheM/bkwaLVc7kk82+mafkQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- Theme style -->
-  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
-
-  <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
-  <!-- DataTables -->
-  <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
-
-  <link rel="stylesheet" href="{% static 'plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/css/adminlte.min.css" integrity="sha512-YOsl4pnOb5NC868yn1JxAzjJsWkLNtP53uc3OcyAl0Q2R1cwo/mdI1hHSQM8gbIxWj97mKeLoD9R0aiYibFQAA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="{% static 'plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.1/css/OverlayScrollbars.min.css" integrity="sha512-jN4O0AUkRmE6Jwc8la2I5iBmS+tCDcfUd1eq8nrZIBnDKTmCp5YxxNN1/aetnAH32qT+dDbk1aGhhoaw5cJNlw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- Daterange picker -->
-  <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.css" integrity="sha512-gp+RQIipEa1X7Sq1vYXnuOW96C4704yI1n0YB9T/KqdvqaEgL6nAuTSrKufUX3VBONq/TPuKiXGLVgBKicZ0KA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- summernote -->
-  <link rel="stylesheet" href="{% static 'plugins/summernote/summernote-bs4.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.css" integrity="sha512-Rx5zhwiKIWinzTlrAJbMatlmoiUk1gIMpHnYrYQYehlcnywlA/cCU5fgk8RyA+ub3gJI6PKwy22awUb0UR/nJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Tempusdominus Bbootstrap 4 -->
-
-  <link rel="stylesheet" href="{% static '/dist/css/adminlte.min.css' %}">
-
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-
-  <!-- jQuery -->
-  <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
-  <!-- jQuery UI 1.11.4 -->
-  <script src="{% static 'plugins/jquery-ui/jquery-ui.min.js' %}"></script>
-  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-  <!-- preloader -->
-  <link rel="stylesheet" href="{% static 'plugins/elegant_loading/src/css/preloader.css' %}">
-  <script src="{% static 'plugins/elegant_loading/src/js/jquery.preloader.min.js' %}"></script>
-
-  <!--validate forms -->
-  <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+  <style>
+      .bg-color1{
+          background-color: rgb(217, 217, 217);
+      }
+      .bg-color2{
+          background-color: rgb(217, 217, 217);
+      }
+      .bg-color3{
+          background-color: rgb(217, 217, 217);
+      }
+  </style>
 
 </head>
-<body class="hold-transition sidebar-mini layout-fixed text-sm">
+<body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
 
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+  <div class="fixed-top">
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="{% url 'cfao_kenya:index' %}" class="nav-link">Home</a>
+        <a href="index3.html" class="nav-link">Help</a>
       </li>
     </ul>
+
+    <!-- SEARCH FORM -->
+    <form class="form-inline ml-3">
+      <div class="input-group input-group-sm">
+        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+        <div class="input-group-append">
+          <button class="btn btn-navbar" type="submit">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-      <!-- Notifications Dropdown Menu -->
-
-      <li class="nav-item dropdown user-menu">
-        <div href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" style="cursor: pointer;">
-          <img src="{% static 'dist/img/user.png' %}" class="user-image img-circle elevation-2" alt="User Image">
+      <!-- Messages Dropdown Menu -->
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-comments"></i>
+          <span class="badge badge-danger navbar-badge">3</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <a href="#" class="dropdown-item">
+            <!-- Message Start -->
+            <div class="media">
+              <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+              <div class="media-body">
+                <h3 class="dropdown-item-title">
+                  Brad Diesel
+                  <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                </h3>
+                <p class="text-sm">Call me whenever you can...</p>
+                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+              </div>
+            </div>
+            <!-- Message End -->
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <!-- Message Start -->
+            <div class="media">
+              <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <div class="media-body">
+                <h3 class="dropdown-item-title">
+                  John Pierce
+                  <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
+                </h3>
+                <p class="text-sm">I got your message bro</p>
+                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+              </div>
+            </div>
+            <!-- Message End -->
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <!-- Message Start -->
+            <div class="media">
+              <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <div class="media-body">
+                <h3 class="dropdown-item-title">
+                  Nora Silvester
+                  <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
+                </h3>
+                <p class="text-sm">The subject goes here</p>
+                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+              </div>
+            </div>
+            <!-- Message End -->
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
         </div>
-        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <!-- User image -->
-          <li class="user-header" style="margin-bottom: -20px">
-
-            <div class=" float-left col-md-4">
-              <img src="{% static 'dist/img/user.png' %}" class="img-circle float-left" alt="User Image" style="width:100%">
-            </div>
-            <div class=" float-right col-md-8 text-left">
-                <a href="{% url 'cfao_kenya:Profile' %}">{% firstof request.user.get_full_name %}</a><br>
-              <small>{% firstof request.user.email %}</small><br><br>
-                <a href="{% url 'main_home' %}">Switch Company</a>
-            </div>
-
-
-          </li>
-          <li class="user-footer" style="margin-top: -80px">
-            <a href="{% url 'cfao_kenya:Profile'%}" class="btn btn-default btn-info">Profile</a>
-              <a href="{% url 'logout'%}" class="btn btn-small btn-danger float-right">Sign out</a>
-          </li>
-
-        </ul>
+      </li>
+      <!-- Notifications Dropdown Menu -->
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-bell"></i>
+          <span class="badge badge-warning navbar-badge">15</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <span class="dropdown-item dropdown-header">15 Notifications</span>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-envelope mr-2"></i> 4 new messages
+            <span class="float-right text-muted text-sm">3 mins</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-users mr-2"></i> 8 friend requests
+            <span class="float-right text-muted text-sm">12 hours</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-file mr-2"></i> 3 new reports
+            <span class="float-right text-muted text-sm">2 days</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+        </div>
       </li>
     </ul>
   </nav>
+    <nav class="main-header bg-color1">
+    <!-- Left navbar links -->
+        <div class="content-header">
+          <div class="container-fluid row">
+             <div class="col-md-6">
+                <h1 class="m-0 text-dark">{% block page_title %}Dashboard{% endblock %}</h1>
+              </div><!-- /.col -->
+              <div class="col-md-6">
+                <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item"><a href="#">Home</a></li>
+                  <li class="breadcrumb-item active">Dashboard v1</li>
+                </ol>
+              </div>
+          </div><!-- /.container-fluid -->
+    </div>
+  </nav>
+  </div>
   <!-- /.navbar -->
 
-  {% block sidebar %}
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <aside class="main-sidebar sidebar-dark-warning elevation-4">
     <!-- Brand Logo -->
-    <a href="{% url 'cfao_kenya:index' %}" class="brand-link">
-      <img src="{% static 'images/cfao_kenya.png' %}" alt="CFAO Agri Logo" class="brand-image elevation-3"
-           style="opacity: .8">
-      <span class="brand-text font-weight-light">ONLINE <b>PMS</b></span>
+    <a href="index3.html" class="brand-link bg-white">
+      <img src="{% static 'images/logo_pms.png' %}" alt="AdminLTE Logo"
+           style="width: 100%">
+
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="{% static 'dist/img/user3.png' %}" class="elevation-2 img-circle" alt="User Image">
-        </div>
         <div class="info">
-          <a href="{% url 'cfao_kenya:Profile' %}" class="d-block">{% firstof request.user.get_full_name%}</a>
+          <a href="#" class="d-block">{{ request.user.get_full_name }}</a>
         </div>
       </div>
 
@@ -134,172 +201,330 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="{% url 'cfao_kenya:index' %}" class="nav-link bg-white">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+            <a href="{% url 'cfao_kenya:Dashboard' %}" class="nav-link">
+              <i class="nav-icon fas fa-home"></i>
               <p>
                 Dashboard
               </p>
             </a>
           </li>
-          <li>
-            <a href="#" class="nav-link active">
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link bg-some-grey">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
-                KPIs
+                KPI
               </p>
             </a>
           </li>
-
-          <!-- My KPI LINK ========================================================================================= -->
-          {% if user_is_md != "Yes" and user_is_bu_head == None %}
-            <li class="nav-item">
-              <a href="{% url 'cfao_kenya:Individual_Kpi_Dashboard' %}" class="nav-link">
-                <i class="far fa-user nav-icon"></i>
-                <p>My KPIs</p>
-              </a>
-            </li>
-          {% endif %}
-
-
-          <!-- My Staff KPI LINK =================================================================================== -->
-          {% if user_is_tl != None %}
-            <li class="nav-item">
-              <a href="{% url 'cfao_kenya:Staff_Kpi_Dashboard' %}" class="nav-link">
-                <i class="fa fa-users nav-icon"></i>
-                <p>My Staff KPIs</p>
-              </a>
-            </li>
-          {% endif %}
-
-          <!-- BU KPI LINK =================================================================================== -->
-          {% if user_is_md == "Yes" and no_of_bu > 0 %}
-            <li class="nav-item">
-              <a href="./index2.html" class="nav-link">
-                <i class="fa fa-users nav-icon"></i>
-                <p>BUs Dashboard</p>
-              </a>
-            </li>
-          {% endif %}
-          {% if user_is_md == "Yes" %}
-            <li class="nav-item">
-              <a href="{% url 'cfao_kenya:BUs_Kpi_Dashboard' %}" class="nav-link">
-                <i class="fa fa-users nav-icon"></i>
-                <p>BUs KPI</p>
-              </a>
-            </li>
-          {% endif %}
-          {% if user_is_bu_head != None %}
-            <li class="nav-item">
-              <a href="{% url 'cfao_kenya:BU_Kpi_Dashboard' %}" class="nav-link">
-                <i class="fa fa-users nav-icon"></i>
-                <p>BU KPI</p>
-              </a>
-            </li>
-          {% endif %}
-
-          {% if user_is_md == "No" and user_is_bu_head is None and user_bu is not None%}
           <li class="nav-item">
-            <a href="{% url 'cfao_kenya:BU_Dashboard' %}" class="nav-link">
-              <i class="fa fa-users nav-icon"></i>
-              <p>BU Dashboard</p>
+            <a href="{% url 'cfao_kenya:My_KPI' %}" class="nav-link">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+                My KPI
+              </p>
             </a>
           </li>
-          {% endif %}
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Layout Options
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">6</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="pages/layout/top-nav.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Top Navigation</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Top Navigation + Sidebar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/boxed.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Boxed</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/fixed-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Sidebar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/fixed-topnav.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Navbar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/fixed-footer.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Footer</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/collapsed-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Collapsed Sidebar</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-chart-pie"></i>
+              <p>
+                Charts
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="pages/charts/chartjs.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>ChartJS</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/charts/flot.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Flot</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/charts/inline.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Inline</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link bg-some-grey">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                CheckIn
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="pages/widgets.html" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Widgets
+                <span class="right badge badge-danger">New</span>
+              </p>
+            </a>
+          </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Layout Options
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">6</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="pages/layout/top-nav.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Top Navigation</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Top Navigation + Sidebar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/boxed.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Boxed</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/fixed-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Sidebar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/fixed-topnav.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Navbar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/fixed-footer.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Footer</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/collapsed-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Collapsed Sidebar</p>
+                </a>
+              </li>
+            </ul>
+          </li>
 
 
-          <!-- Company KPI LINK =================================================================================== -->
-          {% if user_is_md == "Yes" %}
-            <li class="nav-item">
-              <a href="{% url 'cfao_kenya:Company_Kpi_Dashboard' %}" class="nav-link">
-                <i class="fa fa-building nav-icon"></i>
-                <p>Company KPIs</p>
-              </a>
-            </li>
-          {% else %}
-             <li class="nav-item">
-              <a href="{% url 'cfao_kenya:Company_Dashboard' %}" class="nav-link">
-                <i class="fa fa-building nav-icon"></i>
-                <p>Company Dashboard</p>
-              </a>
-            </li>
-          {% endif %}
-
-
-          <li>
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-edit"></i>
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link bg-some-grey">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Assessment
               </p>
             </a>
-
-          <!-- Staff and TL ASSESS LINK =================================================================================== -->
+          </li>
           <li class="nav-item">
-              <a href="{% url 'cfao_kenya:Assessment_Dashboard' %}" class="nav-link">
-                <i class="fa fa-users nav-icon"></i>
-                <p>Staff/TL Assessment</p>
-              </a>
-            </li>
-
-          <li>
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-copy"></i>
+            <a href="pages/widgets.html" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
               <p>
-                Checkin
+                Widgets
+                <span class="right badge badge-danger">New</span>
               </p>
             </a>
           </li>
-
-          <!-- My ChekinLINK =================================================================================== -->
-          {% if user_is_md != "Yes" %}
-            <li class="nav-item">
-              <a href="{% url 'cfao_kenya:Check-In_Kpi_Dashboard' %}" class="nav-link">
-                <i class="far fa-user nav-icon"></i>
-                <p>My Checkin</p>
-              </a>
-            </li>
-          {% endif %}
-
-          <!-- Staff CheckIn LINK ================================================================================== -->
-          {% if user_is_tl != None %}
-            <li class="nav-item">
-              <a href="{% url 'cfao_kenya:Staff_Check-In_Kpi_Dashboard' %}" class="nav-link">
-                <i class="fa fa-users nav-icon"></i>
-                <p>My Staff Checkin</p>
-              </a>
-            </li>
-          {% endif %}
-          {% if request.user.is_superuser %}
-              <li>
-                <a href="#" class="nav-link active">
-                  <i class="nav-icon fas fa-edit"></i>
-                  <p>
-                    Management
-                  </p>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Layout Options
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">6</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="pages/layout/top-nav.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Top Navigation</p>
                 </a>
               </li>
               <li class="nav-item">
-              <a href="{% url 'cfao_kenya:Admin_Dashboard' %}" class="nav-link">
-                <i class="far fa-user nav-icon"></i>
-                <p>Admin</p>
-              </a>
-            </li>
-
-
-          {% endif %}
-
-                <a href="#" class="nav-link active">
-                  <i class="nav-icon fas fa-edit"></i>
-                  <p>
-                    Reports
-                  </p>
+                <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Top Navigation + Sidebar</p>
                 </a>
               </li>
               <li class="nav-item">
-              <a href="{% url 'cfao_kenya:Reports' %}" class="nav-link">
-                <i class="far fa-user nav-icon"></i>
-                <p>Report</p>
-              </a>
+                <a href="pages/layout/boxed.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Boxed</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/fixed-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Sidebar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/fixed-topnav.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Navbar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/fixed-footer.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Footer</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/collapsed-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Collapsed Sidebar</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link bg-some-grey">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Reports
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="pages/widgets.html" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Widgets
+                <span class="right badge badge-danger">New</span>
+              </p>
+            </a>
+          </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Layout Options
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">6</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="pages/layout/top-nav.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Top Navigation</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Top Navigation + Sidebar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/boxed.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Boxed</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/fixed-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Sidebar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/fixed-topnav.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Navbar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/fixed-footer.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Footer</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="pages/layout/collapsed-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Collapsed Sidebar</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
 
         </ul>
       </nav>
@@ -307,126 +532,70 @@
     </div>
     <!-- /.sidebar -->
   </aside>
-  {% endblock %}
+
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0 text-dark">{% block pagetitle %}{% endblock %}</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              {% block page_top %}{% endblock %}
-              {% block page_middle %}{% endblock %}
-              {% block page_bottom %}{% endblock %}
-            </ol>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+  <div class="content-wrapper" style="padding-top: 140px">
 
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        {% block content %}{% endblock %}
+        <!-- Small boxes (Stat box) -->
+        <div class="row container">
+            {% block content %}
+            {% endblock %}
+          <!-- ./col -->
+        </div>
+
       </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-  <footer class="main-footer fixed-bottom">
+  <footer class="main-footer">
     <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      A solution of CFAO K. (<b>Version</b>-2.0)
+      <b>Version</b> 3.0.6
     </div>
   </footer>
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- jQuery UI 1.12 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
-    $( "a").click(function() {
-          $(".btn").prop('readonly', true);
-          $('html').preloader({
-            // loading text
-            text:'Loading',
-            // from 0 to 100
-            percent:'100',
-            // duration in ms
-            duration:'30000',
-            // z-index property
-            zIndex:'1',
-            // sets relative position to preloader's parent
-            width:'100%',
-            height:'100%',
-            setRelative:false,
-          });
-      });
-    $( ":submit").click(function() {
-          $(".btn").prop('readonly', true);
-          $('html').preloader({
-            // loading text
-            text:'Loading',
-            // from 0 to 100
-            percent:'100',
-            // duration in ms
-            duration:'3000',
-            // z-index property
-            zIndex:'1',
-            // sets relative position to preloader's parent
-            width:'100%',
-            height:'100%',
-            setRelative:false,
-          });
-      });
+  $.widget.bridge('uibutton', $.ui.button);
+  $('input').addClass('form-control');
+  $('select').addClass('form-control');
+  $('textarea').addClass('form-control');
 </script>
-
-{% load static %}
-
-<!--<script>
-  $.widget.bridge('uibutton', $.ui.button)
-</script>-->
 <!-- Bootstrap 4 -->
-<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- DataTables -->
-<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
-<script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js" integrity="sha512-wV7Yj1alIZDqZFCUQJy85VN+qvEIly93fIQAN7iqDFCPEucLCeNFz4r35FCo9s6WrpdDQPi80xbljXB8Bjtvcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- ChartJS -->
-<script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
-<script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
-<script src="{% static 'plugins/sweetalert2/sweetalert2.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js" integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- Sparkline -->
 <script src="{% static 'plugins/sparklines/sparkline.js' %}"></script>
 <!-- JQVMap -->
-<script src="{% static 'plugins/jqvmap/jquery.vmap.min.js' %}"></script>
-<script src="{% static 'plugins/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jquery.vmap.min.js" integrity="sha512-Zk7h8Wpn6b9LpplWXq1qXpnzJl8gHPfZFf8+aR4aO/4bcOD5+/Si4iNu9qE38/t/j1qFKJ08KWX34d2xmG0jrA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/maps/jquery.vmap.usa.js"></script>
 <!-- jQuery Knob Chart -->
-<script src="{% static 'plugins/jquery-knob/jquery.knob.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.13/jquery.knob.min.js" integrity="sha512-NhRZzPdzMOMf005Xmd4JonwPftz4Pe99mRVcFeRDcdCtfjv46zPIi/7ZKScbpHD/V0HB1Eb+ZWigMqw94VUVaw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- daterangepicker -->
-<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
-<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.js" integrity="sha512-W76C8qrNYavcaycIH9EijxRuswoS+LCqA1+hq+ECrmjzAbe/SHhTgrwA1uc84husS/Gz50mxOEHPzrcd3sxBqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- Tempusdominus Bootstrap 4 -->
-<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js" integrity="sha512-k6/Bkb8Fxf/c1Tkyl39yJwcOZ1P4cRrJu77p83zJjN2Z55prbFHxPs9vN7q3l3+tSMGPDdoH51AEU8Vgo1cgAA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- Summernote -->
-<script src="{% static 'plugins/summernote/summernote-bs4.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js" integrity="sha512-+cXPhsJzyjNGFm5zE+KPEX4Vr/1AbqCUuzAS8Cy5AfLEWm9+UI9OySleqLiSQOQ5Oa2UrzaeAOijhvV/M4apyQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- overlayScrollbars -->
-<script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.1/js/OverlayScrollbars.min.js" integrity="sha512-B1xv1CqZlvaOobTbSiJWbRO2iM0iii3wQ/LWnXWJJxKfvIRRJa910sVmyZeOrvI854sLDsFCuFHh4urASj+qgw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- AdminLTE App -->
-<script src="{% static 'dist/js/adminlte.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js" integrity="sha512-pbrNMLSckfh8yEOr2o1RT+4zMU3Sj7+zP3BOY6nFVI/FLnjTRyubNppLbosEt4nvLCcdsEa8tmKhH3uqOYFXKg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="{% static 'dist/js/pages/dashboard.js' %}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{% static 'dist/js/demo.js' %}"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/pages/dashboard.min.js" integrity="sha512-wXkHJ2i8Z5fK/q6k7qe38qA6uD+VpLC/LL2XobX3rVVw6F3//fDWwoqMQ2Mgy5nf9BIvW2gLbILQJTIO/gDrDg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>
