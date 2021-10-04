@@ -27,16 +27,34 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.css" integrity="sha512-Rx5zhwiKIWinzTlrAJbMatlmoiUk1gIMpHnYrYQYehlcnywlA/cCU5fgk8RyA+ub3gJI6PKwy22awUb0UR/nJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.min.css" integrity="sha512-PT0RvABaDhDQugEbpNMwgYBCnGCiTZMh9yOzUsJHDgl/dMhD9yjHAwoumnUk3JydV3QTcIkNDuN40CJxik5+WQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Jquery Toast-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" integrity="sha512-wJgJNTBBkLit7ymC6vvzM1EcSWeM9mmOu+1USHaRBbHkm6W9EgM0HY27+UtUaprntaYQJF75rc8gjxllKs5OIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 
   <style>
       .bg-color1{
-          background-color: rgb(217, 217, 217);
+          {% if company %}
+              background-color: {{ company.company_color1 }};
+              color: white;
+          {% else %}
+              background-color: #00A8B4;
+              color: white;
+          {% endif %}
       }
       .bg-color2{
-          background-color: rgb(217, 217, 217);
+          {% if company %}
+              background-color: {{ company.company_color2 }};
+          {% else %}
+              background-color: #D9D9D9;
+          {% endif %}
       }
       .bg-color3{
-          background-color: rgb(217, 217, 217);
+          {% if company %}
+              background-color: {{ company.company_color3 }};
+          {% else %}
+              background-color: #33393F;
+          {% endif %}
       }
   </style>
 
@@ -158,7 +176,7 @@
       </li>
     </ul>
   </nav>
-    <nav class="main-header bg-color1">
+    <nav class="main-header bg-color2">
     <!-- Left navbar links -->
         <div class="content-header">
           <div class="container-fluid row">
@@ -167,12 +185,39 @@
               </div><!-- /.col -->
               <div class="col-md-6">
                 <ol class="breadcrumb float-sm-right">
-                  <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item active">Dashboard v1</li>
+                  <li class="breadcrumb-item"><a href="{% url 'cfao_kenya:Dashboard' %}">Dashboard</a></li>
+                  {% block breadcrumb %}{% endblock %}
                 </ol>
               </div>
           </div><!-- /.container-fluid -->
-    </div>
+        </div>
+    </nav>
+
+  <nav class="main-header navbar navbar-expand-lg navbar-light bg-light">
+      {% block page_link %}{% endblock %}|
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item">
+            {% block Create %}{% endblock %}
+          </li>
+          <li class="nav-item">
+            {% block Read %}{% endblock %}
+          </li>
+          <li class="nav-item">
+            {% block Update %}{% endblock %}
+          </li>
+          <li class="nav-item">
+            {% block Delete %}{% endblock %}
+          </li>
+          <li class="nav-item">
+            {% block List %}{% endblock %}
+          </li>
+        </ul>
+      </div>
   </nav>
   </div>
   <!-- /.navbar -->
@@ -534,13 +579,13 @@
   </aside>
 
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper" style="padding-top: 140px">
+  <div class="content-wrapper" style="padding-top: 180px">
 
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
-        <div class="row container">
+        <div class="row container-fluid card-body">
             {% block content %}
             {% endblock %}
           <!-- ./col -->
@@ -572,7 +617,22 @@
   $('input').addClass('form-control');
   $('select').addClass('form-control');
   $('textarea').addClass('form-control');
+  $('textarea').attr('rows', 4);
+
 </script>
+{% for message in messages %}
+  <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
+    $(function() {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      toastr.success('Success :)');
+    });
+  </script>
+{% endfor %}
 <!-- Bootstrap 4 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js" integrity="sha512-wV7Yj1alIZDqZFCUQJy85VN+qvEIly93fIQAN7iqDFCPEucLCeNFz4r35FCo9s6WrpdDQPi80xbljXB8Bjtvcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- ChartJS -->
@@ -597,5 +657,135 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js" integrity="sha512-pbrNMLSckfh8yEOr2o1RT+4zMU3Sj7+zP3BOY6nFVI/FLnjTRyubNppLbosEt4nvLCcdsEa8tmKhH3uqOYFXKg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/pages/dashboard.min.js" integrity="sha512-wXkHJ2i8Z5fK/q6k7qe38qA6uD+VpLC/LL2XobX3rVVw6F3//fDWwoqMQ2Mgy5nf9BIvW2gLbILQJTIO/gDrDg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- DataTable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js" integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap4.min.js" integrity="sha512-OQlawZneA7zzfI6B1n1tjUuo3C5mtYuAWpQdg+iI9mkDoo7iFzTqnQHf+K5ThOWNJ9AbXL4+ZDwH7ykySPQc+A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- Jquery Toast -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js" integrity="sha512-zlWWyZq71UMApAjih4WkaRpikgY9Bz1oXIW5G0fED4vk14JjGlQ1UmkGM392jEULP8jbNMiwLWdM8Z87Hu88Fw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    {% for message in messages %}
+        $.toast({
+            text: "{{ message }}",
+            heading: 'Success', // Optional heading to be shown on the toast
+            icon: 'success', // Type of toast icon
+            showHideTransition: 'plain', // fade, slide or plain
+            allowToastClose: true, // Boolean value true or false
+            hideAfter: 5000, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+            stack: 6, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+            position: 'top-right', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+
+
+
+            textAlign: 'left',  // Text alignment i.e. left, right or center
+            loader: true,  // Whether to show loader or not. True by default
+            loaderBg: '#9EC600',  // Background color of the toast loader
+
+        });
+    {% endfor %}
+</script>
+<script>
+  $(function () {
+    $("#simpleTable").DataTable({
+      "responsive": false,
+      "scrollX": true,
+      "autoWidth": false,
+      "paging": false,
+      "searching": false,
+      "info": false,
+    });
+    $("#searchTable").DataTable({
+      "responsive": true,
+      "autoWidth": false,
+      "paging": false,
+      "searching": false,
+      "info": false,
+    });
+
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+<script>
+  $(function () {
+
+    var Data = {
+      labels  : ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+      datasets: [
+        {
+          label               : 'Results',
+          backgroundColor     : 'rgba(60,141,188,0.9)',
+          borderColor         : 'rgba(60,141,188,0.8)',
+          pointRadius          : false,
+          pointColor          : '#3b8bba',
+          pointStrokeColor    : 'rgba(60,141,188,1)',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data                : [28, 48, 40, 19, 86, 27, 90]
+        },
+        {
+          label               : 'Target',
+          backgroundColor     : 'rgba(210, 214, 222, 1)',
+          borderColor         : 'rgba(210, 214, 222, 1)',
+          pointRadius         : false,
+          pointColor          : 'rgba(210, 214, 222, 1)',
+          pointStrokeColor    : '#c1c7d1',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(220,220,220,1)',
+          data                : [{{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, ]
+        },
+      ]
+    }
+
+    var Options = {
+      maintainAspectRatio : false,
+      responsive : true,
+      legend: {
+        display: false
+      },
+      scales: {
+        xAxes: [{
+          gridLines : {
+            display : false,
+          }
+        }],
+        yAxes: [{
+          gridLines : {
+            display : false,
+          }
+        }]
+      }
+    }
+
+
+
+    //-------------
+    //- LINE CHART -
+    //--------------
+    var lineChartCanvas = $('#lineChart').get(0).getContext('2d')
+    var lineChartOptions = jQuery.extend(true, {}, Options)
+    var lineChartData = jQuery.extend(true, {}, Data)
+    lineChartData.datasets[0].fill = false;
+    lineChartData.datasets[1].fill = false;
+    lineChartOptions.datasetFill = false
+
+    var lineChart = new Chart(lineChartCanvas, {
+      type: 'line',
+      data: lineChartData,
+      options: lineChartOptions
+    })
+
+
+
+
+  })
+</script>
 </body>
 </html>

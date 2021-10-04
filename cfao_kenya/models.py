@@ -55,6 +55,17 @@ class PMS(models.Model):
         return self.pms_name
 
 
+# KPI Submission Timeline
+class SubmissionKPI(models.Model):
+    submission_id = models.AutoField(primary_key=True)
+    submission_pms = models.ForeignKey('PMS', on_delete=models.RESTRICT)
+    submission_level_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT)
+    submission_start_date = models.DateTimeField(auto_now=False)
+    submission_end_date = models.DateTimeField(auto_now=False)
+    submission_minimum_number = models.IntegerField(default=5)
+    submission_maximum_number = models.IntegerField(default=10)
+
+
 '''
 # Scoring matrix =====================================================================================================
 class score_matrix(models.Model):
@@ -215,8 +226,9 @@ class QuestionResponses(models.Model):
 # Levels/Groups =======================================================================================================
 class Level(models.Model):
     level_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    level_name = models.CharField(max_length=200)
+    level_name = models.CharField(max_length=200, unique=True)
     level_description = models.TextField()
+    level_parent = models.CharField(max_length=100, default=None, blank=True, null=True)
     level_head = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_Head_level")
     level_reliever = models.ForeignKey(User, on_delete=models.RESTRICT,
                                        related_name="cfao_kenya_Head_reliever", null=True, blank=True)
@@ -230,11 +242,21 @@ class Level(models.Model):
 # Levels/Groups =======================================================================================================
 class LevelCategory(models.Model):
     category_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    category_name = models.CharField(max_length=200)
+    category_name = models.CharField(max_length=200, unique=True)
     category_description = models.TextField()
+    category_parent = models.CharField(max_length=100, default=None, blank=True, null=True)
+    category_kpi_view = models.BooleanField(default=False)
 
     def __str__(self):
         return self.category_name
+
+
+# Levels/Groups =======================================================================================================
+class LevelMembers(models.Model):
+    level_member_id = models.AutoField(primary_key=True)
+    level_member_level = models.ForeignKey('Level', on_delete=models.RESTRICT)
+    level_member_user = models.ForeignKey(User, on_delete=models.RESTRICT)
+    level_member_active = models.BooleanField(default=True)
 
 
 # KPIs ===============================================================================================================
@@ -242,21 +264,19 @@ class KPI(models.Model):
 
     class Meta:
         permissions = [
-            ("Can_add_subordinate_kpi", "Can add every level down (subordinate) kpi"),
-            ("Can_change_subordinate_kpi", "Can change every level down (subordinate) kpi"),
-            ("Can_delete_subordinate_kpi", "Can delete every level down (subordinate) kpi"),
-            ("Can_view_subordinate_kpi", "Can view every level down (subordinate) kpi"),
-            ("Can_list_subordinate_kpi", "Can list every level down (subordinate) kpi"),
+            ("add_subordinate_kpi", "Can add every level down (subordinate) kpi"),
+            ("change_subordinate_kpi", "Can change every level down (subordinate) kpi"),
+            ("delete_subordinate_kpi", "Can delete every level down (subordinate) kpi"),
+            ("view_subordinate_kpi", "Can view every level down (subordinate) kpi"),
+            ("list_subordinate_kpi", "Can list every level down (subordinate) kpi"),
         ]
 
     kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     kpi_pms = models.ForeignKey('PMS', on_delete=models.RESTRICT)
     kpi_user = models.ForeignKey(User, on_delete=models.RESTRICT)
-
-    kpi_level = models.ForeignKey('Level', on_delete=models.RESTRICT)
     kpi_title = models.CharField(max_length=200)
     kpi_details = models.TextField(null=True, blank=True)
-    kpi_criteria = models.CharField(max_length=100)
+    kpi_criteria = models.TextField(null=True, blank=True)
     kpi_target = models.FloatField()
     kpi_weight = models.FloatField(default=20)
     kpi_units = models.CharField(max_length=5, null=True, blank=True)
@@ -292,14 +312,16 @@ class KPI(models.Model):
     kpi_february_score_approve = models.BooleanField(default=False)
     kpi_march_score_approve = models.BooleanField(default=False)
 
-    kpi_submit_date = models.DateField(auto_now=True, null=True, blank=True)
+    kpi_submit_date = models.DateTimeField(auto_now=False, null=True, blank=True)
+    kpi_last_edit = models.DateTimeField(auto_now=True)
     status = (
+        ('Submitted', 'Submitted'),
         ('Pending', 'Pending'),
         ('Approved', 'Approved'),
         ('Rejected', 'Rejected'),
         ('Edit', 'Edit Mode'),
     )
-    kpi_status = models.CharField(max_length=40, choices=status, blank=True, default='Pending')
+    kpi_status = models.CharField(max_length=40, choices=status, blank=True, default='Submitted')
     type = (
         ('', ''),
         ('Addition', 'Addition'),
@@ -310,6 +332,32 @@ class KPI(models.Model):
 
     def __str__(self):
         return self.kpi_title
+
+
+class ApprovalKPI(models.Model):
+    approval_id = models.AutoField(primary_key=True)
+    approval_kpi = models.ForeignKey('KPI', on_delete=models.RESTRICT)
+    approval_action = models.CharField(choices=KPI.status, default=None, blank=True, null=True, max_length=9)
+    approval_user = models.ForeignKey(User, on_delete=models.RESTRICT)
+    approval_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT)
+
+    def __str__(self):
+        return self.approval_action
+
+
+class ApprovalLevelsKPI(models.Model):
+    level_id = models.AutoField(primary_key=True)
+    level_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT)
+    level_pms = models.ForeignKey('PMS', on_delete=models.RESTRICT)
+    approval_type = (
+        ('Intermediate', 'Intermediate Approval'),
+        ('Final', 'Final Approval'),
+
+    )
+    level_approval_type = models.CharField(choices=approval_type, default='Intermediate', max_length=12)
+
+    def __str__(self):
+        return self.level_category
 
 
 class ActionsKPI(models.Model):
@@ -350,3 +398,12 @@ class Notification(models.Model):
         ('Read', 'Read'),
     )
     notification_status = models.CharField(max_length=10, choices=status, default=None)
+
+
+# logs
+class Logs(models.Model):
+    log_id = models.AutoField(primary_key=True)
+    log_user = models.ForeignKey(User, on_delete=models.RESTRICT)
+    log_date_time = models.DateTimeField(auto_now=True)
+    log_category = models.CharField(max_length=10)
+    log_description = models.TextField()
