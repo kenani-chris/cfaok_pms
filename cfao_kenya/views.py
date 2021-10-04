@@ -14,7 +14,7 @@ from .forms import *
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import send_mail, EmailMultiAlternatives, send_mass_mail
 from django.shortcuts import get_object_or_404
 from django.views.generic import *
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, UserModel
@@ -28,6 +28,29 @@ def get_active_pms():
         return None
     else:
         return pms.objects.get(pms_status='Active')
+
+
+def checkin_reminder(request):
+    pms_link = format_html(str('<a href="https://ck-pms.com/">Online PMS</a>'))
+    message = format_html(
+        'Check in for the month of September is currently live and it will run up to midnight 30th September 2021. Staff should make sure they complete their check in before the deadline.<br><b>Ignore this if already Submitted</b><br><br>' + pms_link)
+
+    staffs = staff.objects.all()
+
+    for staff_u in staffs:
+        user = get_object_or_404(User, id=staff_u.staff_person.id)
+        if checkIn.objects.filter(checkIn_staff=user, checkIn_month='September'):
+            print("Confirmed: " + user.get_full_name() + "\n")
+        else:
+            if user.is_active and user.email:
+                try:
+                    send_email_pms_one_reciepient('Reminder September CheckIn', user, message)
+                    print("done for: " + user.get_full_name()+"\n")
+                except:
+                    print("failed for: "+user.get_full_name()+"\n")
+
+    return HttpResponseRedirect(reverse('cfao_kenya:index'))
+
 
 
 def reset_all_password(request):
@@ -2107,7 +2130,7 @@ class StaffKpiTrackOneView(UpdateView):
     form_class = IndividualKpiResultsForm
     template_name = 'cfao_kenya/Staff_Kpi/trackkpi_staff_one.html'
     active_pms = pms
-    context_object_name = 'staff'
+
     pk_url_kwarg = 'kpi_id'
     model = individual_Kpi
 
@@ -2355,6 +2378,15 @@ def approve_individual_kpi_score(request, pk, kpi_id, month):
         )
     messages.success(request, 'KPI score approved successful')
     message = "KPI <b>" + str(kpi.individual_kpi_title) + "</b> result has been approved<br>" + '''
+             <style>
+                tr, td{
+                    border: 1px solid black;
+                }
+                table{
+                    border-collapse: collapse;
+                    width: 100%;
+                }
+            </style>
              <table>
                 <thead>
                     <tr>
@@ -9415,24 +9447,24 @@ class ReportKPI(TemplateView):
             for staff_u in all_staff:
                 if staff_u.staff_md == "Yes":
                     role = "MD"
-                    approved2 = co_kpi.filter(company_kpi_status="Approved").count()
-                    pending = co_kpi.filter(company_kpi_status="Pending").count()
-                    rejected = co_kpi.filter(company_kpi_status="Rejected").count()
+                    approved2 = co_kpi.filter(company_kpi_status="Approved")
+                    pending = co_kpi.filter(company_kpi_status="Pending")
+                    rejected = co_kpi.filter(company_kpi_status="Rejected")
 
                 elif staff_u.staff_head_bu is not None:
                     kpi = bu_kpi.objects.filter(bu_kpi_pms=active_pms, bu_kpi_bu=staff_u.staff_head_bu)
                     role = "BU Head"
-                    approved2 = kpi.filter(bu_kpi_status="Approved").count()
-                    pending = kpi.filter(bu_kpi_status="Pending").count()
-                    rejected = kpi.filter(bu_kpi_status="Rejected").count()
+                    approved2 = kpi.filter(bu_kpi_status="Approved")
+                    pending = kpi.filter(bu_kpi_status="Pending")
+                    rejected = kpi.filter(bu_kpi_status="Rejected")
                     
                 else:
                     kpi = individual_Kpi.objects.filter(individual_kpi_user=staff_u.staff_person, individual_kpi_pms=active_pms)
                     role = "Staff"
-                    approved1 = kpi.filter(individual_kpi_status="Approved").count()
-                    approved2 = kpi.filter(individual_kpi_status="Approved").count()
-                    pending = kpi.filter(individual_kpi_status="Pending").count()
-                    rejected = kpi.filter(individual_kpi_status="Rejected").count()
+                    approved1 = kpi.filter(individual_kpi_status="Approved 1")
+                    approved2 = kpi.filter(individual_kpi_status="Approved 2")
+                    pending = kpi.filter(individual_kpi_status="Pending")
+                    rejected = kpi.filter(individual_kpi_status="Rejected")
                     
                 all_records.append([staff_u, role, approved1, approved2, rejected, pending])
 

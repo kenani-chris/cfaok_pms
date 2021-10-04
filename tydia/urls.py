@@ -200,6 +200,7 @@ urlpatterns = [
     path('Admin/PMS/<uuid:pms_id>/Check-In/<int:s_id>/<uuid:kpi_id>', AdminPMSCheckInStaffOne.as_view(),
          name='Admin_PMS_CheckIn_Staff_One'),
     path('Admin/PMS/Send_PWD', reset_all_password, name='Admin_Reset_Password'),
+    path('Admin/PMS/Send_CheckIn_Reminder/', checkin_reminder, name='Admin_Checkin_Reminder'),
     path('Admin/PMS/<uuid:pms_id>/Matrix', Matrix.as_view(), name='Admin_PMS_Matrix'),
     path('Admin/PMS/<uuid:pms_id>/Matrix/New', AdminPMSMatrixScoreNew.as_view(), name='Admin_PMS_Matrix_New'),
     path('Admin/PMS/<uuid:pms_id>/Matrix/<uuid:m_id>', AdminPMSMatrixScore.as_view(), name='Admin_PMS_Matrix_Score'),
