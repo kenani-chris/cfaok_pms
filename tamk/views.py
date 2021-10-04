@@ -49,7 +49,7 @@ def checkin_reminder(request):
                 except:
                     print("failed for: "+user.get_full_name()+"\n")
 
-    return HttpResponseRedirect(reverse('cfao_kenya:index'))
+    return HttpResponseRedirect(reverse('tamk:index'))
 
 
 def reset_all_password(request):
@@ -2407,7 +2407,7 @@ def approve_individual_kpi_score(request, pk, kpi_id, month):
     except():
         pass
 
-    return HttpResponseRedirect(reverse("cfao_kenya:Staff_Track_Kpi_Staff_One", kwargs={'pk': pk, 'kpi_id': kpi_id}))
+    return HttpResponseRedirect(reverse("tamk:Staff_Track_Kpi_Staff_One", kwargs={'pk': pk, 'kpi_id': kpi_id}))
 
 
 @login_required
@@ -8448,11 +8448,11 @@ class ReportKPI(TemplateView):
             active_pms = pms.objects.get(pms_status='Active')
             context['pms'] = active_pms
 
-            all_records=[]
+            all_records = []
 
             co_kpi = company_kpi.objects.filter(company_kpi_pms=active_pms)
 
-            if context['user_is_md']=="Yes" or staff_person.staff_person.is_superuser:
+            if context['user_is_md'] == "Yes" or staff_person.staff_person.is_superuser:
                 all_staff = staff.objects.filter(staff_person__is_active=True)
             elif context['user_is_bu_head'] is not None:
                 all_staff = staff.objects.filter(staff_person__is_active=True, staff_bu=context['user_is_bu_head'])
@@ -8461,32 +8461,33 @@ class ReportKPI(TemplateView):
             else:
                 all_staff = staff.objects.filter(staff_person__is_active=True, staff_person=staff_person)
 
-            approved1 = approved2 = pending =rejected = None
+            approved1 = approved2 = pending = rejected = None
 
             evals = evaluation.objects.filter(evaluation_pms=active_pms)
 
             for staff_u in all_staff:
                 if staff_u.staff_md == "Yes":
                     role = "MD"
-                    approved2 = co_kpi.filter(company_kpi_status="Approved").count()
-                    pending = co_kpi.filter(company_kpi_status="Pending").count()
-                    rejected = co_kpi.filter(company_kpi_status="Rejected").count()
+                    approved2 = co_kpi.filter(company_kpi_status="Approved")
+                    pending = co_kpi.filter(company_kpi_status="Pending")
+                    rejected = co_kpi.filter(company_kpi_status="Rejected")
 
                 elif staff_u.staff_head_bu is not None:
                     kpi = bu_kpi.objects.filter(bu_kpi_pms=active_pms, bu_kpi_bu=staff_u.staff_head_bu)
                     role = "BU Head"
-                    approved2 = kpi.filter(bu_kpi_status="Approved").count()
-                    pending = kpi.filter(bu_kpi_status="Pending").count()
-                    rejected = kpi.filter(bu_kpi_status="Rejected").count()
-                    
+                    approved2 = kpi.filter(bu_kpi_status="Approved")
+                    pending = kpi.filter(bu_kpi_status="Pending")
+                    rejected = kpi.filter(bu_kpi_status="Rejected")
+
                 else:
-                    kpi = individual_Kpi.objects.filter(individual_kpi_user=staff_u.staff_person, individual_kpi_pms=active_pms)
+                    kpi = individual_Kpi.objects.filter(individual_kpi_user=staff_u.staff_person,
+                                                        individual_kpi_pms=active_pms)
                     role = "Staff"
-                    approved1 = kpi.filter(individual_kpi_status="Approved").count()
-                    approved2 = kpi.filter(individual_kpi_status="Approved").count()
-                    pending = kpi.filter(individual_kpi_status="Pending").count()
-                    rejected = kpi.filter(individual_kpi_status="Rejected").count()
-                    
+                    approved1 = kpi.filter(individual_kpi_status="Approved 1")
+                    approved2 = kpi.filter(individual_kpi_status="Approved 2")
+                    pending = kpi.filter(individual_kpi_status="Pending")
+                    rejected = kpi.filter(individual_kpi_status="Rejected")
+
                 all_records.append([staff_u, role, approved1, approved2, rejected, pending])
 
             context['all_records'] = all_records
@@ -8531,33 +8532,25 @@ class ReportCheckIn(TemplateView):
 
             for staff_u in all_staff:
                 checkin = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=staff_u.staff_person)
-                if staff_u.staff_md == "Yes":
-                    role = "MD"
-                    approved = "N/A"
-                    pending = "N/A"
-                    rejected = "N/A"
+                apr = checkin.filter(checkIn_month='April').count()
+                may = checkin.filter(checkIn_month='May').count()
+                jun = checkin.filter(checkIn_month='June').count()
+                jul = checkin.filter(checkIn_month='July').count()
+                aug = checkin.filter(checkIn_month='August').count()
+                sep = checkin.filter(checkIn_month='September').count()
+                oct = checkin.filter(checkIn_month='October').count()
+                nov = checkin.filter(checkIn_month='November').count()
+                dec = checkin.filter(checkIn_month='December').count()
+                jan = checkin.filter(checkIn_month='January').count()
+                feb = checkin.filter(checkIn_month='February').count()
+                mar = checkin.filter(checkIn_month='March').count()
 
-                elif staff_u.staff_head_bu is not None:
-                    kpi = bu_kpi.objects.filter(bu_kpi_pms=active_pms, bu_kpi_bu=staff_u.staff_head_bu)
-                    role = "BU Head"
-                    approved = checkin.filter(checkIn_status="Confirmed").count()
-                    pending = checkin.filter(checkIn_status="Pending").count()
-                    rejected = checkin.filter(checkIn_status="Rejected").count()
-
-                else:
-                    kpi = individual_Kpi.objects.filter(individual_kpi_user=staff_u.staff_person,
-                                                        individual_kpi_pms=active_pms)
-                    role = "Staff"
-                    approved = checkin.filter(checkIn_status="Confirmed").count()
-                    pending = checkin.filter(checkIn_status="Pending").count()
-                    rejected = checkin.filter(checkIn_status="Rejected").count()
-
-                all_records.append([staff_u, role, approved, rejected, pending, checkin.count()])
+                all_records.append(
+                    [staff_u, staff_u.staff_Pf_Number, apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar])
 
             context['all_records'] = all_records
 
         return context
-
 
 
 @method_decorator(login_required, name='dispatch')

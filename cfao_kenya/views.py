@@ -9510,28 +9510,21 @@ class ReportCheckIn(TemplateView):
 
             for staff_u in all_staff:
                 checkin = checkIn.objects.filter(checkIn_pms=active_pms, checkIn_staff=staff_u.staff_person)
-                if staff_u.staff_md == "Yes":
-                    role = "MD"
-                    approved = "N/A"
-                    pending = "N/A"
-                    rejected = "N/A"
+                apr = checkin.filter(checkIn_month='April').count()
+                may = checkin.filter(checkIn_month='May').count()
+                jun = checkin.filter(checkIn_month='June').count()
+                jul = checkin.filter(checkIn_month='July').count()
+                aug = checkin.filter(checkIn_month='August').count()
+                sep = checkin.filter(checkIn_month='September').count()
+                oct = checkin.filter(checkIn_month='October').count()
+                nov = checkin.filter(checkIn_month='November').count()
+                dec = checkin.filter(checkIn_month='December').count()
+                jan = checkin.filter(checkIn_month='January').count()
+                feb = checkin.filter(checkIn_month='February').count()
+                mar = checkin.filter(checkIn_month='March').count()
 
-                elif staff_u.staff_head_bu is not None:
-                    kpi = bu_kpi.objects.filter(bu_kpi_pms=active_pms, bu_kpi_bu=staff_u.staff_head_bu)
-                    role = "BU Head"
-                    approved = checkin.filter(checkIn_status="Confirmed").count()
-                    pending = checkin.filter(checkIn_status="Pending").count()
-                    rejected = checkin.filter(checkIn_status="Rejected").count()
 
-                else:
-                    kpi = individual_Kpi.objects.filter(individual_kpi_user=staff_u.staff_person,
-                                                        individual_kpi_pms=active_pms)
-                    role = "Staff"
-                    approved = checkin.filter(checkIn_status="Confirmed").count()
-                    pending = checkin.filter(checkIn_status="Pending").count()
-                    rejected = checkin.filter(checkIn_status="Rejected").count()
-
-                all_records.append([staff_u, role, approved, rejected, pending, checkin.count()])
+                all_records.append([staff_u, staff_u.staff_Pf_Number, apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb ,mar])
 
             context['all_records'] = all_records
 
