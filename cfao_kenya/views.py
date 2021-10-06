@@ -81,7 +81,7 @@ def get_user_level(user):
     return level
 
 
-# get_user_level
+# get_user_level_head
 def get_user_level_head(user):
     level = Level.objects.filter(level_head=user)
     if level:
@@ -91,19 +91,38 @@ def get_user_level_head(user):
 
 # get_user_level
 def get_user_category(user):
-    if get_user_level(user):
-        level_cat = get_user_level(user).level_category
+    if get_user_level_head(user):
+        level_cat = get_user_level_head(user).level_category
+    else:
+        if get_user_level_head(user):
+            all_cat = []
+            all_categories_down(get_user_level(user).level_category, all_cat)
+            if len(all_cat) > 0:
+                level_cat = all_cat[-1]
+            else:
+                level_cat = None
+        else:
+            level_cat = None
+    return level_cat
 
 
-    return level
-
-
-# get_user_level
+# get_level_head
 def get_level_head(user):
     if get_user_level(user):
         return get_user_level(user).level_head
     else:
         return None
+
+
+def all_categories_down(cat, cat_list):
+    if cat is None:
+        return
+    else:
+        for category in LevelCategory.objects.all():
+            if cat == category.category_parent:
+                print(str(cat) + '-' + str(category))
+                cat_list.append(category)
+                all_categories_down(category, cat_list)
 
 
 def all_categories_up(cat, cat_list):
@@ -597,6 +616,12 @@ class KPICategory(DetailView):
     def get_context_data(self, **kwargs):
         context = super(KPICategory, self).get_context_data()
         categories = get_object_or_404(LevelCategory, category_id=self.kwargs['pk'])
+        this_list = []
+        all_categories_down(categories, this_list)
+        if len(this_list) > 0:
+            this_list = this_list[-1]
+        context['this_list'] = this_list
+        print(this_list)
         level_categories = []
         level_list = []
         if get_user_level(self.request.user):
