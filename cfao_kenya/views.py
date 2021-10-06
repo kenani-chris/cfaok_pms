@@ -1,8 +1,8 @@
 import datetime
-
+from calendar import _monthlen
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import *
 from .forms import KPIForm
@@ -10,6 +10,23 @@ from .models import *
 from django.utils import timezone
 
 now = timezone.now()
+
+year = {
+    'April': datetime.datetime.now().year,
+    'May': datetime.datetime.now().year,
+    'June': datetime.datetime.now().year,
+    'July': datetime.datetime.now().year,
+    'August': datetime.datetime.now().year,
+    'September': datetime.datetime.now().year,
+    'October': datetime.datetime.now().year,
+    'November': datetime.datetime.now().year,
+    'December': datetime.datetime.now().year,
+    'January': datetime.datetime.now().year + 1,
+    'February': datetime.datetime.now().year + 1,
+    'March': datetime.datetime.now().year + 1,
+        }
+
+
 # ======================================================================================================================
 # Useful functions
 # ======================================================================================================================
@@ -34,6 +51,14 @@ def global_context(user):
     if Level.objects.filter(level_head=user):
         context['level_head'] = Level.objects.filter(level_head=user).first()
 
+    # Categories up
+    categories_up_list = []
+    if get_user_level(user):
+        all_categories_up(get_user_level(user).level_category, categories_up_list)
+    else:
+        all_categories_up(None, categories_up_list)
+    context['categories_up_list'] = categories_up_list
+
     return context
 
 
@@ -57,11 +82,44 @@ def get_user_level(user):
 
 
 # get_user_level
+def get_user_level_head(user):
+    level = Level.objects.filter(level_head=user)
+    if level:
+        level = level.first()
+    return level
+
+
+# get_user_level
+def get_user_category(user):
+    if get_user_level(user):
+        level_cat = get_user_level(user).level_category
+
+
+    return level
+
+
+# get_user_level
 def get_level_head(user):
     if get_user_level(user):
         return get_user_level(user).level_head
     else:
         return None
+
+
+def all_categories_up(cat, cat_list):
+    if cat is None:
+        return
+    else:
+        cat_list.append(cat)
+        all_categories_up(cat.category_parent, cat_list)
+
+
+def all_levels_up(level, level_list):
+    if level is None:
+        return
+    else:
+        level_list.append(level)
+        all_levels_up(level.level_parent, level_list)
 
 
 # KPI Approval flow
@@ -82,7 +140,8 @@ def get_approval_flow(user, pms):
 # get_user_level
 def get_user_submission_data(user, pms):
     if get_user_level(user):
-        submission_data = SubmissionKPI.objects.filter(submission_level_category=get_user_level(user).level_category, submission_pms=pms)
+        submission_data = SubmissionKPI.objects.filter(submission_level_category=get_user_level(user).level_category,
+                                                       submission_pms=pms)
         if submission_data:
             return submission_data.first()
         else:
@@ -127,7 +186,6 @@ def kpi_weight_check(user, pms):
 
 
 def kpi_submission_checks(user, pms):
-
     date_check = number_check = True
 
     if get_user_submission_data(user, pms):
@@ -150,7 +208,7 @@ def kpi_submission_checks(user, pms):
             number_check = False
 
     # check weight
-    if kpi_weight_check(user, pms)<100:
+    if kpi_weight_check(user, pms) < 100:
         weight_check = True
     else:
         weight_check = False
@@ -160,8 +218,8 @@ def kpi_submission_checks(user, pms):
             'weight_check': weight_check}
 
 
-def notification_send(request, type, sender, receiver, title, msg):
-    Notification.objects.create(notification_type=type, notification_sender=sender, notification_receiver=receiver,
+def notification_send(request, n_type, sender, receiver, title, msg):
+    Notification.objects.create(notification_type=n_type, notification_sender=sender, notification_receiver=receiver,
                                 notification_title=title, notification_message=msg, notification_status='Pending')
 
     messages.success(request, title)
@@ -169,6 +227,34 @@ def notification_send(request, type, sender, receiver, title, msg):
 
 def write_log(user, category, description):
     Logs.objects.create(log_user=user, log_category=category, log_description=description)
+
+
+def calculate_kpi_score(kpi):
+    kpi_score = 0
+    kpi_sum = 0
+    apr = kpi.kpi_april_score
+    may = kpi.kpi_may_score
+    jun = kpi.kpi_june_score
+    jul = kpi.kpi_july_score
+    aug = kpi.kpi_august_score
+    sep = kpi.kpi_september_score
+    oct = kpi.kpi_october_score
+    nov = kpi.kpi_november_score
+    dec = kpi.kpi_december_score
+    jan = kpi.kpi_january_score
+    feb = kpi.kpi_february_score
+    mar = kpi.kpi_march_score
+
+    month_results = [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
+    month_results = [0 if v is None else v for v in month_results]
+    kpi_sum = sum(month_results)
+
+
+    print(kpi_sum)
+
+    return kpi_sum
+
+
 
 
 class Dashboard(TemplateView):
@@ -267,7 +353,7 @@ class MyKPIEdit(UpdateView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('cfao_kenya:My_KPI_View',  kwargs={'pk': self.kwargs['pk']}))
+        return '{}'.format(reverse('cfao_kenya:My_KPI_View', kwargs={'pk': self.kwargs['pk']}))
 
     def form_valid(self, form):
         super(MyKPIEdit, self).form_valid(form)
@@ -299,12 +385,174 @@ class MyKPIResults(UpdateView):
     form_class = KPIForm
 
     def get_context_data(self, **kwargs):
+        kpi = get_object_or_404(KPI, kpi_id=self.kwargs['pk'])
         context = super(MyKPIResults, self).get_context_data()
         if self.request.user.has_perm('cfao_kenya.change_kpi'):
             context['page_permission'] = True
         else:
             context['page_permission'] = False
         context = merge_dict(context, global_context(self.request.user))
+
+        months = {}
+        reveal = {}
+        if active_pms():
+            context = merge_dict(context, kpi_list(self.request.user, active_pms()))
+            submission = get_user_submission_data(self.request.user, active_pms())
+            if submission:
+                months['April'] = submission.submission_april_results
+                months['May'] = submission.submission_may_results
+                months['June'] = submission.submission_june_results
+                months['July'] = submission.submission_july_results
+                months['August'] = submission.submission_august_results
+                months['September'] = submission.submission_september_results
+                months['October'] = submission.submission_october_results
+                months['November'] = submission.submission_november_results
+                months['December'] = submission.submission_december_results
+                months['January'] = submission.submission_january_results
+                months['February'] = submission.submission_february_results
+                months['March'] = submission.submission_march_results
+            else:
+                months['April'] = months['May'] = months['June'] = months['July'] = months['August'] = \
+                    months['September'] = months['October'] = months['November'] = months['December'] = \
+                    months['January'] = months['February'] = months['March'] = 15
+
+
+            # check if the field result field should show
+
+            # 1. Check if result is approved
+            if kpi.kpi_all_results_approve is True:
+                reveal['April'] = reveal['May'] = reveal['June'] = reveal['July'] = reveal['August'] = \
+                    reveal['September'] = reveal['October'] = reveal['November'] = reveal['December'] = \
+                    reveal['January'] = reveal['February'] = reveal['March'] = False
+            else:
+                today_date = datetime.date.today()
+                reveal['April'] = reveal['May'] = reveal['June'] = reveal['July'] = reveal['August'] = \
+                    reveal['September'] = reveal['October'] = reveal['November'] = reveal['December'] = \
+                    reveal['January'] = reveal['February'] = reveal['March'] = False
+
+                # Check if the result is approved or within the time
+
+                # April Check
+                if kpi.kpi_april_score_approve is True:
+                    reveal['April'] = False
+                else:
+                    april_end_month = datetime.date(year=year['April'], month=4, day=_monthlen(year['April'], 4))
+                    april_deadline = april_end_month + datetime.timedelta(days=months['April'])
+
+                    if april_end_month <= today_date <= april_deadline:
+                        reveal['April'] = True
+
+                # May Check
+                if kpi.kpi_may_score_approve is True:
+                    reveal['May'] = False
+                else:
+                    may_end_month = datetime.date(year=year['May'], month=5, day=_monthlen(year['May'], 5))
+                    may_deadline = may_end_month + datetime.timedelta(days=months['May'])
+
+                    if may_end_month <= today_date <= may_deadline:
+                        reveal['May'] = True
+
+                # June Check
+                if kpi.kpi_june_score_approve is True:
+                    reveal['June'] = False
+                else:
+                    june_end_month = datetime.date(year=year['June'], month=6, day=_monthlen(year['June'], 6))
+                    june_deadline = june_end_month + datetime.timedelta(days=months['June'])
+
+                    if june_end_month <= today_date <= june_deadline:
+                        reveal['June'] = True
+
+                # July Check
+                if kpi.kpi_july_score_approve is True:
+                    reveal['July'] = False
+                else:
+                    july_end_month = datetime.date(year=year['July'], month=7, day=_monthlen(year['July'], 7))
+                    july_deadline = july_end_month + datetime.timedelta(days=months['July'])
+
+                    if july_end_month <= today_date <= july_deadline:
+                        reveal['July'] = True
+
+                # August Check
+                if kpi.kpi_august_score_approve is True:
+                    reveal['August'] = False
+                else:
+                    august_end_month = datetime.date(year=year['August'], month=8, day=_monthlen(year['August'], 8))
+                    august_deadline = august_end_month + datetime.timedelta(days=months['August'])
+
+                    if august_end_month <= today_date <= august_deadline:
+                        reveal['August'] = True
+
+                # September Check
+                if kpi.kpi_september_score_approve is True:
+                    reveal['September'] = False
+                else:
+                    september_end_month = datetime.date(year=year['September'], month=9, day=_monthlen(year['September'], 9))
+                    september_deadline = september_end_month + datetime.timedelta(days=months['September'])
+
+                    if september_end_month <= today_date <= september_deadline:
+                        reveal['September'] = True
+
+                # October Check
+                if kpi.kpi_october_score_approve is True:
+                    reveal['October'] = False
+                else:
+                    october_end_month = datetime.date(year=year['October'], month=10, day=_monthlen(year['October'], 10))
+                    october_deadline = october_end_month + datetime.timedelta(days=months['October'])
+
+                    if october_end_month <= today_date <= october_deadline:
+                        reveal['October'] = True
+
+                # November Check
+                if kpi.kpi_november_score_approve is True:
+                    reveal['November'] = False
+                else:
+                    november_end_month = datetime.date(year=year['November'], month=11, day=_monthlen(year['November'], 11))
+                    november_deadline = november_end_month + datetime.timedelta(days=months['November'])
+
+                    if november_end_month <= today_date <= november_deadline:
+                        reveal['November'] = True
+
+                # December Check
+                if kpi.kpi_december_score_approve is True:
+                    reveal['December'] = False
+                else:
+                    december_end_month = datetime.date(year=year['December'], month=12, day=_monthlen(year['December'], 12))
+                    december_deadline = december_end_month + datetime.timedelta(days=months['December'])
+
+                    if december_end_month <= today_date <= december_deadline:
+                        reveal['December'] = True
+
+                # January Check
+                if kpi.kpi_january_score_approve is True:
+                    reveal['January'] = False
+                else:
+                    january_end_month = datetime.date(year=year['January'], month=1, day=_monthlen(year['January'], 1))
+                    january_deadline = january_end_month + datetime.timedelta(days=months['January'])
+
+                    if january_end_month <= today_date <= january_deadline:
+                        reveal['January'] = True
+
+                # February Check
+                if kpi.kpi_february_score_approve is True:
+                    reveal['February'] = False
+                else:
+                    february_end_month = datetime.date(year=year['February'], month=2, day=_monthlen(year['February'], 2))
+                    february_deadline = february_end_month + datetime.timedelta(days=months['February'])
+
+                    if february_end_month <= today_date <= february_deadline:
+                        reveal['February'] = True
+
+                # March Check
+                if kpi.kpi_march_score_approve is True:
+                    reveal['March'] = False
+                else:
+                    march_end_month = datetime.date(year=year['March'], month=3, day=_monthlen(year['March'], 3))
+                    march_deadline = march_end_month + datetime.timedelta(days=months['March'])
+
+                    if march_end_month <= today_date <= march_deadline:
+                        reveal['March'] = True
+
+        context['reveal'] = reveal
         return context
 
     def get_initial(self):
@@ -316,7 +564,7 @@ class MyKPIResults(UpdateView):
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('cfao_kenya:My_KPI_Results',  kwargs={'pk': self.kwargs['pk']}))
+        return '{}'.format(reverse('cfao_kenya:My_KPI_Results', kwargs={'pk': self.kwargs['pk']}))
 
     def form_valid(self, form):
         super(MyKPIResults, self).form_valid(form)
@@ -329,7 +577,6 @@ class MyKPIResults(UpdateView):
 
 
 class MyKPIResultsList(TemplateView):
-
     def get_context_data(self, **kwargs):
         context = super(MyKPIResultsList, self).get_context_data()
 
@@ -342,4 +589,294 @@ class MyKPIResultsList(TemplateView):
         if active_pms():
             context = merge_dict(context, kpi_list(self.request.user, active_pms()))
         return context
+
+
+class KPICategory(DetailView):
+    model = LevelCategory
+
+    def get_context_data(self, **kwargs):
+        context = super(KPICategory, self).get_context_data()
+        categories = get_object_or_404(LevelCategory, category_id=self.kwargs['pk'])
+        level_categories = []
+        level_list = []
+        if get_user_level(self.request.user):
+            all_levels_up(get_user_level(self.request.user), level_list)
+
+        for level in level_list:
+            if level.level_category == categories:
+                level_categories.append(level)
+
+        context['level_in_category'] = level_categories
+
+        if self.request.user.has_perm('cfao_kenya.list_level_up_kpi'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context = merge_dict(context, global_context(self.request.user))
+
+        return context
+
+
+class KPICategoryLevel(DetailView):
+    model = Level
+
+    def get_context_data(self, **kwargs):
+        context = super(KPICategoryLevel, self).get_context_data()
+        context['levelcategory'] = get_object_or_404(LevelCategory, category_id=self.kwargs['cat_id'])
+        level = get_object_or_404(Level, level_id=self.kwargs['pk'])
+
+        if self.request.user.has_perm('cfao_kenya.list_level_up_kpi'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context = merge_dict(context, global_context(self.request.user))
+        if active_pms():
+            context = merge_dict(context, kpi_list(level.level_head, active_pms()))
+
+        return context
+
+
+class KPICategoryLevelOne(DetailView):
+    model = KPI
+
+    def get_context_data(self, **kwargs):
+        context = super(KPICategoryLevelOne, self).get_context_data()
+        context['levelcategory'] = get_object_or_404(LevelCategory, category_id=self.kwargs['cat_id'])
+        context['level'] = get_object_or_404(Level, level_id=self.kwargs['lev_id'])
+        if self.request.user.has_perm('cfao_kenya.view_level_up_kpi'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context = merge_dict(context, global_context(self.request.user))
+        return context
+
+
+class KPICategoryLevelOneResults(UpdateView):
+    model = KPI
+    form_class = KPIForm
+
+    def get_context_data(self, **kwargs):
+        kpi = get_object_or_404(KPI, kpi_id=self.kwargs['pk'])
+        calculate_kpi_score(kpi)
+
+        context = super(KPICategoryLevelOneResults, self).get_context_data()
+        context['levelcategory'] = get_object_or_404(LevelCategory, category_id=self.kwargs['cat_id'])
+        context['level'] = get_object_or_404(Level, level_id=self.kwargs['lev_id'])
+        if self.request.user.has_perm('cfao_kenya.change_level_up_kpi'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        context = merge_dict(global_context(self.request.user), context)
+
+        months = {}
+        reveal = {}
+        if active_pms():
+            context = merge_dict(context, kpi_list(self.request.user, active_pms()))
+            submission = get_user_submission_data(self.request.user, active_pms())
+            if submission:
+                months['April'] = submission.submission_april_results
+                months['May'] = submission.submission_may_results
+                months['June'] = submission.submission_june_results
+                months['July'] = submission.submission_july_results
+                months['August'] = submission.submission_august_results
+                months['September'] = submission.submission_september_results
+                months['October'] = submission.submission_october_results
+                months['November'] = submission.submission_november_results
+                months['December'] = submission.submission_december_results
+                months['January'] = submission.submission_january_results
+                months['February'] = submission.submission_february_results
+                months['March'] = submission.submission_march_results
+            else:
+                months['April'] = months['May'] = months['June'] = months['July'] = months['August'] = \
+                    months['September'] = months['October'] = months['November'] = months['December'] = \
+                    months['January'] = months['February'] = months['March'] = 15
+
+            # check if the field result field should show
+
+            # 1. Check if result is approved
+            if kpi.kpi_all_results_approve is True:
+                reveal['April'] = reveal['May'] = reveal['June'] = reveal['July'] = reveal['August'] = \
+                    reveal['September'] = reveal['October'] = reveal['November'] = reveal['December'] = \
+                    reveal['January'] = reveal['February'] = reveal['March'] = False
+            else:
+                today_date = datetime.date.today()
+                reveal['April'] = reveal['May'] = reveal['June'] = reveal['July'] = reveal['August'] = \
+                    reveal['September'] = reveal['October'] = reveal['November'] = reveal['December'] = \
+                    reveal['January'] = reveal['February'] = reveal['March'] = False
+
+                # Check if the result is approved or within the time
+
+                # April Check
+                if kpi.kpi_april_score_approve is True:
+                    reveal['April'] = False
+                else:
+                    april_end_month = datetime.date(year=year['April'], month=4, day=_monthlen(year['April'], 4))
+                    april_deadline = april_end_month + datetime.timedelta(days=months['April'])
+
+                    if april_end_month <= today_date <= april_deadline:
+                        reveal['April'] = True
+
+                # May Check
+                if kpi.kpi_may_score_approve is True:
+                    reveal['May'] = False
+                else:
+                    may_end_month = datetime.date(year=year['May'], month=5, day=_monthlen(year['May'], 5))
+                    may_deadline = may_end_month + datetime.timedelta(days=months['May'])
+
+                    if may_end_month <= today_date <= may_deadline:
+                        reveal['May'] = True
+
+                # June Check
+                if kpi.kpi_june_score_approve is True:
+                    reveal['June'] = False
+                else:
+                    june_end_month = datetime.date(year=year['June'], month=6, day=_monthlen(year['June'], 6))
+                    june_deadline = june_end_month + datetime.timedelta(days=months['June'])
+
+                    if june_end_month <= today_date <= june_deadline:
+                        reveal['June'] = True
+
+                # July Check
+                if kpi.kpi_july_score_approve is True:
+                    reveal['July'] = False
+                else:
+                    july_end_month = datetime.date(year=year['July'], month=7, day=_monthlen(year['July'], 7))
+                    july_deadline = july_end_month + datetime.timedelta(days=months['July'])
+
+                    if july_end_month <= today_date <= july_deadline:
+                        reveal['July'] = True
+
+                # August Check
+                if kpi.kpi_august_score_approve is True:
+                    reveal['August'] = False
+                else:
+                    august_end_month = datetime.date(year=year['August'], month=8, day=_monthlen(year['August'], 8))
+                    august_deadline = august_end_month + datetime.timedelta(days=months['August'])
+
+                    if august_end_month <= today_date <= august_deadline:
+                        reveal['August'] = True
+
+                # September Check
+                if kpi.kpi_september_score_approve is True:
+                    reveal['September'] = False
+                else:
+                    september_end_month = datetime.date(year=year['September'], month=9, day=_monthlen(year['September'], 9))
+                    september_deadline = september_end_month + datetime.timedelta(days=months['September'])
+
+                    if september_end_month <= today_date <= september_deadline:
+                        reveal['September'] = True
+
+                # October Check
+                if kpi.kpi_october_score_approve is True:
+                    reveal['October'] = False
+                else:
+                    october_end_month = datetime.date(year=year['October'], month=10, day=_monthlen(year['October'], 10))
+                    october_deadline = october_end_month + datetime.timedelta(days=months['October'])
+
+                    if october_end_month <= today_date <= october_deadline:
+                        reveal['October'] = True
+
+                # November Check
+                if kpi.kpi_november_score_approve is True:
+                    reveal['November'] = False
+                else:
+                    november_end_month = datetime.date(year=year['November'], month=11, day=_monthlen(year['November'], 11))
+                    november_deadline = november_end_month + datetime.timedelta(days=months['November'])
+
+                    if november_end_month <= today_date <= november_deadline:
+                        reveal['November'] = True
+
+                # December Check
+                if kpi.kpi_december_score_approve is True:
+                    reveal['December'] = False
+                else:
+                    december_end_month = datetime.date(year=year['December'], month=12, day=_monthlen(year['December'], 12))
+                    december_deadline = december_end_month + datetime.timedelta(days=months['December'])
+
+                    if december_end_month <= today_date <= december_deadline:
+                        reveal['December'] = True
+
+                # January Check
+                if kpi.kpi_january_score_approve is True:
+                    reveal['January'] = False
+                else:
+                    january_end_month = datetime.date(year=year['January'], month=1, day=_monthlen(year['January'], 1))
+                    january_deadline = january_end_month + datetime.timedelta(days=months['January'])
+
+                    if january_end_month <= today_date <= january_deadline:
+                        reveal['January'] = True
+
+                # February Check
+                if kpi.kpi_february_score_approve is True:
+                    reveal['February'] = False
+                else:
+                    february_end_month = datetime.date(year=year['February'], month=2, day=_monthlen(year['February'], 2))
+                    february_deadline = february_end_month + datetime.timedelta(days=months['February'])
+
+                    if february_end_month <= today_date <= february_deadline:
+                        reveal['February'] = True
+
+                # March Check
+                if kpi.kpi_march_score_approve is True:
+                    reveal['March'] = False
+                else:
+                    march_end_month = datetime.date(year=year['March'], month=3, day=_monthlen(year['March'], 3))
+                    march_deadline = march_end_month + datetime.timedelta(days=months['March'])
+
+                    if march_end_month <= today_date <= march_deadline:
+                        reveal['March'] = True
+
+        context['reveal'] = reveal
+        return context
+
+    def get_initial(self):
+        initial = super(KPICategoryLevelOneResults, self).get_initial()
+        initial['kpi_user'] = self.request.user
+        initial['kpi_pms'] = active_pms()
+        initial['kpi_status'] = 'Submitted'
+
+        return initial
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:My_KPI_Results', kwargs={'pk': self.kwargs['pk']}))
+
+    def form_valid(self, form):
+        super(KPICategoryLevelOneResults, self).form_valid(form)
+        kpi = get_object_or_404(KPI, kpi_id=self.kwargs['pk'])
+        write_log(self.request.user, 'KPI', 'KPI ' + str(kpi.kpi_title) + ' results edited')
+        notification_send(self.request, 'KPI', self.request.user, get_level_head(self.request.user), 'KPI results fed',
+                          str(self.request.user.get_full_name) + ' Has edited ' + str(kpi.kpi_title) + ' ')
+
+        return HttpResponseRedirect(reverse('cfao_kenya:My_KPI_Results', kwargs={'pk': self.kwargs['pk']}))
+
+
+class KPICategoryResults(DetailView):
+    model = LevelCategory
+
+    def get_context_data(self, **kwargs):
+        context = super(KPICategoryResults, self).get_context_data()
+
+        categories = get_object_or_404(LevelCategory, category_id=self.kwargs['pk'])
+        level_categories = []
+        level_list = []
+        if get_user_level(self.request.user):
+            all_levels_up(get_user_level(self.request.user), level_list)
+
+        for level in level_list:
+            if level.level_category == categories:
+                level_categories.append(level)
+
+        context['level_in_category'] = level_categories
+
+        if self.request.user.has_perm('cfao_kenya.list_level_up_kpi'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context = merge_dict(context, global_context(self.request.user))
+        context['date_check'] = datetime.datetime.now()
+        if active_pms():
+            context = merge_dict(context, kpi_list(self.request.user, active_pms()))
+        return context
+
 

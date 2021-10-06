@@ -1,0 +1,14 @@
+{% extends 'cfao_kenya/KPI/level_up_kpi/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active">{{ levelcategory.category_name }} KPI</li>
+    {% endblock %}
+    {% block page_title %}{{ levelcategory.category_name }} KPI{% endblock %}
+    {% block content %}
+
+        {% if page_permission %}
+            {% include 'cfao_kenya/KPI/level_up_kpi/display_templates/list_levels.html' %}
+        {% else %}
+            {% include 'cfao_kenya/errors/permissions.html' %}
+        {% endif %}
+
+    {% endblock %}

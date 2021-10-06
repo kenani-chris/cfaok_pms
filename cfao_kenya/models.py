@@ -65,6 +65,34 @@ class SubmissionKPI(models.Model):
     submission_minimum_number = models.IntegerField(default=5)
     submission_maximum_number = models.IntegerField(default=10)
 
+    # Specify when monthly results should be populated, count by end of month days
+    submission_april_results = models.IntegerField(default=15)
+    submission_may_results = models.IntegerField(default=15)
+    submission_june_results = models.IntegerField(default=15)
+    submission_july_results = models.IntegerField(default=15)
+    submission_august_results = models.IntegerField(default=15)
+    submission_september_results = models.IntegerField(default=15)
+    submission_october_results = models.IntegerField(default=15)
+    submission_november_results = models.IntegerField(default=15)
+    submission_december_results = models.IntegerField(default=15)
+    submission_january_results = models.IntegerField(default=15)
+    submission_february_results = models.IntegerField(default=15)
+    submission_march_results = models.IntegerField(default=15)
+    
+    # KPI calculation
+    submission_april_results_calculation = models.BooleanField(default=True)
+    submission_may_results_calculation = models.BooleanField(default=True)
+    submission_june_results_calculation = models.BooleanField(default=True)
+    submission_july_results_calculation = models.BooleanField(default=True)
+    submission_august_results_calculation = models.BooleanField(default=True)
+    submission_september_results_calculation = models.BooleanField(default=True)
+    submission_october_results_calculation = models.BooleanField(default=True)
+    submission_november_results_calculation = models.BooleanField(default=True)
+    submission_december_results_calculation = models.BooleanField(default=True)
+    submission_january_results_calculation = models.BooleanField(default=True)
+    submission_february_results_calculation = models.BooleanField(default=True)
+    submission_march_results_calculation = models.BooleanField(default=True)
+
 
 '''
 # Scoring matrix =====================================================================================================
@@ -228,7 +256,7 @@ class Level(models.Model):
     level_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     level_name = models.CharField(max_length=200, unique=True)
     level_description = models.TextField()
-    level_parent = models.CharField(max_length=100, default=None, blank=True, null=True)
+    level_parent = models.ForeignKey('self', on_delete=models.RESTRICT, null=True, blank=True)
     level_head = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="cfao_kenya_Head_level")
     level_reliever = models.ForeignKey(User, on_delete=models.RESTRICT,
                                        related_name="cfao_kenya_Head_reliever", null=True, blank=True)
@@ -244,7 +272,7 @@ class LevelCategory(models.Model):
     category_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     category_name = models.CharField(max_length=200, unique=True)
     category_description = models.TextField()
-    category_parent = models.CharField(max_length=100, default=None, blank=True, null=True)
+    category_parent = models.ForeignKey('self', on_delete=models.RESTRICT, blank=True, null=True)
     category_kpi_view = models.BooleanField(default=False)
 
     def __str__(self):
@@ -269,6 +297,12 @@ class KPI(models.Model):
             ("delete_subordinate_kpi", "Can delete every level down (subordinate) kpi"),
             ("view_subordinate_kpi", "Can view every level down (subordinate) kpi"),
             ("list_subordinate_kpi", "Can list every level down (subordinate) kpi"),
+
+            ("add_level_up_kpi", "Can add every level category up kpi"),
+            ("change_level_up_kpi", "Can change every level category up kpi"),
+            ("delete_level_up_kpi", "Can delete every level up kpi"),
+            ("view_level_up_kpi", "Can view every level up kpi"),
+            ("list_level_up_kpi", "Can list every level up kpi"),
         ]
 
     kpi_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
@@ -329,6 +363,7 @@ class KPI(models.Model):
         ('YTD', 'YTD'),
     )
     kpi_type = models.CharField(max_length=10, choices=type, blank=True, default='Average', )
+    kpi_all_results_approve = models.BooleanField(default=False)
 
     def __str__(self):
         return self.kpi_title

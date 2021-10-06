@@ -269,89 +269,18 @@
               </p>
             </a>
           </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-copy"></i>
-              <p>
-                Layout Options
-                <i class="fas fa-angle-left right"></i>
-                <span class="badge badge-info right">6</span>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/layout/top-nav.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Top Navigation</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Top Navigation + Sidebar</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/boxed.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Boxed</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/fixed-sidebar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Fixed Sidebar</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/fixed-topnav.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Fixed Navbar</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/fixed-footer.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Fixed Footer</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/collapsed-sidebar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Collapsed Sidebar</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-                Charts
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/charts/chartjs.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>ChartJS</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/charts/flot.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Flot</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/charts/inline.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Inline</p>
-                </a>
-              </li>
-            </ul>
-          </li>
+          {% for category in categories_up_list %}
+              {% if category.category_kpi_view is True %}
+                <li class="nav-item">
+                    <a href="{% url 'cfao_kenya:KPI_Category' category.category_id %}" class="nav-link">
+                      <i class="nav-icon fas fa-users"></i>
+                      <p>
+                        {{ category.category_name }} KPI
+                      </p>
+                    </a>
+                </li>
+              {% endif %}
+           {% endfor %}
           <li class="nav-item has-treeview menu-open">
             <a href="#" class="nav-link bg-some-grey">
               <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -715,6 +644,40 @@
 </script>
 <script>
   $(function () {
+      kpi_type = "{{ kpi.kpi_type }}";
+
+      apr = "{{ kpi.kpi_april_score }}";
+      may = "{{ kpi.kpi_may_score }}";
+      jun = "{{ kpi.kpi_june_score }}";
+      jul = "{{ kpi.kpi_jul_score }}";
+      aug = "{{ kpi.kpi_august_score }}";
+      sep = "{{ kpi.kpi_september_score }}";
+      oct = "{{ kpi.kpi_october_score }}";
+      nov = "{{ kpi.kpi_november_score }}";
+      dec = "{{ kpi.kpi_december_score }}";
+      jan = "{{ kpi.kpi_january_score }}";
+      feb = "{{ kpi.kpi_february_score }}";
+      mar = "{{ kpi.kpi_march_score }}";
+
+
+
+      if(kpi_type == "Addition")
+      {
+          apr = parseFloat(apr);
+          may = apr + parseFloat(may);
+          jun = may + parseFloat(jun);
+          jul = jun + parseFloat(jul);
+          aug = jul + parseFloat(aug);
+          sep = aug + parseFloat(sep);
+          oct = sep + parseFloat(oct);
+          nov = oct + parseFloat(nov);
+          dec = nov + parseFloat(dec);
+          jan = dec + parseFloat(jan);
+          feb = jan + parseFloat(feb);
+          mar = feb + parseFloat(mar);
+
+      }
+
 
     var Data = {
       labels  : ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
@@ -728,7 +691,7 @@
           pointStrokeColor    : 'rgba(60,141,188,1)',
           pointHighlightFill  : '#fff',
           pointHighlightStroke: 'rgba(60,141,188,1)',
-          data                : [28, 48, 40, 19, 86, 27, 90]
+          data                : [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
         },
         {
           label               : 'Target',
@@ -787,5 +750,7 @@
 
   })
 </script>
+{% block jscripts %}
+{% endblock %}
 </body>
 </html>

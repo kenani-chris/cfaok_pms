@@ -1,0 +1,20 @@
+{% extends 'cfao_kenya/KPI/level_up_kpi/default.html' %}
+    {% block page_title %}{{ levelcategory.category_name }} KPI - {{ level.level_name }}{% endblock %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:KPI_Category' levelcategory.category_id  %}">{{ levelcategory.category_name }} KPI</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:KPI_Category_Level' levelcategory.category_id level.level_id %}">{{ level.level_name }}</a></li>
+        <li class="breadcrumb-item active">KPI</li>
+        <li class="breadcrumb-item active">Results</li>
+    {% endblock %}
+    {% block content %}
+        {% include 'cfao_kenya/KPI/level_up_kpi/display_templates/results.html' %}
+
+
+        {% if page_permission %}
+            {% include 'cfao_kenya/KPI/level_up_kpi/display_templates/results_list.html' %}
+        {% else %}
+            {% include 'cfao_kenya/errors/permissions.html' %}
+        {% endif %}
+
+
+    {% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'cfao_kenya/KPI/default.html' %}
+{% extends 'cfao_kenya/KPI/my_kpi/default.html' %}
     {% block page_title %}My KPI - New{% endblock %}
     {% block breadcrumb %}
         <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_KPI' %}">My KPI</a></li>
@@ -6,12 +6,12 @@
     {% endblock %}
     {% block content %}
         {% if page_permission %}
-            {% include 'cfao_kenya/KPI/display_templates/create.html' %}
+            {% include 'cfao_kenya/KPI/my_kpi/display_templates/create.html' %}
         {% else %}
             {% include 'cfao_kenya/errors/permissions.html' %}
         {% endif %}
         {% if perms.cfao_kenya.view_kpi %}
-            {% include 'cfao_kenya/KPI/display_templates/list.html' %}
+            {% include 'cfao_kenya/KPI/my_kpi/display_templates/list.html' %}
         {% endif %}
 
 
