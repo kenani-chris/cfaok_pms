@@ -1,10 +1,13 @@
 import datetime
 from calendar import _monthlen
 from django.contrib import messages
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import *
+
+from cfaok_pms.settings import EMAIL_HOST_USER
 from .forms import KPIForm
 from .models import *
 from django.utils import timezone
@@ -31,6 +34,12 @@ year = {
 # Useful functions
 # ======================================================================================================================
 # One method to list all compile context
+
+def get_staff(user):
+    if Staff.objects.filter(staff_person=user):
+        return Staff.objects.filter(staff_person=user).first()
+    else:
+        return None
 
 
 def global_context(user):
@@ -120,7 +129,6 @@ def all_categories_down(cat, cat_list):
     else:
         for category in LevelCategory.objects.all():
             if cat == category.category_parent:
-                print(str(cat) + '-' + str(category))
                 cat_list.append(category)
                 all_categories_down(category, cat_list)
 
@@ -158,8 +166,8 @@ def get_approval_flow(user, pms):
 
 # get_user_level
 def get_user_submission_data(user, pms):
-    if get_user_level(user):
-        submission_data = SubmissionKPI.objects.filter(submission_level_category=get_user_level(user).level_category,
+    if get_user_level(user) and get_staff(user):
+        submission_data = SubmissionKPI.objects.filter(submission_level_category=get_staff(user).staff_category,
                                                        submission_pms=pms)
         if submission_data:
             return submission_data.first()
@@ -264,16 +272,108 @@ def calculate_kpi_score(kpi):
     feb = kpi.kpi_february_score
     mar = kpi.kpi_march_score
 
-    month_results = [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
+    result_dict = {'April': apr, 'May': may, 'June': jun, 'July': jul, 'August': aug, 'September': sep,
+                   'October': oct, 'November': nov, 'December': dec, 'January': jan, 'February': feb, 'March': mar}
+
+    if get_user_submission_data(kpi.kpi_user, kpi.kpi_pms):
+        month_results = []
+        submission = get_user_submission_data(kpi.kpi_user, kpi.kpi_pms)
+
+        if submission.submission_april_results_calculation:
+            month_results.append(apr)
+
+        if submission.submission_may_results_calculation:
+            month_results.append(may)
+
+        if submission.submission_june_results_calculation:
+            month_results.append(jun)
+
+        if submission.submission_july_results_calculation:
+            month_results.append(jul)
+
+        if submission.submission_august_results_calculation:
+            month_results.append(aug)
+
+        if submission.submission_september_results_calculation:
+            month_results.append(sep)
+
+        if submission.submission_october_results_calculation:
+            month_results.append(oct)
+
+        if submission.submission_november_results_calculation:
+            month_results.append(nov)
+
+        if submission.submission_december_results_calculation:
+            month_results.append(dec)
+
+        if submission.submission_january_results_calculation:
+            month_results.append(jan)
+
+        if submission.submission_february_results_calculation:
+            month_results.append(feb)
+
+        if submission.submission_march_results_calculation:
+            month_results.append(mar)
+
+    else:
+        month_results = [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
     month_results = [0 if v is None else v for v in month_results]
-    kpi_sum = sum(month_results)
+    kpi_sum = round(sum(month_results), 2)
+    kpi_average = round(kpi_sum/len(month_results), 2)
+
+    if kpi.kpi_function.lower() == 'maximize':
+        if kpi.kpi_type.lower() == 'addition':
+            kpi_score = (kpi_sum/kpi.kpi_target) * 100
+        elif kpi.kpi_type.lower() == 'average':
+            kpi_score = (kpi_average/kpi.kpi_target) * 100
+        elif kpi.kpi_type.lower() == 'ytd':
+            if datetime.date.today() <= kpi.kpi_pms.pms_year_end_date:
+                this_month = datetime.date.today().strftime("%B")
+                last_month = (datetime.date.today() - datetime.timedelta(days=31)).strftime("%B")
+                if result_dict[this_month] is None:
+                    if result_dict[last_month] is None:
+                        kpi_score = (0/kpi.kpi_target) *100
+                    else:
+                        kpi_score = (result_dict[last_month] / kpi.kpi_target) * 100
+                else:
+                    kpi_score = (result_dict[this_month]/ kpi.kpi_target) * 100
+            else:
+                if mar is None:
+                    mar = 0
+                kpi_score = (mar/kpi.kpi_target) * 100
+    elif kpi.kpi_function.lower() == 'minimize':
+        if kpi.kpi_type.lower() == 'addition':
+            kpi_score = (kpi.kpi_target/kpi_sum) * 100
+        elif kpi.kpi_type.lower() == 'average':
+            kpi_score = (kpi.kpi_target/kpi_average) * 100
+        elif kpi.kpi_type.lower() == 'ytd':
+            if datetime.date.today() <= kpi.kpi_pms.pms_year_end_date:
+                this_month = datetime.date.today().strftime("%B")
+                last_month = (datetime.date.today() - datetime.timedelta(days=31)).strftime("%B")
+                if result_dict[this_month] is None:
+                    if result_dict[last_month] is None:
+                        kpi_score = 0
+                    else:
+                        kpi_score = (kpi.kpi_target/result_dict[last_month]) * 100
+                else:
+                    kpi_score = (kpi.kpi_target/result_dict[this_month]) * 100
+            else:
+                if mar is None:
+                    mar = 0
+                kpi_score = (mar/kpi.kpi_target) * 100
+
+    return kpi_score
 
 
-    print(kpi_sum)
-
-    return kpi_sum
-
-
+def calculate_overall_kpi_score(user, pms):
+    kpis = kpi_list(user, pms)
+    results = []
+    for kpi in kpis['approved_kpi']:
+        weight = kpi.kpi_weight
+        score = calculate_kpi_score(kpi)
+        weighted_score = (weight * score)/100
+        results.append(weighted_score)
+    return sum(results)
 
 
 class Dashboard(TemplateView):
@@ -288,7 +388,7 @@ class MyKPI(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(MyKPI, self).get_context_data()
-
+        send_mail('Test mail', 'this is a test mail', EMAIL_HOST_USER, ('ckenani@cfao.com', 'jandiwo@cfao.com'), fail_silently=False)
         if self.request.user.has_perm('cfao_kenya.view_kpi'):
             context['page_permission'] = True
         else:
@@ -434,7 +534,6 @@ class MyKPIResults(UpdateView):
                 months['April'] = months['May'] = months['June'] = months['July'] = months['August'] = \
                     months['September'] = months['October'] = months['November'] = months['December'] = \
                     months['January'] = months['February'] = months['March'] = 15
-
 
             # check if the field result field should show
 
@@ -657,6 +756,12 @@ class KPICategoryLevel(DetailView):
         context = merge_dict(context, global_context(self.request.user))
         if active_pms():
             context = merge_dict(context, kpi_list(level.level_head, active_pms()))
+            kpi_results = []
+            for kpi in context['approved_kpi']:
+                kpi_results.append([kpi, calculate_kpi_score(kpi)])
+            context['kpi_results'] = kpi_results
+            context['kpi_overall_results'] = calculate_overall_kpi_score(self.request.user, active_pms())
+
 
         return context
 
@@ -902,6 +1007,8 @@ class KPICategoryResults(DetailView):
         context['date_check'] = datetime.datetime.now()
         if active_pms():
             context = merge_dict(context, kpi_list(self.request.user, active_pms()))
+            kpi_results = []
+            for kpi in context['approved_kpi']:
+                kpi_results.append([kpi, calculate_kpi_score(kpi)])
+            context['kpi_results'] = kpi_results
         return context
-
-

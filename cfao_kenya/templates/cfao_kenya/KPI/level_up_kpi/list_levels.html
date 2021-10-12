@@ -4,7 +4,6 @@
     {% endblock %}
     {% block page_title %}{{ levelcategory.category_name }} KPI{% endblock %}
     {% block content %}
-        {{ this_list }}her
         {% if page_permission %}
             {% include 'cfao_kenya/KPI/level_up_kpi/display_templates/list_levels.html' %}
         {% else %}

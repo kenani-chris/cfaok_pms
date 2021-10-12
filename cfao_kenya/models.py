@@ -28,6 +28,7 @@ class Staff(models.Model):
     staff_active = models.BooleanField(default=True)
     staff_superuser = models.BooleanField(default=False)
     staff_visibility = models.BooleanField(default=True)
+    staff_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT, blank=True, null=True)
 
     def __str__(self):
         return self.staff_person.get_full_name()

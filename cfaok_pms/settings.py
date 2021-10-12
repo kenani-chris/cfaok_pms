@@ -163,11 +163,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Email setup
+# send_mail('Chris test', 'Tell me if you get this message. generated from pms', EMAIL_HOST_USER, ('ckenani@cfao.com', 'kenanichris@outlook.com', 'jandiwo@cfao.com'), fail_silently=False )
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'mail.c-k.co.ke'
+EMAIL_HOST = 'smtp.office365.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'pms_notifier@c-k.co.ke'
-EMAIL_HOST_PASSWORD = 'Kenani1997.'
+EMAIL_HOST_USER = 'cpms@cfao.com'
+EMAIL_HOST_PASSWORD = '(-AY6b@d'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
