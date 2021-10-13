@@ -4,8 +4,8 @@
         <div class="card-header">
             {{ kpi.kpi_title }}
             {% if kpi.kpi_status == 'Submitted' or kpi.kpi_status == 'Edit' or kpi.kpi_status == 'Pending'%}
-                <a href="{% url 'cfao_kenya:My_KPI_Delete' kpi.kpi_id %}"><div class="float-right btn btn-danger" style="margin-right: 10px">Delete</div></a>
-                <a href="{% url 'cfao_kenya:My_KPI_Edit' kpi.kpi_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit</div></a>
+                <a href="{% url 'cfao_kenya:KPI_Category_Level_One_Delete' levelcategory.category_id level.level_id kpi.kpi_id %}"><div class="float-right btn btn-danger" style="margin-right: 10px">Delete</div></a>
+                <a href="{% url 'cfao_kenya:KPI_Category_Level_One_Edit' levelcategory.category_id level.level_id kpi.kpi_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit</div></a>
 
 
             {% elif kpi.kpi_status == 'Approved' %}

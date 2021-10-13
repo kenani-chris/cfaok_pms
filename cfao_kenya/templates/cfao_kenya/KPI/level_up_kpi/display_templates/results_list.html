@@ -30,7 +30,7 @@
               <tbody>
                   {% for kpi in approved_kpi %}
                       <tr>
-                        <td><a href="{% url 'cfao_kenya:My_KPI_Results' kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                        <td><a href="{% url 'cfao_kenya:KPI_Category_Level_One_Results' levelcategory.category_id level.level_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
                         <td>{{ kpi.kpi_function }}</td>
                         <td>{{ kpi.kpi_type }}</td>
                         <td>{{ kpi.kpi_weight }}</td>

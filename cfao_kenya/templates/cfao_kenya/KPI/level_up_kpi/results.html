@@ -1,16 +1,17 @@
 {% extends 'cfao_kenya/KPI/level_up_kpi/default.html' %}
+    {% block Create %}<li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:KPI_Category_Level_New' levelcategory.category_id level.level_id %}">New KPI</a></li>{% endblock %}
     {% block page_title %}{{ levelcategory.category_name }} KPI - {{ level.level_name }}{% endblock %}
     {% block breadcrumb %}
         <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:KPI_Category' levelcategory.category_id  %}">{{ levelcategory.category_name }} KPI</a></li>
         <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:KPI_Category_Level' levelcategory.category_id level.level_id %}">{{ level.level_name }}</a></li>
-        <li class="breadcrumb-item active">KPI</li>
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:KPI_Category_Level_One' levelcategory.category_id level.level_id kpi.kpi_id %}">KPI</a></li>
         <li class="breadcrumb-item active">Results</li>
     {% endblock %}
     {% block content %}
         {% include 'cfao_kenya/KPI/level_up_kpi/display_templates/results.html' %}
 
 
-        {% if page_permission %}
+        {% if perms.cfao_kenya.list_level_up_kpi is True %}
             {% include 'cfao_kenya/KPI/level_up_kpi/display_templates/results_list.html' %}
         {% else %}
             {% include 'cfao_kenya/errors/permissions.html' %}

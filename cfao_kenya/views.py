@@ -1012,3 +1012,108 @@ class KPICategoryResults(DetailView):
                 kpi_results.append([kpi, calculate_kpi_score(kpi)])
             context['kpi_results'] = kpi_results
         return context
+
+
+class KPICategoryLevelEdit(UpdateView):
+    model = KPI
+    form_class = KPIForm
+
+    def get_context_data(self, **kwargs):
+        context = super(KPICategoryLevelEdit, self).get_context_data()
+        context['levelcategory'] = get_object_or_404(LevelCategory, category_id=self.kwargs['cat_id'])
+        context['level'] = get_object_or_404(Level, level_id=self.kwargs['lev_id'])
+        if self.request.user.has_perm('cfao_kenya.change_level_up_kpi'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context = merge_dict(context, global_context(self.request.user))
+        return context
+
+    def get_initial(self):
+        initial = super(KPICategoryLevelEdit, self).get_initial()
+        initial['kpi_user'] = self.request.user
+        initial['kpi_pms'] = active_pms()
+        initial['kpi_status'] = 'Submitted'
+
+        return initial
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:KPI_Category_Level_One', kwargs={'cat_id': self.kwargs['cat_id'],
+                                                                                'lev_id': self.kwargs['lev_id'],
+                                                                                'pk': self.kwargs['pk']}))
+
+    def form_valid(self, form):
+        super(KPICategoryLevelEdit, self).form_valid(form)
+        kpi = get_object_or_404(KPI, kpi_id=self.kwargs['pk'])
+        write_log(self.request.user, 'KPI', 'KPI ' + str(kpi.kpi_title) + ' Edited')
+        notification_send(self.request, 'KPI', self.request.user, get_level_head(self.request.user), 'KPI Edited',
+                          str(self.request.user.get_full_name) + ' Has edited ' + str(kpi.kpi_title) + ' ')
+
+        return HttpResponseRedirect(reverse('cfao_kenya:KPI_Category_Level_One', kwargs={
+            'cat_id': self.kwargs['cat_id'], 'lev_id': self.kwargs['lev_id'], 'pk': self.kwargs['pk']}))
+
+
+class KPICategoryLevelDelete(DeleteView):
+    model = KPI
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:KPI_Category_Level', kwargs={'cat_id': self.kwargs['cat_id'],
+                                                                            'pk': self.kwargs['lev_id']}))
+
+    def get_context_data(self, **kwargs):
+        context = super(KPICategoryLevelDelete, self).get_context_data()
+        context['levelcategory'] = get_object_or_404(LevelCategory, category_id=self.kwargs['cat_id'])
+        context['level'] = get_object_or_404(Level, level_id=self.kwargs['lev_id'])
+        if self.request.user.has_perm('cfao_kenya.delete_level_up_kpi'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        context = merge_dict(context, global_context(self.request.user))
+        return context
+
+
+class KPICategoryLevelNew(CreateView):
+    form_class = KPIForm
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:KPI_Category_Level', kwargs={'cat_id': self.kwargs['cat_id'],
+                                                                            'pk': self.kwargs['lev_id']}))
+
+    def get_context_data(self, **kwargs):
+        context = super(KPICategoryLevelNew, self).get_context_data()
+        context['levelcategory'] = get_object_or_404(LevelCategory, category_id=self.kwargs['cat_id'])
+        context['level'] = get_object_or_404(Level, level_id=self.kwargs['lev_id'])
+        if self.request.user.has_perm('cfao_kenya.add_level_up_kpi'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context = merge_dict(context, global_context(self.request.user))
+        level_head = get_object_or_404(Level, level_id=self.kwargs['lev_id']).level_head
+        if active_pms():
+            context = merge_dict(context, kpi_submission_checks(level_head, active_pms()))
+            context = merge_dict(context, kpi_list(level_head, active_pms()))
+            context['number_kpis'] = kpi_number_check(level_head, active_pms())
+            context['sum_weight'] = kpi_weight_check(level_head, active_pms())
+            context['submission_data'] = get_user_submission_data(level_head, active_pms())
+        return context
+
+    def get_initial(self):
+        initial = super(KPICategoryLevelNew, self).get_initial()
+        level_head = get_object_or_404(Level, level_id=self.kwargs['lev_id']).level_head
+        initial['kpi_user'] = level_head
+        initial['kpi_pms'] = active_pms()
+        initial['kpi_submit_date'] = datetime.datetime.now()
+
+        return initial
+
+    def form_valid(self, form):
+        super(KPICategoryLevelNew, self).form_valid(form)
+        level_head = get_object_or_404(Level, level_id=self.kwargs['lev_id']).level_head
+        write_log(self.request.user, 'KPI', 'KPI Submitted')
+        notification_send(self.request, 'KPI', level_head, get_level_head(level_head), 'KPI Submitted',
+                          str(self.request.user.get_full_name) + ' has  submitted a KPI for your approval')
+
+        return HttpResponseRedirect(reverse('cfao_kenya:KPI_Category_Level', kwargs={'cat_id': self.kwargs['cat_id'],
+                                                                            'pk': self.kwargs['lev_id']}))
+

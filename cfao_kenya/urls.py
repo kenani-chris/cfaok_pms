@@ -21,10 +21,9 @@ urlpatterns = [
     path('KPI/Category/<uuid:cat_id>/Level/<uuid:lev_id>/View/<uuid:pk>', KPICategoryLevelOne.as_view(template_name='cfao_kenya/KPI/level_up_kpi/view.html'), name='KPI_Category_Level_One'),
     path('KPI/Category/<uuid:cat_id>/Level/<uuid:lev_id>/View/<uuid:pk>/Results', KPICategoryLevelOneResults.as_view(template_name='cfao_kenya/KPI/level_up_kpi/results.html'), name='KPI_Category_Level_One_Results'),
     path('KPI/Category/<uuid:pk>/Results', KPICategoryResults.as_view(template_name='cfao_kenya/KPI/level_up_kpi/results_list_levels.html'), name='KPI_Category_Results'),
-    path('KPI/Create', MyKPICreate.as_view(template_name='cfao_kenya/KPI/my_kpi/create.html'), name='My_KPI_Create'),
-    path('KPI/Edit/<uuid:pk>', MyKPIEdit.as_view(template_name='cfao_kenya/KPI/my_kpi/edit.html'), name='My_KPI_Edit'),
-    path('KPI/Delete/<uuid:pk>', MyKPIDelete.as_view(template_name='cfao_kenya/KPI/my_kpi/delete.html'), name='My_KPI_Delete'),
-    path('KPI/View/Results/<uuid:pk>', MyKPIResults.as_view(template_name='cfao_kenya/KPI/my_kpi/results.html'), name='My_KPI_Results'),
-    path('KPI/Results', MyKPIResultsList.as_view(template_name='cfao_kenya/KPI/my_kpi/results_list.html'), name='My_KPI_Results_View'),
+    path('KPI/Category/<uuid:cat_id>/Level/<uuid:lev_id>/Create', KPICategoryLevelNew.as_view(template_name='cfao_kenya/KPI/level_up_kpi/create.html'), name='KPI_Category_Level_New'),
+    path('KPI/Category/<uuid:cat_id>/Level/<uuid:lev_id>/Edit/<uuid:pk>', KPICategoryLevelEdit.as_view(template_name='cfao_kenya/KPI/level_up_kpi/edit.html'), name='KPI_Category_Level_One_Edit'),
+    path('KPI/Category/<uuid:cat_id>/Level/<uuid:lev_id>/Delete/<uuid:pk>', KPICategoryLevelDelete.as_view(template_name='cfao_kenya/KPI/level_up_kpi/delete.html'), name='KPI_Category_Level_One_Delete'),
+
 
 ]
