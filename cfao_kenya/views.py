@@ -1183,7 +1183,7 @@ def send_email_pms(subject, receiver1, receiver2, e_message):
         img.add_header('Content-ID', 'logo.png')
         img.add_header('Content-Disposition', 'inline', filename=image)
     msg.attach(img)
-    msg.send()
+    # msg.send()
 
 
 def send_email_pms_one_reciepient(subject, receiver, e_message):
@@ -1229,7 +1229,7 @@ def send_email_pms_one_reciepient(subject, receiver, e_message):
         img.add_header('Content-ID', 'logo.png')
         img.add_header('Content-Disposition', 'inline', filename=image)
     msg.attach(img)
-    msg.send()
+    # msg.send()
 
 
 @method_decorator(login_required, name='dispatch')

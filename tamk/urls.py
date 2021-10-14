@@ -33,6 +33,18 @@ urlpatterns = [
     path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>/<int:month>', approve_individual_kpi_score_dashboard,
          name='Staff_Approve_Kpi_score_dashboard'),
 
+    # Staff kpi for BU heads
+    path('Staff-Kpi/Track-Kpi/<uuid:pk>/BU', StaffTrackKpiOneListViewBU.as_view(), name='Staff_Track_Kpi_Staff_BU'),
+    path('Staff-Kpi/Track-Kpi/<uuid:pk>/<uuid:kpi_id>/BU', StaffKpiTrackOneViewBU.as_view(), name='Staff_Track_Kpi_Staff_One_BU'),
+    path('Staff-Kpi/Approve-Kpi/Approve/<uuid:pk>/<uuid:kpi_id>/<int:month>/BU', approve_individual_kpi_scoreBU,
+         name='Staff_Approve_Kpi_score_BU'),
+
+    # Staff kpi for BU members
+    path('Staff-Kpi/Track-Kpi/<int:pk>/Members', StaffTrackKpiOneListViewBUMembers.as_view(), name='Staff_Track_Kpi_Staff_bu_members'),
+    path('Staff-Kpi/Track-Kpi/<int:pk>/<uuid:kpi_id>/Members', StaffKpiTrackOneViewBUMembers.as_view(), name='Staff_Track_Kpi_Staff_One_bu_members'),
+    path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>/<int:month>/Members', approve_individual_kpi_score_BUMembers,
+         name='Staff_Approve_Kpi_score_bu_members'),
+
     path('Staff-Kpi/Track-Kpi/BU_Members', StaffTrackKpiListViewBUMembers.as_view(), name='Staff_Track_Kpi_bu_members'),
     path('Staff-Kpi/Track-Kpi/Company_Members', StaffTrackKpiListViewCompanyMembers.as_view(), name='Staff_Track_Kpi_company_members'),
 
