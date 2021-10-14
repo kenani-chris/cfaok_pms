@@ -33,6 +33,9 @@ urlpatterns = [
     path('Staff-Kpi/Approve-Kpi/Approve/<int:pk>/<uuid:kpi_id>/<int:month>', approve_individual_kpi_score_dashboard,
          name='Staff_Approve_Kpi_score_dashboard'),
 
+    path('Staff-Kpi/Track-Kpi/BU_Members', StaffTrackKpiListViewBUMembers.as_view(), name='Staff_Track_Kpi_bu_members'),
+    path('Staff-Kpi/Track-Kpi/Company_Members', StaffTrackKpiListViewCompanyMembers.as_view(), name='Staff_Track_Kpi_company_members'),
+
     # BU Kpi Links
     path('BU/', BuKpiDashboard.as_view(), name='BU_Dashboard'),
     path('BU-Kpi/', BuKpi.as_view(), name='BU_Kpi_Dashboard'),
