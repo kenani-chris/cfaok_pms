@@ -388,7 +388,6 @@ class MyKPI(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(MyKPI, self).get_context_data()
-        send_mail('Test mail', 'this is a test mail', EMAIL_HOST_USER, ('ckenani@cfao.com', 'jandiwo@cfao.com'), fail_silently=False)
         if self.request.user.has_perm('cfao_kenya.view_kpi'):
             context['page_permission'] = True
         else:
