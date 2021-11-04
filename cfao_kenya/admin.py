@@ -4,7 +4,7 @@ from .models import *
 from .urls import app_name
 
 
-excempt_list = ['Staff']
+excempt_list = ['Staff', 'PMS']
 
 for name, app in apps.app_configs.items():
     if name == app_name:
@@ -20,4 +20,9 @@ class StaffAdmin(admin.ModelAdmin):
     list_filter = ('staff_active', 'staff_superuser', 'staff_visibility')
 
 
+class PMSAdmin(admin.ModelAdmin):
+    list_display = ('pms_name', 'pms_year_start_date', 'pms_year_end_date', 'pms_active',)
+
+
 admin.site.register(Staff, StaffAdmin)
+admin.site.register(PMS, PMSAdmin)

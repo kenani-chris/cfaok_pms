@@ -1,0 +1,4 @@
+{% extends 'cfao_kenya/default.html' %}
+
+{% block page_link%}<a class="navbar-brand" href="{% url 'cfao_kenya:My_CheckIn' %}" ><b style="color: {{ company.company_color1 }}">CheckIn Home</b></a>{% endblock %}
+{% block Create %}<li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:My_KPI_Create' %}">New CheckIn</a></li>{% endblock %}

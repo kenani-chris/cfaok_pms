@@ -3,12 +3,12 @@ from calendar import _monthlen
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import *
 
 from cfaok_pms.settings import EMAIL_HOST_USER
-from .forms import KPIForm
+from .forms import KPIForm, PMSForm, CheckInForm
 from .models import *
 from django.utils import timezone
 
@@ -374,6 +374,14 @@ def calculate_overall_kpi_score(user, pms):
         weighted_score = (weight * score)/100
         results.append(weighted_score)
     return sum(results)
+
+
+class NoActivePMS(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(NoActivePMS, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        return context
 
 
 class Dashboard(TemplateView):
@@ -1115,4 +1123,220 @@ class KPICategoryLevelNew(CreateView):
 
         return HttpResponseRedirect(reverse('cfao_kenya:KPI_Category_Level', kwargs={'cat_id': self.kwargs['cat_id'],
                                                                             'pk': self.kwargs['lev_id']}))
+
+
+def admin_permission_check(permission, user):
+    staff_account = get_staff(user)
+    if staff_account:
+        if user.has_perm(permission) and staff_account.staff_active and staff_account.staff_superuser:
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
+class AdminDashboard(ListView):
+    model = PMS
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminDashboard, self).get_context_data()
+        context['users'] = Staff.objects.all()
+        context['users_active'] = Staff.objects.filter(staff_active=True)
+        context['pms'] = PMS.objects.all()
+        context['pms_active'] = PMS.objects.filter(pms_active=True)
+        context['levels'] = Level.objects.all()
+        context['categories'] = LevelCategory.objects.all()
+
+        context['page_permission'] = admin_permission_check('view_pms', self.request.user)
+
+        return context
+
+
+class AdminDashboardPMSCreate(CreateView):
+    form_class = PMSForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminDashboardPMSCreate, self).get_context_data()
+        context['pms'] = PMS.objects.all()
+        context['page_permission'] = admin_permission_check('add_pms', self.request.user)
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_PMS_Create',))
+
+
+class AdminDashboardPMSView(DetailView):
+    model = PMS
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminDashboardPMSView, self).get_context_data()
+        context['page_permission'] = admin_permission_check('view_pms', self.request.user)
+
+        return context
+
+
+class AdminDashboardPMSEdit(UpdateView):
+    model = PMS
+    form_class = PMSForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminDashboardPMSEdit, self).get_context_data()
+        context['page_permission'] = admin_permission_check('change_pms', self.request.user)
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_PMS_Edit', kwargs={'pk': self.kwargs['pk']}))
+
+
+class AdminDashboardPMSDelete(DeleteView):
+    model = PMS
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminDashboardPMSDelete, self).get_context_data()
+        context['page_permission'] = admin_permission_check('delete_pms', self.request.user)
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Home'))
+
+
+class MyCheckIn(ListView):
+    model = CheckIn
+    context_object_name = 'CheckIn'
+
+    def get_queryset(self):
+        return CheckIn.objects.filter(checkIn_user=self.request.user)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(MyCheckIn, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        ci = CheckIn.objects.filter(checkIn_user=self.request.user)
+        context['approved_ci'] = ci.filter(checkIn_status='Approved')
+        context['pending_ci'] = ci.filter(checkIn_status='Pending')
+        context['rejected_ci'] = ci.filter(checkIn_status='Rejected')
+        if self.request.user.has_perm('cfao_kenya.view_checkin'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        return context
+
+
+class MyCheckInCreate(CreateView):
+    form_class = CheckInForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(MyCheckInCreate, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.add_checkin'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        if CheckIn.objects.filter(checkIn_user=self.request.user, checkIn_month=datetime.date.today().strftime('%B')):
+            context['done'] = True
+        else:
+            context['done'] = False
+        context['CheckIn'] = CheckIn.objects.filter(checkIn_user=self.request.user)
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:My_CheckIn',))
+
+    def get_initial(self):
+        initial = super(MyCheckInCreate, self).get_initial()
+        initial['checkIn_pms'] = active_pms()
+        initial['checkIn_user'] = self.request.user
+        initial['checkIn_submit_date'] = datetime.datetime.now()
+        initial['checkIn_month'] = datetime.date.today().strftime('%B')
+        return initial
+
+
+class MyCheckInView(DetailView):
+    model = CheckIn
+    context_object_name = 'CheckIn'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(MyCheckInView, self).get_context_data()
+        context['page_permission'] = admin_permission_check('view_pms', self.request.user)
+        if self.request.user.has_perm('cfao_kenya.view_checkin'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        return context
+
+
+class MyCheckInEdit(UpdateView):
+    model = CheckIn
+    form_class = CheckInForm
+    context_object_name = 'CheckIn'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(MyCheckInEdit, self).get_context_data()
+        context['page_permission'] = admin_permission_check('view_pms', self.request.user)
+        if self.request.user.has_perm('cfao_kenya.change_checkin'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        return context
+
+    def get_success_url(self):
+       return '{}'.format(reverse('cfao_kenya:My_CheckIn_View', kwargs={'pk': self.kwargs['pk']}))
+
+
+class MyCheckInDelete(DeleteView):
+    model = CheckIn
+    context_object_name = 'CheckIn'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(MyCheckInDelete, self).get_context_data()
+        context['page_permission'] = admin_permission_check('view_pms', self.request.user)
+        if self.request.user.has_perm('cfao_kenya.delete_checkin'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        return context
+
+    def get_success_url(self):
+       return '{}'.format(reverse('cfao_kenya:My_CheckIn',))
+
+
+class AdminDashboardPMSEdit(UpdateView):
+    model = PMS
+    form_class = PMSForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminDashboardPMSEdit, self).get_context_data()
+        context['page_permission'] = admin_permission_check('change_pms', self.request.user)
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_PMS_Edit', kwargs={'pk': self.kwargs['pk']}))
+
+
+class AdminDashboardPMSDelete(DeleteView):
+    model = PMS
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminDashboardPMSDelete, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        context['page_permission'] = admin_permission_check('delete_pms', self.request.user)
+        if self.request.user.has_perm('cfao_kenya.change_kpi'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Home'))
 

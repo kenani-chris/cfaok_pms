@@ -172,7 +172,7 @@ class CheckIn(models.Model):
     checkIn_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     checkIn_pms = models.ForeignKey('PMS', on_delete=models.RESTRICT)
     checkIn_user = models.ForeignKey(User, on_delete=models.RESTRICT)
-    checkIn_submit_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    checkIn_submit_date = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
     checkIn_approver = models.ForeignKey(User, on_delete=models.RESTRICT, null=True, blank=True,
                                          related_name="cfao_kenya_Approver")
     checkIn_approval_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)

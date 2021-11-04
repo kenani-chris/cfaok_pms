@@ -1,0 +1,38 @@
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h5>Edit CheckIn here</h5>
+        </div>
+         <form method="post">
+            {{ form.errors }}
+            {% csrf_token %}
+            <div class="card-body">
+                {{ form.checkIn_id.as_hidden }}
+                {{ form.checkIn_pms.as_hidden }}
+                {{ form.checkIn_user.as_hidden }}
+                {{ form.checkIn_submit_date.as_hidden }}
+                {{ form.checkIn_approver.as_hidden }}
+                {{ form.checkIn_approval_date.as_hidden }}
+                {{ form.checkIn_approval_date.as_hidden }}
+                {{ form.checkIn_month.as_hidden }}
+                {{ form.checkIn_status.as_hidden }}
+                Performance Area
+                {{ form.checkIn_performance_area }}
+                Progress Discussed
+                {{ form.checkIn_progress_discussed }}
+                <br>
+                Team member actions
+                {{ form.checkIn_team_member_actions }}
+                <br>
+                Team Leader Support
+                {{ form.checkIn_team_leader_support }}
+                <br>
+
+                {{ form.checkIn_team_leader_comment.as_hidden }}
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-info">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
