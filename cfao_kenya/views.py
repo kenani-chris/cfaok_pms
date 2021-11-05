@@ -8,7 +8,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import *
 
 from cfaok_pms.settings import EMAIL_HOST_USER
-from .forms import KPIForm, PMSForm, CheckInForm
+from .forms import KPIForm, PMSForm, CheckInForm, AssessmentForm
 from .models import *
 from django.utils import timezone
 
@@ -1135,6 +1135,8 @@ def admin_permission_check(permission, user):
     else:
         return False
 
+# Admin todo Move all Admin views to somewhere else
+
 
 class AdminDashboard(ListView):
     model = PMS
@@ -1172,6 +1174,7 @@ class AdminDashboardPMSView(DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AdminDashboardPMSView, self).get_context_data()
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
         context['page_permission'] = admin_permission_check('view_pms', self.request.user)
 
         return context
@@ -1202,6 +1205,44 @@ class AdminDashboardPMSDelete(DeleteView):
 
     def get_success_url(self):
         return '{}'.format(reverse('cfao_kenya:Admin_Home'))
+
+
+class AdminAssessment(ListView):
+    context_object_name = 'Assessment'
+
+    def get_queryset(self):
+        return Assessment.objects.filter(assessment_pms=self.kwargs['pk'])
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminAssessment, self).get_context_data()
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+        context['page_permission'] = admin_permission_check('view_assessment', self.request.user)
+
+        return context
+
+
+class AdminAssessmentCreate(CreateView):
+    form_class = AssessmentForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminAssessmentCreate, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.assessment_create'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+        context['Assessment'] = Assessment.objects.filter(assessment_pms=self.kwargs['pk'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Assessment', kwargs=self.kwargs['pk']))
+
+    def get_initial(self):
+        initial = super(AdminAssessmentCreate, self).get_initial()
+        initial['assessment_pms'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+        return initial
 
 
 class MyCheckIn(ListView):
@@ -1309,34 +1350,24 @@ class MyCheckInDelete(DeleteView):
        return '{}'.format(reverse('cfao_kenya:My_CheckIn',))
 
 
-class AdminDashboardPMSEdit(UpdateView):
-    model = PMS
-    form_class = PMSForm
+class AssessmentList(ListView):
+    model = Assessment
+    context_object_name = 'Assessment'
+
+    def get_queryset(self):
+        return Assessment.objects.filter(assessment_pms=self.request['pk'])
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(AdminDashboardPMSEdit, self).get_context_data()
-        context['page_permission'] = admin_permission_check('change_pms', self.request.user)
-
-        return context
-
-    def get_success_url(self):
-        return '{}'.format(reverse('cfao_kenya:Admin_PMS_Edit', kwargs={'pk': self.kwargs['pk']}))
-
-
-class AdminDashboardPMSDelete(DeleteView):
-    model = PMS
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(AdminDashboardPMSDelete, self).get_context_data()
+        context = super(AssessmentList, self).get_context_data()
         context = merge_dict(context, global_context(self.request.user))
-        context['page_permission'] = admin_permission_check('delete_pms', self.request.user)
-        if self.request.user.has_perm('cfao_kenya.change_kpi'):
+        ci = CheckIn.objects.filter(checkIn_user=self.request.user)
+        context['approved_ci'] = ci.filter(checkIn_status='Approved')
+        context['pending_ci'] = ci.filter(checkIn_status='Pending')
+        context['rejected_ci'] = ci.filter(checkIn_status='Rejected')
+        if self.request.user.has_perm('cfao_kenya.view_checkin'):
             context['page_permission'] = True
         else:
             context['page_permission'] = False
 
         return context
-
-    def get_success_url(self):
-        return '{}'.format(reverse('cfao_kenya:Admin_Home'))
 

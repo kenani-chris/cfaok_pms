@@ -18,3 +18,9 @@ class CheckInForm(forms.ModelForm):
     class Meta:
         model = CheckIn
         fields = '__all__'
+
+
+class AssessmentForm(forms.ModelForm):
+    class Meta:
+        model = Assessment
+        fields = '__all__'

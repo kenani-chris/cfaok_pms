@@ -1,0 +1,37 @@
+<!-- KPI Form -->
+
+<div class="container-fluid">
+    <div class="card">
+
+        <div class="card-body">
+            {{ form.errors }}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.assessment_id.as_hidden }}
+                {{ form.assessment_pms.as_hidden }}
+                Name
+                {{ form.assessment_name }}
+                <br>
+                Description
+                {{ form.assessment_details }}
+                <div class="row">
+                    <div class="col-md-6">
+                        <br>
+                        Start Date
+                        <input class="form-control" name="{{ form.assessment_start_date.name }}" id="{{ form.assessment_start_date.id_for_label }}" type="date"  value="{{ form.assessment_start_date.value|date:'Y-m-d'|stringformat:'s' }}">
+                    </div>
+                    <div class="col-md-6">
+                        <br>
+                        End Date
+                        <input class="form-control" name="{{ form.assessment_end_date.name }}" id="{{ form.assessment_end_date.id_for_label }}" type="date"  value="{{ form.assessment_end_date.value|date:'Y-m-d'|stringformat:'s' }}">
+                    </div>
+                </div>
+                <br>
+                PMS Active {{ form.assessment_scoring_use }}
+                <br>
+                <button type="submit" class="btn btn-info">Submit</button>
+            </form>
+        </div>
+    </div>
+
+</div>

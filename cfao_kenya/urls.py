@@ -37,11 +37,31 @@ urlpatterns = [
     path('KPI/View/Results/<uuid:pk>', MyKPIResults.as_view(template_name='cfao_kenya/KPI/my_kpi/results.html'), name='My_KPI_Results'),
     path('KPI/Results', MyKPIResultsList.as_view(template_name='cfao_kenya/KPI/my_kpi/results_list.html'), name='My_KPI_Results_View'),
 
+
+    # CheckIn Links
+    path('Assessment/', AssessmentList.as_view(template_name='cfao_kenya/CheckIn/my_CheckIn/list.html'), name='My_CheckIn'),
+    path('CheckIn/Create', MyCheckInCreate.as_view(template_name='cfao_kenya/CheckIn/my_CheckIn/create.html'), name='My_CheckIn_Create'),
+    path('CheckIn/View/<uuid:pk>', MyCheckInView.as_view(template_name='cfao_kenya/CheckIn/my_CheckIn/view.html'), name='My_CheckIn_View'),
+    path('CheckIn/Edit/<uuid:pk>', MyCheckInEdit.as_view(template_name='cfao_kenya/CheckIn/my_CheckIn/edit.html'), name='My_CheckIn_Edit'),
+    path('CheckIn/Delete/<uuid:pk>', MyCheckInDelete.as_view(template_name='cfao_kenya/CheckIn/my_CheckIn/delete.html'), name='My_CheckIn_Delete'),
+    path('KPI/Edit/<uuid:pk>', MyKPIEdit.as_view(template_name='cfao_kenya/KPI/my_kpi/edit.html'), name='My_KPI_Edit'),
+    path('KPI/Delete/<uuid:pk>', MyKPIDelete.as_view(template_name='cfao_kenya/KPI/my_kpi/delete.html'), name='My_KPI_Delete'),
+    path('KPI/View/Results/<uuid:pk>', MyKPIResults.as_view(template_name='cfao_kenya/KPI/my_kpi/results.html'), name='My_KPI_Results'),
+    path('KPI/Results', MyKPIResultsList.as_view(template_name='cfao_kenya/KPI/my_kpi/results_list.html'), name='My_KPI_Results_View'),
+
     # No Active PMS
     path('PMS/', NoActivePMS.as_view(template_name='cfao_kenya/errors/no_active_pms.html'), name='No_Active_PMS'),
 
     # Admin links
     path('Admin/', AdminDashboard.as_view(template_name='cfao_kenya/Admin/pms/list.html'), name='Admin_Home'),
+    path('Admin/PMS/Create', AdminDashboardPMSCreate.as_view(template_name='cfao_kenya/Admin/pms/create.html'), name='Admin_PMS_Create'),
+    path('Admin/PMS/View/<uuid:pk>', AdminDashboardPMSView.as_view(template_name='cfao_kenya/Admin/pms/view.html'), name='Admin_PMS_View'),
+    path('Admin/PMS/Edit/<uuid:pk>', AdminDashboardPMSEdit.as_view(template_name='cfao_kenya/Admin/pms/edit.html'), name='Admin_PMS_Edit'),
+    path('Admin/PMS/Delete/<uuid:pk>', AdminDashboardPMSDelete.as_view(template_name='cfao_kenya/Admin/pms/delete.html'), name='Admin_PMS_Delete'),
+
+    path('Admin/<uuid:pk>/Assessment', AdminAssessment.as_view(template_name='cfao_kenya/Admin/assessment/list.html'), name='Admin_Assessment'),
+    path('Admin/<uuid:pk>/Assessment/Create', AdminAssessmentCreate.as_view(template_name='cfao_kenya/Admin/assessment/create.html'), name='Admin_Assessment_Create'),
+    path('Admin/<uuid:pk>/Assessment/View/<uuid:aid>', AdminAssessmentCreate.as_view(template_name='cfao_kenya/Admin/assessment/view.html'), name='Admin_Assessment_View'),
     path('Admin/PMS/Create', AdminDashboardPMSCreate.as_view(template_name='cfao_kenya/Admin/pms/create.html'), name='Admin_PMS_Create'),
     path('Admin/PMS/View/<uuid:pk>', AdminDashboardPMSView.as_view(template_name='cfao_kenya/Admin/pms/view.html'), name='Admin_PMS_View'),
     path('Admin/PMS/Edit/<uuid:pk>', AdminDashboardPMSEdit.as_view(template_name='cfao_kenya/Admin/pms/edit.html'), name='Admin_PMS_Edit'),
