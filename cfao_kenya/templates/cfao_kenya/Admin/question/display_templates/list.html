@@ -1,0 +1,38 @@
+<!-- KPI Form -->
+
+<div class="container-fluid">
+       <div class="card">
+        <div class="card-header">
+            <div class="card-title">{{ Assessment.assessment_name }} Questions - Staff Evaluate TL</div>
+            <div class="float-right btn btn-warning bg-info"><a href="{% url 'cfao_kenya:Admin_Assessment_Question_Create' pms.pms_id Assessment.assessment_id %}">New</a></div>
+        </div>
+         <table class="table table-bordered table-hover">
+              <tbody>
+                {% for question in top_questions %}
+                  <tr>
+                      <th>
+                          <a href="{% url 'cfao_kenya:Admin_Assessment_Question_Edit' pms_select.pms_id Assessment.assessment_id question.question_id %}">{{ question.question }}</a>
+                      </th>
+                  </tr>
+                {% endfor %}
+              </tbody>
+         </table>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">{{ Assessment.assessment_name }} Questions - TL Evaluate Staff</div>
+            <div class="float-right btn btn-warning bg-info"><a href="{% url 'cfao_kenya:Admin_Assessment_Question_Create' pms.pms_id Assessment.assessment_id %}">New</a></div>
+        </div>
+         <table class="table table-bordered table-hover">
+              <tbody>
+                {% for question in bottom_questions %}
+                  <tr>
+                      <th>
+                          <a href="{% url 'cfao_kenya:Admin_Assessment_Question_Edit' pms_select.pms_id Assessment.assessment_id question.question_id %}">{{ question.question }}</a>
+                      </th>
+                  </tr>
+                {% endfor %}
+              </tbody>
+         </table>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<!-- KPI Form -->
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h5>Delete User Account</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">{% csrf_token %}
+                <p>Are you sure you want to delete User <b><a href="{% url 'cfao_kenya:Admin_Users_View' user.id %}">{{  user.get_full_name }}</a></b></p>
+                <p>You can choose to edit instead; as deleting will not allow submission past the deadline</p>
+                <button type="submit" value="Confirm" class="btn btn-danger">Confirm Delete</button>
+                <a href="{% url 'cfao_kenya:Admin_Users_Edit' user.id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit Instead</div></a>
+                <a href="{% url 'cfao_kenya:Admin_Users' %}"><div class="float-right btn bg-info" style="margin-right: 10px">Cancel</div></a>
+            </form>
+        </div>
+        {{ form }}
+    </div>
+</div>

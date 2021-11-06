@@ -1,13 +1,12 @@
-{% extends 'cfao_kenya/Admin/pms/default.html' %}
-    {% block page_title %}My KPI - Edit{% endblock %}
-    {% block breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_Home' %}">Admin Home</a></li>
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_PMS_View' pms.pms_id %}">View</a></li>
+{% extends 'cfao_kenya/Admin/default.html' %}
+    {% block page_title %}Assessment - {{ Assessment.assessment_name }} - Edit{% endblock %}
+    {% block more_breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_Assessment' pms_select.pms_id %}">Assessment</a></li>
         <li class="breadcrumb-item active">Edit</li>
     {% endblock %}
     {% block content %}
         {% if page_permission %}
-            {% include 'cfao_kenya/Admin/pms/display_templates/edit.html' %}
+            {% include 'cfao_kenya/Admin/assessment/display_templates/edit.html' %}
         {% else %}
             {% include 'cfao_kenya/errors/permissions.html' %}
         {% endif %}

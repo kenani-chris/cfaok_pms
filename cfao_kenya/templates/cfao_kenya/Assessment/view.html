@@ -1,0 +1,61 @@
+{% extends 'cfao_kenya/Assessment/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Assessment_List' %}">Assessment</a></li>
+        <li class="breadcrumb-item active">View</li>
+    {% endblock %}
+    {% block page_title %}Assessment - {{ Assessment.assessment_name }}{% endblock %}
+    {% block content %}
+        {% if page_permission %}
+            <div class="container-fluid">
+                <div class="card">
+                     <table class="table table-bordered table-hover">
+                          <tbody>
+                              <tr>
+                                  <th >
+                                      Title
+                                  </th>
+                                  <td>
+                                      {{ Assessment.assessment_name }}
+                                  </td>
+                              </tr>
+                          </tbody>
+                     </table>
+                    <table class="table table-bordered">
+                          <tbody>
+                              <tr class="bg-color2">
+                                  <th>
+                                      Status Active
+                                  </th>
+                                  <th>
+                                      Start Date
+                                  </th>
+                                  <th>
+                                      End Date
+                                  </th>
+                                  <th>
+                                      Used in Scoring
+                                  </th>
+                              </tr>
+                              <tr>
+                                  <td>
+                                      {{ assessment_status }}
+                                  </td>
+                                  <td>
+                                      {{ Assessment.assessment_start_date }}
+                                  </td>
+                                  <td>
+                                      {{ Assessment.assessment_end_date }}
+                                  </td>
+                                  <td>
+                                      {{ Assessment.assessment_scoring_use }}
+                                  </td>
+                              </tr>
+                          </tbody>
+                     </table>
+                </div>
+            </div>
+        {% else %}
+            {% include 'cfao_kenya/errors/permissions.html' %}
+        {% endif %}
+
+    {% endblock %}

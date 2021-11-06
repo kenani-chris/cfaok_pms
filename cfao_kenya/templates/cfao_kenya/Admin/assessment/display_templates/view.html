@@ -2,8 +2,9 @@
 <div class="container-fluid">
     <div class="card">
         <div class="card-header">
-            {{ pms.pms_name }} <div class="float-right btn btn-warning"><a href="{% url 'cfao_kenya:Admin_PMS_Delete' pms.pms_id %}">Delete</a></div>
-            {{ pms.pms_name }} <div class="float-right btn btn-danger"><a href="{% url 'cfao_kenya:Admin_PMS_Edit' pms.pms_id %}">Edit</a></div>
+            {{ Assessment.assessment_name }}
+            <div class="float-right btn btn-danger"><a href="{% url 'cfao_kenya:Admin_Assessment_Delete' pms_select.pms_id Assessment.assessment_id %}">Delete</a></div>
+            <div class="float-right btn btn-warning"><a href="{% url 'cfao_kenya:Admin_Assessment_Edit' pms_select.pms_id Assessment.assessment_id %}">Edit</a></div>
         </div>
          <table class="table table-bordered table-hover">
               <tbody>
@@ -12,7 +13,7 @@
                           Title
                       </th>
                       <td>
-                          {{ pms.pms_name }}
+                          {{ Assessment.assessment_name }}
                       </td>
                   </tr>
                   <tr>
@@ -20,7 +21,7 @@
                           Description
                       </th>
                       <td>
-                          {{ pms.pms_description }}
+                          {{ Assessment.assessment_details }}
                       </td>
                   </tr>
                   <tr>
@@ -28,7 +29,7 @@
                           Start Date
                       </th>
                       <td>
-                          {{ pms.pms_year_start_date }}
+                          {{ Assessment.assessment_start_date }}
                       </td>
                   </tr>
                   <tr>
@@ -36,7 +37,7 @@
                           End Date
                       </th>
                       <td>
-                          {{ pms.pms_year_end_date }}
+                          {{ Assessment.assessment_end_date }}
                       </td>
                   </tr>
                   <tr>
@@ -44,10 +45,81 @@
                           Active
                       </th>
                       <td>
-                          {{ pms.pms_active }}
+                          {{ Assessment.assessment_scoring_use }}
                       </td>
                   </tr>
               </tbody>
          </table>
     </div>
+    <div class="row">
+
+      <!-- /.col -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+                <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-thumbs-up"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">{{ questions.count }} Questions</span>
+                </div>
+            </div>
+        </div>
+      <!-- /.col -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+                <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-thumbs-up"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">{{ top_questions.count }} S>TL Questions</span>
+                </div>
+            </div>
+        </div>
+      <!-- /.col -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+                <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-thumbs-up"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">{{ bottom_questions.count }} TL>S Questions</span>
+                </div>
+            </div>
+        </div>
+
+      <!-- fix for small devices only -->
+      <div class="clearfix hidden-md-up"></div>
+
+
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">{{ Assessment.assessment_name }} Questions - Staff Evaluate TL</div>
+            <div class="float-right btn btn-warning bg-info"><a href="{% url 'cfao_kenya:Admin_Assessment_Question_Create' pms.pms_id Assessment.assessment_id %}">New</a></div>
+        </div>
+         <table class="table table-bordered table-hover">
+              <tbody>
+                {% for question in top_questions %}
+                  <tr>
+                      <th>
+                          <a href="{% url 'cfao_kenya:Admin_Assessment_Question_Edit' pms_select.pms_id Assessment.assessment_id question.question_id %}">{{ question.question }}</a>
+                      </th>
+                  </tr>
+                {% endfor %}
+              </tbody>
+         </table>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">{{ Assessment.assessment_name }} Questions - TL Evaluate Staff</div>
+            <div class="float-right btn btn-warning bg-info"><a href="{% url 'cfao_kenya:Admin_Assessment_Question_Create' pms.pms_id Assessment.assessment_id %}">New</a></div>
+        </div>
+         <table class="table table-bordered table-hover">
+              <tbody>
+                {% for question in bottom_questions %}
+                  <tr>
+                      <th>
+                          <a href="{% url 'cfao_kenya:Admin_Assessment_Question_Edit' pms_select.pms_id Assessment.assessment_id question.question_id %}">{{ question.question }}</a>
+                      </th>
+                  </tr>
+                {% endfor %}
+              </tbody>
+         </table>
+    </div>
+
+
 </div>

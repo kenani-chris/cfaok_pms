@@ -2,8 +2,9 @@
 
 {% block page_link%}<a class="navbar-brand" href="{% url 'cfao_kenya:Admin_Home' %}" ><b style="color: {{ company.company_color1 }}">Admin Home</b></a>{% endblock %}
 {% block Create %}
-    <li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:My_KPI_Create' %}">PMS</a></li>
-    <li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:My_KPI_Create' %}">Users</a></li>
+    <li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:Admin_Home' %}">PMS</a></li>
+    <li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:Admin_Users' %}">Users Accounts</a></li>
+    <li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:Admin_Users' %}">Staff Accounts</a></li>
     <li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:My_KPI_Create' %}">Categories</a></li>
     <li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:My_KPI_Create' %}">Levels</a></li>
     <li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:My_KPI_Create' %}">Company</a></li>
@@ -11,7 +12,14 @@
 {% block Update %}<li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:My_KPI_Results_View' %}">Results</a></li>{% endblock %}
 
 {% if pms_select %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_Home' %}">Admin</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_PMS_View' pms_select.pms_id %}">PMS</a></li>
+        {% block more_breadcrumb %}{% endblock %}
+    {% endblock %}
+{% endif %}
     {% block pms_menu %}
+        {% if pms_select %}
         <style>
             .space_right{
                 margin-right: 10px;
@@ -21,23 +29,22 @@
         </style>
         <nav class="main-header navbar navbar-expand-lg navbar-light bg-color2">
             {{ pms_select.pms_name }} |
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                     <li class="space_right"><a href="">KPI</a></li>
                     <li class="space_right"><a href="">CheckIn</a></li>
+                    <li class="space_right"><a href="">{{ pms_select }}</a></li>
+                    {% if pms_select.pms_id %}
                     <li class="space_right"><a href="{% url 'cfao_kenya:Admin_Assessment' pms_select.pms_id  %}">Assessment</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </nav>
-        {% block breadcrumb %}
-            <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_Home' %}">Admin</a></li>
-            <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_PMS_View' pms_select.pms_id %}">PMS</a></li>
-            {% block more_breadcrumb %}{% endblock %}
-        {% endblock %}
+        {% endif %}
     {% endblock %}
-{% endif %}
+
 

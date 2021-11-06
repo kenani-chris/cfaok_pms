@@ -1,7 +1,7 @@
 {% extends 'cfao_kenya/Admin/default.html' %}
-    {% block page_title %}Admin - PMS - New{% endblock %}
-    {% block breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_Home' %}">Admin Home</a></li>
+    {% block page_title %}Admin - Assessment - New{% endblock %}
+    {% block more_breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_Assessment' pms_select.pms_id %}">Assessment</a></li>
         <li class="breadcrumb-item active">New</li>
     {% endblock %}
     {% block content %}

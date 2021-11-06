@@ -7,11 +7,11 @@
         </div>
         <div class="card-body">
             <form method="post">{% csrf_token %}
-                <p>Are you sure you want to delete KPI <b><a href="{% url 'cfao_kenya:Admin_PMS_View' pms.pms_id %}">{{  pms.pms_name }}</a></b></p>
+                <p>Are you sure you want to delete assessment <b><a href="{% url 'cfao_kenya:Admin_Assessment_View' pms.pms_id Assessment.assessment_id %}">{{  Assessment.assessment_name }}</a></b></p>
                 <p>You can choose to edit instead; as deleting will not allow submission past the deadline</p>
                 <button type="submit" value="Confirm" class="btn btn-danger">Confirm Delete</button>
-                <a href="{% url 'cfao_kenya:Admin_PMS_Edit' pms.pms_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit Instead</div></a>
-                <a href="{% url 'cfao_kenya:Admin_Home' %}"><div class="float-right btn bg-info" style="margin-right: 10px">Cancel</div></a>
+                <a href="{% url 'cfao_kenya:Admin_Assessment_Edit' pms.pms_id Assessment.assessment_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit Instead</div></a>
+                <a href="{% url 'cfao_kenya:Admin_Assessment' pms_select.pms_id %}"><div class="float-right btn bg-info" style="margin-right: 10px">Cancel</div></a>
             </form>
         </div>
         {{ form }}

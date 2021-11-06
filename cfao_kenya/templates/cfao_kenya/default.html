@@ -310,7 +310,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="{% url 'cfao_kenya:Assessment_List' %}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Assessment
@@ -418,9 +418,9 @@
 
   <!-- Content Wrapper. Contains page content -->
   {% if pms_select %}
-    <div class="content-wrapper" style="padding-top: 220px">
+    <div class="content-wrapper" style="margin-top: 210px">
   {% else %}
-    <div class="content-wrapper" style="padding-top: 180px">
+    <div class="content-wrapper" style="margin-top: 180px">
   {% endif %}
 
     <!-- Main content -->
@@ -540,7 +540,7 @@
       "responsive": true,
       "autoWidth": false,
       "paging": false,
-      "searching": false,
+      "searching": true,
       "info": false,
     });
 

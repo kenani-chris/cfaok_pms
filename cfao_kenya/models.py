@@ -51,6 +51,7 @@ class PMS(models.Model):
     pms_year_start_date = models.DateField(auto_now=False, auto_now_add=False)
     pms_year_end_date = models.DateField(auto_now=False, auto_now_add=False)
     pms_active = models.BooleanField(default=True)
+    pms_last_edit = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.pms_name
@@ -207,6 +208,7 @@ class CheckIn(models.Model):
     checkIn_month = models.CharField(max_length=15, default=None, choices=checkIn_months, null=True)
     checkIn_status = models.CharField(max_length=10, choices=status, blank=True, default='Pending',
                                       help_text='PMS Status')
+    checkIn_last_edit = models.DateTimeField(auto_now=True)
 
 
 # Assessment ===========================================================================================================
@@ -222,6 +224,7 @@ class Assessment(models.Model):
         ('No', 'No'),
     )
     assessment_scoring_use = models.CharField(max_length=3, default=None, null=True, choices=assessment_use)
+    assessment_last_edit = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.assessment_name
@@ -236,7 +239,8 @@ class Questions(models.Model):
         ('Top', 'Top'),
         ('Bottom', 'Bottom'),
     )
-    question_direction = models.CharField(max_length=6, choices=direction) 
+    question_direction = models.CharField(max_length=6, choices=direction)
+    question_last_edit = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.question
@@ -250,6 +254,7 @@ class QuestionResponses(models.Model):
     response_evaluated = models.ForeignKey(User, on_delete=models.RESTRICT,
                                            related_name="cfao_kenya_Response_evaluated")
     response_comment = models.TextField(blank=True, null=True, default=None)
+    response_last_edit = models.DateTimeField(auto_now=True)
     
 
 # Levels/Groups =======================================================================================================
