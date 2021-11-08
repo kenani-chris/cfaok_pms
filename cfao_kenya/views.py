@@ -1,5 +1,7 @@
 import datetime
 from calendar import _monthlen
+from itertools import chain
+
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
@@ -8,7 +10,8 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import *
 
 from cfaok_pms.settings import EMAIL_HOST_USER
-from .forms import KPIForm, PMSForm, CheckInForm, AssessmentForm, QuestionForm, UserForm, StaffForm, UserEditForm
+from .forms import KPIForm, PMSForm, CheckInForm, AssessmentForm, QuestionForm, UserForm, StaffForm, UserEditForm, \
+    CategoryForm, LevelForm, LevelMemberForm
 from .models import *
 from django.utils import timezone
 
@@ -1380,6 +1383,209 @@ class AdminUserView(DetailView):
         return context
 
 
+class AdminCategory(ListView):
+    context_object_name = 'Category'
+    model = LevelCategory
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminCategory, self).get_context_data()
+        context['page_permission'] = admin_permission_check('view_category', self.request.user)
+        return context
+
+
+class AdminCategoryCreate(CreateView):
+    form_class = CategoryForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminCategoryCreate, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.category_create'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['Category'] = LevelCategory.objects.all()
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Category', ))
+
+
+class AdminCategoryView(DetailView):
+    model = LevelCategory
+    context_object_name = 'Category'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminCategoryView, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.category_view'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        return context
+
+
+class AdminCategoryEdit(UpdateView):
+    model = LevelCategory
+    form_class = CategoryForm
+    context_object_name = 'Category'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminCategoryEdit, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.category_change'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Category_View', kwargs={'pk': self.kwargs['pk']}))
+
+
+class AdminCategoryDelete(DeleteView):
+    model = LevelCategory
+    context_object_name = 'Category'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminCategoryDelete, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.category_delete'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Category', ))
+
+
+# Levels
+
+
+class AdminLevel(ListView):
+    context_object_name = 'Level'
+    model = Level
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminLevel, self).get_context_data()
+        context['page_permission'] = admin_permission_check('view_level', self.request.user)
+        return context
+
+
+class AdminLevelCreate(CreateView):
+    form_class = LevelForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminLevelCreate, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.level_create'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['Level'] = Level.objects.all()
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Level', ))
+
+
+class AdminLevelView(DetailView):
+    model = Level
+    context_object_name = 'Level'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminLevelView, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.level_view'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        context['level_members'] = LevelMembers.objects.filter(level_member_level_id=self.kwargs['pk'])
+
+        return context
+
+
+class AdminLevelEdit(UpdateView):
+    model = Level
+    form_class = LevelForm
+    context_object_name = 'Level'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminLevelEdit, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.level_change'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Level_View', kwargs={'pk': self.kwargs['pk']}))
+
+
+class AdminLevelDelete(DeleteView):
+    model = Level
+    context_object_name = 'Level'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminLevelDelete, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.level_delete'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Level', ))
+
+
+def level_member_status(request, pk, mem_id):
+    level_member = get_object_or_404(LevelMembers, level_member_id=mem_id)
+    if level_member.level_member_active is True:
+        level_member.level_member_active = False
+        level_member.save()
+    else:
+        level_member.level_member_active = True
+        level_member.save()
+
+    return HttpResponseRedirect(reverse('cfao_kenya:Admin_Level_View', kwargs={'pk': pk}))
+
+
+def level_member_remove(request, pk, mem_id):
+    get_object_or_404(LevelMembers, level_member_id=mem_id).delete()
+    return HttpResponseRedirect(reverse('cfao_kenya:Admin_Level_View', kwargs={'pk': pk}))
+
+
+class AdminLevelMemberCreate(CreateView):
+    form_class = LevelMemberForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminLevelMemberCreate, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.level_member_create'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['Level'] = get_object_or_404(Level, level_id=self.kwargs['pk'])
+        context['level_members'] = LevelMembers.objects.filter(level_member_level_id=self.kwargs['pk'])
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Level_Member_Create', kwargs={'pk': self.kwargs['pk']}))
+
+    def get_initial(self):
+        initial = super(AdminLevelMemberCreate, self).get_initial()
+        initial['level_member_level'] = get_object_or_404(Level, level_id=self.kwargs['pk'])
+        return initial
+
+
 class AdminAssessment(ListView):
     context_object_name = 'Assessment'
 
@@ -1730,6 +1936,31 @@ class AssessmentView(DetailView):
             context['page_permission'] = True
         else:
             context['page_permission'] = False
+
+        all_questions = Questions.objects.filter(question_assessment_id=self.kwargs['pk'])
+        if all_questions:
+            context['questions'] = all_questions
+            context['top_questions'] = all_questions.filter(question_direction='Top')
+            context['bottom_questions'] = all_questions.filter(question_direction='Bottom')
+
+        level_members = []
+        level_heads = []
+
+        # Get subordinate staff
+        if Level.objects.filter(level_head=self.request.user):
+            for level in Level.objects.filter(level_head=self.request.user):
+                if LevelMembers.objects.filter(level_member_level=level, level_member_active=True):
+                    for records in LevelMembers.objects.filter(level_member_level=level, level_member_active=True):
+                        level_members.append(records)
+
+        # Get Team Leaders
+        if LevelMembers.objects.filter(level_member_user=self.request.user, level_member_active=True):
+            for level in LevelMembers.objects.filter(level_member_user=self.request.user, level_member_active=True):
+                level_heads.append(level.level_member_level)
+
+        context['level_heads'] = level_heads
+        context['level_members'] = level_members
+
 
         return context
 

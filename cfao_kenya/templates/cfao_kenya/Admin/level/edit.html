@@ -1,0 +1,14 @@
+{% extends 'cfao_kenya/Admin/default.html' %}
+    {% block page_title %}Category - {{ Category.category_name }} - Edit{% endblock %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_Level' %}">Categories</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_Level_View' Level.level_id %}">{{ Level.level_name }}</a></li>
+        <li class="breadcrumb-item active">Edit</li>
+    {% endblock %}
+    {% block content %}
+        {% if page_permission %}
+            {% include 'cfao_kenya/Admin/level/display_templates/edit.html' %}
+        {% else %}
+            {% include 'cfao_kenya/errors/permissions.html' %}
+        {% endif %}
+    {% endblock %}

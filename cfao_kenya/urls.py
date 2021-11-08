@@ -60,6 +60,22 @@ urlpatterns = [
     path('Admin/Staff/Edit/<int:pk>', AdminStaffEdit.as_view(template_name='cfao_kenya/Admin/staff/edit.html'), name='Admin_Staff_Edit'),
     path('Admin/Staff/Delete/<int:pk>', AdminStaffDelete.as_view(template_name='cfao_kenya/Admin/staff/delete.html'), name='Admin_Staff_Delete'),
 
+    path('Admin/Category', AdminCategory.as_view(template_name='cfao_kenya/Admin/category/list.html'), name='Admin_Category'),
+    path('Admin/Category/Create', AdminCategoryCreate.as_view(template_name='cfao_kenya/Admin/category/create.html'), name='Admin_Category_Create'),
+    path('Admin/Category/View/<uuid:pk>', AdminCategoryView.as_view(template_name='cfao_kenya/Admin/category/view.html'), name='Admin_Category_View'),
+    path('Admin/Category/Edit/<uuid:pk>', AdminCategoryEdit.as_view(template_name='cfao_kenya/Admin/category/edit.html'), name='Admin_Category_Edit'),
+    path('Admin/Category/Delete/<uuid:pk>', AdminCategoryDelete.as_view(template_name='cfao_kenya/Admin/category/delete.html'), name='Admin_Category_Delete'),
+
+    path('Admin/Level', AdminLevel.as_view(template_name='cfao_kenya/Admin/level/list.html'), name='Admin_Level'),
+    path('Admin/Level/Create', AdminLevelCreate.as_view(template_name='cfao_kenya/Admin/level/create.html'), name='Admin_Level_Create'),
+    path('Admin/Level/View/<uuid:pk>', AdminLevelView.as_view(template_name='cfao_kenya/Admin/level/view.html'), name='Admin_Level_View'),
+    path('Admin/Level/Edit/<uuid:pk>', AdminLevelEdit.as_view(template_name='cfao_kenya/Admin/level/edit.html'), name='Admin_Level_Edit'),
+    path('Admin/Level/Delete/<uuid:pk>', AdminLevelDelete.as_view(template_name='cfao_kenya/Admin/level/delete.html'), name='Admin_Level_Delete'),
+
+    path('Admin/Level/View/<uuid:pk>/Member/<int:mem_id>', level_member_status, name='Admin_Level_Member_Status'),
+    path('Admin/Level/View/<uuid:pk>/Member/<int:mem_id>/Delete', level_member_remove, name='Admin_Level_Member_Delete'),
+    path('Admin/Level/View/<uuid:pk>/Member/New', AdminLevelMemberCreate.as_view(template_name='cfao_kenya/Admin/levelmember/create.html'), name='Admin_Level_Member_Create'),
+
 
     path('Admin/<uuid:pk>/Assessment', AdminAssessment.as_view(template_name='cfao_kenya/Admin/assessment/list.html'), name='Admin_Assessment'),
     path('Admin/<uuid:pk>/Assessment/Create', AdminAssessmentCreate.as_view(template_name='cfao_kenya/Admin/assessment/create.html'), name='Admin_Assessment_Create'),

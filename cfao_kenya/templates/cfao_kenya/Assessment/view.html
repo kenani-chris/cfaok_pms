@@ -8,19 +8,14 @@
         {% if page_permission %}
             <div class="container-fluid">
                 <div class="card">
-                     <table class="table table-bordered table-hover">
-                          <tbody>
-                              <tr>
-                                  <th >
-                                      Title
-                                  </th>
-                                  <td>
-                                      {{ Assessment.assessment_name }}
-                                  </td>
-                              </tr>
-                          </tbody>
-                     </table>
                     <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                                <th colspan="4">
+                                    {{ Assessment.assessment_name }}
+                                </th>
+                            </tr>
+                          </thead>
                           <tbody>
                               <tr class="bg-color2">
                                   <th>
@@ -52,7 +47,94 @@
                               </tr>
                           </tbody>
                      </table>
+                    <table class="table table-bordered table-hover">
+                          <thead>
+                              <tr>
+                                  <th>
+                                      Type
+                                  </th>
+                                  <th>
+                                      Questions No.
+                                  </th>
+                                  <th>
+                                      Staff(s) Evaluating
+                                  </th>
+                              </tr>
+                          </thead>
+                         <tbody>
+                            <tr>
+                                <td>Staff Evaluate TL</td>
+                                <td>{{ top_questions.count }}</td>
+                                <td>{{ level_heads|length }}</td>
+                            </tr>
+                            <tr>
+                                <td>TL Evaluate Satff</td>
+                                <td>{{ bottom_questions.count }}</td>
+                                <td>{{ level_members|length }}</td>
+                            </tr>
+                         </tbody>
+                     </table>
                 </div>
+                {% if level_heads|length > 0%}
+                    <div class="card">
+                         <table class="table table-bordered table-hover">
+                              <thead>
+                                  <tr>
+                                      <th colspan="5">
+                                          Staff Evaluate TL
+                                      </th>
+                                  </tr>
+                                  <tr>
+                                      <th>
+                                          Team Leader
+                                      </th>
+                                      <th>
+                                          Status
+                                      </th>
+                                  </tr>
+                              </thead>
+                             <tbody>
+                                {% for head in level_heads %}
+                                <tr>
+                                    <td>{{ head.level_head.get_full_name }}</td>
+                                    <td>{{ top_questions.count }}</td>
+                                </tr>
+                                {% endfor %}
+                             </tbody>
+                         </table>
+
+                    </div>
+                {% endif %}
+                {% if level_members|length > 0%}
+                    <div class="card">
+                         <table class="table table-bordered table-hover">
+                              <thead>
+                                  <tr>
+                                      <th colspan="5">
+                                          Staff Evaluate TL
+                                      </th>
+                                  </tr>
+                                  <tr>
+                                      <th>
+                                          Team Leader
+                                      </th>
+                                      <th>
+                                          Status
+                                      </th>
+                                  </tr>
+                              </thead>
+                             <tbody>
+                                {% for member in level_members %}
+                                <tr>
+                                    <td>{{ member.level_member_user.get_full_name }}</td>
+                                    <td>{{ top_questions.count }}</td>
+                                </tr>
+                                {% endfor %}
+                             </tbody>
+                         </table>
+
+                    </div>
+                {% endif %}
             </div>
         {% else %}
             {% include 'cfao_kenya/errors/permissions.html' %}

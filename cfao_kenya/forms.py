@@ -52,3 +52,27 @@ class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
         fields = '__all__'
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = LevelCategory
+        fields = '__all__'
+
+
+class LevelForm(forms.ModelForm):
+    class Meta:
+        model = Level
+        fields = '__all__'
+
+
+class LevelMemberForm(forms.ModelForm):
+    class Meta:
+        model = LevelMembers
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(LevelMemberForm, self).__init__(*args, **kwargs)
+        level_members = LevelMembers.objects.filter(level_member_active=True).values('level_member_user')
+        self.fields['level_member_user'].queryset = User.objects.exclude(id__in=level_members)
+
