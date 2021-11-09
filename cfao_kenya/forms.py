@@ -76,3 +76,9 @@ class LevelMemberForm(forms.ModelForm):
         level_members = LevelMembers.objects.filter(level_member_active=True).values('level_member_user')
         self.fields['level_member_user'].queryset = User.objects.exclude(id__in=level_members)
 
+
+class QuestionResponseForm(forms.ModelForm):
+    class Meta:
+        model = QuestionResponses
+        fields = '__all__'
+

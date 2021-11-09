@@ -11,7 +11,7 @@ from django.views.generic import *
 
 from cfaok_pms.settings import EMAIL_HOST_USER
 from .forms import KPIForm, PMSForm, CheckInForm, AssessmentForm, QuestionForm, UserForm, StaffForm, UserEditForm, \
-    CategoryForm, LevelForm, LevelMemberForm
+    CategoryForm, LevelForm, LevelMemberForm, QuestionResponseForm
 from .models import *
 from django.utils import timezone
 
@@ -1963,4 +1963,129 @@ class AssessmentView(DetailView):
 
 
         return context
+
+
+class AssessmentViewMember(DetailView):
+    model = Assessment
+    context_object_name = 'Assessment'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AssessmentViewMember, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
+        member = get_object_or_404(User, id=self.kwargs['uid'])
+        if assessment.assessment_start_date <= datetime.date.today() <= assessment.assessment_end_date:
+            context['assessment_status'] = True
+        else:
+            context['assessment_status'] = False
+
+        question_responses = []
+        questions = Questions.objects.filter(question_assessment_id=self.kwargs['pk'], question_direction=self.kwargs['dir'])
+        completed = 0
+
+        if questions.count():
+            for question in questions:
+                response = QuestionResponses.objects.filter(response_question_id=question.question_id, response_user=self.request.user,
+                                                            response_evaluated=member)
+                if response:
+                    question_responses.append([question, response, 'Done'])
+                    completed = completed + 1
+                else:
+                    question_responses.append([question, None, 'Not Done'])
+            completed = completed / questions.count()
+        else:
+            completed = 0
+
+        if self.request.user.has_perm('cfao_kenya.add_question_response'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        context['question_responses'] = question_responses
+        context['completed'] = completed
+        context['member'] = member
+
+        return context
+
+
+class AssessmentViewMemberResponseCreate(CreateView):
+    form_class = QuestionResponseForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AssessmentViewMemberResponseCreate, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+
+        assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
+        member = get_object_or_404(User, id=self.kwargs['uid'])
+        direction = self.kwargs['dir']
+        question = get_object_or_404(Questions, question_id=self.kwargs['qid'])
+
+        if assessment.assessment_start_date <= datetime.date.today() <= assessment.assessment_end_date:
+            context['assessment_status'] = True
+        else:
+            context['assessment_status'] = False
+
+        response = QuestionResponses.objects.filter(response_question_id=question.question_id,
+                                                    response_user=self.request.user, response_evaluated=member)
+        if response:
+            completed = True
+        else:
+            completed = False
+
+        if self.request.user.has_perm('cfao_kenya.add_question_response'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        context['Assessment'] = assessment
+        context['completed'] = completed
+        context['question'] = question
+        context['member'] = member
+
+        return context
+
+    def get_initial(self):
+        initial = super(AssessmentViewMemberResponseCreate, self).get_initial()
+        initial['response_user'] = self.request.user
+        initial['response_evaluated'] = get_object_or_404(User, id=self.kwargs['uid'])
+        initial['response_question'] = get_object_or_404(Questions, question_id=self.kwargs['qid'])
+
+        return initial
+
+    def get_success_url(self):
+       return '{}'.format(reverse('cfao_kenya:Assessment_View_Member', kwargs={'pk': self.kwargs['pk'], 'uid': self.kwargs['uid'], 'dir': self.kwargs['dir']}))
+
+
+class AssessmentViewMemberResponseEdit(UpdateView):
+    pk_url_kwarg = 'qrid'
+    model = QuestionResponses
+    form_class = QuestionResponseForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AssessmentViewMemberResponseEdit, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+
+        assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
+        member = get_object_or_404(User, id=self.kwargs['uid'])
+        direction = self.kwargs['dir']
+        response = get_object_or_404(QuestionResponses, response_id=self.kwargs['qrid'])
+
+        if assessment.assessment_start_date <= datetime.date.today() <= assessment.assessment_end_date:
+            context['assessment_status'] = True
+        else:
+            context['assessment_status'] = False
+
+        if self.request.user.has_perm('cfao_kenya.add_question_response'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        context['Assessment'] = assessment
+        context['member'] = member
+
+        return context
+
+    def get_success_url(self):
+       return '{}'.format(reverse('cfao_kenya:Assessment_View_Member', kwargs={'pk': self.kwargs['pk'], 'uid': self.kwargs['uid'], 'dir': self.kwargs['dir']}))
+
 

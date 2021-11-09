@@ -35,7 +35,10 @@ urlpatterns = [
 
     path('Assessment/', AssessmentList.as_view(template_name='cfao_kenya/Assessment/list.html'), name='Assessment_List'),
     path('Assessment/View/<uuid:pk>', AssessmentView.as_view(template_name='cfao_kenya/Assessment/view.html'), name='Assessment_View'),
-    path('Assessment/Vie,,w', MyCheckInCreate.as_view(template_name='cfao_kenya/Assessment/view'), name='My_CheckIn_Create'),
+    path('Assessment/View/<uuid:pk>/Member/<int:uid>/<slug:dir>', AssessmentViewMember.as_view(template_name='cfao_kenya/Assessment/view_staff.html'), name='Assessment_View_Member'),
+    path('Assessment/View/<uuid:pk>/Member/<int:uid>/<slug:dir>/Question/<uuid:qid>', AssessmentViewMemberResponseCreate.as_view(template_name='cfao_kenya/Assessment/create.html'), name='Assessment_View_Member_Response'),
+    path('Assessment/View/<uuid:pk>/Member/<int:uid>/<slug:dir>/Response/<uuid:qrid>/Edit', AssessmentViewMemberResponseEdit.as_view(template_name='cfao_kenya/Assessment/edit.html'), name='Assessment_View_Member_Response_Edit'),
+    path('Assessment/View/<uuid:pk>/Staff/<int:uid>', AssessmentView.as_view(template_name='cfao_kenya/Assessment/view'), name='My_CheckIn_Create'),
     path('CheckIn/View/<uuid:pk>', MyCheckInView.as_view(template_name='cfao_kenya/CheckIn/my_CheckIn/view.html'), name='My_CheckIn_View'),
     path('CheckIn/Edit/<uuid:pk>', MyCheckInEdit.as_view(template_name='cfao_kenya/CheckIn/my_CheckIn/edit.html'), name='My_CheckIn_Edit'),
     path('CheckIn/Delete/<uuid:pk>', MyCheckInDelete.as_view(template_name='cfao_kenya/CheckIn/my_CheckIn/delete.html'), name='My_CheckIn_Delete'),

@@ -96,7 +96,7 @@
                              <tbody>
                                 {% for head in level_heads %}
                                 <tr>
-                                    <td>{{ head.level_head.get_full_name }}</td>
+                                    <td><a href="{% url 'cfao_kenya:Assessment_View_Member' Assessment.assessment_id head.level_head.id 'Top'%}">{{ head.level_head.get_full_name }}</a></td>
                                     <td>{{ top_questions.count }}</td>
                                 </tr>
                                 {% endfor %}

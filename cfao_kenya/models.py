@@ -223,6 +223,8 @@ class Assessment(models.Model):
         ('Yes', 'Yes'),
         ('No', 'No'),
     )
+    assessment_min_score = models.FloatField(default=0)
+    assessment_max_score = models.FloatField(default=10)
     assessment_scoring_use = models.CharField(max_length=3, default=None, null=True, choices=assessment_use)
     assessment_last_edit = models.DateTimeField(auto_now=True)
 
@@ -248,12 +250,13 @@ class Questions(models.Model):
 
 class QuestionResponses(models.Model):
     response_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    response_question = models.ForeignKey('Assessment', on_delete=models.RESTRICT)
+    response_question = models.ForeignKey('Questions', on_delete=models.RESTRICT)
     response_user = models.ForeignKey(User, on_delete=models.RESTRICT,
                                       related_name="cfao_kenya_Response_user")
     response_evaluated = models.ForeignKey(User, on_delete=models.RESTRICT,
                                            related_name="cfao_kenya_Response_evaluated")
     response_comment = models.TextField(blank=True, null=True, default=None)
+    response_submitted = models.FloatField(default=None)
     response_last_edit = models.DateTimeField(auto_now=True)
     
 

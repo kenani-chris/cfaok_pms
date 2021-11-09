@@ -1,0 +1,106 @@
+{% extends 'cfao_kenya/Assessment/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Assessment_List' %}">Assessment</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Assessment_View' Assessment.assessment_id %}">{{ Assessment.assessment_name }}</a></li>
+        <li class="breadcrumb-item active">{{ member.first_name }}</li>
+    {% endblock %}
+    {% block page_title %}Assessment - {{ Assessment.assessment_name }}{% endblock %}
+    {% block content %}
+        {% if page_permission %}
+            <div class="container-fluid">
+                <div class="card">
+                    <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                                <th>
+                                    {{ Assessment.assessment_name }}
+                                </th>
+                                <td>
+                                      From: {{ Assessment.assessment_start_date }}
+                                  </td>
+                                  <td>
+                                      To: {{ Assessment.assessment_end_date }}
+                                  </td>
+                                  <td>
+                                      Scoring use: {{ Assessment.assessment_scoring_use }}
+                                  </td>
+                            </tr>
+                            <tr>
+                                <th>Evaluating</th>
+                                <th colspan="3">{{ member.get_full_name }}</th>
+                            </tr>
+                            <tr>
+                                <th>Score</th>
+                                <th colspan="3">{{ member.get_full_name }}</th>
+                            </tr>
+                          </thead>
+
+                     </table>
+                    <table class="table table-bordered table-hover" id="simpleTable">
+                          <thead>
+                              <tr>
+                                  <th>
+                                      Question
+                                  </th>
+                                  <th>
+                                      Status
+                                  </th>
+                                  <th>
+                                      Response
+                                  </th>
+                                  <th>
+                                      Comment
+                                  </th>
+                              </tr>
+                          </thead>
+                         <tbody>
+                            {% if assessment_status is True %}
+                                {% for question in question_responses %}
+                                    {% if question.1 %}
+                                        {% for response in question.1 %}
+                                            <tr>
+                                                <td><a href="{% url 'cfao_kenya:Assessment_View_Member_Response_Edit' Assessment.assessment_id member.id 'Top' response.response_id %}">{{ question.0.question }}</a></td>
+                                                <td>{{ question.2  }}</td>
+                                                <td>{{ response.response_submitted }}</td>
+                                                <td>{{ response.response_comment }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td><a href="{% url 'cfao_kenya:Assessment_View_Member_Response' Assessment.assessment_id member.id 'Top' question.0.question_id %}">{{ question.0.question }}</a></td>
+                                            <td>{{ question.2  }}</td>
+                                            <td>{{ None }}</td>
+                                            <td>{{ None }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% for question in question_responses %}
+                                    {% if question.1 %}
+                                        {% for response in question.1 %}
+                                            <tr>
+                                                <td>{{ question.0.question }}</td>
+                                                <td>{{ question.2  }}</td>
+                                                <td>{{ response.response_submitted }}</td>
+                                                <td>{{ response.response_comment }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td>{{ question.0.question }}</td>
+                                            <td>{{ question.2  }}</td>
+                                            <td>{{ None }}</td>
+                                            <td>{{ None }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                         </tbody>
+                     </table>
+                </div>
+            </div>
+        {% else %}
+            {% include 'cfao_kenya/errors/permissions.html' %}
+        {% endif %}
+
+    {% endblock %}

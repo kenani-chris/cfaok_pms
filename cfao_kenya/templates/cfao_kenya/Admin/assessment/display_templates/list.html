@@ -13,6 +13,8 @@
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Scoring</th>
+                    <th>Min Score</th>
+                    <th>Max Score</th>
                   </tr>
                   </thead>
               <tbody>
@@ -22,6 +24,8 @@
                         <td>{{ a.assessment_start_date }}</td>
                         <td>{{ a.assessment_end_date }}</td>
                         <td>{{ a.assessment_scoring_use }}</td>
+                        <td>{{ a.assessment_min_score }}</td>
+                        <td>{{ a.assessment_max_score }}</td>
                   {% endfor %}
               </tbody>
          </table>
