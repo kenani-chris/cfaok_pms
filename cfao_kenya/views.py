@@ -2004,6 +2004,7 @@ class AssessmentViewMember(DetailView):
         context['question_responses'] = question_responses
         context['completed'] = completed
         context['member'] = member
+        context['direction'] = self.kwargs['dir']
 
         return context
 
@@ -2041,6 +2042,7 @@ class AssessmentViewMemberResponseCreate(CreateView):
         context['completed'] = completed
         context['question'] = question
         context['member'] = member
+        context['direction'] = self.kwargs['dir']
 
         return context
 
@@ -2082,6 +2084,7 @@ class AssessmentViewMemberResponseEdit(UpdateView):
 
         context['Assessment'] = assessment
         context['member'] = member
+        context['direction'] = self.kwargs['dir']
 
         return context
 
@@ -2089,3 +2092,43 @@ class AssessmentViewMemberResponseEdit(UpdateView):
        return '{}'.format(reverse('cfao_kenya:Assessment_View_Member', kwargs={'pk': self.kwargs['pk'], 'uid': self.kwargs['uid'], 'dir': self.kwargs['dir']}))
 
 
+class AssessmentViewMy(DetailView):
+    model = Assessment
+    context_object_name = 'Assessment'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AssessmentViewMy, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
+        if datetime.date.today() > assessment.assessment_end_date:
+            context['assessment_status'] = True
+        else:
+            context['assessment_status'] = False
+
+        question_responses = []
+        questions = Questions.objects.filter(question_assessment_id=self.kwargs['pk'], question_direction=self.kwargs['dir'])
+
+        if questions.count():
+            for question in questions:
+                score = 0
+                response = QuestionResponses.objects.filter(response_question_id=question.question_id,
+                                                            response_evaluated=self.request.user)
+                comments = []
+                if response:
+                    for res in response:
+                        score = score + res.response_submitted
+                        print('submitted score ' + str(res.response_submitted))
+                        comments.append(res.response_comment)
+                    score = round(score/response.count(), 2)
+                    question_responses.append([question, response, 'Done', score, comments])
+                else:
+                    question_responses.append([question, None, 'Not Done', score, comments])
+
+        if self.request.user.has_perm('cfao_kenya.add_question_response'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+
+        context['question_responses'] = question_responses
+        context['direction'] = self.kwargs['dir']
+        return context

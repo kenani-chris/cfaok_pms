@@ -75,21 +75,36 @@
                          </tbody>
                      </table>
                 </div>
+                <div class="card">
+                         <table class="table table-bordered table-hover">
+                              <thead>
+                                  <tr>
+                                      <th colspan="2" class="bg-color2">
+                                          My Assessment Score
+                                      </th>
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                          <a href="{% url 'cfao_kenya:Assessment_View_My' Assessment.assessment_id 'Bottom' %}">My TL Evaluates Me</a>
+                                      </td>
+                                      <td>
+                                          <a href="{% url 'cfao_kenya:Assessment_View_My' Assessment.assessment_id 'Top' %}">My Staff Evaluates Me</a>
+                                      </td>
+                                  </tr>
+                                  <tr>
+
+                                  </tr>
+
+                              </thead>
+                         </table>
+                </div>
                 {% if level_heads|length > 0%}
                     <div class="card">
                          <table class="table table-bordered table-hover">
                               <thead>
                                   <tr>
-                                      <th colspan="5">
+                                      <th class="bg-color2">
                                           Staff Evaluate TL
-                                      </th>
-                                  </tr>
-                                  <tr>
-                                      <th>
-                                          Team Leader
-                                      </th>
-                                      <th>
-                                          Status
                                       </th>
                                   </tr>
                               </thead>
@@ -97,7 +112,6 @@
                                 {% for head in level_heads %}
                                 <tr>
                                     <td><a href="{% url 'cfao_kenya:Assessment_View_Member' Assessment.assessment_id head.level_head.id 'Top'%}">{{ head.level_head.get_full_name }}</a></td>
-                                    <td>{{ top_questions.count }}</td>
                                 </tr>
                                 {% endfor %}
                              </tbody>
@@ -110,24 +124,15 @@
                          <table class="table table-bordered table-hover">
                               <thead>
                                   <tr>
-                                      <th colspan="5">
-                                          Staff Evaluate TL
-                                      </th>
-                                  </tr>
-                                  <tr>
-                                      <th>
-                                          Team Leader
-                                      </th>
-                                      <th>
-                                          Status
+                                      <th class="bg-color2">
+                                          TL Evaluate Staff
                                       </th>
                                   </tr>
                               </thead>
                              <tbody>
                                 {% for member in level_members %}
                                 <tr>
-                                    <td>{{ member.level_member_user.get_full_name }}</td>
-                                    <td>{{ top_questions.count }}</td>
+                                    <td><a href="{% url 'cfao_kenya:Assessment_View_Member' Assessment.assessment_id member.level_member_user.id 'Bottom'%}">{{ member.level_member_user.get_full_name }}</a></td>
                                 </tr>
                                 {% endfor %}
                              </tbody>

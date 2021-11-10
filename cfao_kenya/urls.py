@@ -38,6 +38,9 @@ urlpatterns = [
     path('Assessment/View/<uuid:pk>/Member/<int:uid>/<slug:dir>', AssessmentViewMember.as_view(template_name='cfao_kenya/Assessment/view_staff.html'), name='Assessment_View_Member'),
     path('Assessment/View/<uuid:pk>/Member/<int:uid>/<slug:dir>/Question/<uuid:qid>', AssessmentViewMemberResponseCreate.as_view(template_name='cfao_kenya/Assessment/create.html'), name='Assessment_View_Member_Response'),
     path('Assessment/View/<uuid:pk>/Member/<int:uid>/<slug:dir>/Response/<uuid:qrid>/Edit', AssessmentViewMemberResponseEdit.as_view(template_name='cfao_kenya/Assessment/edit.html'), name='Assessment_View_Member_Response_Edit'),
+
+    path('Assessment/View/<uuid:pk>/My/<slug:dir>', AssessmentViewMy.as_view(template_name='cfao_kenya/Assessment/view_my.html'), name='Assessment_View_My'),
+
     path('Assessment/View/<uuid:pk>/Staff/<int:uid>', AssessmentView.as_view(template_name='cfao_kenya/Assessment/view'), name='My_CheckIn_Create'),
     path('CheckIn/View/<uuid:pk>', MyCheckInView.as_view(template_name='cfao_kenya/CheckIn/my_CheckIn/view.html'), name='My_CheckIn_View'),
     path('CheckIn/Edit/<uuid:pk>', MyCheckInEdit.as_view(template_name='cfao_kenya/CheckIn/my_CheckIn/edit.html'), name='My_CheckIn_Edit'),
