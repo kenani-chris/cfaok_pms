@@ -37,7 +37,7 @@
 
             <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    <li class="space_right"><a href="">KPI</a></li>
+                    <li class="space_right"><a href="{% url 'cfao_kenya:Admin_KPI' pms_select.pms_id %}">KPI</a></li>
                     <li class="space_right"><a href="">CheckIn</a></li>
                     <li class="space_right"><a href="">{{ pms_select }}</a></li>
                     {% if pms_select.pms_id %}

@@ -1462,6 +1462,157 @@ class AdminCategoryDelete(DeleteView):
         return '{}'.format(reverse('cfao_kenya:Admin_Category', ))
 
 
+# KPI
+
+
+class AdminKPI(TemplateView):
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminKPI, self).get_context_data()
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+        context['page_permission'] = admin_permission_check('view_kpi', self.request.user)
+
+        staff_n_kpi = []
+        for staff in Staff.objects.all():
+            staff_kpi = KPI.objects.filter(kpi_user=staff.staff_person, kpi_pms=context['pms_select'])
+            submitted_kpi = staff_kpi.filter(kpi_status='Submitted')
+            approved_kpi = staff_kpi.filter(kpi_status='Approved')
+            pending_kpi = staff_kpi.filter(kpi_status='Pending')
+            rejected_kpi = staff_kpi.filter(kpi_status='Rejected')
+            edit_kpi = staff_kpi.filter(kpi_status='Edit')
+            staff_n_kpi.append([staff.staff_person, submitted_kpi, pending_kpi, approved_kpi, rejected_kpi, edit_kpi, staff_kpi])
+
+        context['staff_n_kpi'] = staff_n_kpi
+        return context
+
+
+class AdminKPIStaff(DetailView):
+    model = User
+    pk_url_kwarg = 'uid'
+    context_object_name = 'staff_select'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminKPIStaff, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.kpi_view'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+        context['staff_kpi'] = KPI.objects.filter(kpi_user=get_object_or_404(User, id=self.kwargs['uid']))
+        return context
+
+
+class AdminKPIStaffEdit(UpdateView):
+    model = KPI
+    pk_url_kwarg = 'kpi_id'
+    form_class = KPIForm
+    context_object_name = 'KPI'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminKPIStaffEdit, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.kpi_change'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+        context['staff_select'] = get_object_or_404(User, id=self.kwargs['uid'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_KPI_Staff', kwargs={'pk': self.kwargs['pk'], 'uid': self.kwargs['uid']}))
+
+
+
+class AdminAssessmentCreate(CreateView):
+    form_class = AssessmentForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminAssessmentCreate, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.assessment_create'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+        context['Assessment'] = Assessment.objects.filter(assessment_pms=self.kwargs['pk'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Assessment', kwargs={'pk': self.kwargs['pk']}))
+
+    def get_initial(self):
+        initial = super(AdminAssessmentCreate, self).get_initial()
+        initial['assessment_pms'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+        return initial
+
+
+class AdminAssessmentView(DetailView):
+    model = Assessment
+    pk_url_kwarg = 'aid'
+    context_object_name = 'Assessment'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminAssessmentView, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.assessment_view'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+
+        context['questions'] = Questions.objects.filter(question_assessment_id=self.kwargs['aid'])
+        context['top_questions'] = Questions.objects.filter(question_assessment_id=self.kwargs['aid'], question_direction='Top')
+        context['bottom_questions'] = Questions.objects.filter(question_assessment_id=self.kwargs['aid'], question_direction='Bottom')
+
+        return context
+
+
+class AdminAssessmentEdit(UpdateView):
+    model = Assessment
+    pk_url_kwarg = 'aid'
+    form_class = AssessmentForm
+    context_object_name = 'Assessment'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminAssessmentEdit, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.assessment_change'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Assessment_View', kwargs={'pk': self.kwargs['pk'], 'aid': self.kwargs['aid']}))
+
+
+class AdminAssessmentDelete(DeleteView):
+    model = Assessment
+    pk_url_kwarg = 'aid'
+    context_object_name = 'Assessment'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminAssessmentDelete, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.assessment_delete'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_Assessment', kwargs={'pk': self.kwargs['pk']}))
+
+
+
 # Levels
 
 

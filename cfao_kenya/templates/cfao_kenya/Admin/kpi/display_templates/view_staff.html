@@ -1,0 +1,63 @@
+<!-- KPI Form -->
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            {{ staff_select.get_full_name }}
+            <a href="" class="float-right btn btn-info">New KPI</a>
+        </div>
+         <table class="table table-bordered table-hover" id="simpleTable">
+              <thead>
+                <tr>
+                      <th>
+                          KPI
+                      </th>
+                      <th>
+                           Status
+                      </th>
+                      <th>
+                           Function
+                      </th>
+                      <th>
+                           Target
+                      </th>
+                      <th>
+                           Units
+                      </th>
+                      <th>
+                           Weight
+                      </th>
+                      <th>
+                           Type
+                      </th>
+                  </tr>
+              </thead>
+              <tbody>
+                {% for kpi in staff_kpi %}
+                  <tr>
+                      <td>
+                          <a href="{% url 'cfao_kenya:Admin_KPI_Staff_Edit' pms_select.pms_id staff_select.id kpi.kpi_id %}">{{ kpi.kpi_title }}</a>
+                      </td>
+                      <td>
+                           {{ kpi.kpi_status }}
+                      </td>
+                      <td>
+                           {{ kpi.kpi_function }}
+                      </td>
+                      <td>
+                           {{ kpi.kpi_target }}
+                      </td>
+                      <td>
+                           {{ kpi.kpi_units }}
+                      </td>
+                      <td>
+                           {{ kpi.kpi_weight }}
+                      </td>
+                      <td>
+                           {{ kpi.kpi_type }}
+                      </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+         </table>
+    </div>
+</div>

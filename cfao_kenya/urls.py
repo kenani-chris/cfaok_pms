@@ -82,6 +82,14 @@ urlpatterns = [
     path('Admin/Level/View/<uuid:pk>/Member/<int:mem_id>/Delete', level_member_remove, name='Admin_Level_Member_Delete'),
     path('Admin/Level/View/<uuid:pk>/Member/New', AdminLevelMemberCreate.as_view(template_name='cfao_kenya/Admin/levelmember/create.html'), name='Admin_Level_Member_Create'),
 
+    path('Admin/<uuid:pk>/KPI', AdminKPI.as_view(template_name='cfao_kenya/Admin/kpi/list.html'), name='Admin_KPI'),
+    path('Admin/<uuid:pk>/KPI/Staff/<int:uid>', AdminKPIStaff.as_view(template_name='cfao_kenya/Admin/kpi/view_staff.html'), name='Admin_KPI_Staff'),
+    path('Admin/<uuid:pk>/KPI/Staff/<int:uid>/Edit/<uuid:kpi_id>', AdminKPIStaffEdit.as_view(template_name='cfao_kenya/Admin/kpi/edit.html'), name='Admin_KPI_Staff_Edit'),
+    path('Admin/Category/Create', AdminCategoryCreate.as_view(template_name='cfao_kenya/Admin/category/create.html'), name='Admin_Category_Create'),
+    path('Admin/Category/View/<uuid:pk>', AdminCategoryView.as_view(template_name='cfao_kenya/Admin/category/view.html'), name='Admin_Category_View'),
+    path('Admin/Category/Edit/<uuid:pk>', AdminCategoryEdit.as_view(template_name='cfao_kenya/Admin/category/edit.html'), name='Admin_Category_Edit'),
+    path('Admin/Category/Delete/<uuid:pk>', AdminCategoryDelete.as_view(template_name='cfao_kenya/Admin/category/delete.html'), name='Admin_Category_Delete'),
+
 
     path('Admin/<uuid:pk>/Assessment', AdminAssessment.as_view(template_name='cfao_kenya/Admin/assessment/list.html'), name='Admin_Assessment'),
     path('Admin/<uuid:pk>/Assessment/Create', AdminAssessmentCreate.as_view(template_name='cfao_kenya/Admin/assessment/create.html'), name='Admin_Assessment_Create'),

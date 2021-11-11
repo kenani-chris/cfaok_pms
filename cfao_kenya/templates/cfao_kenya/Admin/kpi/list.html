@@ -1,0 +1,37 @@
+{% extends 'cfao_kenya/Admin/default.html' %}
+
+    {% block page_title %}Admin - KPI{% endblock %}
+    {% block more_breadcrumb %}
+        <li class="breadcrumb-item active">KPI</li>
+    {% endblock %}
+    {% block content %}
+        <div class="container-fluid">
+            <div class="row">
+              <!-- /.col -->
+              <div class="col-12 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-thumbs-up"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">{{ staff_n_kpi|length }} Staff</span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+              </div>
+              <!-- /.col -->
+
+              <!-- fix for small devices only -->
+              <div class="clearfix hidden-md-up"></div>
+
+
+            </div>
+        </div>
+
+        {% if page_permission %}
+            {% include 'cfao_kenya/Admin/kpi/display_templates/list.html' %}
+        {% else %}
+            {% include 'cfao_kenya/errors/permissions.html' %}
+        {% endif %}
+
+    {% endblock %}
