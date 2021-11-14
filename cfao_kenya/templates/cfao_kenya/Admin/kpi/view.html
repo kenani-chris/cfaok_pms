@@ -2,12 +2,13 @@
     {% block page_title %}Admin - Assessment - {{ Assessment.assessment_name }}{% endblock %}
 
     {% block more_breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_Assessment' pms_select.pms_id %}">Assessments</a></li>
-        <li class="breadcrumb-item active">{{ Assessment.assessment_name }}</li>
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_KPI' pms_select.pms_id %}">KPI</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_KPI_Staff'  pms_select.pms_id staff_select.id %}">{{ staff_select.get_full_name }}</a></li>
+        <li class="breadcrumb-item active">View</li>
     {% endblock %}
     {% block content %}
         {% if page_permission %}
-            {% include 'cfao_kenya/Admin/assessment/display_templates/view.html' %}
+            {% include 'cfao_kenya/Admin/kpi/display_templates/view.html' %}
         {% else %}
             {% include 'cfao_kenya/errors/permissions.html' %}
         {% endif %}

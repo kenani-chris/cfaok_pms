@@ -3,7 +3,7 @@
     <div class="card">
         <div class="card-header">
             {{ staff_select.get_full_name }}
-            <a href="" class="float-right btn btn-info">New KPI</a>
+            <a href="{% url 'cfao_kenya:Admin_KPI_Staff_Create' pms_select.pms_id staff_select.id %}" class="float-right btn btn-info">New KPI</a>
         </div>
          <table class="table table-bordered table-hover" id="simpleTable">
               <thead>
@@ -35,7 +35,7 @@
                 {% for kpi in staff_kpi %}
                   <tr>
                       <td>
-                          <a href="{% url 'cfao_kenya:Admin_KPI_Staff_Edit' pms_select.pms_id staff_select.id kpi.kpi_id %}">{{ kpi.kpi_title }}</a>
+                          <a href="{% url 'cfao_kenya:Admin_KPI_Staff_View' pms_select.pms_id staff_select.id kpi.kpi_id %}">{{ kpi.kpi_title }}</a>
                       </td>
                       <td>
                            {{ kpi.kpi_status }}

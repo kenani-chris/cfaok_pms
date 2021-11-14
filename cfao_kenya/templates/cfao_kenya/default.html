@@ -519,6 +519,34 @@
           mar = feb + parseFloat(mar);
 
       }
+      if(kpi_type == "Average")
+      {
+          apr = parseFloat(apr);
+          may = apr + parseFloat(may);
+          jun = may + parseFloat(jun);
+          jul = jun + parseFloat(jul);
+          aug = jul + parseFloat(aug);
+          sep = aug + parseFloat(sep);
+          oct = sep + parseFloat(oct);
+          nov = oct + parseFloat(nov);
+          dec = nov + parseFloat(dec);
+          jan = dec + parseFloat(jan);
+          feb = jan + parseFloat(feb);
+          mar = feb + parseFloat(mar);
+
+          may = may/2
+          jun = jun/3
+          jul = jul/4
+          aug = aug/5
+          sep = sep/6
+          oct = oct/7
+          nov = nov/8
+          dec = dec/9
+          jan = jan/10
+          feb = feb/11
+          mar = mar/12
+
+      }
 
 
     var Data = {
@@ -602,7 +630,52 @@
             result_data.push("{{ kpi.1 }}");
         {% endfor %}
 
+        var ChartData = {
+          labels  : label_data,
+          datasets: [
+            {
+              label               : 'Results',
+              backgroundColor     : 'rgba(60,141,188,0.9)',
+              borderColor         : 'rgba(60,141,188,0.8)',
+              pointRadius          : false,
+              pointColor          : '#3b8bba',
+              pointStrokeColor    : 'rgba(60,141,188,1)',
+              pointHighlightFill  : '#fff',
+              pointHighlightStroke: 'rgba(60,141,188,1)',
+              data                : result_data,
+            },
+            {
+              label               : 'Target',
+              backgroundColor     : 'rgba(210, 214, 222, 1)',
+              borderColor         : 'rgba(210, 214, 222, 1)',
+              pointRadius         : false,
+              pointColor          : 'rgba(210, 214, 222, 1)',
+              pointStrokeColor    : '#c1c7d1',
+              pointHighlightFill  : '#fff',
+              pointHighlightStroke: 'rgba(220,220,220,1)',
+              data                : target_data,
+            },
+          ]
+        }
 
+        var barChartCanvas = $('#barChart').get(0).getContext('2d')
+        var barChartData = jQuery.extend(true, {}, ChartData)
+        var temp0 = ChartData.datasets[0]
+        var temp1 = ChartData.datasets[1]
+        barChartData.datasets[0] = temp1
+        barChartData.datasets[1] = temp0
+
+        var barChartOptions = {
+          responsive              : true,
+          maintainAspectRatio     : false,
+          datasetFill             : false
+        }
+
+        var barChart = new Chart(barChartCanvas, {
+          type: 'bar',
+          data: barChartData,
+          options: barChartOptions
+        })
     }
 
 

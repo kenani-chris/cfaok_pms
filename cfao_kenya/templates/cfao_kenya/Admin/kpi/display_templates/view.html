@@ -1,141 +1,149 @@
-<!-- KPI Form -->
+<!-- KPI. Form -->
+
 <div class="container-fluid">
     <div class="card">
         <div class="card-header">
-            {{ Assessment.assessment_name }}
-            <div class="float-right btn btn-danger"><a href="{% url 'cfao_kenya:Admin_Assessment_Delete' pms_select.pms_id Assessment.assessment_id %}">Delete</a></div>
-            <div class="float-right btn btn-warning"><a href="{% url 'cfao_kenya:Admin_Assessment_Edit' pms_select.pms_id Assessment.assessment_id %}">Edit</a></div>
+            {{ staff_select.get_full_name }} - KPI - {{ KPI.kpi_title }}
+            <div class="float-right"><a href="{% url 'cfao_kenya:Admin_KPI_Staff_Delete' pms_select.pms_id staff_select.id KPI.kpi_id %}" class="btn btn-danger">Delete</a></div>
+            <div class="float-right"><a href="{% url 'cfao_kenya:Admin_KPI_Staff_Edit' pms_select.pms_id staff_select.id KPI.kpi_id %}" class="btn btn-warning">Edit</a></div>
         </div>
-         <table class="table table-bordered table-hover">
-              <tbody>
-                  <tr>
-                      <th>
-                          Title
-                      </th>
-                      <td>
-                          {{ Assessment.assessment_name }}
-                      </td>
-                  </tr>
-                  <tr>
-                      <th>
-                          Description
-                      </th>
-                      <td>
-                          {{ Assessment.assessment_details }}
-                      </td>
-                  </tr>
-                  <tr>
-                      <th>
-                          Start Date
-                      </th>
-                      <td>
-                          {{ Assessment.assessment_start_date }}
-                      </td>
-                  </tr>
-                  <tr>
-                      <th>
-                          End Date
-                      </th>
-                      <td>
-                          {{ Assessment.assessment_end_date }}
-                      </td>
-                  </tr>
-                  <tr>
-                      <th>
-                          Active
-                      </th>
-                      <td>
-                          {{ Assessment.assessment_scoring_use }}
-                      </td>
-                  </tr>
-                  <tr>
-                      <th>
-                          Min Score
-                      </th>
-                      <td>
-                          {{ Assessment.assessment_min_score }}
-                      </td>
-                  </tr>
-                  <tr>
-                      <th>
-                          Max Score
-                      </th>
-                      <td>
-                          {{ Assessment.assessment_max_score }}
-                      </td>
-                  </tr>
-              </tbody>
-         </table>
+
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>
+                            Title
+                        </th>
+                        <td colspan="4">
+                            {{ KPI.kpi_title }}
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th>
+                            Description
+                        </th>
+                        <td colspan="4">
+                            {{ KPI.kpi_details }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Criteria
+                        </th>
+                        <td colspan="4">
+                            {{ KPI.kpi_criteria }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Target
+                        </th>
+                        <td colspan="4">
+                            {{ KPI.kpi_target }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Weight
+                        </th>
+                        <th>
+                            Units
+                        </th>
+                        <th>
+                            Function
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                        <th>
+                            Type
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{ KPI.kpi_weight }}
+                        </td>
+                        <td>
+                            {{ KPI.kpi_units }}
+                        </td>
+                        <td>
+                            {{ KPI.kpi_function }}
+                        </td>
+                        <td>
+                            {{ KPI.kpi_status }}
+                        </td>
+                        <td>
+                            {{ KPI.kpi_type }}
+                        </td>
+                    </tr>
+                    <tr></tr>
+                    <tr></tr>
+                    <tr></tr>
+                    <tr></tr>
+
+                </tbody>
+            </table>
+            <br>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>April</th>
+                            <td>{{ KPI.kpi_april_score }}</td>
+                            <td>{{ KPI.kpi_april_score_approve }}</td>
+                            <th>October</th>
+                            <td>{{ KPI.kpi_october_score }}</td>
+                            <td>{{ KPI.kpi_october_score_approve }}</td>
+                        </tr>
+                        <tr>
+                            <th>May</th>
+                            <td>{{ KPI.kpi_may_score }}</td>
+                            <td>{{ KPI.kpi_may_score_approve }}</td>
+                            <th>November</th>
+                            <td>{{ KPI.kpi_november_score }}</td>
+                            <td>{{ KPI.kpi_november_score_approve }}</td>
+                        </tr>
+                        <tr>
+                            <th>June</th>
+                            <td>{{ KPI.kpi_june_score }}</td>
+                            <td>{{ KPI.kpi_june_score_approve }}</td>
+                            <th>December</th>
+                            <td>{{ KPI.kpi_december_score }}</td>
+                            <td>{{ KPI.kpi_december_score_approve }}</td>
+                        </tr>
+                        <tr>
+                            <th>July</th>
+                            <td>{{ KPI.kpi_july_score }}</td>
+                            <td>{{ KPI.kpi_july_score_approve }}</td>
+                            <th>January</th>
+                            <td>{{ KPI.kpi_january_score }}</td>
+                            <td>{{ KPI.kpi_january_score_approve }}</td>
+                        </tr>
+                        <tr>
+                            <th>August</th>
+                            <td>{{ KPI.kpi_august_score }}</td>
+                            <td>{{ KPI.kpi_august_score_approve }}</td>
+                            <th>February</th>
+                            <td>{{ KPI.kpi_february_score }}</td>
+                            <td>{{ KPI.kpi_february_score_approve }}</td>
+                        </tr>
+                        <tr>
+                            <th>September</th>
+                            <td>{{ KPI.kpi_september_score }}</td>
+                            <td>{{ KPI.kpi_september_score_approve }}</td>
+                            <th>March</th>
+                            <td>{{ KPI.kpi_march_score }}</td>
+                            <td>{{ KPI.kpi_march_score_approve }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                All results Approved:  {{ KPI.kpi_all_results_approve }}
+                <br>
+
+
+            </form>
+        </div>
     </div>
-    <div class="row">
-
-      <!-- /.col -->
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-                <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-thumbs-up"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">{{ questions.count }} Questions</span>
-                </div>
-            </div>
-        </div>
-      <!-- /.col -->
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-                <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-thumbs-up"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">{{ top_questions.count }} S>TL Questions</span>
-                </div>
-            </div>
-        </div>
-      <!-- /.col -->
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-                <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-thumbs-up"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">{{ bottom_questions.count }} TL>S Questions</span>
-                </div>
-            </div>
-        </div>
-
-      <!-- fix for small devices only -->
-      <div class="clearfix hidden-md-up"></div>
-
-
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <div class="card-title">{{ Assessment.assessment_name }} Questions - Staff Evaluate TL</div>
-            <div class="float-right btn btn-warning bg-info"><a href="{% url 'cfao_kenya:Admin_Assessment_Question_Create' pms.pms_id Assessment.assessment_id %}">New</a></div>
-        </div>
-         <table class="table table-bordered table-hover">
-              <tbody>
-                {% for question in top_questions %}
-                  <tr>
-                      <th>
-                          <a href="{% url 'cfao_kenya:Admin_Assessment_Question_Edit' pms_select.pms_id Assessment.assessment_id question.question_id %}">{{ question.question }}</a>
-                      </th>
-                  </tr>
-                {% endfor %}
-              </tbody>
-         </table>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <div class="card-title">{{ Assessment.assessment_name }} Questions - TL Evaluate Staff</div>
-            <div class="float-right btn btn-warning bg-info"><a href="{% url 'cfao_kenya:Admin_Assessment_Question_Create' pms.pms_id Assessment.assessment_id %}">New</a></div>
-        </div>
-         <table class="table table-bordered table-hover">
-              <tbody>
-                {% for question in bottom_questions %}
-                  <tr>
-                      <th>
-                          <a href="{% url 'cfao_kenya:Admin_Assessment_Question_Edit' pms_select.pms_id Assessment.assessment_id question.question_id %}">{{ question.question }}</a>
-                      </th>
-                  </tr>
-                {% endfor %}
-              </tbody>
-         </table>
-    </div>
-
-
 </div>

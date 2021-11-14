@@ -331,7 +331,9 @@ def calculate_kpi_score(kpi):
             kpi_score = (kpi_average/kpi.kpi_target) * 100
         elif kpi.kpi_type.lower() == 'ytd':
             if datetime.date.today() <= kpi.kpi_pms.pms_year_end_date:
+
                 this_month = datetime.date.today().strftime("%B")
+
                 last_month = (datetime.date.today() - datetime.timedelta(days=31)).strftime("%B")
                 if result_dict[this_month] is None:
                     if result_dict[last_month] is None:
@@ -376,7 +378,7 @@ def calculate_overall_kpi_score(user, pms):
         score = calculate_kpi_score(kpi)
         weighted_score = (weight * score)/100
         results.append(weighted_score)
-    return sum(results)
+    return round(sum(results), 2)
 
 
 class NoActivePMS(TemplateView):
@@ -392,6 +394,13 @@ class Dashboard(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Dashboard, self).get_context_data()
         context = merge_dict(context, global_context(self.request.user))
+        kpi_results = []
+        if active_pms():
+            for kpi in KPI.objects.filter(kpi_user=self.request.user, kpi_pms=active_pms()):
+                kpi_results.append([kpi, calculate_kpi_score(kpi)])
+                print(calculate_kpi_score(kpi))
+        context['kpi_results'] = kpi_results
+        context['kpi_overall_results'] = calculate_overall_kpi_score(self.request.user, active_pms())
         return context
 
 
@@ -769,8 +778,9 @@ class KPICategoryLevel(DetailView):
             kpi_results = []
             for kpi in context['approved_kpi']:
                 kpi_results.append([kpi, calculate_kpi_score(kpi)])
+                print(calculate_kpi_score(kpi))
             context['kpi_results'] = kpi_results
-            context['kpi_overall_results'] = calculate_overall_kpi_score(self.request.user, active_pms())
+            context['kpi_overall_results'] = calculate_overall_kpi_score(level.level_head, active_pms())
 
 
         return context
@@ -970,13 +980,6 @@ class KPICategoryLevelOneResults(UpdateView):
         context['reveal'] = reveal
         return context
 
-    def get_initial(self):
-        initial = super(KPICategoryLevelOneResults, self).get_initial()
-        initial['kpi_user'] = self.request.user
-        initial['kpi_pms'] = active_pms()
-        initial['kpi_status'] = 'Submitted'
-
-        return initial
 
     def get_success_url(self):
         return '{}'.format(reverse('cfao_kenya:My_KPI_Results', kwargs={'pk': self.kwargs['pk']}))
@@ -1038,14 +1041,6 @@ class KPICategoryLevelEdit(UpdateView):
             context['page_permission'] = False
         context = merge_dict(context, global_context(self.request.user))
         return context
-
-    def get_initial(self):
-        initial = super(KPICategoryLevelEdit, self).get_initial()
-        initial['kpi_user'] = self.request.user
-        initial['kpi_pms'] = active_pms()
-        initial['kpi_status'] = 'Submitted'
-
-        return initial
 
     def get_success_url(self):
         return '{}'.format(reverse('cfao_kenya:KPI_Category_Level_One', kwargs={'cat_id': self.kwargs['cat_id'],
@@ -1503,6 +1498,33 @@ class AdminKPIStaff(DetailView):
         return context
 
 
+class AdminKPIStaffCreate(CreateView):
+    form_class = KPIForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminKPIStaffCreate, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.kpi_create'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+        context['staff_select'] = get_object_or_404(User, id=self.kwargs['uid'])
+
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_KPI_Staff', kwargs={'pk': self.kwargs['pk'], 'uid': self.kwargs['uid']}))
+
+    def get_initial(self):
+        initial = super(AdminKPIStaffCreate, self).get_initial()
+        initial['kpi_user'] = get_object_or_404(User, id=self.kwargs['uid'])
+        initial['kpi_submit_date'] = datetime.date.today()
+        initial['kpi_pms'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+        initial['kpi_status'] = 'Approved'
+        return initial
+
+
 class AdminKPIStaffEdit(UpdateView):
     model = KPI
     pk_url_kwarg = 'kpi_id'
@@ -1522,9 +1544,49 @@ class AdminKPIStaffEdit(UpdateView):
         return context
 
     def get_success_url(self):
+        return '{}'.format(reverse('cfao_kenya:Admin_KPI_Staff_View', kwargs={'pk': self.kwargs['pk'], 'uid': self.kwargs['uid'], 'kpi_id': self.kwargs['kpi_id']}))
+
+
+class AdminKPIStaffView(DetailView):
+    model = KPI
+    pk_url_kwarg = 'kpi_id'
+    context_object_name = 'KPI'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminKPIStaffView, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.kpi_view'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+        context['staff_select'] = get_object_or_404(User, id=self.kwargs['uid'])
+        return context
+
+
+class AdminKPIStaffDelete(DeleteView):
+    model = KPI
+    pk_url_kwarg = 'kpi_id'
+    context_object_name = 'KPI'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminKPIStaffDelete, self).get_context_data()
+        context = merge_dict(context, global_context(self.request.user))
+        if self.request.user.has_perm('cfao_kenya.KPI_delete'):
+            context['page_permission'] = True
+        else:
+            context['page_permission'] = False
+        context['pms_select'] = get_object_or_404(PMS, pms_id=self.kwargs['pk'])
+        context['staff_select'] = get_object_or_404(User, id=self.kwargs['uid'])
+
+        return context
+
+    def get_success_url(self):
         return '{}'.format(reverse('cfao_kenya:Admin_KPI_Staff', kwargs={'pk': self.kwargs['pk'], 'uid': self.kwargs['uid']}))
 
 
+
+# Assessment
 
 class AdminAssessmentCreate(CreateView):
     form_class = AssessmentForm

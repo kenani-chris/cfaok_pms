@@ -6,12 +6,9 @@
     {% endblock %}
     {% block content %}
         {% if page_permission %}
-            {% include 'cfao_kenya/Admin/assessment/display_templates/create.html' %}
+            {% include 'cfao_kenya/Admin/kpi/display_templates/create.html' %}
         {% else %}
             {% include 'cfao_kenya/errors/permissions.html' %}
-        {% endif %}
-        {% if perms.cfao_kenya.view_kpi %}
-            {% include 'cfao_kenya/Admin/assessment/display_templates/list.html' %}
         {% endif %}
 
 

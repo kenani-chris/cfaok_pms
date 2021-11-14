@@ -1,12 +1,13 @@
 {% extends 'cfao_kenya/Admin/default.html' %}
     {% block page_title %}Admin - Assessment - Delete{% endblock %}
     {% block more_breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_Assessment' pms_select.pms_id %}">Assessment</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_KPI' pms_select.pms_id %}">KPI</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_KPI_Staff'  pms_select.pms_id staff_select.id %}">{{ staff_select.get_full_name }}</a></li>
         <li class="breadcrumb-item active">Delete</li>
     {% endblock %}
     {% block content %}
         {% if page_permission %}
-            {% include 'cfao_kenya/Admin/assessment/display_templates/delete.html' %}
+            {% include 'cfao_kenya/Admin/kpi/display_templates/delete.html' %}
         {% else %}
             {% include 'cfao_kenya/errors/permissions.html' %}
         {% endif %}

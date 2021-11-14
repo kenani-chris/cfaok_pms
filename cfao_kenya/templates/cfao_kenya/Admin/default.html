@@ -30,7 +30,7 @@
             }
         </style>
         <nav class="main-header navbar navbar-expand-lg navbar-light bg-color2">
-            {{ pms_select.pms_name }} |
+            <b><a href="{% url 'cfao_kenya:Admin_PMS_View' pms_select.pms_id %}">{{ pms_select.pms_name }}</a></b>&nbsp |
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -39,7 +39,6 @@
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                     <li class="space_right"><a href="{% url 'cfao_kenya:Admin_KPI' pms_select.pms_id %}">KPI</a></li>
                     <li class="space_right"><a href="">CheckIn</a></li>
-                    <li class="space_right"><a href="">{{ pms_select }}</a></li>
                     {% if pms_select.pms_id %}
                     <li class="space_right"><a href="{% url 'cfao_kenya:Admin_Assessment' pms_select.pms_id  %}">Assessment</a></li>
                     {% endif %}
