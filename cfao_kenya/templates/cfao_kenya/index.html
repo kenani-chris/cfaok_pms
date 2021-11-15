@@ -9,7 +9,7 @@
                         <p>{{ pms.pms_year_start_date }} - {{ pms.pms_year_start_date }}</p>
                     </div>
                     <div class="card-footer">
-                        <p class="fixed-bottomx">Deadlines    |     KPI Config</p>
+                        <p class="fixed-bottomx">Deadlines | KPI Config | Checkin Config | Matrix</p>
                     </div>
 
                 </div>
@@ -20,7 +20,7 @@
 
                   <div class="info-box-content">
                     <span class="info-box-text">KPI Score</span>
-                    <span class="info-box-number">5,200</span>
+                    <span class="info-box-number">{{ kpi_overall_results }} %</span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -30,7 +30,7 @@
 
                   <div class="info-box-content">
                     <span class="info-box-text">Assessment Score</span>
-                    <span class="info-box-number">92,050</span>
+                    <span class="info-box-number">{{ assessment_overall_score }} %</span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -40,7 +40,7 @@
 
                   <div class="info-box-content">
                     <span class="info-box-text">CheckIn Score</span>
-                    <span class="info-box-number">114,381</span>
+                    <span class="info-box-number">{{ checkin_overall_results }} %</span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -51,9 +51,7 @@
                          Overall Score
                      </div>
                      <div class="text-center">
-                        <h1>{{ kpi_overall_results }} %</h1>
-                         <br>
-                         <a href="">Matrix</a>
+                        <h1>{{ overall_score.0 }} %</h1>
                       </div>
                 </div>
             </div>
@@ -62,8 +60,57 @@
             {% include 'cfao_kenya/KPI/level_up_kpi/display_templates/kpi_bar_chart.html' %}
             </div>
           </section>
-          <section id="checkin">
-            {% include 'cfao_kenya/KPI/level_up_kpi/display_templates/kpi_bar_chart.html' %}
+          <section id="checkin" class="container-fluid">
+              <div class="card">
+                  <div class="card-header">
+                      CheckIn
+                  </div>
+                  <div class="card-body">
+                      <table class="table table-bordered">
+                          <tbody>
+                            <tr>
+
+                                <td {% if 'April' in checkin %}class="bg-success"{% endif %}>
+                                    Apr
+                                </td>
+                                <td {% if 'May' in checkin %}class="bg-success"{% endif %}>
+                                    May
+                                </td>
+                                <td {% if 'June' in checkin %}class="bg-success"{% endif %}>
+                                    Jun
+                                </td>
+                                <td {% if 'July' in checkin %}class="bg-success"{% endif %}>
+                                    Jul
+                                </td>
+                                <td {% if 'August' in checkin %}class="bg-success"{% endif %}>
+                                    Aug
+                                </td>
+                                <td {% if 'September' in checkin %}class="bg-success"{% endif %}>
+                                    Sep
+                                </td>
+                                <td {% if 'October' in checkin %}class="bg-success"{% endif %}>
+                                    Oct
+                                </td>
+                                <td {% if 'November' in checkin %}class="bg-success"{% endif %}>
+                                    Nov
+                                </td>
+                                <td {% if 'December' in checkin %}class="bg-success"{% endif %}>
+                                    Dec
+                                </td>
+                                <td {% if 'January' in checkin %}class="bg-success"{% endif %}>
+                                    Jan
+                                </td>
+                                <td {% if 'February' in checkin %}class="bg-success"{% endif %}>
+                                    Feb
+                                </td>
+                                <td {% if 'March' in checkin %}class="bg-success"{% endif %}>
+                                    Mar
+                                </td>
+                            </tr>
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
           </section>
         {% else %}
             {% include 'cfao_kenya/errors/no_active_pms.html' %}

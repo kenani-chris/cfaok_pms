@@ -211,6 +211,60 @@ class CheckIn(models.Model):
     checkIn_last_edit = models.DateTimeField(auto_now=True)
 
 
+class SubmissionCheckin(models.Model):
+    submission_id = models.AutoField(primary_key=True)
+    submission_pms = models.ForeignKey('PMS', on_delete=models.RESTRICT)
+    submission_level_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT)
+
+    # Specify scores you get in populating a said number of checkin
+    submission_one_results = models.IntegerField(default=0)
+    submission_two_results = models.IntegerField(default=0)
+    submission_three_results = models.IntegerField(default=10)
+    submission_four_results = models.IntegerField(default=20)
+    submission_five_results = models.IntegerField(default=30)
+    submission_six_results = models.IntegerField(default=40)
+    submission_seven_results = models.IntegerField(default=50)
+    submission_eight_results = models.IntegerField(default=60)
+    submission_nine_results = models.IntegerField(default=70)
+    submission_ten_results = models.IntegerField(default=80)
+    submission_eleven_results = models.IntegerField(default=90)
+    submission_twelve_results = models.IntegerField(default=100)
+
+    # CheckIn calculation
+    submission_april_checkin_calculation = models.BooleanField(default=True)
+    submission_may_checkin_calculation = models.BooleanField(default=True)
+    submission_june_checkin_calculation = models.BooleanField(default=True)
+    submission_july_checkin_calculation = models.BooleanField(default=True)
+    submission_august_checkin_calculation = models.BooleanField(default=True)
+    submission_september_checkin_calculation = models.BooleanField(default=True)
+    submission_october_checkin_calculation = models.BooleanField(default=True)
+    submission_november_checkin_calculation = models.BooleanField(default=True)
+    submission_december_checkin_calculation = models.BooleanField(default=True)
+    submission_january_checkin_calculation = models.BooleanField(default=True)
+    submission_february_checkin_calculation = models.BooleanField(default=True)
+    submission_march_checkin_calculation = models.BooleanField(default=True)
+
+
+# Assessment ===========================================================================================================
+class Matrix(models.Model):
+    matrix_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    matrix_pms = models.ForeignKey('PMS', on_delete=models.RESTRICT, null=True)
+    matrix_grade = models.ForeignKey('StaffGrades', on_delete=models.RESTRICT, null=True)
+    matrix_checkin_weight = models.FloatField(null=True, blank=True)
+    matrix_kpi_weight = models.FloatField(null=True, blank=True)
+    matrix_assessment_weight = models.FloatField(null=True, blank=True)
+    matrix_category1_weight = models.ForeignKey('LevelCategory', null=True, blank=True, on_delete=models.RESTRICT, related_name="cfao_kenya_cat1_weight")
+    matrix_category1_weight_no = models.FloatField(default=0)
+    matrix_category2_weight = models.ForeignKey('LevelCategory', null=True, blank=True, on_delete=models.RESTRICT, related_name="cfao_kenya_cat2_weight")
+    matrix_category2_weight_no = models.FloatField(default=0)
+    matrix_category3_weight = models.ForeignKey('LevelCategory', null=True, blank=True, on_delete=models.RESTRICT, related_name="cfao_kenya_cat3_weight")
+    matrix_category3_weight_no = models.FloatField(default=0)
+    matrix_category4_weight = models.ForeignKey('LevelCategory', null=True, blank=True, on_delete=models.RESTRICT, related_name="cfao_kenya_cat4_weight")
+    matrix_category4_weight_no = models.FloatField(default=0)
+    matrix_category5_weight = models.ForeignKey('LevelCategory', null=True, blank=True, on_delete=models.RESTRICT,related_name="cfao_kenya_cat5_weight")
+    matrix_category5_weight_no = models.FloatField(default=0)
+
+
 # Assessment ===========================================================================================================
 class Assessment(models.Model):
     assessment_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique identifier evaluations")

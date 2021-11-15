@@ -381,6 +381,221 @@ def calculate_overall_kpi_score(user, pms):
     return round(sum(results), 2)
 
 
+def get_user_checkin(user, pms):
+    checkin = []
+    for ci in CheckIn.objects.filter(checkIn_user=user, checkIn_pms=pms).exclude(checkIn_status='Rejected'):
+        checkin.append(ci.checkIn_month)
+    return list(set(checkin))
+
+
+def calculate_overall_check_in_score(user, pms):
+    staff = get_staff(user)
+    ci = len(get_user_checkin(user, pms))
+
+    submission = SubmissionCheckin.objects.filter(submission_pms=pms, submission_level_category=staff.staff_category)
+    score = 0
+    if submission:
+        submission = submission.first()
+
+        if ci == 0:
+            score = 0
+        elif ci == 1:
+            score = submission.submission_one_results
+        elif ci == 2:
+            score = submission.submission_two_results
+        elif ci == 3:
+            score = submission.submission_three_results
+        elif ci == 4:
+            score = submission.submission_four_results
+        elif ci == 5:
+            score = submission.submission_five_results
+        elif ci == 6:
+            score = submission.submission_six_results
+        elif ci == 7:
+            score = submission.submission_seven_results
+        elif ci == 8:
+            score = submission.submission_eight_results
+        elif ci == 9:
+            score = submission.submission_nine_results
+        elif ci == 10:
+            score = submission.submission_ten_results
+        elif ci == 11:
+            score = submission.submission_eleven_results
+        elif ci == 12:
+            score = submission.submission_twelve_results
+        else:
+            score = 0
+    else:
+        
+        if ci == 0:
+            score = 0
+        elif ci == 1:
+            score = 0
+        elif ci == 2:
+            score = 0
+        elif ci == 3:
+            score = 10
+        elif ci == 4:
+            score = 20
+        elif ci == 5:
+            score = 30
+        elif ci == 6:
+            score = 40
+        elif ci == 7:
+            score = 50
+        elif ci == 8:
+            score = 60
+        elif ci == 9:
+            score = 70
+        elif ci == 10:
+            score = 80
+        elif ci == 11:
+            score = 90
+        elif ci == 12:
+            score = 100
+
+    return score
+
+
+def calculate_overall_assessment_score(user, pms):
+    score = 0
+    for assessment in Assessment.objects.filter(assessment_pms=pms, assessment_end_date__lt=datetime.date.today(), assessment_scoring_use=True):
+        if Level.objects.filter(level_head=user):
+            if LevelMembers(level_member_user=user):
+                s_tl_score = calculate_assessment_score(assessment, user, 'Top')
+                tl_s_score = calculate_assessment_score(assessment, user, 'Bottom')
+                score = score + (s_tl_score + tl_s_score)/2
+            else:
+                score = score + calculate_assessment_score(assessment, user, 'Top')
+        else:
+            score = score + calculate_assessment_score(assessment, user, 'Bottom')
+    if Assessment.objects.filter(assessment_pms=pms, assessment_end_date__lt=datetime.date.today()):
+        score = round(score/Assessment.objects.filter(assessment_pms=pms, assessment_end_date__lt=datetime.date.today()).count())
+    return score
+
+
+def calculate_assessment_score(assessment, user, direction):
+    score = 0
+    for question in Questions.objects.filter(question_assessment=assessment, question_direction=direction):
+        question_score = 0
+        for response in QuestionResponses.objects.filter(response_question=question, response_evaluated=user):
+            question_score = question_score + response.response_submitted
+        if QuestionResponses.objects.filter(response_question=question, response_evaluated=user):
+            question_score = round(question_score/QuestionResponses.objects.filter(response_question=question, response_evaluated=user).count())
+        score = score + ((question_score - assessment.assessment_min_score)/(assessment.assessment_max_score-assessment.assessment_min_score) * 100)
+    if Questions.objects.filter(question_assessment=assessment, question_direction=direction):
+        score = (score/Questions.objects.filter(question_assessment=assessment, question_direction=direction).count() * 100)
+    return score
+
+
+def get_matrix(user, pms):
+    staff = get_staff(user)
+    if Matrix.objects.filter(matrix_pms=pms, matrix_grade=staff.staff_grade):
+        return Matrix.objects.filter(matrix_pms=pms, matrix_grade=staff.staff_grade).first()
+    else:
+        return None
+
+
+default_matrix = {'KPI': 50, 'Assessment': 20, 'CheckIn': 30, 'Category1': None, 'Category1_no': 0, 'Category2': None, 'Category2_no': 0, 'Category3': None, 'Category3_no': 0, 'Category4': None, 'Category4_no': 0, 'Category5': None, 'Category5_no': 0, }
+
+
+def calculate_overall_score(user, pms):
+    matrix = get_matrix(user, pms)
+    matrix_applied = {}
+    if matrix:
+        matrix_applied['Assessment'] = matrix.matrix_assessment_weight
+        matrix_applied['KPI'] = matrix.matrix_kpi_weight
+        matrix_applied['CheckIn'] = matrix.matrix_kpi_weight
+        matrix_applied['Category1'] = matrix.matrix_category1_weight
+        matrix_applied['Category1_no'] = matrix.matrix_category1_weight_no
+        matrix_applied['Category2'] = matrix.matrix_category1_weight
+        matrix_applied['Category2_no'] = matrix.matrix_category1_weight_no
+        matrix_applied['Category3'] = matrix.matrix_category1_weight
+        matrix_applied['Category3_no'] = matrix.matrix_category1_weight_no
+        matrix_applied['Category4'] = matrix.matrix_category1_weight
+        matrix_applied['Category4_no'] = matrix.matrix_category1_weight_no
+        matrix_applied['Category5'] = matrix.matrix_category1_weight
+        matrix_applied['Category5_no'] = matrix.matrix_category1_weight_no
+    else:
+        matrix_applied = default_matrix
+
+    kpi_weight = matrix_applied['KPI']
+    checkin_weight = matrix_applied['CheckIn']
+    assessment_weight = matrix_applied['Assessment']
+    category1 = matrix_applied['Category1']
+    category1_weight = matrix_applied['Category1_no']
+    category2 = matrix_applied['Category2']
+    category2_weight = matrix_applied['Category2_no']
+    category3 = matrix_applied['Category3']
+    category3_weight = matrix_applied['Category3_no']
+    category4 = matrix_applied['Category4']
+    category4_weight = matrix_applied['Category4_no']
+    category5 = matrix_applied['Category5']
+    category5_weight = matrix_applied['Category5_no']
+
+    total_matrix_score = kpi_weight + checkin_weight + assessment_weight + category1_weight + category2_weight + category3_weight + category4_weight + category5_weight
+    if kpi_weight > 0:
+        kpi_score = (calculate_overall_kpi_score(user, pms) * kpi_weight)/100
+    else:
+        kpi_score = 0
+
+    if assessment_weight > 0:
+        assessment_score = (calculate_overall_assessment_score(user, pms) * assessment_weight)/100
+    else:
+        assessment_score = 0
+
+    if checkin_weight > 0:
+        checkin_score = (calculate_overall_check_in_score(user, pms) * checkin_weight)/100
+    else:
+        checkin_score = 0
+
+    if category1_weight > 0 and category1 is not None:
+        cat1_score = (get_category_kpi_score(user, pms, category1) * category1_weight)/100
+    else:
+        cat1_score = 0
+
+    if category2_weight > 0 and category2 is not None:
+        cat2_score = (get_category_kpi_score(user, pms, category2) * category2_weight)/100
+    else:
+        cat2_score = 0
+
+    if category3_weight > 0 and category3 is not None:
+        cat3_score = (get_category_kpi_score(user, pms, category3) * category3_weight)/100
+    else:
+        cat3_score = 0
+
+    if category4_weight > 0 and category4 is not None:
+        cat4_score = (get_category_kpi_score(user, pms, category4) * category4_weight)/100
+    else:
+        cat4_score = 0
+
+    if category5_weight > 0 and category5 is not None:
+        cat5_score = (get_category_kpi_score(user, pms, category5) * category5_weight)/100
+    else:
+        cat5_score = 0
+
+    return [round(kpi_score + assessment_score + checkin_score + cat1_score + cat2_score + cat3_score + cat4_score + cat5_score, 2), matrix_applied, total_matrix_score]
+
+
+def get_category_kpi_score(user, pms, category):
+    cat_list = []
+    if get_user_level(user):
+        all_categories_up(get_user_level(user).level_category, cat_list)
+    if len(cat_list) > 0:
+        if category in cat_list:
+            if Level.objects.filter(level_category=category):
+                level = Level.objects.filter(level_category=category).first()
+                score = calculate_overall_kpi_score(level.level_head, pms)
+            else:
+                score = 0
+        else:
+            score = 0
+    else:
+        score = 0
+
+    return score
+
+
 class NoActivePMS(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -396,11 +611,15 @@ class Dashboard(TemplateView):
         context = merge_dict(context, global_context(self.request.user))
         kpi_results = []
         if active_pms():
+            context['kpi_overall_results'] = calculate_overall_kpi_score(self.request.user, active_pms())
+            context['checkin_overall_results'] = calculate_overall_check_in_score(self.request.user, active_pms())
+            context['checkin'] = get_user_checkin(self.request.user, active_pms())
+            context['assessment_overall_score'] = calculate_overall_assessment_score(self.request.user, active_pms())
+            context['overall_score'] = calculate_overall_score(self.request.user, active_pms())
             for kpi in KPI.objects.filter(kpi_user=self.request.user, kpi_pms=active_pms()):
                 kpi_results.append([kpi, calculate_kpi_score(kpi)])
-                print(calculate_kpi_score(kpi))
         context['kpi_results'] = kpi_results
-        context['kpi_overall_results'] = calculate_overall_kpi_score(self.request.user, active_pms())
+
         return context
 
 
@@ -739,7 +958,6 @@ class KPICategory(DetailView):
         if len(this_list) > 0:
             this_list = this_list[-1]
         context['this_list'] = this_list
-        print(this_list)
         level_categories = []
         level_list = []
         if get_user_level(self.request.user):
@@ -778,7 +996,6 @@ class KPICategoryLevel(DetailView):
             kpi_results = []
             for kpi in context['approved_kpi']:
                 kpi_results.append([kpi, calculate_kpi_score(kpi)])
-                print(calculate_kpi_score(kpi))
             context['kpi_results'] = kpi_results
             context['kpi_overall_results'] = calculate_overall_kpi_score(level.level_head, active_pms())
 
@@ -2330,7 +2547,6 @@ class AssessmentViewMy(DetailView):
                 if response:
                     for res in response:
                         score = score + res.response_submitted
-                        print('submitted score ' + str(res.response_submitted))
                         comments.append(res.response_comment)
                     score = round(score/response.count(), 2)
                     question_responses.append([question, response, 'Done', score, comments])
