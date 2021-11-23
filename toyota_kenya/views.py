@@ -9846,8 +9846,8 @@ class Report_All_KPI_Individual(TemplateView):
         for staff_u in staff.objects.all():
             staff_u_kpi = individual_Kpi.objects.filter(individual_kpi_pms=active_pms, individual_kpi_user=staff_u.staff_person)
             staff_n_kpi.append([staff_u, staff_u_kpi])
-
-        return staff_n_kpi
+        context['staff_n_kpi'] = staff_n_kpi
+        return context
 
 
 @method_decorator(login_required, name='dispatch')
