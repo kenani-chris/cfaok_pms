@@ -57,18 +57,18 @@ def reset_all_password(request):
 def checkin_reminder(request):
     pms_link = format_html(str('<a href="https://ck-pms.com/">Online PMS</a>'))
     message = format_html(
-        'Check in for the month of September is currently live and it will run up to midnight 30th September 2021. Staff should make sure they complete their check in before the deadline.<br><b>Ignore this if already Submitted</b><br><br>' + pms_link)
+        'Check in for the month of October is currently live and it will run up to midnight 31st October 2021. Staff should make sure they complete their check in before the deadline.<br><b>Ignore this if already Submitted</b><br><br>' + pms_link)
 
-    staffs = staff.objects.all()
+    staffs = staff.objects.filter()
 
     for staff_u in staffs:
         user = get_object_or_404(User, id=staff_u.staff_person.id)
-        if checkIn.objects.filter(checkIn_staff=user, checkIn_month='September'):
-            print("Confirmed: " + user.get_full_name() + "\n")
+        if checkIn.objects.filter(checkIn_staff=user, checkIn_month='October'):
+            print("Confirmed: " + user.get_full_name() + " " + user.email + "\n")
         else:
             if user.is_active and user.email:
                 try:
-                    send_email_pms_one_reciepient('Reminder September CheckIn', user, message)
+                    send_email_pms_one_reciepient('Reminder October CheckIn', user, message)
                     print("done for: " + user.get_full_name()+"\n")
                 except:
                     print("failed for: "+user.get_full_name()+"\n")
@@ -957,6 +957,7 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        #checkin_reminder(self.request)
         if not pms.objects.filter(pms_status='Active'):
             context['pms'] = None
         else:
@@ -3249,7 +3250,7 @@ def approve_individual_kpi_score(request, pk, kpi_id, month):
     except():
         pass
 
-    return HttpResponseRedirect(reverse("cfao_kenya:Staff_Track_Kpi_Staff_One", kwargs={'pk': pk, 'kpi_id': kpi_id}))
+    return HttpResponseRedirect(reverse("toyota_kenya:Staff_Track_Kpi_Staff_One", kwargs={'pk': pk, 'kpi_id': kpi_id}))
 
 
 @login_required
@@ -5923,7 +5924,7 @@ class MyCheckIn(TemplateView):
 @method_decorator(user_passes_test(is_member_company), name='dispatch')
 class SubmitCheckIn(CreateView):
     form_class = SubmitCheckInForm
-    template_name = 'cfao_kenya/Check-In/submitci.html'
+    template_name = 'toyota_kenya/Check-In/submitci.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -9833,6 +9834,20 @@ class Report(TemplateView):
 
         return context
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_member_company), name='dispatch')
+class Report_All_KPI_Individual(TemplateView):
+    template_name = 'toyota_kenya/Reports/report_kpi_all_individual.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_n_kpi = []
+        active_pms = pms.objects.get(pms_status='Active')
+        for staff_u in staff.objects.all():
+            staff_u_kpi = individual_Kpi.objects.filter(individual_kpi_pms=active_pms, individual_kpi_user=staff_u.staff_person)
+            staff_n_kpi.append([staff_u, staff_u_kpi])
+
+        return staff_n_kpi
 
 
 @method_decorator(login_required, name='dispatch')

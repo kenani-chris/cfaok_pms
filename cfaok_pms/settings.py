@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import pymysql
 import os
-from account.conf import AccountAppConf
+
 
 
 pymysql.install_as_MySQLdb()
@@ -102,7 +102,7 @@ DATABASES = {
     }
 }
 '''
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -126,7 +126,7 @@ DATABASES = {
     }
 }
 
-'''
+
 
 
 
@@ -178,13 +178,24 @@ LOGIN_REDIRECT_URL = '/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+'''
 # Email setup
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.c-k.co.ke'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'pms_notifier@c-k.co.ke'
 EMAIL_HOST_PASSWORD = 'xQ25m)S!yc.(eGg@$%iOJOG!3Udq74A9'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+'''
+
+
+# Email setup
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'pms_notifier@ck-pms.com'
+EMAIL_HOST_PASSWORD = 'EZed9t&gZ%=S6HQ@h7R6X&4'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 

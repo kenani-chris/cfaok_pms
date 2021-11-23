@@ -121,6 +121,7 @@ urlpatterns = [
 
 
     path('Report/', Report.as_view(), name='Reports'),
+    path('Report/All_Individual_Kpi', Report_All_KPI_Individual.as_view(), name='Reports'),
     path('Profile/', Profile.as_view(), name='Profile'),
 
 

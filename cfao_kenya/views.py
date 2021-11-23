@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.encoding import force_bytes
 from django.utils.html import format_html
 from django.utils.http import urlsafe_base64_encode
+
+from cfaok_pms.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 from .forms import *
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -23,6 +25,9 @@ from .permissions import is_member_company, is_admin
 from django.conf import settings
 
 
+def send_test_email():
+    send_mail("Test", "Well well, seems our mail service is back; or not if you don't get this", "PMS Notifier", ("ckenani@cfao.com", "kenanichris@outlook.com", "reodede@cfao.com"), fail_silently=False,) # auth_user=EMAIL_HOST_USER, auth_password=EMAIL_HOST_PASSWORD)
+
 def get_active_pms():
     if pms.objects.filter(pms_status='Active').count() != 1:
         return None
@@ -33,21 +38,42 @@ def get_active_pms():
 def checkin_reminder(request):
     pms_link = format_html(str('<a href="https://ck-pms.com/">Online PMS</a>'))
     message = format_html(
-        'Check in for the month of September is currently live and it will run up to midnight 30th September 2021. Staff should make sure they complete their check in before the deadline.<br><b>Ignore this if already Submitted</b><br><br>' + pms_link)
+        'Results for the month of October is currently live and it will run up to midnight 15th November 2021. Staff should make sure they complete their October results before the deadline..<br><b>Ignore this if already Submitted</b><br><br>' + pms_link)
 
-    staffs = staff.objects.all()
+    staffs = staff.objects.filter(id=149)
 
     for staff_u in staffs:
         user = get_object_or_404(User, id=staff_u.staff_person.id)
-        if checkIn.objects.filter(checkIn_staff=user, checkIn_month='September'):
-            print("Confirmed: " + user.get_full_name() + "\n")
+        if checkIn.objects.filter(checkIn_staff=user, checkIn_month='October'):
+            print("Confirmed: " + user.get_full_name() + " " + user.email + "\n")
         else:
             if user.is_active and user.email:
                 try:
-                    send_email_pms_one_reciepient('Reminder September CheckIn', user, message)
+                    send_email_pms_one_reciepient('Reminder October Results', user, message)
                     print("done for: " + user.get_full_name()+"\n")
                 except:
                     print("failed for: "+user.get_full_name()+"\n")
+
+    return HttpResponseRedirect(reverse('cfao_kenya:index'))
+
+
+
+def kpi_result(request):
+    pms_link = format_html(str('<a href="https://ck-pms.com/">Online PMS</a>'))
+    message = format_html(
+        'Results for the month of October is currently live and it will run up to midnight 15th November 2021. Staff should make sure they complete their October results before the deadline..<br><b>Ignore this if already Submitted</b><br><br>' + pms_link)
+
+    staffs = staff.objects.filter()
+
+    for staff_u in staffs:
+        user = get_object_or_404(User, id=staff_u.staff_person.id)
+
+        if user.is_active and user.email:
+            try:
+                send_email_pms_one_reciepient('Reminder October Results', user, message)
+                print("done for: " + user.get_full_name()+"\n")
+            except:
+                print("failed for: "+user.get_full_name()+"\n")
 
     return HttpResponseRedirect(reverse('cfao_kenya:index'))
 
@@ -969,6 +995,9 @@ class HomeView(TemplateView):
         context['user_is_tl'] = staff_person.staff_head_team
         context['user_team'] = staff_person.staff_team
         context['user_bu'] = staff_person.staff_bu
+        # print('here')
+        # kpi_result(self.request)
+
 
         if pms.objects.filter(pms_status='Active').count() != 1:
             context['pms'] = None
@@ -1183,7 +1212,7 @@ def send_email_pms(subject, receiver1, receiver2, e_message):
         img.add_header('Content-ID', 'logo.png')
         img.add_header('Content-Disposition', 'inline', filename=image)
     msg.attach(img)
-    # msg.send()
+    msg.send()
 
 
 def send_email_pms_one_reciepient(subject, receiver, e_message):
@@ -1229,7 +1258,8 @@ def send_email_pms_one_reciepient(subject, receiver, e_message):
         img.add_header('Content-ID', 'logo.png')
         img.add_header('Content-Disposition', 'inline', filename=image)
     msg.attach(img)
-    # msg.send()
+    msg.send()
+    print("----")
 
 
 @method_decorator(login_required, name='dispatch')
