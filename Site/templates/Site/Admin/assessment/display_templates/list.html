@@ -1,0 +1,33 @@
+<!-- KPI Form -->
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            Assessment <div class="float-right"><a href="{% url 'cfao_kenya:Admin_Assessment_Create' pms_select.pms_id %}">New Assessment</a></div>
+
+        </div>
+         <table id="simpleTable" class="table table-bordered table-hover">
+              <thead>
+                  <tr>
+                    <th>Assessment</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Scoring</th>
+                    <th>Min Score</th>
+                    <th>Max Score</th>
+                  </tr>
+                  </thead>
+              <tbody>
+                  {% for a in Assessment %}
+                      <tr>
+                      <td><a href="{% url 'cfao_kenya:Admin_Assessment_View' pms_select.pms_id a.assessment_id %}">{{ a.assessment_name }}</a></td>
+                        <td>{{ a.assessment_start_date }}</td>
+                        <td>{{ a.assessment_end_date }}</td>
+                        <td>{{ a.assessment_scoring_use }}</td>
+                        <td>{{ a.assessment_min_score }}</td>
+                        <td>{{ a.assessment_max_score }}</td>
+                  {% endfor %}
+              </tbody>
+         </table>
+    </div>
+</div>

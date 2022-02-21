@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
-from django.apps import apps
+from Site.models import Staff
 
 
 @method_decorator(login_required, name='dispatch')
@@ -14,17 +14,7 @@ class Home(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        result = []
-        model = None
-        for name, app in apps.app_configs.items():
-            try:
-                model = apps.get_model(name, model_name='Staff')
-                staff = model.objects.filter(staff_person=self.request.user, staff_active=True)
-                if staff:
-                    result.append([name, staff])
-            except Exception as e:
-                pass
-        context['result'] = result
+        context['staffAccounts'] = Staff.objects.filter(staff_active=True)
         return context
 
 

@@ -1,0 +1,15 @@
+{% extends 'cfao_kenya/Admin/default.html' %}
+    {% block page_title %}Admin - Assessment - {{ Assessment.assessment_name }}{% endblock %}
+
+    {% block more_breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_Assessment' pms_select.pms_id %}">Assessments</a></li>
+        <li class="breadcrumb-item active">{{ Assessment.assessment_name }}</li>
+    {% endblock %}
+    {% block content %}
+        {% if page_permission %}
+            {% include 'cfao_kenya/Admin/assessment/display_templates/view.html' %}
+        {% else %}
+            {% include 'cfao_kenya/errors/permissions.html' %}
+        {% endif %}
+
+    {% endblock %}

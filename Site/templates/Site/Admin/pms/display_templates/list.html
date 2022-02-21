@@ -1,0 +1,29 @@
+<!-- KPI Form -->
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            KPIs <div class="float-right"><a href="{% url 'cfao_kenya:Admin_PMS_Create' %}">New PMS</a></div>
+
+        </div>
+         <table id="simpleTable" class="table table-bordered table-hover">
+              <thead>
+                  <tr>
+                    <th>Pms</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Active</th>
+                  </tr>
+                  </thead>
+              <tbody>
+                  {% for p in pms %}
+                      <tr>
+                      <td><a href="{% url 'cfao_kenya:Admin_PMS_View' p.pms_id %}">{{ p.pms_name }}</a></td>
+                        <td>{{ p.pms_year_start_date }}</td>
+                        <td>{{ p.pms_year_end_date }}</td>
+                        <td>{{ p.pms_active }}</td>
+                  {% endfor %}
+              </tbody>
+         </table>
+    </div>
+</div>

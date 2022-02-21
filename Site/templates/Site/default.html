@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{% block title %}PMS | Online{% endblock %}</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Font Awesome -->
+    {% load static %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bbootstrap 4 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" integrity="sha512-3JRrEUwaCkFUBLK1N8HehwQgu8e23jTH4np5NHOmQOobuC4ROQxFwFgBLTnhcnQRMs84muMh0PnnwXlPq5MGjg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- iCheck -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css" integrity="sha512-8vq2g5nHE062j3xor4XxPeZiPjmRDh6wlufQlfC6pdQ/9urJkU07NM0tEREeymP++NczacJ/Q59ul+/K2eYvcg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jqvmap.min.css" integrity="sha512-RPxGl20NcAUAq1+Tfj8VjurpvkZaep2DeCgOfQ6afXSEgcvrLE6XxDG2aacvwjdyheM/bkwaLVc7kk82+mafkQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Theme style -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/css/adminlte.min.css" integrity="sha512-YOsl4pnOb5NC868yn1JxAzjJsWkLNtP53uc3OcyAl0Q2R1cwo/mdI1hHSQM8gbIxWj97mKeLoD9R0aiYibFQAA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.1/css/OverlayScrollbars.min.css" integrity="sha512-jN4O0AUkRmE6Jwc8la2I5iBmS+tCDcfUd1eq8nrZIBnDKTmCp5YxxNN1/aetnAH32qT+dDbk1aGhhoaw5cJNlw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.css" integrity="sha512-gp+RQIipEa1X7Sq1vYXnuOW96C4704yI1n0YB9T/KqdvqaEgL6nAuTSrKufUX3VBONq/TPuKiXGLVgBKicZ0KA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- summernote -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.css" integrity="sha512-Rx5zhwiKIWinzTlrAJbMatlmoiUk1gIMpHnYrYQYehlcnywlA/cCU5fgk8RyA+ub3gJI6PKwy22awUb0UR/nJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.min.css" integrity="sha512-PT0RvABaDhDQugEbpNMwgYBCnGCiTZMh9yOzUsJHDgl/dMhD9yjHAwoumnUk3JydV3QTcIkNDuN40CJxik5+WQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Jquery Toast-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" integrity="sha512-wJgJNTBBkLit7ymC6vvzM1EcSWeM9mmOu+1USHaRBbHkm6W9EgM0HY27+UtUaprntaYQJF75rc8gjxllKs5OIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Ion Range slider -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css" integrity="sha512-NWCafukXClS6fKch6bSMl/WvPzZrD1OGMf1oMAnFYXSSKZ7hgeswls+r4SdK4bFJauVwmvFf7HlMwji2TsjROA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+  <style>
+      .bg-color1{
+          {% if company %}
+              background-color: {{ company.company_color1 }};
+              color: white;
+          {% else %}
+              background-color: #00A8B4;
+              color: white;
+          {% endif %}
+      }
+      .bg-color2{
+          {% if company %}
+              background-color: {{ company.company_color2 }};
+          {% else %}
+              background-color: #D9D9D9;
+          {% endif %}
+      }
+      .bg-color3{
+          {% if company %}
+              background-color: {{ company.company_color3 }};
+          {% else %}
+              background-color: #33393F;
+          {% endif %}
+      }
+  </style>
+
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Navbar -->
+  <div class="fixed-top">
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="index3.html" class="nav-link">Help</a>
+      </li>
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <!-- Notifications Dropdown Menu -->
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-bell"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <span class="dropdown-item dropdown-header">Coming Soon</span>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-user-circle"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <a href="#" class="dropdown-item">
+              <h3 class="dropdown-item-title">
+                  {{ request.user.get_full_name }}
+              </h3>
+              <p class="text-sm">{{ request.user.email }}</p>
+              <a href="" class="btn btn-sm btn-default float-left m-2">Profile</a>
+              <a href="" class="btn btn-sm btn-danger float-right m-2">Logout</a>
+            <!-- Message End -->
+          </a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+    <nav class="main-header bg-color2">
+    <!-- Left navbar links -->
+        <div class="content-header">
+          <div class="container-fluid row">
+             <div class="col-md-6">
+                <h1 class="m-0 text-dark">{% block page_title %}Dashboard{% endblock %}</h1>
+              </div><!-- /.col -->
+              <div class="col-md-6">
+                <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item"><a href="{% url 'cfao_kenya:Dashboard' %}">Dashboard</a></li>
+                  {% block breadcrumb %}{% endblock %}
+                </ol>
+              </div>
+          </div><!-- /.container-fluid -->
+        </div>
+    </nav>
+
+  <nav class="main-header navbar navbar-expand-lg navbar-light bg-light" style="z-index:1">
+      {% block page_link %}{% endblock %}|
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item">
+            {% block Create %}{% endblock %}
+          </li>
+          <li class="nav-item">
+            {% block Read %}{% endblock %}
+          </li>
+          <li class="nav-item">
+            {% block Update %}{% endblock %}
+          </li>
+          <li class="nav-item">
+            {% block Delete %}{% endblock %}
+          </li>
+          <li class="nav-item">
+            {% block List %}{% endblock %}
+          </li>
+        </ul>
+      </div>
+  </nav>
+  {% block pms_menu %}{% endblock %}
+  </div>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-warning elevation-4">
+    <!-- Brand Logo -->
+    <a href="index3.html" class="brand-link bg-white">
+      <img src="{% static 'images/logo_pms.png' %}" alt="AdminLTE Logo"
+           style="width: 100%">
+
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="info">
+          <a href="#" class="d-block">{{ request.user.get_full_name }}</a>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item">
+            <a href="{% url 'cfao_kenya:Dashboard' %}" class="nav-link">
+              <i class="nav-icon fas fa-home"></i>
+              <p>
+                Dashboard
+              </p>
+            </a>
+          </li>
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link bg-some-grey">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                KPI
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'cfao_kenya:My_KPI' %}" class="nav-link">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+                My KPI
+              </p>
+            </a>
+          </li>
+          {% for category in categories_up_list %}
+              {% if category.category_kpi_view is True %}
+                <li class="nav-item">
+                    <a href="{% url 'cfao_kenya:KPI_Category' category.category_id %}" class="nav-link">
+                      <i class="nav-icon fas fa-users"></i>
+                      <p>
+                        {{ category.category_name }} KPI
+                      </p>
+                    </a>
+                </li>
+              {% endif %}
+           {% endfor %}
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link bg-some-grey">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                CheckIn
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'cfao_kenya:My_CheckIn' %}" class="nav-link">
+              <i class="nav-icon fas fa-calendar-alt"></i>
+              <p>
+                My CheckIn
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link bg-some-grey">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Assessment
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{% url 'cfao_kenya:Assessment_List' %}" class="nav-link">
+              <i class="nav-icon fas fa-tachometer"></i>
+              <p>
+                Assessment
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link bg-some-grey">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Reports
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link disabled">
+              <i class="nav-icon fas fa-folder"></i>
+              <p>
+                Reports
+                <span class="right badge badge-danger">Coming Soon</span>
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link bg-some-grey">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Management
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'cfao_kenya:Admin_Home' %}" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Admin
+              </p>
+            </a>
+          </li>
+
+
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  {% if pms_select %}
+    <div class="content-wrapper" style="margin-top: 210px">
+  {% else %}
+    <div class="content-wrapper" style="margin-top: 180px">
+  {% endif %}
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row container-fluid card-body">
+            {% block content %}
+            {% endblock %}
+          <!-- ./col -->
+        </div>
+
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Version</b> 3.0.6 {{ kpi_results }}
+    </div>
+  </footer>
+
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- jQuery UI 1.12 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button);
+  $('input').addClass('form-control');
+  $('select').addClass('form-control');
+  $('textarea').addClass('form-control');
+  $('textarea').attr('rows', 4);
+
+</script>
+{% for message in messages %}
+  <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
+    $(function() {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      toastr.success('Success :)');
+    });
+  </script>
+{% endfor %}
+<!-- Bootstrap 4 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js" integrity="sha512-wV7Yj1alIZDqZFCUQJy85VN+qvEIly93fIQAN7iqDFCPEucLCeNFz4r35FCo9s6WrpdDQPi80xbljXB8Bjtvcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- ChartJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js" integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Sparkline -->
+<script src="{% static 'plugins/sparklines/sparkline.js' %}"></script>
+<!-- JQVMap -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jquery.vmap.min.js" integrity="sha512-Zk7h8Wpn6b9LpplWXq1qXpnzJl8gHPfZFf8+aR4aO/4bcOD5+/Si4iNu9qE38/t/j1qFKJ08KWX34d2xmG0jrA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/maps/jquery.vmap.usa.js"></script>
+<!-- jQuery Knob Chart -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.13/jquery.knob.min.js" integrity="sha512-NhRZzPdzMOMf005Xmd4JonwPftz4Pe99mRVcFeRDcdCtfjv46zPIi/7ZKScbpHD/V0HB1Eb+ZWigMqw94VUVaw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- daterangepicker -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.js" integrity="sha512-W76C8qrNYavcaycIH9EijxRuswoS+LCqA1+hq+ECrmjzAbe/SHhTgrwA1uc84husS/Gz50mxOEHPzrcd3sxBqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js" integrity="sha512-k6/Bkb8Fxf/c1Tkyl39yJwcOZ1P4cRrJu77p83zJjN2Z55prbFHxPs9vN7q3l3+tSMGPDdoH51AEU8Vgo1cgAA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Summernote -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js" integrity="sha512-+cXPhsJzyjNGFm5zE+KPEX4Vr/1AbqCUuzAS8Cy5AfLEWm9+UI9OySleqLiSQOQ5Oa2UrzaeAOijhvV/M4apyQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- overlayScrollbars -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.1/js/OverlayScrollbars.min.js" integrity="sha512-B1xv1CqZlvaOobTbSiJWbRO2iM0iii3wQ/LWnXWJJxKfvIRRJa910sVmyZeOrvI854sLDsFCuFHh4urASj+qgw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- AdminLTE App -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js" integrity="sha512-pbrNMLSckfh8yEOr2o1RT+4zMU3Sj7+zP3BOY6nFVI/FLnjTRyubNppLbosEt4nvLCcdsEa8tmKhH3uqOYFXKg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/pages/dashboard.min.js" integrity="sha512-wXkHJ2i8Z5fK/q6k7qe38qA6uD+VpLC/LL2XobX3rVVw6F3//fDWwoqMQ2Mgy5nf9BIvW2gLbILQJTIO/gDrDg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- DataTable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js" integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap4.min.js" integrity="sha512-OQlawZneA7zzfI6B1n1tjUuo3C5mtYuAWpQdg+iI9mkDoo7iFzTqnQHf+K5ThOWNJ9AbXL4+ZDwH7ykySPQc+A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- Jquery Toast -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js" integrity="sha512-zlWWyZq71UMApAjih4WkaRpikgY9Bz1oXIW5G0fED4vk14JjGlQ1UmkGM392jEULP8jbNMiwLWdM8Z87Hu88Fw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js" integrity="sha512-kZsqvmw94Y8hyhwtWZJvDtobwQ9pLhF1DuIvcqSuracbRn6WJs1Ih+04fpH/8d1CFKysp7XA1tR0Aa2jKLTQUg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js" integrity="sha512-f0VlzJbcEB6KiW8ZVtL+5HWPDyW1+nJEjguZ5IVnSQkvZbwBt2RfCBY0CBO1PsMAqxxrG4Di6TfsCPP3ZRwKpA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    {% for message in messages %}
+        $.toast({
+            text: "{{ message }}",
+            heading: 'Success', // Optional heading to be shown on the toast
+            icon: 'success', // Type of toast icon
+            showHideTransition: 'plain', // fade, slide or plain
+            allowToastClose: true, // Boolean value true or false
+            hideAfter: 5000, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+            stack: 6, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+            position: 'top-right', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+
+
+
+            textAlign: 'left',  // Text alignment i.e. left, right or center
+            loader: true,  // Whether to show loader or not. True by default
+            loaderBg: '#9EC600',  // Background color of the toast loader
+
+        });
+    {% endfor %}
+</script>
+<script>
+  $(function () {
+    $("#simpleTable").DataTable({
+      "responsive": false,
+      "scrollX": true,
+      "autoWidth": false,
+      "paging": false,
+      "searching": false,
+      "info": false,
+    });
+    $("#searchTable").DataTable({
+      "responsive": true,
+      "autoWidth": false,
+      "paging": false,
+      "searching": true,
+      "info": false,
+    });
+
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+<script>
+  {% if form.response_submitted.value is not None %}
+      resp_val = {{ form.response_submitted.value }}
+  {% else %}
+      resp_val = 0
+  {% endif %}
+  $(function () {
+    /* BOOTSTRAP SLIDER */
+    $('.slider').bootstrapSlider()
+
+    $('#{{ form.response_submitted.id_for_label }}').ionRangeSlider({
+      skin: 'round',
+      min     : {{ Assessment.assessment_min_score }},
+      max     : {{ Assessment.assessment_max_score }},
+      from    : resp_val,
+      type    : 'single',
+      step    : 0.1,
+      postfix : ' Score',
+      prettify: false,
+      hasGrid : true,
+      hideMinMax: true,
+      grid: true,
+      grid_num: 4,
+    })
+
+  })
+</script>
+<script>
+    function displayCommentText()
+    {
+        var score = $('#{{ form.response_submitted.id_for_label }}').val();
+
+        var min_val = parseInt("{{ Assessment.assessment_min_score }}");
+        var max_val = parseInt("{{ Assessment.assessment_max_score }}");
+        var diff =max_val - min_val;
+        perc_score = score/diff;
+        if(perc_score <= 0.25 || perc_score >= 0.75){
+            $('#{{ form.response_comment.id_for_label }}').show();
+            $('#{{ form.response_comment.id_for_label }}').prop('required',true);
+            $('#commentTag').show();
+        }
+        else{
+            $('#{{ form.response_comment.id_for_label }}').prop('required',false);
+            $('#{{ form.response_comment.id_for_label }}').hide();
+            $('#{{ form.response_comment.id_for_label }}').val("");
+            $('#commentTag').hide();
+        }
+    }
+
+</script>
+<script>
+    window.onload=displayCommentText();
+</script>
+<script>
+  $(function () {
+      kpi_type = "{{ kpi.kpi_type }}";
+
+      apr = "{{ kpi.kpi_april_score }}";
+      may = "{{ kpi.kpi_may_score }}";
+      jun = "{{ kpi.kpi_june_score }}";
+      jul = "{{ kpi.kpi_july_score }}";
+      aug = "{{ kpi.kpi_august_score }}";
+      sep = "{{ kpi.kpi_september_score }}";
+      oct = "{{ kpi.kpi_october_score }}";
+      nov = "{{ kpi.kpi_november_score }}";
+      dec = "{{ kpi.kpi_december_score }}";
+      jan = "{{ kpi.kpi_january_score }}";
+      feb = "{{ kpi.kpi_february_score }}";
+      mar = "{{ kpi.kpi_march_score }}";
+
+
+
+      if(kpi_type == "Addition")
+      {
+          apr = parseFloat(apr);
+          may = apr + parseFloat(may);
+          jun = may + parseFloat(jun);
+          jul = jun + parseFloat(jul);
+          aug = jul + parseFloat(aug);
+          sep = aug + parseFloat(sep);
+          oct = sep + parseFloat(oct);
+          nov = oct + parseFloat(nov);
+          dec = nov + parseFloat(dec);
+          jan = dec + parseFloat(jan);
+          feb = jan + parseFloat(feb);
+          mar = feb + parseFloat(mar);
+
+      }
+      if(kpi_type == "Average")
+      {
+          apr = parseFloat(apr);
+          may = apr + parseFloat(may);
+          jun = may + parseFloat(jun);
+          jul = jun + parseFloat(jul);
+          aug = jul + parseFloat(aug);
+          sep = aug + parseFloat(sep);
+          oct = sep + parseFloat(oct);
+          nov = oct + parseFloat(nov);
+          dec = nov + parseFloat(dec);
+          jan = dec + parseFloat(jan);
+          feb = jan + parseFloat(feb);
+          mar = feb + parseFloat(mar);
+
+          may = may/2
+          jun = jun/3
+          jul = jul/4
+          aug = aug/5
+          sep = sep/6
+          oct = oct/7
+          nov = nov/8
+          dec = dec/9
+          jan = jan/10
+          feb = feb/11
+          mar = mar/12
+
+      }
+
+
+    var Data = {
+      labels  : ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+      datasets: [
+        {
+          label               : 'Results',
+          backgroundColor     : 'rgba(60,141,188,0.9)',
+          borderColor         : 'rgba(60,141,188,0.8)',
+          pointRadius          : false,
+          pointColor          : '#3b8bba',
+          pointStrokeColor    : 'rgba(60,141,188,1)',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data                : [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
+        },
+        {
+          label               : 'Target',
+          backgroundColor     : 'rgba(210, 214, 222, 1)',
+          borderColor         : 'rgba(210, 214, 222, 1)',
+          pointRadius         : false,
+          pointColor          : 'rgba(210, 214, 222, 1)',
+          pointStrokeColor    : '#c1c7d1',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(220,220,220,1)',
+          data                : [{{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, ]
+        },
+      ]
+    }
+
+    var Options = {
+      maintainAspectRatio : false,
+      responsive : true,
+      legend: {
+        display: false
+      },
+      scales: {
+        xAxes: [{
+          gridLines : {
+            display : false,
+          }
+        }],
+        yAxes: [{
+          gridLines : {
+            display : false,
+          }
+        }]
+      }
+    }
+
+
+    //-------------
+    //- LINE CHART -
+    //--------------
+    var canvas1 = document.getElementById("lineChart");
+    if(canvas1) {
+        var lineChartCanvas = $('#lineChart').get(0).getContext('2d')
+        var lineChartOptions = jQuery.extend(true, {}, Options)
+        var lineChartData = jQuery.extend(true, {}, Data)
+        lineChartData.datasets[0].fill = false;
+        lineChartData.datasets[1].fill = false;
+        lineChartOptions.datasetFill = false
+
+        var lineChart = new Chart(lineChartCanvas, {
+            type: 'line',
+            data: lineChartData,
+            options: lineChartOptions
+        })
+    }
+     //-------------
+    //- BAR CHART -
+    //--------------
+    var canvas2 = document.getElementById("barChart");
+    if(canvas2) {
+        label_data = [];
+        target_data = [];
+        result_data = [];
+        {% for kpi in kpi_results %}
+            label_data.push("{{ kpi.0.kpi_title }}");
+            target_data.push(100);
+            result_data.push("{{ kpi.1 }}");
+        {% endfor %}
+
+        var ChartData = {
+          labels  : label_data,
+          datasets: [
+            {
+              label               : 'Results',
+              backgroundColor     : 'rgba(60,141,188,0.9)',
+              borderColor         : 'rgba(60,141,188,0.8)',
+              pointRadius          : false,
+              pointColor          : '#3b8bba',
+              pointStrokeColor    : 'rgba(60,141,188,1)',
+              pointHighlightFill  : '#fff',
+              pointHighlightStroke: 'rgba(60,141,188,1)',
+              data                : result_data,
+            },
+            {
+              label               : 'Target',
+              backgroundColor     : 'rgba(210, 214, 222, 1)',
+              borderColor         : 'rgba(210, 214, 222, 1)',
+              pointRadius         : false,
+              pointColor          : 'rgba(210, 214, 222, 1)',
+              pointStrokeColor    : '#c1c7d1',
+              pointHighlightFill  : '#fff',
+              pointHighlightStroke: 'rgba(220,220,220,1)',
+              data                : target_data,
+            },
+          ]
+        }
+
+        var barChartCanvas = $('#barChart').get(0).getContext('2d')
+        var barChartData = jQuery.extend(true, {}, ChartData)
+        var temp0 = ChartData.datasets[0]
+        var temp1 = ChartData.datasets[1]
+        barChartData.datasets[0] = temp1
+        barChartData.datasets[1] = temp0
+
+        var barChartOptions = {
+          responsive              : true,
+          maintainAspectRatio     : false,
+          datasetFill             : false
+        }
+
+        var barChart = new Chart(barChartCanvas, {
+          type: 'bar',
+          data: barChartData,
+          options: barChartOptions
+        })
+    }
+
+
+
+
+
+
+  })
+</script>
+{% block jscripts %}
+{% endblock %}
+</body>
+</html>

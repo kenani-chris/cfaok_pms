@@ -1,0 +1,65 @@
+{% extends "cfao_kenya/Reports/default.html" %}
+{% block pagetitle %}Reports{% endblock %}
+{% block kpicontent %}
+
+
+  <div class="col-md-10">
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">CheckIn records</h3>
+
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        <div style="overflow-x:scroll">
+
+            <a href="{% url 'cfao_kenya:Reports_Assessment' %}">Back To all Assessments</a>
+            <hr>
+
+            {{ evaluation.evaluation_name }}
+
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>Staff</th>
+                <th>PF</th>
+                <th>Role</th>
+                <th>TL_S</th>
+                <th>s_TL</th>
+              </tr>
+
+              </thead>
+              <tbody>
+                {% for record in all_records %}
+                    <tr>
+                        <td>
+                            {{ record.0.staff_person.get_full_name }}
+                        </td>
+                        <td>
+                            {{ record.0.staff_Pf_Number }}
+                        </td>
+                        <td>
+                            {{ record.1 }}
+                        </td>
+                        <td>
+                            {{ record.2 }}
+                        </td>
+                        <td>
+                            {{ record.2 }}
+                        </td>
+                    </tr>
+                {% endfor %}
+              </tbody>
+              <tfoot>
+
+              </tfoot>
+            </table>
+        </div>
+      </div>
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}
+

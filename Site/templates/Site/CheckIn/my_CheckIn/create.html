@@ -1,0 +1,22 @@
+{% extends 'cfao_kenya/CheckIn/my_CheckIn/default.html' %}
+    {% block page_title %}My CheckIn - New{% endblock %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_CheckIn' %}">My CheckIn</a></li>
+        <li class="breadcrumb-item active">New</li>
+    {% endblock %}
+    {% block content %}
+        {% if page_permission %}
+            {% if done is True %}
+                {% include 'cfao_kenya/errors/checkin_submission_complete.html' %}
+            {% else %}
+                {% include 'cfao_kenya/CheckIn/my_CheckIn/display_templates/create.html' %}
+            {% endif %}
+        {% else %}
+            {% include 'cfao_kenya/errors/permissions.html' %}
+        {% endif %}
+        {% if perms.cfao_kenya.view_kpi %}
+            {% include 'cfao_kenya/CheckIn/my_CheckIn/display_templates/list.html' %}
+        {% endif %}
+
+
+    {% endblock %}

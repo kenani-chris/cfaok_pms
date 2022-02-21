@@ -1,0 +1,47 @@
+<!-- KPI Form -->
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            Create Staff Account for {{ user.get_full_name }}
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Name</th>
+                    <td>{{ user.get_full_name }}</td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td>{{ user.is_active }}</td>
+                </tr>
+            </table>
+            <br>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.staff_person.as_hidden }}
+                PF Number:
+                {{ form.staff_Pf_Number }}
+                <br>
+                Grade:
+                {{ form.staff_grade }}
+                <br>
+                Active:
+                {{ form.staff_active }}
+                <br>
+                Superuser:
+                {{ form.staff_superuser }}
+                <br>
+                Visibility
+                {{ form.staff_superuser }}
+                <br>
+                Category
+                {{ form.staff_category }}
+                <br>
+                <br>
+                <button type="submit" class="btn btn-info">Submit</button>
+            </form>
+        </div>
+    </div>
+
+</div>

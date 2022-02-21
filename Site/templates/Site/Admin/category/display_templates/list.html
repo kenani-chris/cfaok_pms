@@ -1,0 +1,27 @@
+<!-- KPI Form -->
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            Assessment <div class="float-right"><a href="{% url 'cfao_kenya:Admin_Category_Create' %}">New Category</a></div>
+
+        </div>
+         <table id="simpleTable" class="table table-bordered table-hover">
+              <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Parent</th>
+                    <th>KPI view</th>
+                  </tr>
+                  </thead>
+              <tbody>
+                  {% for cat in Category %}
+                      <tr>
+                      <td><a href="{% url 'cfao_kenya:Admin_Category_View' cat.category_id %}">{{ cat.category_name }}</a></td>
+                        <td>{{ cat.category_parent }}</td>
+                        <td>{{ cat.category_kpi_view }}</td>
+                  {% endfor %}
+              </tbody>
+         </table>
+    </div>
+</div>

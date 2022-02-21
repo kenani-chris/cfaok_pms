@@ -8,6 +8,7 @@ urlpatterns = [
 
 
     path('cfao_kenya/', include('cfao_kenya.urls'), name='cfao_kenya'),
+    path('Site/', include('Site.urls'), name='Site'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/self_password_change/', views.self_change_password, name='change_user_password'),
     path('accounts/self_password_change/done/', views.self_password_change_done, name='self_change_user_password_done'),

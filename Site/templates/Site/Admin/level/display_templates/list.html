@@ -1,0 +1,29 @@
+<!-- KPI Form -->
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            Assessment <div class="float-right"><a href="{% url 'cfao_kenya:Admin_Level_Create' %}">New Level</a></div>
+
+        </div>
+         <table id="searchTable" class="table table-bordered table-hover">
+              <thead>
+                  <tr>
+                    <th>Level</th>
+                    <th>Parent</th>
+                    <th>Head</th>
+                    <th>Category</th>
+                  </tr>
+                  </thead>
+              <tbody>
+                  {% for lev in Level %}
+                      <tr>
+                      <td><a href="{% url 'cfao_kenya:Admin_Level_View' lev.level_id %}">{{ lev.level_name }}</a></td>
+                        <td>{{ lev.level_parent }}</td>
+                        <td>{{ lev.level_head }}</td>
+                        <td>{{ lev.level_category }}</td>
+                  {% endfor %}
+              </tbody>
+         </table>
+    </div>
+</div>

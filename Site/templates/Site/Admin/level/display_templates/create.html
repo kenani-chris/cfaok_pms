@@ -1,0 +1,30 @@
+<!-- KPI Form -->
+
+<div class="container-fluid">
+    <div class="card">
+
+        <div class="card-body">
+            {{ form.errors }}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.category_id.as_hidden }}
+
+                Name
+                {{ form.category_name }}
+                <br>
+                Description
+                {{ form.category_description }}
+                <br>
+                Parent
+                {{ form.category_parent }}
+                <br>
+                Kpi View
+                {{ form.category_kpi_view }}
+
+                <br>
+                <button type="submit" class="btn btn-info">Submit</button>
+            </form>
+        </div>
+    </div>
+
+</div>

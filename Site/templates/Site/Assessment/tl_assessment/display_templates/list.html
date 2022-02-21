@@ -1,0 +1,68 @@
+<!-- KPI Form -->
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h5>KPIs</h5>
+        </div>
+         <table id="simpleTable" class="table table-bordered table-hover">
+              <thead>
+                  <tr>
+                    <th>KPI</th>
+                    <th>Function</th>
+                    <th>Calculation</th>
+                    <th>Weight</th>
+                    <th>Target</th>
+                    <th>Status</th>
+                    <th>Submit Date</th>
+                  </tr>
+                  </thead>
+              <tbody>
+                  {% for kpi in submitted_kpi %}
+                      <tr>
+                        <td><a href="{% url 'cfao_kenya:My_KPI_View' kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                        <td>{{ kpi.kpi_function }}</td>
+                        <td>{{ kpi.kpi_type }}</td>
+                        <td>{{ kpi.kpi_weight }}</td>
+                        <td>{{ kpi.kpi_target }}</td>
+                        <td>{{ kpi.kpi_status }}</td>
+                        <td>{{ kpi.kpi_submit_date }}</td>
+
+                  {% endfor %}
+                  {% for kpi in pending_kpi %}
+                      <tr>
+                        <td><a href="{% url 'cfao_kenya:My_KPI_View' kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                        <td>{{ kpi.kpi_function }}</td>
+                        <td>{{ kpi.kpi_type }}</td>
+                        <td>{{ kpi.kpi_weight }}</td>
+                        <td>{{ kpi.kpi_target }}</td>
+                        <td>{{ kpi.kpi_status }}</td>
+                        <td>{{ kpi.kpi_submit_date }}</td>
+
+                  {% endfor %}
+                  {% for kpi in approved_kpi %}
+                      <tr>
+                        <td><a href="{% url 'cfao_kenya:My_KPI_View' kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                        <td>{{ kpi.kpi_function }}</td>
+                        <td>{{ kpi.kpi_type }}</td>
+                        <td>{{ kpi.kpi_weight }}</td>
+                        <td>{{ kpi.kpi_target }}</td>
+                        <td>{{ kpi.kpi_status }}</td>
+                        <td>{{ kpi.kpi_submit_date }}</td>
+
+                  {% endfor %}
+                  {% for kpi in rejected_kpi %}
+                      <tr>
+                        <td>{{ kpi.kpi_title }}</td>
+                        <td>{{ kpi.kpi_function }}</td>
+                        <td>{{ kpi.kpi_type }}</td>
+                        <td>{{ kpi.kpi_weight }}</td>
+                        <td>{{ kpi.kpi_target }}</td>
+                        <td>{{ kpi.kpi_status }}</td>
+                        <td>{{ kpi.kpi_submit_date }}</td>
+
+                  {% endfor %}
+              </tbody>
+         </table>
+    </div>
+</div>

@@ -96,68 +96,6 @@ class SubmissionKPI(models.Model):
     submission_march_results_calculation = models.BooleanField(default=True)
 
 
-'''
-# Scoring matrix =====================================================================================================
-class score_matrix(models.Model):
-
-    matrix_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique identifier evaluations")
-    matrix_pms = models.ForeignKey('pms', on_delete=models.RESTRICT, null=True)
-    m_class = (
-        ('MD', 'MD'),
-        ('BU', 'BU'),
-        ('staff', 'staff'),
-    )
-    matrix_class = models.CharField(max_length=10, choices=m_class, blank=True, help_text='PMS class')
-    matrix_grade = models.ForeignKey('staff_grade', on_delete=models.RESTRICT, null=True)
-    matrix_company_kpi_weight = models.FloatField(null=True, blank=True)
-    matrix_bu_kpi_weight = models.FloatField(null=True, blank=True)
-    matrix_individual_kpi_weight = models.FloatField(null=True, blank=True)
-    matrix_assessment_weight = models.FloatField(null=True, blank=True)
-
-    def __str__(self):
-        return str(self.matrix_class) + ' ' + str(self.matrix_grade)
-
-
-
-class matrix_checkin(models.Model):
-    matrix_checkin_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique identfier ci matrix")
-    matrix_pms = models.ForeignKey('pms', on_delete=models.RESTRICT, null=True)
-    matrix_checkin_no = models.IntegerField(blank=True, null=True, help_text='No of Checkins')
-    matrix_checkin_score = models.FloatField(blank=True, null=True, help_text='Staff Grade')
-
-    def __str__(self):
-        return str(self.matrix_pms.pms_name) + " _   " + str(self.matrix_checkin_no)
-
-
-class kpi_months(models.Model):
-    kpi_months_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    kpi_class = (
-        ('Company', 'Company'),
-        ('BU', 'BU'),
-        ('Individual', 'Individual'),
-    )
-    kpi_months_class = models.CharField(max_length=10, choices=kpi_class, blank=True)
-    kpi_months_pms = models.ForeignKey('pms', on_delete=models.RESTRICT, null=True)
-
-    choice = (
-        ('Yes', 'Yes'),
-        ('No', 'No'),
-    )
-    kpi_month_april = models.CharField(max_length=5, choices=choice, blank=True)
-    kpi_month_may = models.CharField(max_length=5, choices=choice, blank=True)
-    kpi_month_june = models.CharField(max_length=5, choices=choice, blank=True)
-    kpi_month_july = models.CharField(max_length=5, choices=choice, blank=True)
-    kpi_month_august = models.CharField(max_length=5, choices=choice, blank=True)
-    kpi_month_september = models.CharField(max_length=5, choices=choice, blank=True)
-    kpi_month_october = models.CharField(max_length=5, choices=choice, blank=True)
-    kpi_month_november = models.CharField(max_length=5, choices=choice, blank=True)
-    kpi_month_december = models.CharField(max_length=5, choices=choice, blank=True)
-    kpi_month_january = models.CharField(max_length=5, choices=choice, blank=True)
-    kpi_month_february = models.CharField(max_length=5, choices=choice, blank=True)
-    kpi_month_march = models.CharField(max_length=5, choices=choice, blank=True)
-'''
-
-
 # Check In =============================================================================================================
 class CheckIn(models.Model):
     

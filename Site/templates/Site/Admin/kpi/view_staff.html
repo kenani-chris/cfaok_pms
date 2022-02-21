@@ -1,0 +1,15 @@
+{% extends 'cfao_kenya/Admin/default.html' %}
+    {% block page_title %}Admin - KPI - {{ staff.staff_get_full_name }}{% endblock %}
+
+    {% block more_breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_KPI' pms_select.pms_id %}">KPI</a></li>
+        <li class="breadcrumb-item active">{{ staff_select.get_full_name }}</li>
+    {% endblock %}
+    {% block content %}
+        {% if page_permission %}
+            {% include 'cfao_kenya/Admin/kpi/display_templates/view_staff.html' %}
+        {% else %}
+            {% include 'cfao_kenya/errors/permissions.html' %}
+        {% endif %}
+
+    {% endblock %}

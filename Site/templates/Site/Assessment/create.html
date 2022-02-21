@@ -1,0 +1,49 @@
+{% extends 'cfao_kenya/Assessment/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Assessment_List' %}">Assessment</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Assessment_View' Assessment.assessment_id %}">{{ Assessment.assessment_name }}</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Assessment_View_Member' Assessment.assessment_id member.id direction %}">{{ member.first_name }}</a></li>
+        <li class="breadcrumb-item active">Question</li>
+    {% endblock %}
+    {% block page_title %}Assessment - {{ member.get_full_name }} - Question{% endblock %}
+    {% block content %}
+        {% if page_permission %}
+
+            <div class="card container-fluid">
+                <div class="card-header">
+                    <div class="card-title">
+                        Assessing {{ member.get_full_name }}
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if assessment_status is True %}
+                        <form method="post">
+                            {% csrf_token %}
+                                {{ form.response_id.as_hidden }}
+                                {{ form.response_user.as_hidden }}
+                                {{ form.response_evaluated.as_hidden }}
+                                Question
+                                <h3>{{ question.question }}</h3>
+                                {{ form.response_question.as_hidden }}
+                            <br>
+                            <div class="col-sm-12">
+                                <span class="irs-shadow shadow-single container-fluid" style="display: none;"></span>
+                                <input id="{{ form.response_submitted.id_for_label }}" type="text" name="{{ form.response_submitted.name }}" value="" class="irs-hidden-input" tabindex="-1" readonly="" hidden onchange="displayCommentText()">
+                            </div>
+                            <br>
+                            <h5 id="commentTag">Comment</h5>
+                            <textarea id="{{ form.response_comment.id_for_label }}" name="{{ form.response_comment.name }}" required></textarea>
+                            <br>
+                          <button type="submit" class="btn btn-info float-right">Save & Back</button>
+                        </form>
+                    {% else %}
+                        {% include 'cfao_kenya/errors/assessment_deadline_complete.html' %}
+                    {% endif %}
+
+                </div>
+            </div>
+        {% else %}
+            {% include 'cfao_kenya/errors/permissions.html' %}
+        {% endif %}
+
+    {% endblock %}

@@ -1,0 +1,116 @@
+{% extends "cfao_kenya/Staff_Ci/default.html" %}
+{% block pagetitle %}View KPI{% endblock %}
+{% block kpicontent %}
+
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ staff.get_full_name }}'s Pending CI</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        {% if ci %}
+          {% if ci.checkIn_status == "Pending" %}
+            <table class="table table-bordered table-striped">
+            <tr class="bg-info">
+              <td>
+                Date
+              </td>
+              <td>
+                Status
+              </td>
+              <td>
+                Confirm Date
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ci.checkIn_submit_date}}
+              </td>
+              <td>
+                {{ci.checkIn_status}}
+              </td>
+              <td>
+                {{ci.checkIn_confirm_date}}
+              </td>
+            </tr>
+          </table>
+            <hr>
+            <table id="example1" class="table table-bordered table-striped">
+            <tbody>
+              <tr>
+                <th>
+                  Perfomance Area
+                </th>
+                <td>
+                  {% autoescape off %}
+                    {{ ci.checkIn_performance_area }}
+                  {% endautoescape %}
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Progress Discussed
+                </th>
+                <td>
+                  {% autoescape off %}
+                    {{ ci.checkIn_progress_discussed }}
+                  {% endautoescape %}
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Team Member Actions
+                </th>
+                <td>
+                  {% autoescape off %}
+                    {{ ci.checkIn_team_member_actions }}
+                  {% endautoescape %}
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Team Leader Support
+                </th>
+                <td>
+                  {% autoescape off %}
+                    {{ ci.checkIn_team_leader_support }}
+                  {% endautoescape %}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+            <div class="card-footer">
+            <div class="float-right" style="margin:5px">
+              <a href="{% url 'cfao_kenya:Staff_Approve_Individual_CI' staff_u.id  ci.checkIn_id  %}"><button type="submit" class="btn btn-primary btn-block" id="submit_kpi_button">Approve</button></a>
+            </div>
+          </div>
+
+          <br>
+          {% else %}
+            <div class="alert alert-warning">
+              <h5><i class="icon fas fa-ban"></i> CI not found</h5>
+              It Appears this Check-In is not under "Pending" Status
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="alert alert-warning">
+            <h5><i class="icon fas fa-ban"></i> CI not found</h5>
+            It Appears this Check-In is not under "Pending" Status
+          </div>
+        {% endif %}
+        {% if  all_ci %}
+
+        {% else %}
+          <div class="alert alert-warning">
+            <h5><i class="icon fas fa-ban"></i> No CIs found</h5>
+            It Appears you've not submitted any Check-Ins. Or all of them have been declined
+          </div>
+        {% endif %}
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+    </div>
+  </div>
+
+{% endblock %}

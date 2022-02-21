@@ -1,0 +1,16 @@
+{% extends 'cfao_kenya/Admin/pms/default.html' %}
+    {% block page_title %}My KPI - Delete{% endblock %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_Home' %}">Admin Home</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Admin_PMS_View' pms.pms_id %}">View</a></li>
+        <li class="breadcrumb-item active">Delete</li>
+    {% endblock %}
+    {% block content %}
+        {% if page_permission %}
+            {% include 'cfao_kenya/Admin/pms/display_templates/delete.html' %}
+        {% else %}
+            {% include 'cfao_kenya/errors/permissions.html' %}
+        {% endif %}
+
+
+    {% endblock %}

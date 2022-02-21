@@ -1,0 +1,31 @@
+<!-- KPI Form -->
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            CheckIns <div class="float-right"><a href="{% url 'cfao_kenya:My_CheckIn_Create' %}">New CheckIn</a></div>
+        </div>
+         <table id="simpleTable" class="table table-bordered table-hover">
+              <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th>Submit Date</th>
+                    <th>Status</th>
+                    <th>Confirm Date</th>
+                    <th>Confirm by</th>
+                  </tr>
+                  </thead>
+              <tbody>
+
+                  {% for ci in CheckIn %}
+                      <tr>
+                      <td><a href="{% url 'cfao_kenya:My_CheckIn_View' ci.checkIn_id %}">{{ ci.checkIn_month }}</a></td>
+                        <td>{{ ci.checkIn_submit_date }}</td>
+                        <td>{{ ci.checkIn_status }}</td>
+                        <td>{{ ci.checkIn_approval_date }}</td>
+                        <td>{{ ci.checkIn_approver }}</td>
+                  {% endfor %}
+              </tbody>
+         </table>
+    </div>
+</div>
