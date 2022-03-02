@@ -1,5 +1,5 @@
-{% extends 'cfao_kenya/default.html' %}
+{% extends 'Site/default.html' %}
 
-{% block page_link%}<a class="navbar-brand" href="{% url 'cfao_kenya:My_KPI' %}" ><b style="color: {{ company.company_color1 }}">KPIs Home</b></a>{% endblock %}
-{% block Create %}<li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:My_KPI_Create' %}">New KPI</a></li>{% endblock %}
-{% block Update %}<li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:My_KPI_Results_View' %}">Results</a></li>{% endblock %}
+{% block page_link%}<a class="navbar-brand" href="{% url 'Site:My_KPI' company_id%}" ><b style="color: {{ company.company_color1 }}">KPIs Home</b></a>{% endblock %}
+{% block Create %}<li class="nav-item"><a class="nav-link" href="{% url 'Site:My_KPI_Create' company_id %}">New KPI</a></li>{% endblock %}
+{% block Update %}<li class="nav-item"><a class="nav-link" href="{% url 'Site:My_KPI_Results_View' company_id %}">Results</a></li>{% endblock %}

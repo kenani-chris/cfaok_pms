@@ -1,22 +1,562 @@
-{% extends 'cfao_kenya/KPI/my_kpi/default.html' %}
+{% extends 'Site/KPI/my_kpi/default.html' %}
     {% block page_title %}My KPI - Results{% endblock %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_KPI' %}">My KPI</a></li>
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_KPI_Results_View' %}">Results View</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:My_KPI' company_id %}">My KPI</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:My_KPI_Results_View' company_id %}">Results View</a></li>
         <li class="breadcrumb-item active">Results</li>
     {% endblock %}
     {% block content %}
-        {% if page_permission %}
-            {% include 'cfao_kenya/KPI/my_kpi/display_templates/results.html' %}
-        {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
-        {% endif %}
+        <!-- KPI Form -->
 
-        {% if page_permission %}
-            {% include 'cfao_kenya/KPI/my_kpi/display_templates/results_list.html' %}
-        {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
-        {% endif %}
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>KPI results - <b>{{ kpi.kpi_title }}</b></h5>
+                </div>
+
+                <form method="post">
+                    {{ form.errors }}
+                    {{ form.kpi_id.as_hidden }}
+                    {{ form.kpi_pms.as_hidden }}
+                    {{ form.kpi_user.as_hidden }}
+                    {{ form.kpi_title.as_hidden }}
+                    {{ form.kpi_target.as_hidden }}
+                    {{ form.kpi_details.as_hidden }}
+                    {{ form.kpi_criteria.as_hidden }}
+                    {{ form.kpi_weight.as_hidden }}
+                    {{ form.kpi_units.as_hidden }}
+                    {{ form.kpi_type.as_hidden }}
+                    {{ form.kpi_submit_date.as_hidden }}
+                    {{ form.kpi_all_results_approve.as_hidden }}
+                    {{ form.kpi_april_score_approve.as_hidden }}
+                    {{ form.kpi_may_score_approve.as_hidden }}
+                    {{ form.kpi_june_score_approve.as_hidden }}
+                    {{ form.kpi_july_score_approve.as_hidden }}
+                    {{ form.kpi_august_score_approve.as_hidden }}
+                    {{ form.kpi_september_score_approve.as_hidden }}
+                    {{ form.kpi_october_score_approve.as_hidden }}
+                    {{ form.kpi_november_score_approve.as_hidden }}
+                    {{ form.kpi_december_score_approve.as_hidden }}
+                    {{ form.kpi_january_score_approve.as_hidden }}
+                    {{ form.kpi_february_score_approve.as_hidden }}
+                    {{ form.kpi_march_score_approve.as_hidden }}
+                    {% csrf_token %}
+                <div class="card-body row">
+                    <div class="col-md-5">
+                        {% if kpi_type == "BSC" %}
+                            <table class="table table-hover table-bordered">
+                                <thead class="bg-color1">
+                                    <tr>
+                                        <th>S</th>
+                                        <th>A</th>
+                                        <th>B</th>
+                                        <th>C</th>
+                                        <th>D</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ kpi.kpi_bsc_s_target }}</td>
+                                        <td>{{ kpi.kpi_bsc_a_target }}</td>
+                                        <td>{{ kpi.kpi_bsc_b_target }}</td>
+                                        <td>{{ kpi.kpi_bsc_c_target }}</td>
+                                        <td>{{ kpi.kpi_bsc_d_target }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        {% endif %}
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>Targets</th>
+                                    {% endif %}
+                                    <th>Results</th>
+                                    <th>Approved</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Apr</td>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>{{ form.kpi_april_target.value }}</th>
+                                    {% endif %}
+                                    <td>
+                                    {% if reveal.April is True %}
+                                        {{ form.kpi_april_score }}
+                                    {% else %}
+                                        {{ form.kpi_april_score.as_hidden }}
+                                        {{ form.kpi_april_score.value }}
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if form.kpi_april_score_approve.value is True %}
+                                            <div class="text-center">
+                                                <i class="fa fa-check-circle"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>May</td>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>{{ form.kpi_may_target.value }}</th>
+                                    {% endif %}
+                                    <td>
+                                    {% if reveal.May is True %}
+                                        {{ form.kpi_may_score }}
+                                    {% else %}
+                                        {{ form.kpi_may_score.value }}
+                                        {{ form.kpi_may_score.as_hidden }}
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if form.kpi_may_score_approve.value is True %}
+                                            <div class="text-center">
+                                                <i class="fa fa-check-circle"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>June</td>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>{{ form.kpi_june_target.value }}</th>
+                                    {% endif %}
+                                    <td>
+                                    {% if reveal.June is True %}
+                                        {{ form.kpi_june_score }}
+                                    {% else %}
+                                        {{ form.kpi_june_score.value }}
+                                        {{ form.kpi_june_score.as_hidden }}
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if form.kpi_june_score_approve.value is True %}
+                                            <div class="text-center">
+                                                <i class="fa fa-check-circle"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>July</td>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>{{ form.kpi_july_target.value }}</th>
+                                    {% endif %}
+                                    <td>
+                                    {% if reveal.July is True %}
+                                        {{ form.kpi_july_score }}
+                                    {% else %}
+                                        {{ form.kpi_july_score.value }}
+                                        {{ form.kpi_july_score.as_hidden }}
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if form.kpi_july_score_approve.value is True %}
+                                            <div class="text-center">
+                                                <i class="fa fa-check-circle"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>August</td>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>{{ form.kpi_august_target.value }}</th>
+                                    {% endif %}
+                                    <td>
+                                    {% if reveal.August is True %}
+                                        {{ form.kpi_august_score }}
+                                    {% else %}
+                                        {{ form.kpi_august_score.value }}
+                                        {{ form.kpi_august_score.as_hidden }}
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if form.kpi_august_score_approve.value is True %}
+                                            <div class="text-center">
+                                                <i class="fa fa-check-circle"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>September</td>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>{{ form.kpi_september_target.value }}</th>
+                                    {% endif %}
+                                    <td>
+                                    {% if reveal.September is True %}
+                                        {{ form.kpi_september_score }}
+                                    {% else %}
+                                        {{ form.kpi_september_score.value }}
+                                        {{ form.kpi_september_score.as_hidden }}
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if form.kpi_september_score_approve.value is True %}
+                                            <div class="text-center">
+                                                <i class="fa fa-check-circle"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>October</td>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>{{ form.kpi_october_target.value }}</th>
+                                    {% endif %}
+                                    <td>
+                                    {% if reveal.October is True %}
+                                        {{ form.kpi_october_score }}
+                                    {% else %}
+                                        {{ form.kpi_october_score.value }}
+                                        {{ form.kpi_october_score.as_hidden }}
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if form.kpi_october_score_approve.value is True %}
+                                            <div class="text-center">
+                                                <i class="fa fa-check-circle"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>November</td>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>{{ form.kpi_november_target.value }}</th>
+                                    {% endif %}
+                                    <td>
+                                    {% if reveal.November is True %}
+                                        {{ form.kpi_november_score }}
+                                    {% else %}
+                                        {{ form.kpi_november_score.value }}
+                                        {{ form.kpi_november_score.as_hidden }}
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if form.kpi_november_score_approve.value is True %}
+                                            <div class="text-center">
+                                                <i class="fa fa-check-circle"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>December</td>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>{{ form.kpi_december_target.value }}</th>
+                                    {% endif %}
+                                    <td>
+                                    {% if reveal.December is True %}
+                                        {{ form.kpi_december_score }}
+                                    {% else %}
+                                        {{ form.kpi_december_score.value }}
+                                        {{ form.kpi_december_score.as_hidden }}
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if form.kpi_december_score_approve.value is True %}
+                                            <div class="text-center">
+                                                <i class="fa fa-check-circle"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>January</td>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>{{ form.kpi_january_target.value }}</th>
+                                    {% endif %}
+                                    <td>
+                                    {% if reveal.January is True %}
+                                        {{ form.kpi_january_score }}
+                                    {% else %}
+                                        {{ form.kpi_january_score.value }}
+                                        {{ form.kpi_january_score.as_hidden }}
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if form.kpi_january_score_approve.value is True %}
+                                            <div class="text-center">
+                                                <i class="fa fa-check-circle"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>February</td>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>{{ form.kpi_february_target.value }}</th>
+                                    {% endif %}
+                                    <td>
+                                    {% if reveal.February is True %}
+                                        {{ form.kpi_february_score }}
+                                    {% else %}
+                                        {{ form.kpi_february_score.value }}
+                                        {{ form.kpi_february_score.as_hidden }}
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if form.kpi_february_score_approve.value is True %}
+                                            <div class="text-center">
+                                                <i class="fa fa-check-circle"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>March</td>
+                                    {% if kpi_type == "Monthly Target" %}
+                                        <th>{{ form.kpi_march_target.value }}</th>
+                                    {% endif %}
+                                    <td>
+                                    {% if reveal.March is True %}
+                                        {{ form.kpi_march_score }}
+                                    {% else %}
+                                        {{ form.kpi_march_score.value }}
+                                        {{ form.kpi_march_score.as_hidden }}
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if form.kpi_march_score_approve.value is True %}
+                                            <div class="text-center">
+                                                <i class="fa fa-check-circle"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="submit" class="btn btn-success float-right" style="margin: 10px">Save</button>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card card-info">
+                          <div class="card-body">
+                            <div class="chart">
+                              <canvas id="lineChart" style="min-height: 250px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                            </div>
+                          </div>
+                        </div>
+                         <table class="table table-bordered">
+                              <tbody>
+                                <tr>
+                                    <th>Units</th>
+                                    <td>{{ kpi.kpi_units }}</td>
+                                </tr>
+                                {% if kpi_type == "Annual Target" %}
+                                    <tr>
+                                        <th>Target</th>
+                                        <td>{{ kpi.kpi_target }}</td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <th>Weight</th>
+                                    <td>{{ kpi.kpi_weight }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Description</th>
+                                    <td>{{ kpi.kpi_details }}</td>
+                                </tr>
+                                {% if kpi_type == "Annual Target" %}
+                                    <tr>
+                                        <th>Criteria</th>
+                                        <td>{{ kpi.kpi_criteria }}</td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <th>Function</th>
+                                    <td>{{ kpi.kpi_function }}</td>
+                                </tr>
+                                {% if kpi_type != "Monthly Target" %}
+                                    <tr>
+                                        <th>Type</th>
+                                        <td>{{ kpi.kpi_type }}</td>
+                                    </tr>
+                                {% endif %}
+                              </tbody>
+                          </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+
+
+                </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card-body" style="overflow-x: scroll">
+                    {% if kpi_type == "BSC" %}
+                        <table class="table table-bordered table-hover">
+                          <thead>
+                              <tr>
+                                <th>KPI</th>
+                                <th>Function</th>
+                                <th>Calculation</th>
+                                <th>Weight</th>
+                                <th class="bg-color1">Pillar</th>
+                                <th class="bg-color1">S</th>
+                                <th class="bg-color1">A</th>
+                                <th class="bg-color1">B</th>
+                                <th class="bg-color1">C</th>
+                                <th class="bg-color1">D</th>
+                                <th>April</th>
+                                <th>May</th>
+                                <th>Jun</th>
+                                <th>Jul</th>
+                                <th>Aug</th>
+                                <th>Sep</th>
+                                <th>Oct</th>
+                                <th>Nov</th>
+                                <th>Dec</th>
+                                <th>Jan</th>
+                                <th>Feb</th>
+                                <th>Mar</th>
+                              </tr>
+                              </thead>
+                          <tbody>
+                              {% for kpi in submitted_kpi %}
+                                  <tr>
+                                    <td><a href="{% url 'Site:My_KPI_Results' company_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                                    <td>{{ kpi.kpi_function }}</td>
+                                    <td>{{ kpi.kpi_type }}</td>
+                                    <td>{{ kpi.kpi_weight }}</td>
+                                    <td class="bg-color1">{{ kpi.kpi_bsc_pillar }}</td>
+                                    <td class="bg-color2">{{ kpi.kpi_bsc_s_target }}</td>
+                                    <td class="bg-color2">{{ kpi.kpi_bsc_a_target }}</td>
+                                    <td class="bg-color2">{{ kpi.kpi_bsc_b_target }}</td>
+                                    <td class="bg-color2">{{ kpi.kpi_bsc_c_target }}</td>
+                                    <td class="bg-color2">{{ kpi.kpi_bsc_d_target }}</td>
+                                    <td {% if kpi.kpi_april_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_april_score }}</td>
+                                    <td {% if kpi.kpi_may_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_may_score }}</td>
+                                    <td {% if kpi.kpi_june_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_june_score }}</td>
+                                    <td {% if kpi.kpi_july_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_july_score }}</td>
+                                    <td {% if kpi.kpi_august_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_august_score }}</td>
+                                    <td {% if kpi.kpi_september_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_september_score }}</td>
+                                    <td {% if kpi.kpi_october_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_october_score }}</td>
+                                    <td {% if kpi.kpi_november_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_november_score }}</td>
+                                    <td {% if kpi.kpi_december_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_december_score }}</td>
+                                    <td {% if kpi.kpi_january_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_january_score }}</td>
+                                    <td {% if kpi.kpi_february_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_february_score }}</td>
+                                    <td {% if kpi.kpi_march_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_march_score }}</td>
+
+                              {% endfor %}
+                          </tbody>
+                     </table>
+                    {% elif kpi_type == "Monthly Target" %}
+                        <table class="table table-bordered table-hover">
+                          <thead>
+                              <tr>
+                                <th>KPI</th>
+                                <th>Function</th>
+                                <th>Weight</th>
+                                <th></th>
+                                <th>Apr</th>
+                                <th>May</th>
+                                <th>Jun</th>
+                                <th>Jul</th>
+                                <th>Aug</th>
+                                <th>Sep</th>
+                                <th>Oct</th>
+                                <th>Nov</th>
+                                <th>Dec</th>
+                                <th>Jan</th>
+                                <th>Feb</th>
+                                <th>Mar</th>
+                              </tr>
+                              </thead>
+                          <tbody>
+                              {% for kpi in submitted_kpi %}
+                                  <tr>
+                                    <td rowspan="2"><a href="{% url 'Site:My_KPI_Results' company_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                                    <td rowspan="2">{{ kpi.kpi_function }}</td>
+                                    <td rowspan="2">{{ kpi.kpi_weight }}</td>
+                                    <td>TGT</td>
+                                    <td>{{ kpi.kpi_april_target }}</td>
+                                    <td>{{ kpi.kpi_may_target }}</td>
+                                    <td>{{ kpi.kpi_june_target }}</td>
+                                    <td>{{ kpi.kpi_july_target }}</td>
+                                    <td>{{ kpi.kpi_august_target }}</td>
+                                    <td>{{ kpi.kpi_september_target }}</td>
+                                    <td>{{ kpi.kpi_october_target }}</td>
+                                    <td>{{ kpi.kpi_november_target }}</td>
+                                    <td>{{ kpi.kpi_december_target }}</td>
+                                    <td>{{ kpi.kpi_january_target }}</td>
+                                    <td>{{ kpi.kpi_february_target }}</td>
+                                    <td>{{ kpi.kpi_march_target }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>ACT</td>
+                                    <td {% if kpi.kpi_april_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_april_score }}</td>
+                                    <td {% if kpi.kpi_may_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_may_score }}</td>
+                                    <td {% if kpi.kpi_june_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_june_score }}</td>
+                                    <td {% if kpi.kpi_july_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_july_score }}</td>
+                                    <td {% if kpi.kpi_august_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_august_score }}</td>
+                                    <td {% if kpi.kpi_september_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_september_score }}</td>
+                                    <td {% if kpi.kpi_october_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_october_score }}</td>
+                                    <td {% if kpi.kpi_november_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_november_score }}</td>
+                                    <td {% if kpi.kpi_december_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_december_score }}</td>
+                                    <td {% if kpi.kpi_january_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_january_score }}</td>
+                                    <td {% if kpi.kpi_february_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_february_score }}</td>
+                                    <td {% if kpi.kpi_march_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_march_score }}</td>
+                                  </tr>
+
+                              {% endfor %}
+                          </tbody>
+                     </table>
+                    {% else %}
+                        <table id="simpleTable" class="table table-bordered table-hover">
+                          <thead>
+                              <tr>
+                                <th>KPI</th>
+                                <th>Function</th>
+                                <th>Calculation</th>
+                                <th>Weight</th>
+                                <th>Target</th>
+                                <th>Apr</th>
+                                <th>May</th>
+                                <th>Jun</th>
+                                <th>Jul</th>
+                                <th>Aug</th>
+                                <th>Sep</th>
+                                <th>Oct</th>
+                                <th>Nov</th>
+                                <th>Dec</th>
+                                <th>Jan</th>
+                                <th>Feb</th>
+                                <th>Mar</th>
+                              </tr>
+                              </thead>
+                          <tbody>
+                              {% for kpi in submitted_kpi %}
+                                  <tr>
+                                    <td><a href="{% url 'Site:My_KPI_Results' company_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                                    <td>{{ kpi.kpi_function }}</td>
+                                    <td>{{ kpi.kpi_type }}</td>
+                                    <td>{{ kpi.kpi_weight }}</td>
+                                    <td>{{ kpi.kpi_target }}</td>
+                                    <td {% if kpi.kpi_april_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_april_score }}</td>
+                                    <td {% if kpi.kpi_may_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_may_score }}</td>
+                                    <td {% if kpi.kpi_june_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_june_score }}</td>
+                                    <td {% if kpi.kpi_july_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_july_score }}</td>
+                                    <td {% if kpi.kpi_august_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_august_score }}</td>
+                                    <td {% if kpi.kpi_september_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_september_score }}</td>
+                                    <td {% if kpi.kpi_october_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_october_score }}</td>
+                                    <td {% if kpi.kpi_november_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_november_score }}</td>
+                                    <td {% if kpi.kpi_december_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_december_score }}</td>
+                                    <td {% if kpi.kpi_january_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_january_score }}</td>
+                                    <td {% if kpi.kpi_february_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_february_score }}</td>
+                                    <td {% if kpi.kpi_march_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_march_score }}</td>
+
+                              {% endfor %}
+                          </tbody>
+                     </table>
+                    {% endif %}
+                </div>
 
 
     {% endblock %}

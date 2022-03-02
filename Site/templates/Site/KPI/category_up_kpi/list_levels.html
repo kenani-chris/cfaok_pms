@@ -1,0 +1,35 @@
+{% extends 'Site/KPI/category_up_kpi/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active">{{ level_category.category_name }} KPI</li>
+    {% endblock %}
+    {% block page_title %}{{ levelcategory.category_name }} KPI{% endblock %}
+    {% block content %}
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ levelcategory.category_name }} levels in path</h5>
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Level</th>
+                            <th>Head</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+                          {% for level in level_in_category %}
+                                <tr>
+                                    <td><a href="{% url 'Site:KPI_Category_Level' company_id level_category.category_id level.level_id%}">{{ level.level_name }}</a></td>
+                                    <td>{{ level.level_head }}</td>
+                                    <td>{{ level.level_description }}</td>
+                                    <td>{{ level.level_category }}</td>
+                                </tr>
+                          {% endfor %}
+                      </tbody>
+                 </table>
+            </div>
+        </div>
+
+    {% endblock %}

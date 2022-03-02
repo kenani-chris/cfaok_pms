@@ -1,0 +1,109 @@
+{% extends 'Site/KPI/level_down_kpi/default.html' %}
+
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'Site:KPI_LevelDown' company_id %}">Staff KPI</a></li>
+        <li class="breadcrumb-item active">{{ level.level_name }}</li>
+    {% endblock %}
+    {% block page_title %}{{ levelcategory.category_name }} KPI - {{ level.level_name }}{% endblock %}
+
+    {% block content %}
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box">
+                  <span class="info-box-icon bg-info elevation-1"><i class="fas fa-users"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Members</span>
+                    <span class="info-box-number">
+                        {{ staff_members.count }}
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+              </div>
+              <!-- /.col -->
+              <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-users"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Active memberships</span>
+                    <span class="info-box-number">
+                        {{ staff_members_active.count }}
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+              </div>
+              <!-- /.col -->
+
+              <!-- fix for small devices only -->
+              <div class="clearfix hidden-md-up"></div>
+
+              <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-users"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Inactive memberships</span>
+                    <span class="info-box-number">
+                        {{ staff_members_inactive.count }}
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+              </div>
+
+              <!-- /.col -->
+            </div>
+        </div>
+
+        <!-- KPI Form -->
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>KPIs</h5>
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <td>Staff</td>
+                            <td>PF</td>
+                            <td>Submitted</td>
+                            <td>Pending</td>
+                            <td>Approved</td>
+                            <td>KPI Score</td>
+                        </tr>
+                    </thead>
+                     <tbody>
+                        {% for staff in members%}
+                            <tr>
+                                <td><a href="{% url 'Site:KPI_LevelDownDetailStaff' company_id level.level_id staff.0.staff_id %}">{{ staff.0 }}</a></td>
+                                <td>{{ staff.0.staff_pf_number }}</td>
+                                {% if staff.1 > 0 %}
+                                    <td class="bg-warning">{{ staff.1 }}</td>
+                                {% else %}
+                                    <td>{{ staff.1 }}</td>
+                                {% endif %}
+                                {% if staff.2 > 0 %}
+                                    <td class="bg-warning">{{ staff.1 }}</td>
+                                {% else %}
+                                    <td>{{ staff.2 }}</td>
+                                {% endif %}
+                                <td>{{ staff.3 }}</td>
+                                <td class="bg-color1">{{ staff.4 }}</td>
+                            </tr>
+                        {% endfor %}
+
+
+                     </tbody>
+                 </table>
+            </div>
+        </div>
+
+    {% endblock %}

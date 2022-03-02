@@ -1,22 +1,85 @@
-{% extends 'cfao_kenya/CheckIn/my_CheckIn/default.html' %}
+{% extends 'Site/CheckIn/my_CheckIn/default.html' %}
     {% block page_title %}My CheckIn - New{% endblock %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_CheckIn' %}">My CheckIn</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:My_CheckIn' company_id %}">My CheckIn</a></li>
         <li class="breadcrumb-item active">New</li>
     {% endblock %}
     {% block content %}
-        {% if page_permission %}
-            {% if done is True %}
-                {% include 'cfao_kenya/errors/checkin_submission_complete.html' %}
-            {% else %}
-                {% include 'cfao_kenya/CheckIn/my_CheckIn/display_templates/create.html' %}
-            {% endif %}
+
+        {% if done is True %}
+            {% include 'Site/errors/checkin_submission_complete.html' %}
         {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
+
+<div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <b>{{ form.checkIn_month.value }} CheckIn</b>
+            </div>
+                <!-- todo Change the fields pa, pd, tma, tls to customize type -->
+                <form method="post">
+                    {{ form.errors }}
+                    {% csrf_token %}
+                    <div class="card-body">
+                        {{ form.check_in_id.as_hidden }}
+                        {{ form.check_in_pms.as_hidden }}
+                        {{ form.check_in_Staff.as_hidden }}
+                        {{ form.check_in_submit_date.as_hidden }}
+                        {{ form.check_in_approver.as_hidden }}
+                        {{ form.check_in_approval_date.as_hidden }}
+                        {{ form.check_in_approval_date.as_hidden }}
+                        {{ form.check_in_month.as_hidden }}
+                        {{ form.check_in_status.as_hidden }}
+                        Performance Area
+                        {{ form.check_in_performance_area }}
+                        Progress Discussed
+                        {{ form.check_in_progress_discussed }}
+                        <br>
+                        Team member actions
+                        {{ form.check_in_team_member_actions }}
+                        <br>
+                        Team Leader Support
+                        {{ form.check_in_team_leader_support }}
+                        <br>
+
+                        {{ form.check_in_team_leader_comment.as_hidden }}
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-info">Submit</button>
+                    </div>
+                </form>
+            </div>
+    </div>
         {% endif %}
-        {% if perms.cfao_kenya.view_kpi %}
-            {% include 'cfao_kenya/CheckIn/my_CheckIn/display_templates/list.html' %}
-        {% endif %}
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    CheckIns
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Month</th>
+                            <th>Submit Date</th>
+                            <th>Status</th>
+                            <th>Confirm Date</th>
+                            <th>Confirm by</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+
+                          {% for ci in CheckIn %}
+                              <tr>
+                              <td><a href="{% url 'Site:My_CheckIn_View' company_id ci.check_in_id %}">{{ ci.check_in_month }}</a></td>
+                                <td>{{ ci.check_in_submit_date }}</td>
+                                <td>{{ ci.check_in_status }}</td>
+                                <td>{{ ci.check_in_approval_date }}</td>
+                                <td>{{ ci.check_in_approver }}</td>
+                          {% endfor %}
+                      </tbody>
+                 </table>
+            </div>
+        </div>
 
 
     {% endblock %}

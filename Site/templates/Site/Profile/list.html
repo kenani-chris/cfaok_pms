@@ -1,0 +1,151 @@
+{% extends 'Site/Profile/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active">Profile</li>
+    {% endblock %}
+    {% block page_title %}Profile{% endblock %}
+    {% block content %}
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>LogIn Account</h5>
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Superuser</th>
+                            <th>Last login</th>
+                            <th>Date Joined</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+                        <tr>
+                            <td>{{ staff.staff_person.get_full_name }}</td>
+                            <td>{{ staff.staff_person.username }}</td>
+                            <td>{{ staff.staff_person.email }}</td>
+                            <td>{{ staff.staff_person.is_superuser }}</td>
+                            <td>{{ staff.staff_person.last_login }}</td>
+                            <td>{{ staff.staff_person.date_joined }}</td>
+                        </tr>
+                      </tbody>
+                 </table>
+                <br>
+                <a class="btn btn-success" href="{% url 'change_user_password' %}">Change password</a>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h5>Access Accounts</h5>
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Company</th>
+                            <th>PF</th>
+                            <th>Grade</th>
+                            <th>Active</th>
+                            <th>Superuser</th>
+                            <th>Date created</th>
+                            <th>Category</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+
+                          {% for account in accounts %}
+                              <tr>
+                                    <td>{{ account.staff_company }}</td>
+                                    <td>{{ account.staff_pf_number }}</td>
+                                    <td>{{ account.staff_grade }}</td>
+                                    <td>{{ account.staff_active }}</td>
+                                    <td>{{ account.staff_superuser }}</td>
+                                    <td>{{ account.staff_date_created }}</td>
+                                    <td>{{ account.staff_category }}</td>
+                              </tr>
+
+                          {% endfor %}
+                      </tbody>
+                 </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5>My Memberships</h5>
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Staff</th>
+                            <th>Member</th>
+                            <th>Active</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+                          {% for member in memberships %}
+                              <tr>
+                                <td>{{ member.membership_staff }}</td>
+                                <td>{{ member.membership_level }}</td>
+                                <td>{{ member.membership_is_active }}</td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                 </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5>Levels I Head</h5>
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Parent</th>
+                            <th>Head</th>
+                            <th>Category</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+
+                          {% for level in heading_levels %}
+                              <tr>
+                                <td>{{ level.level_name }}</td>
+                                <td>{{ level.level_parent }}</td>
+                                <td>{{ level.level_head }}</td>
+                                <td>{{ level.level_category }}</td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                 </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5>My Level Members</h5>
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Staff</th>
+                            <th>Member</th>
+                            <th>Active</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+                          {% for membership in heading_members %}
+                              {% for member in memberships %}
+                                  <tr>
+                                    <td>{{ member.membership_staff }}</td>
+                                    <td>{{ member.membership_level }}</td>
+                                    <td>{{ member.membership_is_active }}</td>
+                                  </tr>
+                              {% endfor %}
+                          {% endfor %}
+                      </tbody>
+                 </table>
+            </div>
+        </div>
+
+
+    {% endblock %}

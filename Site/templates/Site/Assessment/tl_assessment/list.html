@@ -1,4 +1,4 @@
-{% extends 'cfao_kenya/KPI/my_kpi/default.html' %}
+{% extends 'Site/KPI/my_kpi/default.html' %}
     {% block breadcrumb %}
         <li class="breadcrumb-item active">My KPI</li>
     {% endblock %}
@@ -77,9 +77,9 @@
         </div>
 
         {% if page_permission %}
-            {% include 'cfao_kenya/KPI/my_kpi/display_templates/list.html' %}
+            {% include 'Site/KPI/my_kpi/display_templates/list.html' %}
         {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
+            {% include 'Site/errors/permissions.html' %}
         {% endif %}
 
     {% endblock %}

@@ -1,148 +1,76 @@
-{% extends 'cfao_kenya/Assessment/default.html' %}
+{% extends 'Site/Assessment/default.html' %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Assessment_List' %}">Assessment</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Assessment_List' company_id %}">Assessment</a></li>
         <li class="breadcrumb-item active">View</li>
     {% endblock %}
     {% block page_title %}Assessment - {{ Assessment.assessment_name }}{% endblock %}
     {% block content %}
-        {% if page_permission %}
-            <div class="container-fluid">
-                <div class="card">
-                    <table class="table table-bordered">
+
+        <div class="container-fluid">
+            <div class="card">
+                     <table class="table table-bordered table-hover">
                           <thead>
-                            <tr>
-                                <th colspan="4">
-                                    {{ Assessment.assessment_name }}
-                                </th>
-                            </tr>
+                              <tr>
+                                  <th colspan="3" class="bg-color2">
+                                      My Assessment Score
+                                  </th>
+                              </tr>
+                              <tr>
+                                  <td>
+                                      <a href="{% url 'Site:Assessment_View_My' company_id Assessment.assessment_id 'Bottom' %}">My Team Leader evaluation of me<small> - (click to view)</small></a>
+                                  </td>
+                                  <td>
+                                      <a href="{% url 'Site:Assessment_View_My' company_id Assessment.assessment_id 'Top' %}">My Team Members evaluation of me<small> - (click to view)</small></a>
+                                  </td>
+                              </tr>
+
                           </thead>
-                          <tbody>
-                              <tr class="bg-color2">
-                                  <th>
-                                      Status Active
-                                  </th>
-                                  <th>
-                                      Start Date
-                                  </th>
-                                  <th>
-                                      End Date
-                                  </th>
-                                  <th>
-                                      Used in Scoring
-                                  </th>
-                              </tr>
-                              <tr>
-                                  <td>
-                                      {{ assessment_status }}
-                                  </td>
-                                  <td>
-                                      {{ Assessment.assessment_start_date }}
-                                  </td>
-                                  <td>
-                                      {{ Assessment.assessment_end_date }}
-                                  </td>
-                                  <td>
-                                      {{ Assessment.assessment_scoring_use }}
-                                  </td>
-                              </tr>
-                          </tbody>
                      </table>
-                    <table class="table table-bordered table-hover">
+            </div>
+            {% if level_heads|length > 0%}
+                <div class="card">
+                     <table class="table table-bordered table-hover">
                           <thead>
                               <tr>
-                                  <th>
-                                      Type
-                                  </th>
-                                  <th>
-                                      Questions No.
-                                  </th>
-                                  <th>
-                                      Staff(s) Evaluating
+                                  <th class="bg-color2" colspan="2">
+                                      Evaluate my Team Leader
                                   </th>
                               </tr>
                           </thead>
                          <tbody>
+                            {% for head in level_heads %}
                             <tr>
-                                <td>Staff Evaluate TL</td>
-                                <td>{{ top_questions.count }}</td>
-                                <td>{{ level_heads|length }}</td>
+                                <td><a href="{% url 'Site:Assessment_View_Member' company_id Assessment.assessment_id head.0.level_head.staff_id 'Top'%}">{{ head.0.level_head }}</a></td>
+                                <td>{{ head.1 }}</td>
                             </tr>
-                            <tr>
-                                <td>TL Evaluate Satff</td>
-                                <td>{{ bottom_questions.count }}</td>
-                                <td>{{ level_members|length }}</td>
-                            </tr>
+                            {% endfor %}
                          </tbody>
                      </table>
+
                 </div>
+            {% endif %}
+            {% if level_members|length > 0%}
                 <div class="card">
-                         <table class="table table-bordered table-hover">
-                              <thead>
-                                  <tr>
-                                      <th colspan="2" class="bg-color2">
-                                          My Assessment Score
-                                      </th>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          <a href="{% url 'cfao_kenya:Assessment_View_My' Assessment.assessment_id 'Bottom' %}">My TL Evaluates Me</a>
-                                      </td>
-                                      <td>
-                                          <a href="{% url 'cfao_kenya:Assessment_View_My' Assessment.assessment_id 'Top' %}">My Staff Evaluates Me</a>
-                                      </td>
-                                  </tr>
-                                  <tr>
+                     <table class="table table-bordered table-hover">
+                          <thead>
+                              <tr>
+                                  <th class="bg-color2" colspan="2">
+                                      Evaluate my Team Members
+                                  </th>
+                              </tr>
+                          </thead>
+                         <tbody>
+                            {% for member in level_members %}
+                            <tr>
+                                <td><a href="{% url 'Site:Assessment_View_Member' company_id Assessment.assessment_id member.0.membership_staff.staff_id 'Bottom'%}">{{ member.0.membership_staff }}</a></td>
+                                <td>{{ member.1 }}</td>
+                            </tr>
+                            {% endfor %}
+                         </tbody>
+                     </table>
 
-                                  </tr>
-
-                              </thead>
-                         </table>
                 </div>
-                {% if level_heads|length > 0%}
-                    <div class="card">
-                         <table class="table table-bordered table-hover">
-                              <thead>
-                                  <tr>
-                                      <th class="bg-color2">
-                                          Staff Evaluate TL
-                                      </th>
-                                  </tr>
-                              </thead>
-                             <tbody>
-                                {% for head in level_heads %}
-                                <tr>
-                                    <td><a href="{% url 'cfao_kenya:Assessment_View_Member' Assessment.assessment_id head.level_head.id 'Top'%}">{{ head.level_head.get_full_name }}</a></td>
-                                </tr>
-                                {% endfor %}
-                             </tbody>
-                         </table>
-
-                    </div>
-                {% endif %}
-                {% if level_members|length > 0%}
-                    <div class="card">
-                         <table class="table table-bordered table-hover">
-                              <thead>
-                                  <tr>
-                                      <th class="bg-color2">
-                                          TL Evaluate Staff
-                                      </th>
-                                  </tr>
-                              </thead>
-                             <tbody>
-                                {% for member in level_members %}
-                                <tr>
-                                    <td><a href="{% url 'cfao_kenya:Assessment_View_Member' Assessment.assessment_id member.level_member_user.id 'Bottom'%}">{{ member.level_member_user.get_full_name }}</a></td>
-                                </tr>
-                                {% endfor %}
-                             </tbody>
-                         </table>
-
-                    </div>
-                {% endif %}
-            </div>
-        {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
-        {% endif %}
+            {% endif %}
+        </div>
 
     {% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'Site/KPI/level_up_kpi/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'Site:My_KPI' %}">My KPI</a></li>
+        <li class="breadcrumb-item active">Results View</li>
+    {% endblock %}
+    {% block page_title %}{{ levelcategory.category_name }} KPI - Results{% endblock %}
+    {% block content %}
+
+        {% if page_permission %}
+            {% include 'Site/KPI/level_up_kpi/display_templates/results_list_levels.html' %}
+        {% else %}
+            {% include 'Site/errors/permissions.html' %}
+        {% endif %}
+
+    {% endblock %}

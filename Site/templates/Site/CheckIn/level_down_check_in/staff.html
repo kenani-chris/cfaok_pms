@@ -1,0 +1,246 @@
+{% extends 'Site/CheckIn/level_down_check_in/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Site:Check_in_LevelDown' company_id %}">Staff Check-In</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Check_in_LevelDownDetail' company_id level.level_id type_id %}">{{ level.level_name }}</a></li>
+        <li class="breadcrumb-item active">PF {{ select_staff.staff_pf_number }}</li>
+    {% endblock %}
+    {% block page_title %}Staff CheckIn - {{ select_staff }}{% endblock %}
+    {% block content %}
+        <style>
+            input {
+                min-width: 120px;
+            }
+
+        </style>
+
+        <!-- KPI Form -->
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Check-Ins</h5>
+                </div>
+                <div class="card-body" style="overflow-x: scroll">
+                    {% for ci in cis %}
+                        <div class="modal fade" id="modal-{{ ci.check_in_id }}">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">{{ ci.check_in_month }} Check-In</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% if type_id != 1 or ci.check_in_status == "Approved"%}
+                                            <table class="table table-bordered">
+                                              <tbody>
+                                                  <tr class="bg-color2">
+                                                      <th>
+                                                          Status
+                                                      </th>
+                                                      <th>
+                                                          Submit Date
+                                                      </th>
+                                                      <th>
+                                                          Approval Date
+                                                      </th>
+                                                      <th>
+                                                          Appprover
+                                                      </th>
+                                                  </tr>
+                                                  <tr>
+                                                      <td>
+                                                          {{ ci.check_in_status }}
+                                                      </td>
+                                                      <td>
+                                                          {{ ci.check_in_submit_date }}
+                                                      </td>
+                                                      <td>
+                                                          {{ ci.check_in_approval_date }}
+                                                      </td>
+                                                      <td>
+                                                          {{ ci.check_in_approver }}
+                                                      </td>
+                                                  </tr>
+                                              </tbody>
+                                         </table>
+                                         <table class="table table-bordered table-hover">
+                                              <tbody>
+                                                  <tr>
+                                                      <th>
+                                                          Perfomance Areas
+                                                      </th>
+                                                      <td>
+                                                          {{ ci.check_in_performance_area }}
+                                                      </td>
+                                                  </tr>
+
+                                                  <tr>
+                                                      <th>
+                                                          Progress Discussed
+                                                      </th>
+                                                      <td>
+                                                          {{ ci.check_in_progress_discussed }}
+                                                      </td>
+                                                  </tr>
+
+                                                  <tr>
+                                                      <th>
+                                                          Perfomance Areas
+                                                      </th>
+                                                      <td>
+                                                          {{ ci.check_in_team_member_actions }}
+                                                      </td>
+                                                  </tr>
+
+                                                  <tr>
+                                                      <th>
+                                                          Perfomance Areas
+                                                      </th>
+                                                      <td>
+                                                          {{ ci.check_in_team_leader_support }}
+                                                      </td>
+                                                  </tr>
+
+                                                  <tr>
+                                                      <th>
+                                                          Team Leader Comment
+                                                      </th>
+                                                      <td>
+                                                          {{ ci.check_in_team_leader_comment }}
+                                                      </td>
+                                                  </tr>
+
+                                              </tbody>
+                                         </table>
+                                        {% else %}
+                                            <table class="table table-bordered">
+                                              <tbody>
+                                                  <tr class="bg-color2">
+                                                      <th>
+                                                          Status
+                                                      </th>
+                                                      <th>
+                                                          Submit Date
+                                                      </th>
+                                                      <th>
+                                                          Approval Date
+                                                      </th>
+                                                      <th>
+                                                          Appprover
+                                                      </th>
+                                                  </tr>
+                                                  <tr>
+                                                      <td>
+                                                          {{ ci.check_in_status }}
+                                                      </td>
+                                                      <td>
+                                                          {{ ci.check_in_submit_date }}
+                                                      </td>
+                                                      <td>
+                                                          {{ ci.check_in_approval_date }}
+                                                      </td>
+                                                      <td>
+                                                          {{ ci.check_in_approver }}
+                                                      </td>
+                                                  </tr>
+                                              </tbody>
+                                         </table>
+                                         <table class="table table-bordered table-hover">
+                                              <tbody>
+                                                  <tr>
+                                                      <th>
+                                                          Perfomance Areas
+                                                      </th>
+                                                      <td>
+                                                          {{ ci.check_in_performance_area }}
+                                                      </td>
+                                                  </tr>
+
+                                                  <tr>
+                                                      <th>
+                                                          Progress Discussed
+                                                      </th>
+                                                      <td>
+                                                          {{ ci.check_in_progress_discussed }}
+                                                      </td>
+                                                  </tr>
+
+                                                  <tr>
+                                                      <th>
+                                                          Perfomance Areas
+                                                      </th>
+                                                      <td>
+                                                          {{ ci.check_in_team_member_actions }}
+                                                      </td>
+                                                  </tr>
+
+                                                  <tr>
+                                                      <th>
+                                                          Perfomance Areas
+                                                      </th>
+                                                      <td>
+                                                          {{ ci.check_in_team_leader_support }}
+                                                      </td>
+                                                  </tr>
+
+                                                  <tr class="bg-color1">
+                                                      <th colspan="2">
+                                                          Team Leader Comment
+                                                      </th>
+                                                  </tr>
+                                                  <form method="post" id="form-{{ ci.check_in_id }}" action="{% url 'Site:Staff_Check_in_Results' company_id level.level_id type_id select_staff.staff_id ci.check_in_id %}">
+                                                      {% csrf_token %}
+                                                  <tr>
+                                                      <input name="check_in_id" value="{{ ci.check_in_id }}" type="number" hidden>
+                                                      <td colspan="2">
+                                                          <textarea name="check_in_comments" required>{{ ci.check_in_team_leader_comment }}</textarea>
+                                                      </td>
+                                                  </tr>
+                                              </tbody>
+                                         </table>
+                                                <select>
+                                                    <option value="1" selected>Approved</option>
+                                                    <option value="2">Rejected</option>
+                                                </select>
+                                                <div class="modal-footer justify-content-between">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                    <button type="submit"  class="btn btn-primary">Save & Close</button>
+                                                </div>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                     <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Month</th>
+                            <th>Submit Date</th>
+                            <th>Status</th>
+                            <th>Confirm Date</th>
+                            <th>Confirm by</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+
+                          {% for ci in cis %}
+                              <tr>
+                              <td><a href="#" data-toggle="modal" data-target="#modal-{{ ci.check_in_id }}">{{ ci.check_in_month }}</a></td>
+                                <td>{{ ci.check_in_submit_date }}</td>
+                                <td>{{ ci.check_in_status }}</td>
+                                <td>{{ ci.check_in_approval_date }}</td>
+                                <td>{{ ci.check_in_approver }}</td>
+                          {% endfor %}
+                      </tbody>
+                 </table>
+
+                </div>
+
+            </div>
+        </div>
+
+    {% endblock %}

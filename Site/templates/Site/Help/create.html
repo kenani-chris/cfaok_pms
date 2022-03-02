@@ -1,0 +1,33 @@
+{% extends 'Site/Help/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active">Help</li>
+    {% endblock %}
+    {% block page_title %}Help - Create{% endblock %}
+    {% block content %}
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Support Request</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.help_log_date.as_hidden }}
+                        {{ form.help_status.as_hidden }}
+                        {{ form.help_staff.as_hidden }}
+                        <label>Help Category</label>
+                        {{ form.help_category }}
+                        <br>
+                        <label>Help Request</label>
+                        {{ form.help_requested }}
+                        <br>
+                        <button type="submit" class="btn btn-success">Submit</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+
+    {% endblock %}

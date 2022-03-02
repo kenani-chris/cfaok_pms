@@ -1,16 +1,26 @@
-{% extends 'cfao_kenya/KPI/my_kpi/default.html' %}
-    {% block page_title %}My KPI - Delete{% endblock %}
+{% extends 'Site/CheckIn/my_CheckIn/default.html' %}
+    {% block page_title %}My Check-In - Delete{% endblock %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_CheckIn' %}">My CheckIn</a></li>
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_CheckIn_View' CheckIn.checkIn_id %}">View</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:My_CheckIn' company_id %}">My Check-In</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:My_CheckIn_View' company_id CheckIn.check_in_id %}">View</a></li>
         <li class="breadcrumb-item active">Delete</li>
     {% endblock %}
     {% block content %}
-        {% if page_permission %}
-            {% include 'cfao_kenya/CheckIn/my_CheckIn/display_templates/delete.html' %}
-        {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
-        {% endif %}
-
-
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Delete KPI</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">{% csrf_token %}
+                        <p>Are you sure you want to delete Check-In <b><a href="{% url 'Site:My_CheckIn_View' company_id CheckIn.check_in_id %}">{{ CheckIn.check_in_month }}</a></b></p>
+                        <p>You can choose to edit instead; as deleting will not allow submission past the deadline</p>
+                        <button type="submit" value="Confirm" class="btn btn-danger">Confirm Delete</button>
+                        <a href="{% url 'Site:My_CheckIn_Edit' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit Instead</div></a>
+                        <a href="{% url 'Site:My_CheckIn' company_id %}"><div class="float-right btn bg-info" style="margin-right: 10px">Cancel</div></a>
+                    </form>
+                </div>
+                {{ form }}
+            </div>
+        </div>
     {% endblock %}

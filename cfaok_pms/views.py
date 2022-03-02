@@ -14,7 +14,7 @@ class Home(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['staffAccounts'] = Staff.objects.filter(staff_active=True)
+        context['staffAccounts'] = Staff.objects.filter(staff_active=True, staff_person=self.request.user)
         return context
 
 

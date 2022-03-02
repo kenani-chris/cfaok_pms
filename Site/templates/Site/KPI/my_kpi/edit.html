@@ -1,16 +1,238 @@
-{% extends 'cfao_kenya/KPI/my_kpi/default.html' %}
+{% extends 'Site/KPI/my_kpi/default.html' %}
     {% block page_title %}My KPI - Edit{% endblock %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_KPI' %}">My KPI</a></li>
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_KPI_View' kpi.kpi_id %}">View</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:My_KPI' company_id %}">My KPI</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:My_KPI_View' company_id kpi.kpi_id %}">View</a></li>
         <li class="breadcrumb-item active">Edit</li>
     {% endblock %}
     {% block content %}
-        {% if page_permission %}
-            {% include 'cfao_kenya/KPI/my_kpi/display_templates/edit.html' %}
-        {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
-        {% endif %}
+        <div class="card">
+            <div class="card-header">
+                Submit new KPI here
+            </div>
+            {{ form.errors }}
+            <form method="post">
+                {% csrf_token %}
+            <div class="card-body">
+                {{ form.kpi_id.as_hidden }}
+                {{ form.kpi_staff.as_hidden }}
+                {{ form.kpi_pms.as_hidden }}
+                {{ form.kpi_submit_date.as_hidden }}
 
+                {% if kpi_type == "Annual Target" %}
+
+                    KPI Title
+                    {{ form.kpi_title }}
+                    <br>
+                    Description
+                    {{ form.kpi_details }}
+                    <br>
+                    Criteria
+                    {{ form.kpi_criteria }}
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            Target
+                            {{ form.kpi_target }}
+                        </div>
+                        <div class="col-md-4">
+                            Units
+                            {{ form.kpi_units }}
+                        </div>
+                        <div class="col-md-4">
+                            Weight
+                            {{ form.kpi_weight }}
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            Function
+                            {{ form.kpi_function }}
+                        </div>
+                        <div class="col-md-4">
+                            Type
+                            {{ form.kpi_type }}
+                        </div>
+                    </div>
+                {% elif kpi_type == "Monthly Target"%}
+                    {{ form.kpi_target.as_hidden }}
+                    KPI Title
+                    {{ form.kpi_title }}
+                    <br>
+                    Description
+                    {{ form.kpi_details }}
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            Units
+                            {{ form.kpi_units }}
+                        </div>
+                        <div class="col-md-4">
+                            Weight
+                            {{ form.kpi_weight }}
+                        </div>
+                        <div class="col-md-4">
+                            Function
+                            {{ form.kpi_function }}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <table class="table table-bordered">
+                            <thead>
+                                <th>Month</th>
+                                <th>Target</th>
+                                <th>Month</th>
+                                <th>Target</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>April</th>
+                                    <td>{{ form.kpi_april_target }}</td>
+                                    <th>October</th>
+                                    <td>{{ form.kpi_october_target }}</td>
+                                </tr>
+                                <tr>
+                                    <th>May</th>
+                                    <td>{{ form.kpi_may_target }}</td>
+                                    <th>November</th>
+                                    <td>{{ form.kpi_november_target }}</td>
+                                </tr>
+                                <tr>
+                                    <th>June</th>
+                                    <td>{{ form.kpi_june_target }}</td>
+                                    <th>December</th>
+                                    <td>{{ form.kpi_december_target }}</td>
+                                </tr>
+                                <tr>
+                                    <th>July</th>
+                                    <td>{{ form.kpi_july_target }}</td>
+                                    <th>January</th>
+                                    <td>{{ form.kpi_january_target }}</td>
+                                </tr>
+                                <tr>
+                                    <th>August</th>
+                                    <td>{{ form.kpi_august_target }}</td>
+                                    <th>February</th>
+                                    <td>{{ form.kpi_february_target }}</td>
+                                </tr>
+                                <tr>
+                                    <th>September</th>
+                                    <td>{{ form.kpi_september_target }}</td>
+                                    <th>March</th>
+                                    <td>{{ form.kpi_march_target }}</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+
+                {% elif kpi_type == "BSC"%}
+                    {{ form.kpi_target.as_hidden }}
+                    KPI Title
+                    {{ form.kpi_title }}
+                    <br>
+                    Description
+                    {{ form.kpi_details }}
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            Pillar
+                            {{ form.kpi_bsc_pillar }}
+                        </div>
+                        <div class="col-md-4">
+                            Units
+                            {{ form.kpi_units }}
+                        </div>
+                        <div class="col-md-4">
+                            Weight
+                            {{ form.kpi_weight }}
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            Function
+                            {{ form.kpi_function }}
+                        </div>
+                        <div class="col-md-4">
+                            Type
+                            {{ form.kpi_type }}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <table class="table table-bordered">
+                            <thead>
+                                <th>S</th>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>C</th>
+                                <th>D</th>
+                            </thead>
+                            <tbody>
+                                <td>{{ form.kpi_bsc_s_target }}</td>
+                                <td>{{ form.kpi_bsc_a_target }}</td>
+                                <td>{{ form.kpi_bsc_b_target }}</td>
+                                <td>{{ form.kpi_bsc_c_target }}</td>
+                                <td>{{ form.kpi_bsc_d_target }}</td>
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    KPI Title
+                    {{ form.kpi_title }}
+                    <br>
+                    Description
+                    {{ form.kpi_details }}
+                    <br>
+                    Criteria
+                    {{ form.kpi_criteria }}
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            Target
+                            {{ form.kpi_target }}
+                        </div>
+                        <div class="col-md-4">
+                            Units
+                            {{ form.kpi_units }}
+                        </div>
+                        <div class="col-md-4">
+                            Weight
+                            {{ form.kpi_weight }}
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            Function
+                            {{ form.kpi_function }}
+                        </div>
+                        <div class="col-md-4">
+                            Type
+                            {{ form.kpi_type }}
+                        </div>
+                    </div>
+                {% endif %}
+                {{ kpi_type }}
+
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-danger float-right" style="margin: 10px">Clear</button>
+                <button type="submit" class="btn btn-success float-right" style="margin: 10px">Submit</button>
+
+            </div>
+            </form>
+        </div>
 
     {% endblock %}

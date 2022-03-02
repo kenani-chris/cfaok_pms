@@ -1,0 +1,60 @@
+{% extends 'Site/CheckIn/level_down_check_in/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active">Staff Check-In</li>
+    {% endblock %}
+    {% block page_title %}Staff Check-In{% endblock %}
+    {% block content %}
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>levels I head</h5>
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Level</th>
+                            <th>Head</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+                          {% for level in level_head %}
+                                <tr>
+                                    <td><a href="{% url 'Site:Check_in_LevelDownDetail' company_id level.level_id 1%}">{{ level.level_name }}</a></td>
+                                    <td>{{ level.level_head }}</td>
+                                    <td>{{ level.level_description }}</td>
+                                    <td>{{ level.level_category }}</td>
+                                </tr>
+                          {% endfor %}
+                      </tbody>
+                 </table>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h5>levels Down</h5>
+                </div>
+                 <table id="searchTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Level</th>
+                            <th>Head</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+                          {% for level in levels_down %}
+                                <tr>
+                                    <td><a href="{% url 'Site:Check_in_LevelDownDetail' company_id level.level_id 2 %}">{{ level.level_name }}</a></td>
+                                    <td>{{ level.level_head }}</td>
+                                    <td>{{ level.level_description }}</td>
+                                    <td>{{ level.level_category }}</td>
+                                </tr>
+                          {% endfor %}
+                      </tbody>
+                 </table>
+            </div>
+        </div>
+
+    {% endblock %}

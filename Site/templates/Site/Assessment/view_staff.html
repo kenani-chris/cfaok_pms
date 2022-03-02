@@ -1,102 +1,183 @@
-{% extends 'cfao_kenya/Assessment/default.html' %}
+{% extends 'Site/Assessment/default.html' %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Assessment_List' %}">Assessment</a></li>
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:Assessment_View' Assessment.assessment_id %}">{{ Assessment.assessment_name }}</a></li>
-        <li class="breadcrumb-item active">{{ member.first_name }}</li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Assessment_List' company_id %}">Assessment</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Assessment_View' company_id Assessment.assessment_id %}">{{ Assessment.assessment_name }}</a></li>
+        <li class="breadcrumb-item active">{{ member }}</li>
     {% endblock %}
     {% block page_title %}Assessment - {{ Assessment.assessment_name }}{% endblock %}
     {% block content %}
-        {% if page_permission %}
-            <div class="container-fluid">
-                <div class="card">
-                    <table class="table table-bordered">
-                          <thead>
-                            <tr>
-                                <th>
-                                    {{ Assessment.assessment_name }}
-                                </th>
-                                <td>
-                                      From: {{ Assessment.assessment_start_date }}
-                                  </td>
-                                  <td>
-                                      To: {{ Assessment.assessment_end_date }}
-                                  </td>
-                                  <td>
-                                      Scoring use: {{ Assessment.assessment_scoring_use }}
-                                  </td>
-                            </tr>
-                            <tr>
-                                <th>Evaluating</th>
-                                <th colspan="3">{{ member.get_full_name }}</th>
-                            </tr>
-                          </thead>
 
-                     </table>
-                    <table class="table table-bordered table-hover" id="simpleTable">
-                          <thead>
-                              <tr>
-                                  <th>
-                                      Question
-                                  </th>
-                                  <th>
-                                      Status
-                                  </th>
-                                  <th>
-                                      Response
-                                  </th>
-                                  <th>
-                                      Comment
-                                  </th>
-                              </tr>
-                          </thead>
-                         <tbody>
+
+
+        {% for question in question_responses %}
+            <div class="modal fade" id="modal-create-{{ question.0.question_id }}">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"> Question </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
                             {% if assessment_status is True %}
-                                {% for question in question_responses %}
-                                    {% if question.1 %}
-                                        {% for response in question.1 %}
-                                            <tr>
-                                                <td><a href="{% url 'cfao_kenya:Assessment_View_Member_Response_Edit' Assessment.assessment_id member.id direction response.response_id %}">{{ question.0.question }}</a></td>
-                                                <td>{{ question.2  }}</td>
-                                                <td>{{ response.response_submitted }}</td>
-                                                <td>{{ response.response_comment }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% else %}
-                                        <tr>
-                                            <td><a href="{% url 'cfao_kenya:Assessment_View_Member_Response' Assessment.assessment_id member.id direction question.0.question_id %}">{{ question.0.question }}</a></td>
-                                            <td>{{ question.2  }}</td>
-                                            <td>{{ None }}</td>
-                                            <td>{{ None }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
+                                <form method="post" id="form-create-{{ question.0.question_id }}" action="{% url 'Site:Assessment_Create_Response' company_id Assessment.assessment_id member.staff_id direction question.0.question_id %}">
+                                    {% csrf_token %}
+                                    <h3>{{ question.0.question }}</h3>
+                                    <br>
+                                    <div class="col-sm-12">
+                                        <span class="irs-shadow shadow-single container-fluid" style="display: none;"></span>
+                                        <input type="text" name="question_response_value" value="" id="question_slider_create_{{ question.0.question_id }}" class="irs-hidden-input" tabindex="-1" readonly="" hidden onchange="displayCommentText('create', '{{ question.0.question_id }}')">
+                                    </div>
+                                    <br>
+                                    <h5 id="commentTag_create_{{ question.0.question_id }}">Comment</h5>
+                                    <textarea name="question_response_comment" id="question_comment_create_{{ question.0.question_id }}" required></textarea>
+                                    <br>
+                                  <button type="submit" class="btn btn-info float-right">Save & Back</button>
+                                </form>
                             {% else %}
-                                {% for question in question_responses %}
-                                    {% if question.1 %}
-                                        {% for response in question.1 %}
-                                            <tr>
-                                                <td>{{ question.0.question }}</td>
-                                                <td>{{ question.2  }}</td>
-                                                <td>{{ response.response_submitted }}</td>
-                                                <td>{{ response.response_comment }}</td>
-                                            </tr>
-                                        {% endfor %}
+                                {% include 'Site/errors/assessment_deadline_complete.html' %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        
+        {% for question in question_responses %}
+            {% if question.1 %}
+                {% for response in question.1 %}
+                    <div class="modal fade" id="modal-edit-{{ response.response_id }}">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title"> Question </h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    {% if assessment_status is True %}
+                                        <form method="post" id="form-edit-{{ response.response_id }}" action="{% url 'Site:Assessment_Edit_Response' company_id Assessment.assessment_id member.staff_id direction response.response_id %}">
+                                            {% csrf_token %}
+                                            <h3>{{ response.response_question }}</h3>
+                                            <input name="response_id" type="number" value="{{ response.response_id }}" hidden>
+                                            <br>
+                                            <div class="col-sm-12">
+                                                <span class="irs-shadow shadow-single container-fluid" style="display: none;"></span>
+                                                <input type="text" name="question_response_value" value="{{ response.response_submitted }}" id="question_slider_edit_{{ response.response_id}}" class="irs-hidden-input" tabindex="-1" readonly="" hidden onchange="displayCommentText('edit', '{{ response.response_id }}')">
+                                            </div>
+                                            <br>
+                                            <h5 id="commentTag_edit_{{ response.response_id }}">Comment</h5>
+                                            <textarea name="question_response_comment" id="question_comment_edit_{{ response.response_id }}" required>{{ response.response_comment }}</textarea>
+                                            <br>
+                                          <button type="submit" class="btn btn-info float-right">Save & Back</button>
+                                        </form>
                                     {% else %}
+                                        {% include 'Site/errors/assessment_deadline_complete.html' %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+
+
+
+        <div class="container-fluid">
+            <div class="card">
+                <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                            <th>
+                                {{ Assessment.assessment_name }}
+                            </th>
+                            <td>
+                                  From: {{ Assessment.assessment_start_date }}
+                              </td>
+                              <td>
+                                  To: {{ Assessment.assessment_end_date }}
+                              </td>
+                              <td>
+                                  Scoring use: {{ Assessment.assessment_scoring_use }}
+                              </td>
+                        </tr>
+                        <tr>
+                            <th>Evaluating</th>
+                            <th colspan="3">{{ member }}</th>
+                        </tr>
+                      </thead>
+
+                 </table>
+                <table class="table table-bordered table-hover" id="simpleTable">
+                      <thead>
+                          <tr>
+                              <th>
+                                  Question
+                              </th>
+                              <th>
+                                  Status
+                              </th>
+                              <th>
+                                  Response
+                              </th>
+                              <th>
+                                  Comment
+                              </th>
+                          </tr>
+                      </thead>
+                     <tbody>
+                        {% if assessment_status is True %}
+                            {% for question in question_responses %}
+                                {% if question.1 %}
+                                    {% for response in question.1 %}
+                                        <tr>
+                                            <!--<td><a href="{% url 'Site:Assessment_View_Member_Response_Edit' company_id Assessment.assessment_id member.staff_id direction response.response_id %}">{{ question.0.question }}</a></td>-->
+                                            <td><a href="#" data-toggle="modal" data-target="#modal-edit-{{ response.response_id }}">{{ response.response_question }}</a></td>
+                                            <td>{{ question.2  }}</td>
+                                            <td>{{ response.response_submitted }}</td>
+                                            <td>{{ response.response_comment }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <!--<td><a href="{% url 'Site:Assessment_View_Member_Response' company_id Assessment.assessment_id member.staff_id direction question.0.question_id %}">{{ question.0.question }}</a></td>-->
+                                        <td><a href="#" data-toggle="modal" data-target="#modal-create-{{ question.0.question_id }}">{{ question.0.question }}</a></td>
+                                        <td>{{ question.2  }}</td>
+                                        <td>{{ None }}</td>
+                                        <td>{{ None }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {% for question in question_responses %}
+                                {% if question.1 %}
+                                    {% for response in question.1 %}
                                         <tr>
                                             <td>{{ question.0.question }}</td>
                                             <td>{{ question.2  }}</td>
-                                            <td>{{ None }}</td>
-                                            <td>{{ None }}</td>
+                                            <td>{{ response.response_submitted }}</td>
+                                            <td>{{ response.response_comment }}</td>
                                         </tr>
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
-                         </tbody>
-                     </table>
-                </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td>{{ question.0.question }}</td>
+                                        <td>{{ question.2  }}</td>
+                                        <td>{{ None }}</td>
+                                        <td>{{ None }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                     </tbody>
+                 </table>
             </div>
-        {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
-        {% endif %}
+        </div>
+
 
     {% endblock %}

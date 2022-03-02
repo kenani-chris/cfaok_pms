@@ -73,7 +73,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">Help</a>
+        <a href="{% url 'Site:Help_List' company_id %}" class="nav-link">Help</a>
       </li>
     </ul>
 
@@ -98,8 +98,8 @@
                   {{ request.user.get_full_name }}
               </h3>
               <p class="text-sm">{{ request.user.email }}</p>
-              <a href="" class="btn btn-sm btn-default float-left m-2">Profile</a>
-              <a href="" class="btn btn-sm btn-danger float-right m-2">Logout</a>
+              <a href="{% url 'Site:Profile' company_id %}" class="btn btn-sm btn-default float-left m-2">Profile</a>
+              <a href="{% url 'logout' %}" class="btn btn-sm btn-danger float-right m-2">Logout</a>
             <!-- Message End -->
           </a>
         </div>
@@ -115,7 +115,7 @@
               </div><!-- /.col -->
               <div class="col-md-6">
                 <ol class="breadcrumb float-sm-right">
-                  <li class="breadcrumb-item"><a href="{% url 'cfao_kenya:Dashboard' %}">Dashboard</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'Site:Dashboard' company_id %}">Dashboard</a></li>
                   {% block breadcrumb %}{% endblock %}
                 </ol>
               </div>
@@ -156,18 +156,21 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-warning elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link bg-white">
+    <a href="{% url 'Site:Dashboard' company_id %}" class="brand-link bg-white">
       <img src="{% static 'images/logo_pms.png' %}" alt="AdminLTE Logo"
            style="width: 100%">
-
     </a>
+
 
     <!-- Sidebar -->
     <div class="sidebar">
+        <div class="text-center user-panel  mt-1 pb-1 mb-1 text-light">
+            {{ company }}
+        </div>
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="info">
-          <a href="#" class="d-block">{{ request.user.get_full_name }}</a>
+          <a href="{% url 'Site:Profile' company_id %}" class="d-block">{{ request.user.get_full_name }}</a>
         </div>
       </div>
 
@@ -177,7 +180,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="{% url 'cfao_kenya:Dashboard' %}" class="nav-link">
+            <a href="{% url 'Site:Dashboard' company_id %}" class="nav-link">
               <i class="nav-icon fas fa-home"></i>
               <p>
                 Dashboard
@@ -193,18 +196,28 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'cfao_kenya:My_KPI' %}" class="nav-link">
-              <i class="nav-icon fas fa-user"></i>
+            <a href="{% url 'Site:My_KPI' company_id %}" class="nav-link">
+              <i class="nav-icon fas fa-tasks"></i>
               <p>
                 My KPI
               </p>
             </a>
           </li>
-          {% for category in categories_up_list %}
+          {% if staff_is_level_head %}
+              <li class="nav-item">
+                <a href="{% url 'Site:KPI_LevelDown' company_id %}" class="nav-link">
+                  <i class="nav-icon fas fa-users"></i>
+                  <p>
+                    Staff KPI
+                  </p>
+                </a>
+              </li>
+          {% endif %}
+          {% for category in category_up_list %}
               {% if category.category_kpi_view is True %}
                 <li class="nav-item">
-                    <a href="{% url 'cfao_kenya:KPI_Category' category.category_id %}" class="nav-link">
-                      <i class="nav-icon fas fa-users"></i>
+                    <a href="{% url 'Site:KPI_Category' company_id category.category_id %}" class="nav-link">
+                      <i class="nav-icon fas fa-building"></i>
                       <p>
                         {{ category.category_name }} KPI
                       </p>
@@ -212,23 +225,32 @@
                 </li>
               {% endif %}
            {% endfor %}
-          <li class="nav-item has-treeview menu-open">
+            <li class="nav-item has-treeview menu-open">
             <a href="#" class="nav-link bg-some-grey">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
-                CheckIn
+                Check-In
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'cfao_kenya:My_CheckIn' %}" class="nav-link">
-              <i class="nav-icon fas fa-calendar-alt"></i>
+            <a href="{% url 'Site:My_CheckIn' company_id %}" class="nav-link">
+              <i class="nav-icon fas fa-calendar-check"></i>
               <p>
-                My CheckIn
+                My Check-In
               </p>
             </a>
           </li>
-
+          {% if staff_is_level_head %}
+              <li class="nav-item">
+                <a href="{% url 'Site:Check_in_LevelDown' company_id %}" class="nav-link">
+                  <i class="nav-icon fas fa-calendar-alt"></i>
+                  <p>
+                    Staff Check-In
+                  </p>
+                </a>
+              </li>
+          {% endif %}
           <li class="nav-item has-treeview menu-open">
             <a href="#" class="nav-link bg-some-grey">
               <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -237,30 +259,11 @@
               </p>
             </a>
           </li>
-
           <li class="nav-item">
-            <a href="{% url 'cfao_kenya:Assessment_List' %}" class="nav-link">
-              <i class="nav-icon fas fa-tachometer"></i>
+            <a href="{% url 'Site:Assessment_List' company_id %}" class="nav-link">
+              <i class="nav-icon fas fa-user-check"></i>
               <p>
-                Assessment
-              </p>
-            </a>
-          </li>
-
-          <li class="nav-item has-treeview menu-open">
-            <a href="#" class="nav-link bg-some-grey">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Reports
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link disabled">
-              <i class="nav-icon fas fa-folder"></i>
-              <p>
-                Reports
-                <span class="right badge badge-danger">Coming Soon</span>
+                Assessment S/Tl
               </p>
             </a>
           </li>
@@ -274,14 +277,26 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'cfao_kenya:Admin_Home' %}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+            <a href="{% url 'Site:Assessment_List' company_id %}" class="nav-link">
+              <i class="nav-icon fas fa-folder-open"></i>
               <p>
-                Admin
+                Reports
               </p>
             </a>
           </li>
-
+          <li class="nav-item">
+            <a href="{% url 'Site:Assessment_List' company_id %}" class="nav-link">
+              <i class="nav-icon fas fa-volume-up"></i>
+              <p>
+                Communication
+              </p>
+            </a>
+          </li>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
 
         </ul>
       </nav>
@@ -432,63 +447,90 @@
   });
 </script>
 <script>
-  {% if form.response_submitted.value is not None %}
-      resp_val = {{ form.response_submitted.value }}
-  {% else %}
-      resp_val = 0
-  {% endif %}
+
   $(function () {
     /* BOOTSTRAP SLIDER */
     $('.slider').bootstrapSlider()
 
-    $('#{{ form.response_submitted.id_for_label }}').ionRangeSlider({
-      skin: 'round',
-      min     : {{ Assessment.assessment_min_score }},
-      max     : {{ Assessment.assessment_max_score }},
-      from    : resp_val,
-      type    : 'single',
-      step    : 0.1,
-      postfix : ' Score',
-      prettify: false,
-      hasGrid : true,
-      hideMinMax: true,
-      grid: true,
-      grid_num: 4,
-    })
+    {% for question in question_responses %}
+        var slider = "#question_slider_create_" + "{{ question.0.question_id }}";
+
+        $(slider).ionRangeSlider({
+          skin: 'round',
+          min     : {{ Assessment.assessment_min_score }},
+          max     : {{ Assessment.assessment_max_score }},
+          from    : 0,
+          type    : 'single',
+          step    : 0.1,
+          postfix : ' Score',
+          prettify: false,
+          hasGrid : true,
+          hideMinMax: true,
+          grid: true,
+          grid_num: 4,
+        })
+    {% endfor %}
+
+    {% for question in question_responses %}
+      {% if question.1 %}
+        {% for response in question.1 %}
+            var slider = "#question_slider_edit_" + "{{ response.response_id }}";
+
+            $(slider).ionRangeSlider({
+              skin: 'round',
+              min     : {{ Assessment.assessment_min_score }},
+              max     : {{ Assessment.assessment_max_score }},
+              from    : {{ response.response_submitted }},
+              type    : 'single',
+              step    : 0.1,
+              postfix : ' Score',
+              prettify: false,
+              hasGrid : true,
+              hideMinMax: true,
+              grid: true,
+              grid_num: 4,
+            })
+
+            displayCommentText("edit", {{ response.response_id }});
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
 
   })
 </script>
 <script>
-    function displayCommentText()
+    function displayCommentText(x, y)
     {
-        var score = $('#{{ form.response_submitted.id_for_label }}').val();
+
+        var questionSlider = "#question_slider_" + x + "_" + y;
+        var questionComment = "#question_comment_" + x + "_" + y;
+        var commentTag = "#commentTag_" + x + "_" + y;
+
+        var score = $(questionSlider).val();
 
         var min_val = parseInt("{{ Assessment.assessment_min_score }}");
         var max_val = parseInt("{{ Assessment.assessment_max_score }}");
         var diff =max_val - min_val;
         perc_score = score/diff;
         if(perc_score <= 0.25 || perc_score >= 0.75){
-            $('#{{ form.response_comment.id_for_label }}').show();
-            $('#{{ form.response_comment.id_for_label }}').prop('required',true);
-            $('#commentTag').show();
+            $(questionComment).show();
+            $(questionComment).prop('required',true);
+            $(commentTag).show();
         }
         else{
-            $('#{{ form.response_comment.id_for_label }}').prop('required',false);
-            $('#{{ form.response_comment.id_for_label }}').hide();
-            $('#{{ form.response_comment.id_for_label }}').val("");
-            $('#commentTag').hide();
+            $(questionComment).prop('required',false);
+            $(questionComment).hide();
+            $(questionComment).val("");
+            $(commentTag).hide();
         }
     }
 
 </script>
 <script>
-    window.onload=displayCommentText();
-</script>
-<script>
   $(function () {
-      kpi_type = "{{ kpi.kpi_type }}";
+      let kpi_type = "{{ kpi.kpi_type }}";
 
-      apr = "{{ kpi.kpi_april_score }}";
+      let apr = "{{ kpi.kpi_april_score }}";
       may = "{{ kpi.kpi_may_score }}";
       jun = "{{ kpi.kpi_june_score }}";
       jul = "{{ kpi.kpi_july_score }}";
@@ -548,6 +590,14 @@
 
       }
 
+      let targets = [];
+      {% if kpi_type == "BSC" %}
+          targets = ["{{ kpi.kpi_bsc_s_target }}", "{{ kpi.kpi_bsc_s_target }}", "{{ kpi.kpi_bsc_s_target }}", "{{ kpi.kpi_bsc_s_target }}", "{{ kpi.kpi_bsc_s_target }}", "{{ kpi.kpi_bsc_s_target }}", "{{ kpi.kpi_bsc_s_target }}", "{{ kpi.kpi_bsc_s_target }}", "{{ kpi.kpi_bsc_s_target }}", "{{ kpi.kpi_bsc_s_target }}", "{{ kpi.kpi_bsc_s_target }}", "{{ kpi.kpi_bsc_s_target }}" ];
+      {% elif kpi_type == "Monthly Target" %}
+          targets = ["{{ kpi.kpi_april_target }}", "{{ kpi.kpi_may_target }}", "{{ kpi.kpi_june_target }}", "{{ kpi.kpi_july_target }}", "{{ kpi.kpi_august_target }}", "{{ kpi.kpi_september_target }}", "{{ kpi.kpi_october_target }}", "{{ kpi.kpi_november_target }}", "{{ kpi.kpi_december_target }}", "{{ kpi.kpi_january_target }}", "{{ kpi.kpi_february_target }}", "{{ kpi.kpi_march_target }}" ];
+      {% else %}
+          targets = ["{{ kpi.kpi_target }}", "{{ kpi.kpi_target }}", "{{ kpi.kpi_target }}", "{{ kpi.kpi_target }}", "{{ kpi.kpi_target }}", "{{ kpi.kpi_target }}", "{{ kpi.kpi_target }}", "{{ kpi.kpi_target }}", "{{ kpi.kpi_target }}", "{{ kpi.kpi_target }}", "{{ kpi.kpi_target }}", "{{ kpi.kpi_target }}" ];
+      {% endif %}
 
     var Data = {
       labels  : ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
@@ -572,7 +622,7 @@
           pointStrokeColor    : '#c1c7d1',
           pointHighlightFill  : '#fff',
           pointHighlightStroke: 'rgba(220,220,220,1)',
-          data                : [{{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, {{ kpi.kpi_target }}, ]
+          data                : targets
         },
       ]
     }

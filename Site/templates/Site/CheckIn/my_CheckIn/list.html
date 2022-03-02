@@ -1,80 +1,37 @@
-{% extends 'cfao_kenya/CheckIn/my_CheckIn/default.html' %}
+{% extends 'Site/CheckIn/my_CheckIn/default.html' %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active">My CheckIn</li>
+        <li class="breadcrumb-item active">My Check-In</li>
     {% endblock %}
-    {% block page_title %}My CheckIn{% endblock %}
+    {% block page_title %}My Check-In{% endblock %}
     {% block content %}
         <div class="container-fluid">
-            <div class="row">
-              <div class="col-12 col-sm-6 col-md-3">
-                <div class="info-box">
-                  <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
-
-                  <div class="info-box-content">
-                    <span class="info-box-text">Approved CIs</span>
-                    <span class="info-box-number">
-                        {{ approved_ci.count }}
-                    </span>
-                  </div>
-                  <!-- /.info-box-content -->
+            <div class="card">
+                <div class="card-header">
+                    CheckIns <div class="float-right"><a href="{% url 'Site:My_CheckIn_Create' company_id %}">New Check-In</a></div>
                 </div>
-                <!-- /.info-box -->
-              </div>
-              <!-- /.col -->
-              <div class="col-12 col-sm-6 col-md-3">
-                <div class="info-box mb-3">
-                  <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-thumbs-up"></i></span>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Month</th>
+                            <th>Submit Date</th>
+                            <th>Status</th>
+                            <th>Confirm Date</th>
+                            <th>Confirm by</th>
+                          </tr>
+                          </thead>
+                      <tbody>
 
-                  <div class="info-box-content">
-                    <span class="info-box-text">Pending CIs</span>
-                    <span class="info-box-number">
-                        {{ pending_ci.count }}
-                    </span>
-                  </div>
-                  <!-- /.info-box-content -->
-                </div>
-                <!-- /.info-box -->
-              </div>
-              <!-- /.col -->
-
-              <!-- fix for small devices only -->
-              <div class="clearfix hidden-md-up"></div>
-
-              <div class="col-12 col-sm-6 col-md-3">
-                <div class="info-box mb-3">
-                  <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-shopping-cart"></i></span>
-
-                  <div class="info-box-content">
-                    <span class="info-box-text">Rejected CIs</span>
-                    <span class="info-box-number">
-                        {{ rejected_ci.count }}
-                    </span>
-                  </div>
-                  <!-- /.info-box-content -->
-                </div>
-                <!-- /.info-box -->
-              </div>
-              <!-- /.col -->
-              <div class="col-12 col-sm-6 col-md-3">
-                <div class="info-box mb-3">
-                  <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
-
-                  <div class="info-box-content">
-                    <span class="info-box-text">CI Issues</span>
-                    <span class="info-box-number">2,000</span>
-                  </div>
-                  <!-- /.info-box-content -->
-                </div>
-                <!-- /.info-box -->
-              </div>
-              <!-- /.col -->
+                          {% for ci in CheckIn %}
+                              <tr>
+                              <td><a href="{% url 'Site:My_CheckIn_View' company_id ci.check_in_id %}">{{ ci.check_in_month }}</a></td>
+                                <td>{{ ci.check_in_submit_date }}</td>
+                                <td>{{ ci.check_in_status }}</td>
+                                <td>{{ ci.check_in_approval_date }}</td>
+                                <td>{{ ci.check_in_approver }}</td>
+                          {% endfor %}
+                      </tbody>
+                 </table>
             </div>
         </div>
-
-        {% if page_permission %}
-            {% include 'cfao_kenya/CheckIn/my_CheckIn/display_templates/list.html' %}
-        {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
-        {% endif %}
 
     {% endblock %}

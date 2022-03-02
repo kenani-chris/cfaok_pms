@@ -1,14 +1,101 @@
-{% extends 'cfao_kenya/CheckIn/my_CheckIn/default.html' %}
+{% extends 'Site/CheckIn/my_CheckIn/default.html' %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_CheckIn' %}">My CheckIn</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:My_CheckIn' company_id %}">My Check-In</a></li>
         <li class="breadcrumb-item active">View</li>
     {% endblock %}
-    {% block page_title %}My CheckIn - View{% endblock %}
+    {% block page_title %}My Check-In - View{% endblock %}
     {% block content %}
-        {% if page_permission %}
-            {% include 'cfao_kenya/CheckIn/my_CheckIn/display_templates/view.html' %}
-        {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
-        {% endif %}
+        <!-- KPI Form -->
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <b>{{ CheckIn.check_in_month }} Check-In</b>
+                    <a href="{% url 'Site:My_CheckIn_Delete' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-danger" style="margin-right: 10px">Delete</div></a>
+                    <a href="{% url 'Site:My_CheckIn_Edit' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit</div></a>
+                </div>
+                <table class="table table-bordered">
+                      <tbody>
+                          <tr class="bg-color2">
+                              <th>
+                                  Status
+                              </th>
+                              <th>
+                                  Submit Date
+                              </th>
+                              <th>
+                                  Approval Date
+                              </th>
+                              <th>
+                                  Appprover
+                              </th>
+                          </tr>
+                          <tr>
+                              <td>
+                                  {{ CheckIn.check_in_status }}
+                              </td>
+                              <td>
+                                  {{ CheckIn.check_in_submit_date }}
+                              </td>
+                              <td>
+                                  {{ CheckIn.check_in_approval_date }}
+                              </td>
+                              <td>
+                                  {{ CheckIn.check_in_approver }}
+                              </td>
+                          </tr>
+                      </tbody>
+                 </table>
+                 <table class="table table-bordered table-hover">
+                      <tbody>
+                          <tr>
+                              <th>
+                                  Perfomance Areas
+                              </th>
+                              <td>
+                                  {{ CheckIn.check_in_performance_area }}
+                              </td>
+                          </tr>
+
+                          <tr>
+                              <th>
+                                  Progress Discussed
+                              </th>
+                              <td>
+                                  {{ CheckIn.check_in_progress_discussed }}
+                              </td>
+                          </tr>
+
+                          <tr>
+                              <th>
+                                  Perfomance Areas
+                              </th>
+                              <td>
+                                  {{ CheckIn.check_in_team_member_actions }}
+                              </td>
+                          </tr>
+
+                          <tr>
+                              <th>
+                                  Perfomance Areas
+                              </th>
+                              <td>
+                                  {{ CheckIn.check_in_team_leader_support }}
+                              </td>
+                          </tr>
+
+                          <tr>
+                              <th>
+                                  Team Leader Comment
+                              </th>
+                              <td>
+                                  {{ CheckIn.check_in_team_leader_comment }}
+                              </td>
+                          </tr>
+
+                      </tbody>
+                 </table>
+
+            </div>
+        </div>
 
     {% endblock %}

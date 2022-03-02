@@ -1,0 +1,44 @@
+{% extends 'Site/Help/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active">Help</li>
+    {% endblock %}
+    {% block page_title %}Help{% endblock %}
+    {% block content %}
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Help Requests</h5>
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>Staff</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Request</th>
+                            <th>Close Date</th>
+                            <th>Last Edit</th>
+
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for help in help_list %}
+                              <tr>
+                                  <td><a href="{% url 'Site:Help_Edit' company_id help.help_id %}">Help {{ help.help_id }}</a></td>
+                                <td>{{ help.help_staff }}</td>
+                                <td>{{ help.help_log_date }}</td>
+                                <td>{{ help.help_status }}</td>
+                                <td>{{ help.help_requested }}</td>
+                                <td>{{ help.help_close_edit }}</td>
+                                <td>{{ help.help_last_edit }}</td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                 </table>
+            </div>
+        </div>
+
+
+    {% endblock %}

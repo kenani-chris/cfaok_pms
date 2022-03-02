@@ -1,73 +1,75 @@
-{% extends 'cfao_kenya/KPI/my_kpi/default.html' %}
+{% extends 'Site/KPI/my_kpi/default.html' %}
     {% block breadcrumb %}
         <li class="breadcrumb-item active">My KPI</li>
     {% endblock %}
     {% block page_title %}My KPI{% endblock %}
     {% block content %}
+
         <div class="container-fluid">
-            <div class="row">
-              <div class="col-12 col-sm-6 col-md-3">
-                <div class="info-box">
-                  <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
-
-                  <div class="info-box-content">
-                    <span class="info-box-text">Approved KPIs</span>
-                    <span class="info-box-number">
-                        {{ approved_kpi.count }}
-                    </span>
-                  </div>
-                  <!-- /.info-box-content -->
+            <div class="card">
+                <div class="card-header">
+                    <h5>KPIs</h5>
                 </div>
-                <!-- /.info-box -->
-              </div>
-              <!-- /.col -->
-              <div class="col-12 col-sm-6 col-md-3">
-                <div class="info-box mb-3">
-                  <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-thumbs-up"></i></span>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>KPI</th>
+                            <th>Function</th>
+                            <th>Calculation</th>
+                            <th>Weight</th>
+                            <th>Target</th>
+                            <th>Status</th>
+                            <th>Submit Date</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+                          {% for kpi in submitted_kpi %}
+                              <tr>
+                                <td><a href="{% url 'Site:My_KPI_View' company_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                                <td>{{ kpi.kpi_function }}</td>
+                                <td>{{ kpi.kpi_type }}</td>
+                                <td>{{ kpi.kpi_weight }}</td>
+                                <td>{{ kpi.kpi_target }}</td>
+                                <td>{{ kpi.kpi_status }}</td>
+                                <td>{{ kpi.kpi_submit_date }}</td>
 
-                  <div class="info-box-content">
-                    <span class="info-box-text">Pending KPIs</span>
-                    <span class="info-box-number">
-                        <div id="pending"></div>
-                        <script>
-                            var p = parseInt({{ pending_kpi.count }}) + parseInt({{ submitted_kpi.count}});
-                            document.getElementById('pending').innerHTML = p;
-                        </script>
+                          {% endfor %}
+                          {% for kpi in pending_kpi %}
+                              <tr>
+                                <td><a href="{% url 'Site:My_KPI_View' company_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                                <td>{{ kpi.kpi_function }}</td>
+                                <td>{{ kpi.kpi_type }}</td>
+                                <td>{{ kpi.kpi_weight }}</td>
+                                <td>{{ kpi.kpi_target }}</td>
+                                <td>{{ kpi.kpi_status }}</td>
+                                <td>{{ kpi.kpi_submit_date }}</td>
 
-                    </span>
-                  </div>
-                  <!-- /.info-box-content -->
-                </div>
-                <!-- /.info-box -->
-              </div>
-              <!-- /.col -->
+                          {% endfor %}
+                          {% for kpi in approved_kpi %}
+                              <tr>
+                                <td><a href="{% url 'Site:My_KPI_View' company_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                                <td>{{ kpi.kpi_function }}</td>
+                                <td>{{ kpi.kpi_type }}</td>
+                                <td>{{ kpi.kpi_weight }}</td>
+                                <td>{{ kpi.kpi_target }}</td>
+                                <td>{{ kpi.kpi_status }}</td>
+                                <td>{{ kpi.kpi_submit_date }}</td>
 
-              <!-- fix for small devices only -->
-              <div class="clearfix hidden-md-up"></div>
+                          {% endfor %}
+                          {% for kpi in rejected_kpi %}
+                              <tr>
+                                <td>{{ kpi.kpi_title }}</td>
+                                <td>{{ kpi.kpi_function }}</td>
+                                <td>{{ kpi.kpi_type }}</td>
+                                <td>{{ kpi.kpi_weight }}</td>
+                                <td>{{ kpi.kpi_target }}</td>
+                                <td>{{ kpi.kpi_status }}</td>
+                                <td>{{ kpi.kpi_submit_date }}</td>
 
-              <div class="col-12 col-sm-6 col-md-3">
-                <div class="info-box mb-3">
-                  <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-shopping-cart"></i></span>
-
-                  <div class="info-box-content">
-                    <span class="info-box-text">Rejected KPIs</span>
-                    <span class="info-box-number">
-                        {{ rejected_kpi.count }}
-                    </span>
-                  </div>
-                  <!-- /.info-box-content -->
-                </div>
-                <!-- /.info-box -->
-              </div>
-              </div>
-              <!-- /.col -->
+                          {% endfor %}
+                      </tbody>
+                 </table>
             </div>
         </div>
-
-        {% if page_permission %}
-            {% include 'cfao_kenya/KPI/my_kpi/display_templates/list.html' %}
-        {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
-        {% endif %}
 
     {% endblock %}

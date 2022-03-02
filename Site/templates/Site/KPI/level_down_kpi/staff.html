@@ -1,0 +1,1141 @@
+{% extends 'Site/KPI/level_down_kpi/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Site:KPI_LevelDown' company_id %}">Staff KPI</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:KPI_LevelDownDetail' company_id level.level_id %}">{{ level.level_name }}</a></li>
+        <li class="breadcrumb-item active">PF {{ select_staff.staff_pf_number }}</li>
+    {% endblock %}
+    {% block page_title %}Staff KPI - {{ select_staff }}{% endblock %}
+    {% block content %}
+        <style>
+            input {
+                min-width: 120px;
+            }
+
+        </style>
+
+        <!-- KPI Form -->
+
+        <div class="container-fluid">
+            {% include 'Site/KPI/level_down_kpi/display_templates/kpi_bar_chart.html' %}
+            <div class="card">
+                <div class="card-header">
+                    <h5>KPIs</h5>
+                    {{ kpi_type }}
+                </div>
+                <div class="card-body" style="overflow-x: scroll">
+                    {% for kpi in kpis %}
+                        <div class="modal fade" id="modal-{{ kpi.kpi_id }}">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">{{ kpi.kpi_title }}</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form method="post" action="{% url 'Site:Staff_KPI_Results' company_id level.level_id select_staff.staff_id kpi.kpi_id %}" id="form-{{ kpi.kpi_id }}">
+                                                {% csrf_token %}
+                                    <div class="modal-body">
+                                        {% if kpi.kpi_status != "Approved" %}
+                                                <input type="number" value="{{ kpi.kpi_id }}" name="kpi_id" hidden>
+                                            {% if kpi_type == "Monthly Target" %}
+                                                <table class="table table-bordered table-hover">
+                                                      <tbody>
+                                                          <tr>
+                                                              <th>
+                                                                  Description
+                                                              </th>
+                                                              <td>
+                                                                  {{ kpi.kpi_details }}
+                                                              </td>
+                                                          </tr>
+                                                      </tbody>
+                                                 </table>
+                                                <table class="table table-bordered">
+                                                      <tbody>
+                                                          <tr class="bg-color2">
+                                                              <th>
+                                                                  Status
+                                                              </th>
+                                                              <th>
+                                                                  Units
+                                                              </th>
+                                                              <th>
+                                                                  Function
+                                                              </th>
+                                                              <th>
+                                                                  Weight
+                                                              </th>
+                                                              <th>
+
+                                                              </th>
+                                                          </tr>
+                                                          <tr>
+                                                              <td>
+                                                                  {{ kpi.kpi_status }}
+                                                              </td>
+                                                              <td>
+                                                                  {{ kpi.kpi_units }}
+                                                              </td>
+                                                              <td>
+                                                                  {{ kpi.kpi_function }}
+                                                              </td>
+                                                              <td>
+                                                                  {{ kpi.kpi_weight }}
+                                                              </td>
+                                                              <td>
+
+                                                              </td>
+                                                          </tr>
+
+                                                      </tbody>
+                                                 </table>
+                                                 <div style="overflow-x: scroll">
+                                                    <table class="table table-bordered table-hover">
+                                                        <thead>
+                                                            <tr class="bg-color1">
+                                                                <th></th>
+                                                                <th>Apr</th>
+                                                                <th>May</th>
+                                                                <th>Jun</th>
+                                                                <th>Jul</th>
+                                                                <th>Aug</th>
+                                                                <th>Sep</th>
+                                                                <th>Oct</th>
+                                                                <th>Nov</th>
+                                                                <th>Dec</th>
+                                                                <th>Jan</th>
+                                                                <th>Feb</th>
+                                                                <th>Mar</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th>Target</th>
+                                                                <td>{{ kpi.kpi_april_target }}</td>
+                                                                <td>{{ kpi.kpi_may_target }}</td>
+                                                                <td>{{ kpi.kpi_june_target }}</td>
+                                                                <td>{{ kpi.kpi_july_target }}</td>
+                                                                <td>{{ kpi.kpi_august_target }}</td>
+                                                                <td>{{ kpi.kpi_september_target }}</td>
+                                                                <td>{{ kpi.kpi_october_target }}</td>
+                                                                <td>{{ kpi.kpi_november_target }}</td>
+                                                                <td>{{ kpi.kpi_december_target }}</td>
+                                                                <td>{{ kpi.kpi_january_target }}</td>
+                                                                <td>{{ kpi.kpi_february_target }}</td>
+                                                                <td>{{ kpi.kpi_march_target }}</td>
+                                                            </tr>
+                                                            <tr {% if kpi.kpi_all_results_approve %} class="bg-success" {% endif %}>
+                                                                <th>Actuals</th>
+
+                                                                {% if kpi.kpi_april_score_approve %}
+                                                                    <td class="bg-success">
+                                                                        {{ kpi.kpi_april_score }}
+                                                                        <input type="number" name="april_score" value="{{ kpi.kpi_april_score }}" hidden>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td><input  style="width: 100px" type="number" name="april_score" value="{{ kpi.kpi_april_score }}"></td>
+                                                                {% endif %}
+
+                                                                {% if kpi.kpi_may_score_approve %}
+                                                                    <td class="bg-success">
+                                                                        {{ kpi.kpi_may_score }}
+                                                                        <input type="number" name="may_score" value="{{ kpi.kpi_may_score }}" hidden>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td><input type="number" name="may_score" value="{{ kpi.kpi_may_score }}"></td>
+                                                                {% endif %}
+
+                                                                {% if kpi.kpi_june_score_approve %}
+                                                                    <td class="bg-success">
+                                                                        {{ kpi.kpi_june_score }}
+                                                                        <input type="number" name="june_score" value="{{ kpi.kpi_june_score }}" hidden>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td><input type="number" name="june_score" value="{{ kpi.kpi_june_score }}"></td>
+                                                                {% endif %}
+
+                                                                {% if kpi.kpi_july_score_approve %}
+                                                                    <td class="bg-success">
+                                                                        {{ kpi.kpi_july_score }}
+                                                                        <input type="number" name="july_score" value="{{ kpi.kpi_july_score }}" hidden>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td><input type="number" name="july_score" value="{{ kpi.kpi_july_score }}"></td>
+                                                                {% endif %}
+
+                                                                {% if kpi.kpi_august_score_approve %}
+                                                                    <td class="bg-success">
+                                                                        {{ kpi.kpi_august_score }}
+                                                                        <input type="number" name="august_score" value="{{ kpi.kpi_august_score }}" hidden>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td><input type="number" name="august_score" value="{{ kpi.kpi_august_score }}"></td>
+                                                                {% endif %}
+
+                                                                {% if kpi.kpi_september_score_approve %}
+                                                                    <td class="bg-success">
+                                                                        {{ kpi.kpi_september_score }}
+                                                                        <input type="number" name="september_score" value="{{ kpi.kpi_september_score }}" hidden>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td><input type="number" name="september_score" value="{{ kpi.kpi_september_score }}"></td>
+                                                                {% endif %}
+
+                                                                {% if kpi.kpi_october_score_approve %}
+                                                                    <td class="bg-success">
+                                                                        {{ kpi.kpi_october_score }}
+                                                                        <input type="number" name="october_score" value="{{ kpi.kpi_october_score }}" hidden>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td><input type="number" name="october_score" value="{{ kpi.kpi_october_score }}"></td>
+                                                                {% endif %}
+
+                                                                {% if kpi.kpi_november_score_approve %}
+                                                                    <td class="bg-success">
+                                                                        {{ kpi.kpi_november_score }}
+                                                                        <input type="number" name="november_score" value="{{ kpi.kpi_november_score }}" hidden>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td><input type="number" name="november_score" value="{{ kpi.kpi_november_score }}"></td>
+                                                                {% endif %}
+
+                                                                {% if kpi.kpi_december_score_approve %}
+                                                                    <td class="bg-success">
+                                                                        {{ kpi.kpi_december_score }}
+                                                                        <input type="number" name="december_score" value="{{ kpi.kpi_december_score }}" hidden>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td><input type="number" name="december_score" value="{{ kpi.kpi_december_score }}"></td>
+                                                                {% endif %}
+
+                                                                {% if kpi.kpi_january_score_approve %}
+                                                                    <td class="bg-success">
+                                                                        {{ kpi.kpi_january_score }}
+                                                                        <input type="number" name="january_score" value="{{ kpi.kpi_january_score }}" hidden>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td><input type="number" name="january_score" value="{{ kpi.kpi_january_score }}"></td>
+                                                                {% endif %}
+
+
+                                                                {% if kpi.kpi_february_score_approve %}
+                                                                    <td class="bg-success">
+                                                                        {{ kpi.kpi_february_score }}
+                                                                        <input type="number" name="february_score" value="{{ kpi.kpi_february_score }}" hidden>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td><input type="number" name="february_score" value="{{ kpi.kpi_february_score }}"></td>
+                                                                {% endif %}
+
+
+                                                                {% if kpi.kpi_march_score_approve %}
+                                                                    <td class="bg-success">
+                                                                        {{ kpi.kpi_march_score }}
+                                                                        <input type="number" name="march_score" value="{{ kpi.kpi_march_score }}" hidden>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td><input type="number" name="march_score" value="{{ kpi.kpi_march_score }}"></td>
+                                                                {% endif %}
+                                                            </tr>
+                                                            <tr>
+                                                                <th>
+                                                                    Approved
+                                                                </th>
+                                                                <td>
+                                                                    {% if kpi.kpi_april_score_approve %}
+                                                                        <input type="checkbox" name="april_score_approve" checked hidden>
+                                                                        Approved
+                                                                    {% else %}
+                                                                        <input type="checkbox" name="april_score_approve">
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {% if kpi.kpi_may_score_approve %}
+                                                                        <input type="checkbox" name="may_score_approve" checked hidden>
+                                                                        Approved
+                                                                    {% else %}
+                                                                        <input type="checkbox" name="may_score_approve">
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {% if kpi.kpi_june_score_approve %}
+                                                                        <input type="checkbox" name="june_score_approve" checked hidden>
+                                                                        Approved
+                                                                    {% else %}
+                                                                        <input type="checkbox" name="june_score_approve">
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {% if kpi.kpi_july_score_approve %}
+                                                                        <input type="checkbox" name="july_score_approve" checked hidden>
+                                                                        Approved
+                                                                    {% else %}
+                                                                        <input type="checkbox" name="july_score_approve">
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {% if kpi.kpi_august_score_approve %}
+                                                                        <input type="checkbox" name="august_score_approve" checked hidden>
+                                                                        Approved
+                                                                    {% else %}
+                                                                        <input type="checkbox" name="august_score_approve">
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {% if kpi.kpi_september_score_approve %}
+                                                                        <input type="checkbox" name="september_score_approve" checked hidden>
+                                                                        Approved
+                                                                    {% else %}
+                                                                        <input type="checkbox" name="september_score_approve">
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {% if kpi.kpi_october_score_approve %}
+                                                                        <input type="checkbox" name="october_score_approve" checked hidden>
+                                                                        Approved
+                                                                    {% else %}
+                                                                        <input type="checkbox" name="october_score_approve">
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {% if kpi.kpi_november_score_approve %}
+                                                                        <input type="checkbox" name="november_score_approve" checked hidden>
+                                                                        Approved
+                                                                    {% else %}
+                                                                        <input type="checkbox" name="november_score_approve">
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {% if kpi.kpi_december_score_approve %}
+                                                                        <input type="checkbox" name="december_score_approve" checked hidden>
+                                                                        Approved
+                                                                    {% else %}
+                                                                        <input type="checkbox" name="december_score_approve">
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {% if kpi.kpi_january_score_approve %}
+                                                                        <input type="checkbox" name="january_score_approve" checked hidden>
+                                                                        Approved
+                                                                    {% else %}
+                                                                        <input type="checkbox" name="january_score_approve">
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {% if kpi.kpi_february_score_approve %}
+                                                                        <input type="checkbox" name="february_score_approve" checked hidden>
+                                                                        Approved
+                                                                    {% else %}
+                                                                        <input type="checkbox" name="february_score_approve">
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {% if kpi.kpi_march_score_approve %}
+                                                                        <input type="checkbox" name="march_score_approve" checked hidden>
+                                                                        Approved
+                                                                    {% else %}
+                                                                        <input type="checkbox" name="march_score_approve">
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                 </div>
+
+                                            {% elif kpi_type == "BSC" %}
+                                                <table class="table table-bordered table-hover">
+                                                      <tbody>
+                                                          <tr>
+                                                              <th>
+                                                                  Description
+                                                              </th>
+                                                              <td>
+                                                                  {{ kpi.kpi_details }}
+                                                              </td>
+                                                          </tr>
+                                                      </tbody>
+                                                 </table>
+                                                <table class="table table-bordered">
+                                                      <tbody>
+                                                          <tr class="bg-color2">
+                                                              <th>
+                                                                  Pillar
+                                                              </th>
+                                                              <th>
+                                                                  Units
+                                                              </th>
+                                                              <th>
+                                                                  Function
+                                                              </th>
+                                                              <th>
+                                                                  Calculation
+                                                              </th>
+                                                              <th>
+                                                                  Weight
+                                                              </th>
+                                                          </tr>
+                                                          <tr>
+                                                              <td>
+                                                                  {{ kpi.kpi_bsc_pillar }}
+                                                              </td>
+                                                              <td>
+                                                                  {{ kpi.kpi_units }}
+                                                              </td>
+                                                              <td>
+                                                                  {{ kpi.kpi_function }}
+                                                              </td>
+                                                              <td>
+                                                                  {{ kpi.kpi_type }}
+                                                              </td>
+                                                              <td>
+                                                                  {{ kpi.kpi_weight }}
+                                                              </td>
+                                                          </tr>
+
+                                                      </tbody>
+                                                 </table>
+                                                <table class="table table-bordered table-hover">
+                                                    <thead class="bg-color1">
+                                                        <tr>
+                                                            <th>S</th>
+                                                            <th>A</th>
+                                                            <th>B</th>
+                                                            <th>C</th>
+                                                            <th>D</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                           <td>{{ kpi.kpi_bsc_s_target }}</td>
+                                                           <td>{{ kpi.kpi_bsc_a_target }}</td>
+                                                           <td>{{ kpi.kpi_bsc_b_target }}</td>
+                                                           <td>{{ kpi.kpi_bsc_c_target }}</td>
+                                                           <td>{{ kpi.kpi_bsc_d_target }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div style="overflow-x: scroll">
+                                                    <table class="table table-bordered table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th>Apr</th>
+                                                                <th>May</th>
+                                                                <th>Jun</th>
+                                                                <th>Jul</th>
+                                                                <th>Aug</th>
+                                                                <th>Sep</th>
+                                                                <th>Oct</th>
+                                                                <th>Nov</th>
+                                                                <th>Dec</th>
+                                                                <th>Jan</th>
+                                                                <th>Feb</th>
+                                                                <th>Mar</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr {% if kpi.kpi_all_results_approve %} class="bg-success" {% endif %}>
+                                                                    <th>Actuals</th>
+
+                                                                    {% if kpi.kpi_april_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_april_score }}
+                                                                            <input type="number" name="april_score" value="{{ kpi.kpi_april_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input  style="width: 100px" type="number" name="april_score" value="{{ kpi.kpi_april_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_may_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_may_score }}
+                                                                            <input type="number" name="may_score" value="{{ kpi.kpi_may_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="may_score" value="{{ kpi.kpi_may_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_june_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_june_score }}
+                                                                            <input type="number" name="june_score" value="{{ kpi.kpi_june_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="june_score" value="{{ kpi.kpi_june_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_july_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_july_score }}
+                                                                            <input type="number" name="july_score" value="{{ kpi.kpi_july_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="july_score" value="{{ kpi.kpi_july_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_august_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_august_score }}
+                                                                            <input type="number" name="august_score" value="{{ kpi.kpi_august_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="august_score" value="{{ kpi.kpi_august_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_september_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_september_score }}
+                                                                            <input type="number" name="september_score" value="{{ kpi.kpi_september_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="september_score" value="{{ kpi.kpi_september_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_october_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_october_score }}
+                                                                            <input type="number" name="october_score" value="{{ kpi.kpi_october_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="october_score" value="{{ kpi.kpi_october_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_november_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_november_score }}
+                                                                            <input type="number" name="november_score" value="{{ kpi.kpi_november_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="november_score" value="{{ kpi.kpi_november_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_december_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_december_score }}
+                                                                            <input type="number" name="december_score" value="{{ kpi.kpi_december_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="december_score" value="{{ kpi.kpi_december_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_january_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_january_score }}
+                                                                            <input type="number" name="january_score" value="{{ kpi.kpi_january_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="january_score" value="{{ kpi.kpi_january_score }}"></td>
+                                                                    {% endif %}
+
+
+                                                                    {% if kpi.kpi_february_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_february_score }}
+                                                                            <input type="number" name="february_score" value="{{ kpi.kpi_february_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="february_score" value="{{ kpi.kpi_february_score }}"></td>
+                                                                    {% endif %}
+
+
+                                                                    {% if kpi.kpi_march_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_march_score }}
+                                                                            <input type="number" name="march_score" value="{{ kpi.kpi_march_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="march_score" value="{{ kpi.kpi_march_score }}"></td>
+                                                                    {% endif %}
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>
+                                                                        Approved
+                                                                    </th>
+                                                                    <td>
+                                                                        {% if kpi.kpi_april_score_approve %}
+                                                                            <input type="checkbox" name="april_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="april_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_may_score_approve %}
+                                                                            <input type="checkbox" name="may_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="may_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_june_score_approve %}
+                                                                            <input type="checkbox" name="june_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="june_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_july_score_approve %}
+                                                                            <input type="checkbox" name="july_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="july_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_august_score_approve %}
+                                                                            <input type="checkbox" name="august_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="august_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_september_score_approve %}
+                                                                            <input type="checkbox" name="september_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="september_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_october_score_approve %}
+                                                                            <input type="checkbox" name="october_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="october_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_november_score_approve %}
+                                                                            <input type="checkbox" name="november_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="november_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_december_score_approve %}
+                                                                            <input type="checkbox" name="december_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="december_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_january_score_approve %}
+                                                                            <input type="checkbox" name="january_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="january_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_february_score_approve %}
+                                                                            <input type="checkbox" name="february_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="february_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_march_score_approve %}
+                                                                            <input type="checkbox" name="march_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="march_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            {% else %}
+                                                <table class="table table-bordered table-hover">
+                                                      <tbody>
+                                                          <tr>
+                                                              <th>
+                                                                  Description
+                                                              </th>
+                                                              <td>
+                                                                  {{ kpi.kpi_details }}
+                                                              </td>
+                                                          </tr>
+                                                          <tr>
+                                                              <th>
+                                                                  Criteria
+                                                              </th>
+                                                              <td>
+                                                                  {{ kpi.kpi_criteria }}
+                                                              </td>
+                                                          </tr>
+                                                      </tbody>
+                                                 </table>
+                                                <table class="table table-bordered">
+                                                      <tbody>
+                                                          <tr class="bg-color2">
+                                                              <th>
+                                                                  Target
+                                                              </th>
+                                                              <th>
+                                                                  Units
+                                                              </th>
+                                                              <th>
+                                                                  Function
+                                                              </th>
+                                                              <th>
+                                                                  Calculation
+                                                              </th>
+                                                              <th>
+                                                                  Weight
+                                                              </th>
+                                                          </tr>
+                                                          <tr>
+                                                              <td>
+                                                                  {{ kpi.kpi_target }}
+                                                              </td>
+                                                              <td>
+                                                                  {{ kpi.kpi_units }}
+                                                              </td>
+                                                              <td>
+                                                                  {{ kpi.kpi_function }}
+                                                              </td>
+                                                              <td>
+                                                                  {{ kpi.kpi_type }}
+                                                              </td>
+                                                              <td>
+                                                                  {{ kpi.kpi_weight }}
+                                                              </td>
+                                                          </tr>
+
+                                                      </tbody>
+                                                 </table>
+                                                <div style="overflow-x: scroll">
+                                                    <table class="table table-bordered table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th>Apr</th>
+                                                                <th>May</th>
+                                                                <th>Jun</th>
+                                                                <th>Jul</th>
+                                                                <th>Aug</th>
+                                                                <th>Sep</th>
+                                                                <th>Oct</th>
+                                                                <th>Nov</th>
+                                                                <th>Dec</th>
+                                                                <th>Jan</th>
+                                                                <th>Feb</th>
+                                                                <th>Mar</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr {% if kpi.kpi_all_results_approve %} class="bg-success" {% endif %}>
+                                                                    <th>Actuals</th>
+
+                                                                    {% if kpi.kpi_april_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_april_score }}
+                                                                            <input type="number" name="april_score" value="{{ kpi.kpi_april_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input  style="width: 100px" type="number" name="april_score" value="{{ kpi.kpi_april_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_may_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_may_score }}
+                                                                            <input type="number" name="may_score" value="{{ kpi.kpi_may_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="may_score" value="{{ kpi.kpi_may_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_june_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_june_score }}
+                                                                            <input type="number" name="june_score" value="{{ kpi.kpi_june_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="june_score" value="{{ kpi.kpi_june_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_july_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_july_score }}
+                                                                            <input type="number" name="july_score" value="{{ kpi.kpi_july_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="july_score" value="{{ kpi.kpi_july_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_august_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_august_score }}
+                                                                            <input type="number" name="august_score" value="{{ kpi.kpi_august_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="august_score" value="{{ kpi.kpi_august_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_september_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_september_score }}
+                                                                            <input type="number" name="september_score" value="{{ kpi.kpi_september_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="september_score" value="{{ kpi.kpi_september_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_october_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_october_score }}
+                                                                            <input type="number" name="october_score" value="{{ kpi.kpi_october_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="october_score" value="{{ kpi.kpi_october_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_november_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_november_score }}
+                                                                            <input type="number" name="november_score" value="{{ kpi.kpi_november_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="november_score" value="{{ kpi.kpi_november_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_december_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_december_score }}
+                                                                            <input type="number" name="december_score" value="{{ kpi.kpi_december_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="december_score" value="{{ kpi.kpi_december_score }}"></td>
+                                                                    {% endif %}
+
+                                                                    {% if kpi.kpi_january_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_january_score }}
+                                                                            <input type="number" name="january_score" value="{{ kpi.kpi_january_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="january_score" value="{{ kpi.kpi_january_score }}"></td>
+                                                                    {% endif %}
+
+
+                                                                    {% if kpi.kpi_february_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_february_score }}
+                                                                            <input type="number" name="february_score" value="{{ kpi.kpi_february_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="february_score" value="{{ kpi.kpi_february_score }}"></td>
+                                                                    {% endif %}
+
+
+                                                                    {% if kpi.kpi_march_score_approve %}
+                                                                        <td class="bg-success">
+                                                                            {{ kpi.kpi_march_score }}
+                                                                            <input type="number" name="march_score" value="{{ kpi.kpi_march_score }}" hidden>
+                                                                        </td>
+                                                                    {% else %}
+                                                                        <td><input type="number" name="march_score" value="{{ kpi.kpi_march_score }}"></td>
+                                                                    {% endif %}
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>
+                                                                        Approved
+                                                                    </th>
+                                                                    <td>
+                                                                        {% if kpi.kpi_april_score_approve %}
+                                                                            <input type="checkbox" name="april_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="april_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_may_score_approve %}
+                                                                            <input type="checkbox" name="may_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="may_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_june_score_approve %}
+                                                                            <input type="checkbox" name="june_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="june_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_july_score_approve %}
+                                                                            <input type="checkbox" name="july_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="july_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_august_score_approve %}
+                                                                            <input type="checkbox" name="august_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="august_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_september_score_approve %}
+                                                                            <input type="checkbox" name="september_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="september_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_october_score_approve %}
+                                                                            <input type="checkbox" name="october_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="october_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_november_score_approve %}
+                                                                            <input type="checkbox" name="november_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="november_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_december_score_approve %}
+                                                                            <input type="checkbox" name="december_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="december_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_january_score_approve %}
+                                                                            <input type="checkbox" name="january_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="january_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_february_score_approve %}
+                                                                            <input type="checkbox" name="february_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="february_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if kpi.kpi_march_score_approve %}
+                                                                            <input type="checkbox" name="march_score_approve" checked hidden>
+                                                                            Approved
+                                                                        {% else %}
+                                                                            <input type="checkbox" name="march_score_approve">
+                                                                        {% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                        {% endif %}
+
+
+
+
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <button type="submit"  class="btn btn-primary">Save & Close</button>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if kpi_type == "BSC" %}
+                        <table class="table table-bordered table-hover">
+                          <thead>
+                              <tr>
+                                <th>KPI</th>
+                                <th>Function</th>
+                                <th>Calculation</th>
+                                <th>Weight</th>
+                                <th class="bg-color1">Pillar</th>
+                                <th class="bg-color1">S</th>
+                                <th class="bg-color1">A</th>
+                                <th class="bg-color1">B</th>
+                                <th class="bg-color1">C</th>
+                                <th class="bg-color1">D</th>
+                                <th>April</th>
+                                <th>May</th>
+                                <th>Jun</th>
+                                <th>Jul</th>
+                                <th>Aug</th>
+                                <th>Sep</th>
+                                <th>Oct</th>
+                                <th>Nov</th>
+                                <th>Dec</th>
+                                <th>Jan</th>
+                                <th>Feb</th>
+                                <th>Mar</th>
+                              </tr>
+                              </thead>
+                          <tbody>
+                              {% for kpi in kpis %}
+                                  <tr>
+                                    <td><a href="#" class="btn-link" data-toggle="modal" data-target="#modal-{{ kpi.kpi_id }}">{{ kpi.kpi_title }}</a></td>
+                                    <td>{{ kpi.kpi_function }}</td>
+                                    <td>{{ kpi.kpi_type }}</td>
+                                    <td>{{ kpi.kpi_weight }}</td>
+                                    <td class="bg-color1">{{ kpi.kpi_bsc_pillar }}</td>
+                                    <td class="bg-color2">{{ kpi.kpi_bsc_s_target }}</td>
+                                    <td class="bg-color2">{{ kpi.kpi_bsc_a_target }}</td>
+                                    <td class="bg-color2">{{ kpi.kpi_bsc_b_target }}</td>
+                                    <td class="bg-color2">{{ kpi.kpi_bsc_c_target }}</td>
+                                    <td class="bg-color2">{{ kpi.kpi_bsc_d_target }}</td>
+                                    <td {% if kpi.kpi_april_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_april_score }}</td>
+                                    <td {% if kpi.kpi_may_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_may_score }}</td>
+                                    <td {% if kpi.kpi_june_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_june_score }}</td>
+                                    <td {% if kpi.kpi_july_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_july_score }}</td>
+                                    <td {% if kpi.kpi_august_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_august_score }}</td>
+                                    <td {% if kpi.kpi_september_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_september_score }}</td>
+                                    <td {% if kpi.kpi_october_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_october_score }}</td>
+                                    <td {% if kpi.kpi_november_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_november_score }}</td>
+                                    <td {% if kpi.kpi_december_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_december_score }}</td>
+                                    <td {% if kpi.kpi_january_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_january_score }}</td>
+                                    <td {% if kpi.kpi_february_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_february_score }}</td>
+                                    <td {% if kpi.kpi_march_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_march_score }}</td>
+
+                              {% endfor %}
+                          </tbody>
+                     </table>
+                    {% elif kpi_type == "Monthly Target" %}
+                        <table class="table table-bordered table-hover">
+                          <thead>
+                              <tr>
+                                <th>KPI</th>
+                                <th>Function</th>
+                                <th>Weight</th>
+                                <th></th>
+                                <th>Apr</th>
+                                <th>May</th>
+                                <th>Jun</th>
+                                <th>Jul</th>
+                                <th>Aug</th>
+                                <th>Sep</th>
+                                <th>Oct</th>
+                                <th>Nov</th>
+                                <th>Dec</th>
+                                <th>Jan</th>
+                                <th>Feb</th>
+                                <th>Mar</th>
+                              </tr>
+                              </thead>
+                          <tbody>
+                              {% for kpi in kpis %}
+                                  <tr>
+                                    <td rowspan="2"><a href="#" class="btn-link" data-toggle="modal" data-target="#modal-{{ kpi.kpi_id }}">{{ kpi.kpi_title }}</a></td>
+                                    <td rowspan="2">{{ kpi.kpi_function }}</td>
+                                    <td rowspan="2">{{ kpi.kpi_weight }}</td>
+                                    <td>TGT</td>
+                                    <td>{{ kpi.kpi_april_target }}</td>
+                                    <td>{{ kpi.kpi_may_target }}</td>
+                                    <td>{{ kpi.kpi_june_target }}</td>
+                                    <td>{{ kpi.kpi_july_target }}</td>
+                                    <td>{{ kpi.kpi_august_target }}</td>
+                                    <td>{{ kpi.kpi_september_target }}</td>
+                                    <td>{{ kpi.kpi_october_target }}</td>
+                                    <td>{{ kpi.kpi_november_target }}</td>
+                                    <td>{{ kpi.kpi_december_target }}</td>
+                                    <td>{{ kpi.kpi_january_target }}</td>
+                                    <td>{{ kpi.kpi_february_target }}</td>
+                                    <td>{{ kpi.kpi_march_target }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>ACT</td>
+                                    <td {% if kpi.kpi_april_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_april_score }}</td>
+                                    <td {% if kpi.kpi_may_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_may_score }}</td>
+                                    <td {% if kpi.kpi_june_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_june_score }}</td>
+                                    <td {% if kpi.kpi_july_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_july_score }}</td>
+                                    <td {% if kpi.kpi_august_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_august_score }}</td>
+                                    <td {% if kpi.kpi_september_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_september_score }}</td>
+                                    <td {% if kpi.kpi_october_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_october_score }}</td>
+                                    <td {% if kpi.kpi_november_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_november_score }}</td>
+                                    <td {% if kpi.kpi_december_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_december_score }}</td>
+                                    <td {% if kpi.kpi_january_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_january_score }}</td>
+                                    <td {% if kpi.kpi_february_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_february_score }}</td>
+                                    <td {% if kpi.kpi_march_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_march_score }}</td>
+                                  </tr>
+
+                              {% endfor %}
+                          </tbody>
+                     </table>
+                    {% else %}
+                        <table id="simpleTable" class="table table-bordered table-hover">
+                          <thead>
+                              <tr>
+                                <th>KPI</th>
+                                <th>Function</th>
+                                <th>Calculation</th>
+                                <th>Weight</th>
+                                <th>Target</th>
+                                <th>Apr</th>
+                                <th>May</th>
+                                <th>Jun</th>
+                                <th>Jul</th>
+                                <th>Aug</th>
+                                <th>Sep</th>
+                                <th>Oct</th>
+                                <th>Nov</th>
+                                <th>Dec</th>
+                                <th>Jan</th>
+                                <th>Feb</th>
+                                <th>Mar</th>
+                              </tr>
+                              </thead>
+                          <tbody>
+                              {% for kpi in kpis %}
+                                  <tr>
+                                    <td><a href="#" class="btn-link" data-toggle="modal" data-target="#modal-{{ kpi.kpi_id }}">{{ kpi.kpi_title }}</a></td>
+                                    <td>{{ kpi.kpi_function }}</td>
+                                    <td>{{ kpi.kpi_type }}</td>
+                                    <td>{{ kpi.kpi_weight }}</td>
+                                    <td>{{ kpi.kpi_target }}</td>
+                                    <td {% if kpi.kpi_april_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_april_score }}</td>
+                                    <td {% if kpi.kpi_may_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_may_score }}</td>
+                                    <td {% if kpi.kpi_june_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_june_score }}</td>
+                                    <td {% if kpi.kpi_july_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_july_score }}</td>
+                                    <td {% if kpi.kpi_august_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_august_score }}</td>
+                                    <td {% if kpi.kpi_september_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_september_score }}</td>
+                                    <td {% if kpi.kpi_october_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_october_score }}</td>
+                                    <td {% if kpi.kpi_november_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_november_score }}</td>
+                                    <td {% if kpi.kpi_december_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_december_score }}</td>
+                                    <td {% if kpi.kpi_january_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_january_score }}</td>
+                                    <td {% if kpi.kpi_february_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_february_score }}</td>
+                                    <td {% if kpi.kpi_march_score_approve is True %}class="bg-success" {% endif %}>{{ kpi.kpi_march_score }}</td>
+
+                              {% endfor %}
+                          </tbody>
+                     </table>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+    {% endblock %}

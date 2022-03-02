@@ -1,14 +1,452 @@
-{% extends 'cfao_kenya/KPI/my_kpi/default.html' %}
+{% extends 'Site/KPI/my_kpi/default.html' %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_KPI' %}">My KPI</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:My_KPI' company_id %}">My KPI</a></li>
         <li class="breadcrumb-item active">View</li>
     {% endblock %}
     {% block page_title %}My KPI - View{% endblock %}
     {% block content %}
-        {% if page_permission %}
-            {% include 'cfao_kenya/KPI/my_kpi/display_templates/view.html' %}
-        {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
-        {% endif %}
+        <!-- KPI Form -->
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    {{ kpi.kpi_title }}
+                    {% if kpi.kpi_status == 'Submitted' or kpi.kpi_status == 'Edit' or kpi.kpi_status == 'Pending'%}
+                        <a href="{% url 'Site:My_KPI_Delete' company_id kpi.kpi_id %}"><div class="float-right btn btn-danger" style="margin-right: 10px">Delete</div></a>
+                        <a href="{% url 'Site:My_KPI_Edit' company_id kpi.kpi_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit</div></a>
+
+
+                    {% elif kpi.kpi_status == 'Approved' %}
+                        <a href="{% url 'Site:My_KPI_Results' company_id kpi.kpi_id %}"><div class="float-right btn btn-info" style="margin-right: 10px">Results</div></a>
+                    {% endif %}
+                </div>
+                    {% if kpi_type == "Monthly Target" %}
+                        <table class="table table-bordered table-hover">
+                              <tbody>
+                                  <tr>
+                                      <th>
+                                          Title
+                                      </th>
+                                      <td>
+                                          {{ kpi.kpi_title }}
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <th>
+                                          Description
+                                      </th>
+                                      <td>
+                                          {{ kpi.kpi_details }}
+                                      </td>
+                                  </tr>
+                              </tbody>
+                         </table>
+                        <table class="table table-bordered">
+                              <tbody>
+                                  <tr class="bg-color2">
+                                      <th>
+                                          Status
+                                      </th>
+                                      <th>
+                                          Units
+                                      </th>
+                                      <th>
+                                          Function
+                                      </th>
+                                      <th>
+                                          Calculation
+                                      </th>
+                                      <th>
+                                          Weight
+                                      </th>
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                          {{ kpi.kpi_status }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_units }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_function }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_type }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_weight }}
+                                      </td>
+                                  </tr>
+                                  <tr class="bg-color2">
+                                      <th>
+                                          Submit Date
+                                      </th>
+                                      <th>
+
+                                      </th>
+                                      <th>
+
+                                      </th>
+                                      <th>
+
+                                      </th>
+                                      <th>
+
+                                      </th>
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                          {{ kpi.kpi_submit_date }}
+                                      </td>
+                                      <td>
+
+                                      </td>
+                                      <td>
+
+                                      </td>
+                                      <td>
+
+                                      </td>
+                                      <td>
+
+                                      </td>
+                                  </tr>
+
+                              </tbody>
+                         </table>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Apr</th>
+                                    <th>May</th>
+                                    <th>Jun</th>
+                                    <th>Jul</th>
+                                    <th>Aug</th>
+                                    <th>Sep</th>
+                                    <th>Oct</th>
+                                    <th>Nov</th>
+                                    <th>Dec</th>
+                                    <th>Jan</th>
+                                    <th>Feb</th>
+                                    <th>Mar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr {% if kpi.kpi_all_results_approve %} class="bg-success" {% endif %}>
+                                    <td>{{ kpi.kpi_april_target }}</td>
+                                    <td>{{ kpi.kpi_may_target }}</td>
+                                    <td>{{ kpi.kpi_june_target }}</td>
+                                    <td>{{ kpi.kpi_july_target }}</td>
+                                    <td>{{ kpi.kpi_august_target }}</td>
+                                    <td>{{ kpi.kpi_september_target }}</td>
+                                    <td>{{ kpi.kpi_october_target }}</td>
+                                    <td>{{ kpi.kpi_november_target }}</td>
+                                    <td>{{ kpi.kpi_december_target }}</td>
+                                    <td>{{ kpi.kpi_january_target }}</td>
+                                    <td>{{ kpi.kpi_february_target }}</td>
+                                    <td>{{ kpi.kpi_march_target }}</td>
+                                </tr>
+                                <tr {% if kpi.kpi_all_results_approve %} class="bg-success" {% endif %}>
+                                    <td {% if kpi.kpi_april_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_april_score }}</td>
+                                    <td {% if kpi.kpi_may_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_may_score }}</td>
+                                    <td {% if kpi.kpi_june_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_june_score }}</td>
+                                    <td {% if kpi.kpi_july_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_july_score }}</td>
+                                    <td {% if kpi.kpi_august_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_august_score }}</td>
+                                    <td {% if kpi.kpi_september_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_september_score }}</td>
+                                    <td {% if kpi.kpi_october_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_october_score }}</td>
+                                    <td {% if kpi.kpi_november_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_november_score }}</td>
+                                    <td {% if kpi.kpi_december_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_december_score }}</td>
+                                    <td {% if kpi.kpi_january_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_january_score }}</td>
+                                    <td {% if kpi.kpi_february_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_february_score }}</td>
+                                    <td {% if kpi.kpi_march_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_march_score }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    {% elif kpi_type == "BSC" %}
+                        <table class="table table-bordered table-hover">
+                              <tbody>
+                                  <tr>
+                                      <th>
+                                          Title
+                                      </th>
+                                      <td>
+                                          {{ kpi.kpi_title }}
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <th>
+                                          Description
+                                      </th>
+                                      <td>
+                                          {{ kpi.kpi_details }}
+                                      </td>
+                                  </tr>
+                              </tbody>
+                         </table>
+                        <table class="table table-bordered">
+                              <tbody>
+                                  <tr class="bg-color2">
+                                      <th>
+                                          Pillar
+                                      </th>
+                                      <th>
+                                          Units
+                                      </th>
+                                      <th>
+                                          Function
+                                      </th>
+                                      <th>
+                                          Calculation
+                                      </th>
+                                      <th>
+                                          Weight
+                                      </th>
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                          {{ kpi.kpi_bsc_pillar }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_units }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_function }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_type }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_weight }}
+                                      </td>
+                                  </tr>
+                                  <tr class="bg-color2">
+                                      <th>
+                                          Submit Date
+                                      </th>
+                                      <th>
+                                          Status
+                                      </th>
+                                      <th>
+
+                                      </th>
+                                      <th>
+
+                                      </th>
+                                      <th>
+
+                                      </th>
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                          {{ kpi.kpi_submit_date }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_status }}
+                                      </td>
+                                      <td>
+
+                                      </td>
+                                      <td>
+
+                                      </td>
+                                      <td>
+
+                                      </td>
+                                  </tr>
+
+                              </tbody>
+                         </table>
+                        <table class="table table-bordered table-hover">
+                            <thead class="bg-color1">
+                                <tr>
+                                    <th>S</th>
+                                    <th>A</th>
+                                    <th>B</th>
+                                    <th>C</th>
+                                    <th>D</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                   <td>{{ kpi.kpi_bsc_s_target }}</td>
+                                   <td>{{ kpi.kpi_bsc_a_target }}</td>
+                                   <td>{{ kpi.kpi_bsc_b_target }}</td>
+                                   <td>{{ kpi.kpi_bsc_c_target }}</td>
+                                   <td>{{ kpi.kpi_bsc_d_target }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Apr</th>
+                                    <th>May</th>
+                                    <th>Jun</th>
+                                    <th>Jul</th>
+                                    <th>Aug</th>
+                                    <th>Sep</th>
+                                    <th>Oct</th>
+                                    <th>Nov</th>
+                                    <th>Dec</th>
+                                    <th>Jan</th>
+                                    <th>Feb</th>
+                                    <th>Mar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr {% if kpi.kpi_all_results_approve %} class="bg-success" {% endif %}>
+                                    <td {% if kpi.kpi_april_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_april_score }}</td>
+                                    <td {% if kpi.kpi_may_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_may_score }}</td>
+                                    <td {% if kpi.kpi_june_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_june_score }}</td>
+                                    <td {% if kpi.kpi_july_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_july_score }}</td>
+                                    <td {% if kpi.kpi_august_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_august_score }}</td>
+                                    <td {% if kpi.kpi_september_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_september_score }}</td>
+                                    <td {% if kpi.kpi_october_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_october_score }}</td>
+                                    <td {% if kpi.kpi_november_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_november_score }}</td>
+                                    <td {% if kpi.kpi_december_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_december_score }}</td>
+                                    <td {% if kpi.kpi_january_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_january_score }}</td>
+                                    <td {% if kpi.kpi_february_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_february_score }}</td>
+                                    <td {% if kpi.kpi_march_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_march_score }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <table class="table table-bordered table-hover">
+                              <tbody>
+                                  <tr>
+                                      <th>
+                                          Title
+                                      </th>
+                                      <td>
+                                          {{ kpi.kpi_title }}
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <th>
+                                          Description
+                                      </th>
+                                      <td>
+                                          {{ kpi.kpi_details }}
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <th>
+                                          Criteria
+                                      </th>
+                                      <td>
+                                          {{ kpi.kpi_criteria }}
+                                      </td>
+                                  </tr>
+                              </tbody>
+                         </table>
+                        <table class="table table-bordered">
+                              <tbody>
+                                  <tr class="bg-color2">
+                                      <th>
+                                          Target
+                                      </th>
+                                      <th>
+                                          Units
+                                      </th>
+                                      <th>
+                                          Function
+                                      </th>
+                                      <th>
+                                          Calculation
+                                      </th>
+                                      <th>
+                                          Weight
+                                      </th>
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                          {{ kpi.kpi_target }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_units }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_function }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_type }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_weight }}
+                                      </td>
+                                  </tr>
+                                  <tr class="bg-color2">
+                                      <th>
+                                          Submit Date
+                                      </th>
+                                      <th>
+                                          Status
+                                      </th>
+                                      <th>
+
+                                      </th>
+                                      <th>
+
+                                      </th>
+                                      <th>
+
+                                      </th>
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                          {{ kpi.kpi_submit_date }}
+                                      </td>
+                                      <td>
+                                          {{ kpi.kpi_status }}
+                                      </td>
+                                      <td>
+
+                                      </td>
+                                      <td>
+
+                                      </td>
+                                      <td>
+
+                                      </td>
+                                  </tr>
+
+                              </tbody>
+                         </table>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Apr</th>
+                                    <th>May</th>
+                                    <th>Jun</th>
+                                    <th>Jul</th>
+                                    <th>Aug</th>
+                                    <th>Sep</th>
+                                    <th>Oct</th>
+                                    <th>Nov</th>
+                                    <th>Dec</th>
+                                    <th>Jan</th>
+                                    <th>Feb</th>
+                                    <th>Mar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr {% if kpi.kpi_all_results_approve %} class="bg-success" {% endif %}>
+                                    <td {% if kpi.kpi_april_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_april_score }}</td>
+                                    <td {% if kpi.kpi_may_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_may_score }}</td>
+                                    <td {% if kpi.kpi_june_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_june_score }}</td>
+                                    <td {% if kpi.kpi_july_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_july_score }}</td>
+                                    <td {% if kpi.kpi_august_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_august_score }}</td>
+                                    <td {% if kpi.kpi_september_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_september_score }}</td>
+                                    <td {% if kpi.kpi_october_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_october_score }}</td>
+                                    <td {% if kpi.kpi_november_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_november_score }}</td>
+                                    <td {% if kpi.kpi_december_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_december_score }}</td>
+                                    <td {% if kpi.kpi_january_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_january_score }}</td>
+                                    <td {% if kpi.kpi_february_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_february_score }}</td>
+                                    <td {% if kpi.kpi_march_score_approve %}class="bg-success" {% endif %}>{{ kpi.kpi_march_score }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    {% endif %}
+            </div>
+        </div>
 
     {% endblock %}

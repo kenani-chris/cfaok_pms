@@ -1,16 +1,49 @@
-{% extends 'cfao_kenya/CheckIn/my_CheckIn/default.html' %}
-    {% block page_title %}My KPI - Edit{% endblock %}
+{% extends 'Site/CheckIn/my_CheckIn/default.html' %}
+    {% block page_title %}My Check-In - Edit{% endblock %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_CheckIn' %}">My CheckIn</a></li>
-        <li class="breadcrumb-item active"><a href="{% url 'cfao_kenya:My_CheckIn_View' CheckIn.checkIn_id %}">View</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:My_CheckIn' company_id %}">My Check-In</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:My_CheckIn_View' company_id CheckIn.check_in_id %}">View</a></li>
         <li class="breadcrumb-item active">Edit</li>
     {% endblock %}
     {% block content %}
-        {% if page_permission %}
-            {% include 'cfao_kenya/CheckIn/my_CheckIn/display_templates/edit.html' %}
-        {% else %}
-            {% include 'cfao_kenya/errors/permissions.html' %}
-        {% endif %}
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Edit Check-In here</h5>
+                </div>
+                 <form method="post">
+                    {{ form.errors }}
+                    {% csrf_token %}
+                    <div class="card-body">
+                        {{ form.check_in_id.as_hidden }}
+                        {{ form.check_in_pms.as_hidden }}
+                        {{ form.check_in_Staff.as_hidden }}
+                        {{ form.check_in_submit_date.as_hidden }}
+                        {{ form.check_in_approver.as_hidden }}
+                        {{ form.check_in_approval_date.as_hidden }}
+                        {{ form.check_in_approval_date.as_hidden }}
+                        {{ form.check_in_month.as_hidden }}
+                        {{ form.check_in_status.as_hidden }}
+                        Performance Area
+                        {{ form.check_in_performance_area }}
+                        Progress Discussed
+                        {{ form.check_in_progress_discussed }}
+                        <br>
+                        Team member actions
+                        {{ form.check_in_team_member_actions }}
+                        <br>
+                        Team Leader Support
+                        {{ form.check_in_team_leader_support }}
+                        <br>
+
+                        {{ form.check_in_team_leader_comment.as_hidden }}
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-info">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
 
     {% endblock %}

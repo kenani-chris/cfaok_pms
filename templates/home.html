@@ -134,7 +134,7 @@ body {
           <h1 class="cover-heading text-left border-info border-bottom ">Welcome <span style="color: #ff1493">{{ request.user.get_full_name }}</span>,</h1>
           {% if staffAccounts %}
               {% for account in staffAccounts %}
-                    <a href="{% url 'Site:Dashboard' account.staff_id %}" class="btn btn-lg btn-default">{{ account.staff_company }}</a>
+                    <a href="{% url 'Site:Dashboard' account.staff_company.company_id %}" class="btn btn-lg btn-default">{{ account.staff_company }}</a>
               {% endfor %}
           {% else %}
             <p class="lead text-left bg-warning " style="border-radius: 3px; padding: 10px">Error</p>

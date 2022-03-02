@@ -1,4 +1,4 @@
-{% extends 'cfao_kenya/default.html' %}
+{% extends 'Site/default.html' %}
 
-{% block page_link%}<a class="navbar-brand" href="{% url 'cfao_kenya:My_CheckIn' %}" ><b style="color: {{ company.company_color1 }}">CheckIn Home</b></a>{% endblock %}
-{% block Create %}<li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:My_CheckIn_Create' %}">New CheckIn</a></li>{% endblock %}
+{% block page_link%}<a class="navbar-brand" href="{% url 'Site:My_CheckIn' company_id %}" ><b style="color: {{ company.company_color1 }}">Check-In Home</b></a>{% endblock %}
+{% block Create %}<li class="nav-item"><a class="nav-link" href="{% url 'Site:My_CheckIn_Create' company_id %}">New Check-In</a></li>{% endblock %}

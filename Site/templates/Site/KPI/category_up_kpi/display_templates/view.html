@@ -1,0 +1,117 @@
+<!-- KPI Form -->
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            {{ kpi.kpi_title }}
+            {% if kpi.kpi_status == 'Submitted' or kpi.kpi_status == 'Edit' or kpi.kpi_status == 'Pending'%}
+                <a href="{% url 'Site:KPI_Category_Level_One_Delete' levelcategory.category_id level.level_id kpi.kpi_id %}"><div class="float-right btn btn-danger" style="margin-right: 10px">Delete</div></a>
+                <a href="{% url 'Site:KPI_Category_Level_One_Edit' levelcategory.category_id level.level_id kpi.kpi_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit</div></a>
+
+
+            {% elif kpi.kpi_status == 'Approved' %}
+                <a href="{% url 'Site:KPI_Category_Level_One_Results' levelcategory.category_id level.level_id kpi.kpi_id %}"><div class="float-right btn btn-info" style="margin-right: 10px">Results</div></a>
+            {% endif %}
+        </div>
+         <table class="table table-bordered table-hover">
+              <tbody>
+                  <tr>
+                      <th>
+                          Title
+                      </th>
+                      <td>
+                          {{ kpi.kpi_title }}
+                      </td>
+                  </tr>
+                  <tr>
+                      <th>
+                          Description
+                      </th>
+                      <td>
+                          {{ kpi.kpi_details }}
+                      </td>
+                  </tr>
+                  <tr>
+                      <th>
+                          Criteria
+                      </th>
+                      <td>
+                          {{ kpi.kpi_criteria }}
+                      </td>
+                  </tr>
+              </tbody>
+         </table>
+        <table class="table table-bordered">
+              <tbody>
+                  <tr class="bg-color2">
+                      <th>
+                          Target
+                      </th>
+                      <th>
+                          Units
+                      </th>
+                      <th>
+                          Function
+                      </th>
+                      <th>
+                          Calculation
+                      </th>
+                      <th>
+                          Weight
+                      </th>
+                  </tr>
+                  <tr>
+                      <td>
+                          {{ kpi.kpi_target }}
+                      </td>
+                      <td>
+                          {{ kpi.kpi_units }}
+                      </td>
+                      <td>
+                          {{ kpi.kpi_function }}
+                      </td>
+                      <td>
+                          {{ kpi.kpi_type }}
+                      </td>
+                      <td>
+                          {{ kpi.kpi_weight }}
+                      </td>
+                  </tr>
+                  <tr class="bg-color2">
+                      <th>
+                          Submit Date
+                      </th>
+                      <th>
+                          Last Edit
+                      </th>
+                      <th>
+                          Status
+                      </th>
+                      <th>
+
+                      </th>
+                      <th>
+
+                      </th>
+                  </tr>
+                  <tr>
+                      <td>
+                          {{ kpi.kpi_submit_date }}
+                      </td>
+                      <td>
+                          {{ kpi.kpi_last_edit }}
+                      </td>
+                      <td>
+                          {{ kpi.kpi_status }}
+                      </td>
+                      <td>
+
+                      </td>
+                      <td>
+
+                      </td>
+                  </tr>
+
+              </tbody>
+         </table>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+{% extends 'Site/default.html' %}
+{% block content %}
+    <div class="alert alert-warning alert-dismissible container">
+        <h3><i class="icon fas fa-exclamation-triangle"></i> {{ error_code }}</h3>
+        <hr>
+        <h5>{{ error_detail }}</h5>
+        <br>
+        <hr>
+        <h5>Contact admin for support</h5>
+
+    </div>
+{% endblock %}

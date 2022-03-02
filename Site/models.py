@@ -29,6 +29,8 @@ class Staff(models.Model):
     staff_superuser = models.BooleanField(default=False)
     staff_visibility = models.BooleanField(default=True)
     staff_company = models.ForeignKey('Company', on_delete=models.RESTRICT)
+    staff_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT, null=True, default=None)
+    staff_date_created = models.DateTimeField(auto_now=False, null=True)
 
     def __str__(self):
         return self.staff_person.get_full_name() + " - PF " + self.staff_pf_number
@@ -220,11 +222,12 @@ class Matrix(models.Model):
     matrix_id = models.AutoField(primary_key=True)
     matrix_pms = models.ForeignKey('PMS', on_delete=models.RESTRICT, null=True)
     matrix_grade = models.ForeignKey('StaffGrades', on_delete=models.RESTRICT, null=True)
-    matrix_checkin_weight = models.FloatField(null=True, blank=True)
-    matrix_kpi_weight = models.FloatField(null=True, blank=True)
-    matrix_assessment_weight = models.FloatField(null=True, blank=True)
-    matrix_bu_weight = models.FloatField(null=True, blank=True)
-    matrix_company_weight = models.FloatField(null=True, blank=True)
+    matrix_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT, null=True)
+    matrix_checkin_weight = models.FloatField(null=True, blank=True, default=100)
+    matrix_kpi_weight = models.FloatField(null=True, blank=True, default=50)
+    matrix_assessment_weight = models.FloatField(null=True, blank=True, default=20)
+    matrix_bu_weight = models.FloatField(null=True, blank=True, default=20)
+    matrix_company_weight = models.FloatField(null=True, blank=True, default=10)
 
 
 # Assessment ===========================================================================================================
@@ -296,6 +299,7 @@ class LevelCategory(models.Model):
     category_description = models.TextField()
     category_parent = models.ForeignKey('self', on_delete=models.RESTRICT, blank=True, null=True)
     category_kpi_view = models.BooleanField(default=False)
+    category_company = models.ForeignKey('Company', on_delete=models.RESTRICT, blank=True, null=True)
 
     def __str__(self):
         return self.category_name
@@ -317,7 +321,7 @@ class KPI(models.Model):
     kpi_title = models.CharField(max_length=200)
     kpi_details = models.TextField(null=True, blank=True)
     kpi_criteria = models.TextField(null=True, blank=True)
-    kpi_target = models.FloatField()
+    kpi_target = models.FloatField(default=0)
     kpi_weight = models.FloatField(default=20)
     kpi_bsc_pillar = models.ForeignKey('BSCPillar', on_delete=models.RESTRICT, null=True, blank=True)
     kpi_units = models.CharField(max_length=5, null=True, blank=True)
@@ -453,3 +457,46 @@ class Notification(models.Model):
         ('Read', 'Read'),
     )
     notification_status = models.CharField(max_length=10, choices=status, default=None)
+
+
+class KPIType(models.Model):
+    type_id = models.AutoField(primary_key=True)
+    type_pms = models.ForeignKey('PMS', on_delete=models.RESTRICT)
+    type_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT)
+
+    types = (
+        ('Annual Target', 'Annual Target'),
+        ('Monthly Target', 'Monthly Target'),
+        ('BSC', 'BSC'),
+    )
+    type_kpi = models.CharField(max_length=20, choices=types, default="Annual Target")
+
+
+class Help(models.Model):
+    help_id = models.AutoField(primary_key=True)
+    help_staff = models.ForeignKey('Staff', on_delete=models.RESTRICT)
+
+    status = (
+        ('Open', 'Open'),
+        ('Assigned', 'Assigned'),
+        ('Resolved', 'Closed')
+    )
+
+    category = (
+        ('KPI', 'KPI'),
+        ('Check-In', 'Check-In'),
+        ('Assessment', 'Assessment'),
+        ('Reports', 'Reports'),
+        ('Results', 'Results'),
+        ('Other', 'Other')
+    )
+    help_category = models.CharField(choices=category, max_length=20, default='KPI')
+    help_log_date = models.DateTimeField(auto_now=False, null=True)
+    help_last_edit = models.DateTimeField(auto_now=True, null=True)
+    help_close_edit = models.DateTimeField(auto_now=True, null=True)
+    help_status = models.CharField(choices=status, max_length=20)
+    help_requested = models.TextField()
+
+
+    def __str__(self):
+        return "Help " + str(self.help_id)

@@ -1,4 +1,4 @@
-{% extends 'cfao_kenya/KPI/my_kpi/default.html' %}
+{% extends 'Site/KPI/my_kpi/default.html' %}
     {% block Create %}<li class="nav-item"><a class="nav-link" href="{% url 'cfao_kenya:KPI_Category_Level_New' levelcategory.category_id level.level_id %}">New KPI</a></li>{% endblock %}
     {% block page_title %}{{ levelcategory.category_name }} KPI - {{ level.level_name }}{% endblock %}
     {% block breadcrumb %}

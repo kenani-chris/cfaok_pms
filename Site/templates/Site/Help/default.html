@@ -1,0 +1,4 @@
+{% extends 'Site/default.html' %}
+
+{% block page_link%}<a class="navbar-brand" href="{% url 'Site:Help_List' company_id %}" ><b style="color: {{ company.company_color1 }}">Help Home</b></a>{% endblock %}
+{% block Create %}<li class="nav-item"><a class="nav-link" href="{% url 'Site:Help_Create' company_id %}">Request Help</a></li>{% endblock %}
