@@ -10,9 +10,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-*$r)=p%%jlt=*umvkq^+p1us1o5(_@ue=_&cpr74iil-b100k='
 
+
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.40.13.25', 'localhost']
+ALLOWED_HOSTS = ['localhost']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -21,7 +22,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cfao_kenya.apps.CfaoKenyaConfig',
     'Site.apps.SiteConfig',
     'colorfield'
 ]
@@ -111,14 +111,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.office365.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'cpms@cfao.com'
+EMAIL_HOST_USER = 'dummy_eamil@dummy.com'
 EMAIL_HOST_PASSWORD = '(-AY6b@d'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-# Error 500 Admins
-ADMINS = (
-    ('Kenani Chris', 'kenanichris@outlook.com'), ('Kenani Chris', 'ckenani@cfao.com'),
-)
-MANAGERS = ADMINS

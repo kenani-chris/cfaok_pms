@@ -1,5 +1,0 @@
-logo:       location {static_root}/images/
-applinks:   {app_name}:link
-models:     related_name='{app_name}_name'
-apps.py, signals.py, permissions.py:    configfile
-url.py:     app_name = '{app_name}'

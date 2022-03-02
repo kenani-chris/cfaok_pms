@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -277,21 +277,23 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'Site:Assessment_List' company_id %}" class="nav-link">
+            <a href="{% url 'Site:Report' company_id %}" class="nav-link">
               <i class="nav-icon fas fa-folder-open"></i>
               <p>
                 Reports
               </p>
             </a>
           </li>
+        {% if staff.staff_superuser or request.user.is_superuser %}
           <li class="nav-item">
-            <a href="{% url 'Site:Assessment_List' company_id %}" class="nav-link">
-              <i class="nav-icon fas fa-volume-up"></i>
+            <a href="{% url 'admin:index' %}" class="nav-link">
+              <i class="nav-icon fas fa-folder-open"></i>
               <p>
-                Communication
+                Admin
               </p>
             </a>
           </li>
+        {% endif %}
             <br>
             <br>
             <br>
@@ -328,10 +330,10 @@
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
+    <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 3.0.6 {{ kpi_results }}
+      <b>Version</b> 3.2.0 {{ kpi_results }}
     </div>
   </footer>
 

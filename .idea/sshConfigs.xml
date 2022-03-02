@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig host="3.109.57.124" id="28a9de08-ea0e-4065-9828-873cdcbae3e6" keyPath="C:\Users\chrisanthus.kenani\Desktop\Aws\lightsail.pem" port="22" customName="AWS Server" nameFormat="CUSTOM" username="ubuntu">
+        <option name="customName" value="AWS Server" />
+      </sshConfig>
+    </configs>
+  </component>
+</project>

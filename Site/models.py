@@ -497,6 +497,5 @@ class Help(models.Model):
     help_status = models.CharField(choices=status, max_length=20)
     help_requested = models.TextField()
 
-
     def __str__(self):
         return "Help " + str(self.help_id)

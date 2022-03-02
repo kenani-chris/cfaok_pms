@@ -1,16 +1,8 @@
-import datetime
 from calendar import monthrange
-
-from itertools import chain
-
-from django.contrib import messages
-from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse, reverse_lazy
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.views.generic import *
-
-from cfaok_pms.settings import EMAIL_HOST_USER
 from .forms import *
 from .functions import *
 from .models import *
@@ -63,11 +55,12 @@ class Dashboard(TemplateView):
             context['checkin'] = get_user_checkin(context['staff'], context['pms'])
             context['assessment_overall_score'] = calculate_overall_assessment_score(context['staff'], context['pms'])
             context['overall_score'] = calculate_overall_score(context['staff'], context['pms'])
-            context['matrix_applied'] = get_matrix(context['staff'], context['pms'])
+            context['matrix_applied'] = display_matrix(context['staff'], context['pms'])
+            context['company_score'] = get_company_score(context['staff'], context['pms'])
+            context['bu_score'] = get_bu_score(context['staff'], context['pms'])
             for kpi in KPI.objects.filter(kpi_staff=context['staff'], kpi_pms=context['pms']):
                 kpi_results.append([kpi, calculate_kpi_score(kpi, kpi_type)])
         context['kpi_results'] = kpi_results
-
 
         return context
 
@@ -841,7 +834,8 @@ class AssessmentView(DetailView):
         global_context(self.kwargs['company_id'], self.request.user, context)
         assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
 
-        if assessment.assessment_start_date <= datetime.datetime.now(assessment.assessment_start_date.tzinfo) <= assessment.assessment_end_date:
+        if assessment.assessment_start_date <= datetime.datetime.now(
+                assessment.assessment_start_date.tzinfo) <= assessment.assessment_end_date:
             context['assessment_status'] = True
         else:
             context['assessment_status'] = False
@@ -862,7 +856,8 @@ class AssessmentView(DetailView):
                     for records in LevelMembership.objects.filter(membership_level=level, membership_is_active=True):
                         count = 0
                         for question in context['bottom_questions']:
-                            if QuestionResponses.objects.filter(response_question=question, response_evaluated=records.membership_staff):
+                            if QuestionResponses.objects.filter(response_question=question,
+                                                                response_evaluated=records.membership_staff):
                                 count += 1
                         status = str(count) + "/" + str(context['bottom_questions'].count())
                         level_members.append([records, status])
@@ -893,7 +888,8 @@ class AssessmentViewMember(DetailView):
         global_context(self.kwargs['company_id'], self.request.user, context)
         assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
         member = get_object_or_404(Staff, staff_id=self.kwargs['uid'])
-        if assessment.assessment_start_date <= datetime.datetime.now(assessment.assessment_start_date.tzinfo) <= assessment.assessment_end_date:
+        if assessment.assessment_start_date <= datetime.datetime.now(
+                assessment.assessment_start_date.tzinfo) <= assessment.assessment_end_date:
             context['assessment_status'] = True
         else:
             context['assessment_status'] = False
@@ -932,10 +928,11 @@ class AssessmentViewMemberResponseCreate(CreateView):
 
         assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
         member = get_object_or_404(Staff, staff_id=self.kwargs['uid'])
-        direction = self.kwargs['dir']
+        # direction = self.kwargs['dir']
         question = get_object_or_404(Questions, question_id=self.kwargs['qid'])
 
-        if assessment.assessment_start_date <= datetime.datetime.now(assessment.assessment_start_date.tzinfo) <= assessment.assessment_end_date:
+        if assessment.assessment_start_date <= datetime.datetime.now(
+                assessment.assessment_start_date.tzinfo) <= assessment.assessment_end_date:
             context['assessment_status'] = True
         else:
             context['assessment_status'] = False
@@ -965,7 +962,9 @@ class AssessmentViewMemberResponseCreate(CreateView):
         return initial
 
     def get_success_url(self):
-       return '{}'.format(reverse('Site:Assessment_View_Member', kwargs={'company_id': self.kwargs['company_id'], 'pk': self.kwargs['pk'], 'uid': self.kwargs['uid'], 'dir': self.kwargs['dir']}))
+        return '{}'.format(reverse('Site:Assessment_View_Member',
+                                   kwargs={'company_id': self.kwargs['company_id'], 'pk': self.kwargs['pk'],
+                                           'uid': self.kwargs['uid'], 'dir': self.kwargs['dir']}))
 
 
 class AssessmentViewMemberResponseEdit(UpdateView):
@@ -979,10 +978,11 @@ class AssessmentViewMemberResponseEdit(UpdateView):
 
         assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
         member = get_object_or_404(Staff, staff_id=self.kwargs['uid'])
-        direction = self.kwargs['dir']
-        response = get_object_or_404(QuestionResponses, response_id=self.kwargs['qrid'])
+        # direction = self.kwargs['dir']
+        # response = get_object_or_404(QuestionResponses, response_id=self.kwargs['qrid'])
 
-        if assessment.assessment_start_date <= datetime.datetime.now(assessment.assessment_start_date.tzinfo) <= assessment.assessment_end_date:
+        if assessment.assessment_start_date <= datetime.datetime.now(assessment.assessment_start_date.tzinfo) <= \
+                assessment.assessment_end_date:
             context['assessment_status'] = True
         else:
             context['assessment_status'] = False
@@ -994,7 +994,10 @@ class AssessmentViewMemberResponseEdit(UpdateView):
         return context
 
     def get_success_url(self):
-       return '{}'.format(reverse('Site:Assessment_View_Member', kwargs={'company_id': self.kwargs[''], 'pk': self.kwargs['pk'], 'uid': self.kwargs['uid'], 'dir': self.kwargs['dir']}))
+        return '{}'.format(reverse('Site:Assessment_View_Member', kwargs={'company_id': self.kwargs[''],
+                                                                          'pk': self.kwargs['pk'],
+                                                                          'uid': self.kwargs['uid'],
+                                                                          'dir': self.kwargs['dir']}))
 
 
 class AssessmentViewMy(DetailView):
@@ -1023,7 +1026,7 @@ class AssessmentViewMy(DetailView):
                     for res in response:
                         score = score + res.response_submitted
                         comments.append(res.response_comment)
-                    score = round(score/response.count(), 2)
+                    score = round(score / response.count(), 2)
                     question_responses.append([question, response, 'Done', score, comments])
                 else:
                     question_responses.append([question, None, 'Not Done', score, comments])
@@ -1088,6 +1091,65 @@ def staff_edit_question_response(request, company_id, aid, staff_id, dir, rid):
                                         kwargs={'company_id': company_id, 'pk': aid, 'uid': staff_id, 'dir': dir}))
 
 
+class Report(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(Report, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        staff = context['staff']
+
+        my_members_score = []
+        levels_down_score = []
+
+        if staff.staff_superuser:
+            for member_staff in Staff.objects.filter(staff_company=context['company']):
+                level = get_staff_level(member_staff)
+                assessment_score = calculate_overall_assessment_score(member_staff, context['pms'])
+                check_in_score = calculate_overall_check_in_score(member_staff, context['pms'])
+                kpi_score = calculate_overall_kpi_score(member_staff, context['pms'])
+                bu_score = get_bu_score(member_staff, context['pms'])
+                company_score = get_company_score(member_staff, context['pms'])
+                overall_score = calculate_overall_kpi_score(member_staff, context['pms'])
+
+                my_members_score.append([member_staff, level, assessment_score, check_in_score, kpi_score, bu_score,
+                                         company_score, overall_score])
+        else:
+            for level in Level.objects.filter(level_head=staff):
+                for members in LevelMembership.objects.filter(membership_level=level):
+                    level = members.membership_level
+                    assessment_score = calculate_overall_assessment_score(members.membership_staff, context['pms'])
+                    check_in_score = calculate_overall_check_in_score(members.membership_staff, context['pms'])
+                    kpi_score = calculate_overall_kpi_score(members.membership_staff, context['pms'])
+                    bu_score = get_bu_score(members.membership_staff, context['pms'])
+                    company_score = get_company_score(members.membership_staff, context['pms'])
+                    overall_score = calculate_overall_kpi_score(members.membership_staff, context['pms'])
+
+                    my_members_score.append([members.membership_staff, level, assessment_score, check_in_score,
+                                             kpi_score, bu_score, company_score, overall_score])
+
+            if check_staff_is_level_head(self.kwargs['company_id'], staff):
+                levels_down = []
+                for levels in Level.objects.filter(level_head=staff):
+                    all_levels_down(levels, levels_down)
+
+                for level in levels_down:
+                    for members in LevelMembership.objects.filter(membership_level=level):
+                        level = members.membership_level
+                        assessment_score = calculate_overall_assessment_score(members.membership_staff, context['pms'])
+                        check_in_score = calculate_overall_check_in_score(members.membership_staff, context['pms'])
+                        kpi_score = calculate_overall_kpi_score(members.membership_staff, context['pms'])
+                        bu_score = get_bu_score(members.membership_staff, context['pms'])
+                        company_score = get_company_score(members.membership_staff, context['pms'])
+                        overall_score = calculate_overall_kpi_score(members.membership_staff, context['pms'])
+
+                        levels_down_score.append([members.membership_staff, level, assessment_score, check_in_score,
+                                                  kpi_score, bu_score, company_score, overall_score])
+
+        context['my_members_score'] = my_members_score
+        context['levels_down_score'] = levels_down_score
+        return context
+
+
 class Profile(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -1116,8 +1178,8 @@ class HelpList(TemplateView):
 
 
 class HelpCreate(CreateView):
-
     form_class = HelpForm
+
     def get_context_data(self, **kwargs):
         context = super(HelpCreate, self).get_context_data()
         global_context(self.kwargs['company_id'], self.request.user, context)
@@ -1139,6 +1201,7 @@ class HelpCreate(CreateView):
 class HelpEdit(UpdateView):
     model = Help
     form_class = HelpForm
+
     def get_context_data(self, **kwargs):
         context = super(HelpEdit, self).get_context_data()
         global_context(self.kwargs['company_id'], self.request.user, context)
@@ -1147,6 +1210,7 @@ class HelpEdit(UpdateView):
 
     def get_success_url(self):
         return '{}'.format(reverse('Site:Help_List', kwargs={'company_id': self.kwargs['company_id']}))
+
 
 class HelpDelete(DeleteView):
 

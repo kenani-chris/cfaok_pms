@@ -1,8 +1,4 @@
 import datetime
-
-from django.shortcuts import redirect
-from django.urls import reverse
-
 from .models import *
 
 
@@ -22,7 +18,7 @@ def get_company(company_id):
 
 
 def get_active_pms(company):
-    return  PMS.objects.filter(
+    return PMS.objects.filter(
         pms_active=True,
         pms_company=company
     ).first()
@@ -146,7 +142,7 @@ def kpi_submission_checks(staff, pms):
             date_check = False
 
         # KPI no Checks
-        submission_min = get_user_submission_data(staff, pms).submission_minimum_number
+        # submission_min = get_user_submission_data(staff, pms).submission_minimum_number
         submission_max = get_user_submission_data(staff, pms).submission_maximum_number
 
         if kpi_number_check(staff, pms) < submission_max:
@@ -221,7 +217,6 @@ def calculate_kpi_score(kpi, kpi_type):
     tar_feb = kpi.kpi_february_target
     tar_mar = kpi.kpi_march_target
 
-
     result_dict = {'April': apr, 'May': may, 'June': jun, 'July': jul, 'August': aug, 'September': sep,
                    'October': oct, 'November': nov, 'December': dec, 'January': jan, 'February': feb, 'March': mar}
 
@@ -285,15 +280,13 @@ def calculate_kpi_score(kpi, kpi_type):
     month_results = [0 if v is None else v for v in month_results]
     month_targets = [0 if v is None else v for v in month_targets]
 
-
-    
     if kpi_type == "Monthly Target":
         sum_score = round(sum(month_results), 2)
         sum_target = round(sum(month_targets), 2)
 
         if kpi.kpi_function.lower() == 'minimize':
             if sum_score == 0:
-                kpi_score  = 0
+                kpi_score = 0
             else:
                 kpi_score = round((sum_target/sum_score)*100, 2)
         else:
@@ -371,7 +364,7 @@ def calculate_kpi_score(kpi, kpi_type):
                         else:
                             kpi_score = (result_dict[last_month] / kpi.kpi_target) * 100
                     else:
-                        kpi_score = (result_dict[this_month]/ kpi.kpi_target) * 100
+                        kpi_score = (result_dict[this_month]/kpi.kpi_target) * 100
                 else:
                     if mar is None:
                         mar = 0
@@ -402,7 +395,7 @@ def calculate_kpi_score(kpi, kpi_type):
 
 def calculate_overall_kpi_score(staff, pms):
     kpis = kpi_list(staff, pms)
-    kpi_type = KPIType.objects.filter(type_pms=pms,type_category=staff.staff_category)
+    kpi_type = KPIType.objects.filter(type_pms=pms, type_category=staff.staff_category)
     if kpi_type:
         kpi_type = kpi_type.first().type_kpi
     else:
@@ -542,6 +535,22 @@ default_matrix = {'KPI': 50,
                   'BU': 20,
                   'Company': 10
                   }
+
+
+def display_matrix(staff, pms):
+    matrix = get_matrix(staff, pms)
+    matrix_applied = {}
+    if matrix:
+        matrix_applied['Assessment'] = matrix.matrix_assessment_weight
+        matrix_applied['KPI'] = matrix.matrix_kpi_weight
+        matrix_applied['Check-In'] = matrix.matrix_kpi_weight
+        matrix_applied['BU'] = matrix.matrix_bu_weight
+        matrix_applied['Company'] = matrix.matrix_company_weight
+
+    else:
+        matrix_applied = default_matrix
+
+    return matrix_applied
 
 
 def calculate_overall_score(staff, pms):

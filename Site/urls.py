@@ -94,7 +94,9 @@ urlpatterns = [
     # Help
     path('<int:company_id>/Help', HelpList.as_view(template_name='Site/Help/list.html'), name='Help_List'),
     path('<int:company_id>/Help/Create', HelpCreate.as_view(template_name='Site/Help/create.html'), name='Help_Create'),
-    path('<int:company_id>/Help/Edit/<int:pk>', HelpEdit.as_view(template_name='Site/Help/edit.html'), name='Help_Edit'),
-    path('<int:company_id>/Help/Delete/<int:pk>', HelpDelete.as_view(template_name='Site/Help/delete.html'), name='Help_Delete')
+    path('<int:company_id>/Help/Edit/<int:pk>', HelpEdit.as_view(template_name='Site/Help/edit.html'),
+         name='Help_Edit'),
+
+    path('<int:company_id>/Report', Report.as_view(template_name='Site/Reports/list.html'), name='Report')
 
 ]
