@@ -4,6 +4,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_POST, require_safe
 from django.views.generic import TemplateView
 from Site.models import Staff
 
@@ -18,6 +19,7 @@ class Home(TemplateView):
         return context
 
 
+@require_POST
 def self_change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
@@ -33,5 +35,6 @@ def self_change_password(request):
     })
 
 
+@require_safe
 def self_password_change_done(request):
     return render(request, 'registration/change-password-done.html',)
