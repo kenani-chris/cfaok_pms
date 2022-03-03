@@ -9,7 +9,7 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <b>{{ CheckIn.check_in_month }} Check-In</b>
+                    <strong>{{ CheckIn.check_in_month }} Check-In</strong>
                     <a href="{% url 'Site:My_CheckIn_Delete' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-danger" style="margin-right: 10px">Delete</div></a>
                     <a href="{% url 'Site:My_CheckIn_Edit' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit</div></a>
                 </div>

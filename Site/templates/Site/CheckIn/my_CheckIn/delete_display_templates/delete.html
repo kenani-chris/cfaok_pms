@@ -7,7 +7,7 @@
         </div>
         <div class="card-body">
             <form method="post">{% csrf_token %}
-                <p>Are you sure you want to delete CheckIn <b><a href="{% url 'Site:My_CheckIn_View' CheckIn.checkIn_id %}">{{ CheckIn.checkIn_month }}</a></b></p>
+                <p>Are you sure you want to delete CheckIn <strong><a href="{% url 'Site:My_CheckIn_View' CheckIn.checkIn_id %}">{{ CheckIn.checkIn_month }}</a></strong></p>
                 <p>You can choose to edit instead; as deleting will not allow submission past the deadline</p>
                 <button type="submit" value="Confirm" class="btn btn-danger">Confirm Delete</button>
                 <a href="{% url 'Site:My_CheckIn_View' CheckIn.checkIn_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit Instead</div></a>

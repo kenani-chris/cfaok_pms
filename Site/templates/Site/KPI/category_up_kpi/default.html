@@ -1,6 +1,6 @@
 {% extends 'Site/default.html' %}
 
-{% block page_link%}<a class="navbar-brand" href="{% url 'Site:KPI_Category' company_id level_category.category_id %}" ><b style="color: {{ company.company_color1 }}"> {{ level_category.category_name }} KPI Home</b></a>{% endblock %}
+{% block page_link%}<a class="navbar-brand" href="{% url 'Site:KPI_Category' company_id level_category.category_id %}" ><strong style="color: {{ company.company_color1 }}"> {{ level_category.category_name }} KPI Home</strong></a>{% endblock %}
 
 
 
