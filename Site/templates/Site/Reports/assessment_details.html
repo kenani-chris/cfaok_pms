@@ -1,11 +1,29 @@
 {% extends 'Site/Reports/default.html' %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active">Report</li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Report' company_id %}">Report</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Report_Assessment_Results' company_id %}">Report - Assessments</a></li>
+        <li class="breadcrumb-item active">Assessment</li>
     {% endblock %}
-    {% block page_title %}Report{% endblock %}
+    {% block page_title %}Report - {{ assessment.assessment_name }}{% endblock %}
     {% block content %}
 
         <div class="container-fluid">
+            <table class="table table-bordered">
+                <thead>
+                    <th>Assessment</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Scoring Use</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ assessment.assessment_name}}</td>
+                        <td>{{ assessment.assessment_start_date }}</td>
+                        <td>{{ assessment.assessment_end_date }}</td>
+                        <td>{{ assessment.assessment_scoring_use }}</td>
+                    </tr>
+                </tbody>
+            </table>
             <div class="card">
                 <div class="card-header">
                     <h5>My Members</h5>
@@ -15,13 +33,9 @@
                           <tr>
                             <th>Staff</th>
                             <th>PF</th>
-                            <th>Level</th>
-                            <th>Assessment Score</th>
-                            <th>Check-In Score</th>
-                            <th>KPI Score</th>
-                            <th>BU Score</th>
-                            <th>Company Score</th>
-                            <th>Overall Score</th>
+                            <th>S_TL</th>
+                            <th>TL_S</th>
+                            <th>Total</th>
                           </tr>
                           </thead>
 
@@ -33,10 +47,6 @@
                             <td>{{ staff.1 }}</td>
                             <td>{{ staff.2 }}</td>
                             <td>{{ staff.3 }}</td>
-                            <td>{{ staff.4 }}</td>
-                            <td>{{ staff.5 }}</td>
-                            <td>{{ staff.6 }}</td>
-                            <td>{{ staff.7 }}</td>
                         </tr>
                         {% endfor %}
                       </tbody>
@@ -54,13 +64,10 @@
                               <tr>
                                 <th>Staff</th>
                                 <th>PF</th>
-                                <th>Level</th>
-                                <th>Assessment Score</th>
-                                <th>Check-In Score</th>
-                                <th>KPI Score</th>
-                                <th>BU Score</th>
-                                <th>Company Score</th>
-                                <th>Overall Score</th>
+                                <th>Score</th>
+                                <th>S_TL</th>
+                                <th>TL_S</th>
+                                <th>Total</th>
                               </tr>
                               </thead>
 
@@ -72,10 +79,6 @@
                                 <td>{{ staff.1 }}</td>
                                 <td>{{ staff.2 }}</td>
                                 <td>{{ staff.3 }}</td>
-                                <td>{{ staff.4 }}</td>
-                                <td>{{ staff.5 }}</td>
-                                <td>{{ staff.6 }}</td>
-                                <td>{{ staff.7 }}</td>
                             </tr>
                             {% endfor %}
                           </tbody>

@@ -1,8 +1,9 @@
 {% extends 'Site/Reports/default.html' %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active">Report</li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Report' company_id %}">Report</a></li>
+        <li class="breadcrumb-item active">Report - KPI Submissions</li>
     {% endblock %}
-    {% block page_title %}Report{% endblock %}
+    {% block page_title %}Report - KPI Submissions{% endblock %}
     {% block content %}
 
         <div class="container-fluid">
@@ -15,18 +16,16 @@
                           <tr>
                             <th>Staff</th>
                             <th>PF</th>
-                            <th>Level</th>
-                            <th>Assessment Score</th>
-                            <th>Check-In Score</th>
-                            <th>KPI Score</th>
-                            <th>BU Score</th>
-                            <th>Company Score</th>
-                            <th>Overall Score</th>
+                            <th>Submitted</th>
+                            <th>Pending</th>
+                            <th>Approved</th>
+                            <th>Required</th>
+                            <th class="bg-colo1">Total</th>
                           </tr>
                           </thead>
 
                       <tbody>
-                        {% for staff in my_members_score %}
+                        {% for staff in my_members_submission %}
                         <tr>
                             <td>{{ staff.0 }}</td>
                             <td>{{ staff.0.staff_pf_number }}</td>
@@ -35,8 +34,6 @@
                             <td>{{ staff.3 }}</td>
                             <td>{{ staff.4 }}</td>
                             <td>{{ staff.5 }}</td>
-                            <td>{{ staff.6 }}</td>
-                            <td>{{ staff.7 }}</td>
                         </tr>
                         {% endfor %}
                       </tbody>
@@ -44,28 +41,26 @@
                 <br>
 
             </div>
-            {% if levels_down_score|length > 0 %}
+            {% if levels_down_submission|length > 0 %}
                 <div class="card">
                     <div class="card-header">
-                        <h5>My Members</h5>
+                        <h5>Level down Members</h5>
                     </div>
                      <table id="simpleTable" class="table table-bordered table-hover">
                           <thead>
                               <tr>
                                 <th>Staff</th>
                                 <th>PF</th>
-                                <th>Level</th>
-                                <th>Assessment Score</th>
-                                <th>Check-In Score</th>
-                                <th>KPI Score</th>
-                                <th>BU Score</th>
-                                <th>Company Score</th>
-                                <th>Overall Score</th>
+                                <th>Submitted</th>
+                                <th>Pending</th>
+                                <th>Approved</th>
+                                <th>Required</th>
+                                <th class="bg-colo1">Total</th>
                               </tr>
                               </thead>
 
                           <tbody>
-                            {% for staff in my_members_score %}
+                            {% for staff in levels_down_submission %}
                             <tr>
                                 <td>{{ staff.0 }}</td>
                                 <td>{{ staff.0.staff_pf_number }}</td>
@@ -74,8 +69,6 @@
                                 <td>{{ staff.3 }}</td>
                                 <td>{{ staff.4 }}</td>
                                 <td>{{ staff.5 }}</td>
-                                <td>{{ staff.6 }}</td>
-                                <td>{{ staff.7 }}</td>
                             </tr>
                             {% endfor %}
                           </tbody>

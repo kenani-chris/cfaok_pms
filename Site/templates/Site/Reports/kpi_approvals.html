@@ -1,6 +1,6 @@
 {% extends 'Site/Reports/default.html' %}
     {% block breadcrumb %}
-        <li class="breadcrumb-item active">Report</li>
+        <li class="breadcrumb-item active">Profile</li>
     {% endblock %}
     {% block page_title %}Report{% endblock %}
     {% block content %}
@@ -16,11 +16,11 @@
                             <th>Staff</th>
                             <th>PF</th>
                             <th>Level</th>
-                            <th>Assessment Score</th>
-                            <th>Check-In Score</th>
                             <th>KPI Score</th>
+                            <th>Assessment Score</th>
                             <th>BU Score</th>
                             <th>Company Score</th>
+                            <th>Check-In Score</th>
                             <th>Overall Score</th>
                           </tr>
                           </thead>
@@ -44,7 +44,7 @@
                 <br>
 
             </div>
-            {% if levels_down_score|length > 0 %}
+            {% if le|length > 0 %}
                 <div class="card">
                     <div class="card-header">
                         <h5>My Members</h5>
@@ -55,11 +55,11 @@
                                 <th>Staff</th>
                                 <th>PF</th>
                                 <th>Level</th>
-                                <th>Assessment Score</th>
-                                <th>Check-In Score</th>
                                 <th>KPI Score</th>
+                                <th>Assessment Score</th>
                                 <th>BU Score</th>
                                 <th>Company Score</th>
+                                <th>Check-In Score</th>
                                 <th>Overall Score</th>
                               </tr>
                               </thead>

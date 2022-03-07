@@ -1,0 +1,114 @@
+{% extends 'Site/Reports/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Report' company_id %}">Report</a></li>
+        <li class="breadcrumb-item active">Check-In</li>
+    {% endblock %}
+    {% block page_title %}Report - Check-In{% endblock %}
+    {% block content %}
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>My Members</h5>
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Staff</th>
+                            <th>PF</th>
+                            <th>Apr</th>
+                            <th>May</th>
+                            <th>Jun</th>
+                            <th>Jul</th>
+                            <th>Aug</th>
+                            <th>Sep</th>
+                            <th>Oct</th>
+                            <th>Nov</th>
+                            <th>Dec</th>
+                            <th>Jan</th>
+                            <th>Feb</th>
+                            <th>Mar</th>
+                            <th>Score</th>
+                          </tr>
+                          </thead>
+
+                      <tbody>
+                        {% for staff in my_members_score %}
+                        <tr>
+                            <td>{{ staff.0 }}</td>
+                            <td>{{ staff.0.staff_pf_number }}</td>
+                            <td {% if staff.1.0 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.0 }}</td>
+                            <td {% if staff.1.1 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.1 }}</td>
+                            <td {% if staff.1.2 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.2 }}</td>
+                            <td {% if staff.1.3 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.3 }}</td>
+                            <td {% if staff.1.4 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.4 }}</td>
+                            <td {% if staff.1.5 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.5 }}</td>
+                            <td {% if staff.1.6 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.6 }}</td>
+                            <td {% if staff.1.7 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.7 }}</td>
+                            <td {% if staff.1.8 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.8 }}</td>
+                            <td {% if staff.1.9 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.9 }}</td>
+                            <td {% if staff.1.10 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.10 }}</td>
+                            <td {% if staff.1.11 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.11 }}</td>
+                            <td class="bg-color1">{{ staff.2 }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                 </table>
+                <br>
+
+            </div>
+            {% if levels_down_score|length > 0 %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Level Down Members</h5>
+                    </div>
+                     <table id="simpleTable" class="table table-bordered table-hover">
+                          <thead>
+                              <th>Staff</th>
+                                <th>PF</th>
+                                <th>Apr</th>
+                                <th>May</th>
+                                <th>Jun</th>
+                                <th>Jul</th>
+                                <th>Aug</th>
+                                <th>Sep</th>
+                                <th>Oct</th>
+                                <th>Nov</th>
+                                <th>Dec</th>
+                                <th>Jan</th>
+                                <th>Feb</th>
+                                <th>Mar</th>
+                                <th>Score</th>
+                              </tr>
+                              </thead>
+
+                          <tbody>
+                            {% for staff in levels_down_score %}
+                            <tr>
+                                <td>{{ staff.0 }}</td>
+                                <td>{{ staff.0.staff_pf_number }}</td>
+                                <td {% if staff.1.0 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.0 }}</td>
+                                <td {% if staff.1.1 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.1 }}</td>
+                                <td {% if staff.1.2 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.2 }}</td>
+                                <td {% if staff.1.3 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.3 }}</td>
+                                <td {% if staff.1.4 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.4 }}</td>
+                                <td {% if staff.1.5 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.5 }}</td>
+                                <td {% if staff.1.6 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.6 }}</td>
+                                <td {% if staff.1.7 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.7 }}</td>
+                                <td {% if staff.1.8 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.8 }}</td>
+                                <td {% if staff.1.9 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.9 }}</td>
+                                <td {% if staff.1.10 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.10 }}</td>
+                                <td {% if staff.1.11 == 0 %}class="bg-warning" {% endif %}>{{ staff.1.11 }}</td>
+                                <td class="bg-color1">{{ staff.2 }}</td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                     </table>
+                    <br>
+
+                </div>
+            {% endif %}
+        </div>
+
+
+    {% endblock %}

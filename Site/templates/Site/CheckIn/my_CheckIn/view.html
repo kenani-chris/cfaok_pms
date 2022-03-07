@@ -10,8 +10,10 @@
             <div class="card">
                 <div class="card-header">
                     <strong>{{ CheckIn.check_in_month }} Check-In</strong>
-                    <a href="{% url 'Site:My_CheckIn_Delete' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-danger" style="margin-right: 10px">Delete</div></a>
-                    <a href="{% url 'Site:My_CheckIn_Edit' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit</div></a>
+                    {% if CheckIn.check_in_status != "Approved" %}
+                        <a href="{% url 'Site:My_CheckIn_Delete' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-danger" style="margin-right: 10px">Delete</div></a>
+                        <a href="{% url 'Site:My_CheckIn_Edit' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit</div></a>
+                    {% endif %}
                 </div>
                 <table class="table table-bordered">
                       <tbody>
@@ -52,7 +54,7 @@
                                   Perfomance Areas
                               </th>
                               <td>
-                                  {{ CheckIn.check_in_performance_area }}
+                                  {{ CheckIn.check_in_performance_area|safe }}
                               </td>
                           </tr>
 
@@ -61,7 +63,7 @@
                                   Progress Discussed
                               </th>
                               <td>
-                                  {{ CheckIn.check_in_progress_discussed }}
+                                  {{ CheckIn.check_in_progress_discussed|safe }}
                               </td>
                           </tr>
 
@@ -70,7 +72,7 @@
                                   Perfomance Areas
                               </th>
                               <td>
-                                  {{ CheckIn.check_in_team_member_actions }}
+                                  {{ CheckIn.check_in_team_member_actions|safe }}
                               </td>
                           </tr>
 
@@ -79,7 +81,7 @@
                                   Perfomance Areas
                               </th>
                               <td>
-                                  {{ CheckIn.check_in_team_leader_support }}
+                                  {{ CheckIn.check_in_team_leader_support|safe }}
                               </td>
                           </tr>
 
@@ -88,7 +90,7 @@
                                   Team Leader Comment
                               </th>
                               <td>
-                                  {{ CheckIn.check_in_team_leader_comment }}
+                                  {{ CheckIn.check_in_team_leader_comment|safe }}
                               </td>
                           </tr>
 

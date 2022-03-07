@@ -4,7 +4,7 @@ from .models import *
 from .urls import app_name
 
 
-excempt_list = ['Staff', 'PMS']
+excempt_list = ['Staff', 'PMS', 'LevelCategory', 'KPIType', 'CheckIn', 'Level']
 
 for name, app in apps.app_configs.items():
     if name == app_name:
@@ -16,13 +16,33 @@ for name, app in apps.app_configs.items():
 
 class StaffAdmin(admin.ModelAdmin):
     list_display = ('staff_person', 'staff_pf_number', 'staff_grade', 'staff_active', 'staff_superuser',
-                    'staff_visibility')
+                    'staff_visibility', 'staff_category', 'staff_company')
     list_filter = ('staff_active', 'staff_superuser', 'staff_visibility', 'staff_company')
 
 
 class PMSAdmin(admin.ModelAdmin):
-    list_display = ('pms_name', 'pms_year_start_date', 'pms_year_end_date', 'pms_active',)
+    list_display = ('pms_name', 'pms_year_start_date', 'pms_year_end_date', 'pms_active', 'pms_company')
+
+
+class LevelCategoryAdmin(admin.ModelAdmin):
+    list_display = ('category_name', 'category_parent', 'category_kpi_view', 'category_company')
+
+
+class KPITypeAdmin(admin.ModelAdmin):
+    list_display = ('type_pms', 'type_category', 'type_kpi')
+
+
+class CheckInAdmin(admin.ModelAdmin):
+    list_display = ('check_in_Staff', 'check_in_month', 'check_in_submit_date', 'check_in_status')
+
+
+class LevelAdmin(admin.ModelAdmin):
+    list_display = ('level_name', 'level_description', 'level_head', 'level_parent', 'level_category')
 
 
 admin.site.register(Staff, StaffAdmin)
 admin.site.register(PMS, PMSAdmin)
+admin.site.register(LevelCategory, LevelCategoryAdmin)
+admin.site.register(KPIType, KPITypeAdmin)
+admin.site.register(CheckIn, CheckInAdmin)
+admin.site.register(Level, LevelAdmin)

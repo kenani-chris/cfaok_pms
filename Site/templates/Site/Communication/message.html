@@ -1,0 +1,66 @@
+{% extends 'Site/Communication/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active">Communicate</li>
+    {% endblock %}
+    {% block page_title %}Communicate{% endblock %}
+    {% block content %}
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Communicate</h5>
+                </div>
+                <div style="overflow-x: scroll" class="card-body">
+                    {% if staff.staff_superuser is True or request.user.is_superuser %}
+
+                        <form method="post" action="{% url 'Site:Communicate' company_id %}">
+                            {% csrf_token %}
+                            <label>Message Title</label>
+                            <input name="communication_title" type="text" required>
+                            <br>
+                            <label>Message</label>
+                            <textarea name="communication_message" required></textarea>
+                            <br>
+                            <button type="submit" class="btn btn-info">Notify all Users</button>
+                        </form>
+                        <br>
+                     <table id="simpleTable" class="table table-bordered table-hover">
+                          <thead>
+                              <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Staff</th>
+                                <th>Title</th>
+                                <th>Message</th>
+                                <th>Date</th>
+                                <th>Reference</th>
+                                <th>Status</th>
+                              </tr>
+                              </thead>
+
+                          <tbody>
+                            {% for notification in notification_list %}
+                            <tr>
+                                <td>{{ notification.notification_id }}</td>
+                                <td>{{ notification.notification_type }}</td>
+                                <td>{{ notification.notification_recipient }}</td>
+                                <td>{{ notification.notification_title }}</td>
+                                <td>{{ notification.notification_message }}</td>
+                                <td>{{ notification.notification_date }}</td>
+                                <td>{{ notification.notification_reference_key }}</td>
+                                <td>{{ notification.notification_status }}</td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                     </table>
+                    </div>
+                {% else %}
+                    you do not have permission to this page
+                {% endif %}
+                <br>
+
+            </div>
+        </div>
+
+
+    {% endblock %}

@@ -1,4 +1,7 @@
 import datetime
+
+from django.utils import timezone
+
 from .models import *
 
 
@@ -26,8 +29,6 @@ def get_active_pms(company):
 
 def checks(company_id, user):
     if get_company(company_id):
-        print(get_active_pms(get_company(company_id)))
-        print("we are somewhere here")
         if get_active_pms(get_company(company_id)):
             if get_staff_account(get_company(company_id), user):
                 return None
@@ -54,7 +55,6 @@ def global_context(company_id, user, local_context):
         if context['pms']:
             all_categories_up(get_staff_account(get_company(company_id), user).staff_category, category_up_list)
             context['category_up_list'] = category_up_list
-            print(category_up_list)
 
         if context['staff']:
             context['staff_is_level_head'] = check_staff_is_level_head(company_id, context['staff'])
@@ -184,6 +184,15 @@ def all_levels_down(level, level_list):
             all_levels_down(child, level_list)
 
 
+def all_levels_up(level, level_list):
+    if level is None:
+        return
+    else:
+        parent_level = level.level_parent
+        level_list.append(parent_level)
+        all_levels_up(parent_level, level_list)
+
+
 def calculate_kpi_score(kpi, kpi_type):
     kpi_score = 0
     kpi_sum = 0
@@ -303,16 +312,26 @@ def calculate_kpi_score(kpi, kpi_type):
             if kpi.kpi_type.lower() == 'addition':
                 kpi_score = (kpi_sum / kpi.kpi_target) * 100
             elif kpi.kpi_type.lower() == 'average':
-                kpi_score = (kpi_average / kpi.kpi_target) * 100
+                if kpi_average != 0:
+                    kpi_score = (kpi.kpi_target / kpi_average) * 100
+                else:
+                    if kpi_average >= kpi.kpi_target:
+                        kpi_score = 100
+                    else:
+                        kpi_score = 0
             elif kpi.kpi_type.lower() == 'ytd':
                 if datetime.date.today() <= kpi.kpi_pms.pms_year_end_date:
 
                     this_month = datetime.date.today().strftime("%B")
 
                     last_month = (datetime.date.today() - datetime.timedelta(days=31)).strftime("%B")
+                    before_last_month = (datetime.date.today() - datetime.timedelta(days=61)).strftime("%B")
                     if result_dict[this_month] is None:
                         if result_dict[last_month] is None:
-                            kpi_score = (0 / kpi.kpi_target) * 100
+                            if result_dict[before_last_month] is None:
+                                kpi_score = (0 / kpi.kpi_target) * 100
+                            else:
+                                kpi_score = (result_dict[before_last_month] / kpi.kpi_target) * 100
                         else:
                             kpi_score = (result_dict[last_month] / kpi.kpi_target) * 100
                     else:
@@ -354,13 +373,17 @@ def calculate_kpi_score(kpi, kpi_type):
                 kpi_score = (kpi_average/kpi.kpi_target) * 100
             elif kpi.kpi_type.lower() == 'ytd':
                 if datetime.date.today() <= kpi.kpi_pms.pms_year_end_date:
-
                     this_month = datetime.date.today().strftime("%B")
 
                     last_month = (datetime.date.today() - datetime.timedelta(days=31)).strftime("%B")
+                    before_last_month = (datetime.date.today() - datetime.timedelta(days=61)).strftime("%B")
+
                     if result_dict[this_month] is None:
                         if result_dict[last_month] is None:
-                            kpi_score = (0/kpi.kpi_target) *100
+                            if result_dict[before_last_month] is None:
+                                kpi_score = (0/kpi.kpi_target) * 100
+                            else:
+                                kpi_score = (result_dict[before_last_month] / kpi.kpi_target) * 100
                         else:
                             kpi_score = (result_dict[last_month] / kpi.kpi_target) * 100
                     else:
@@ -373,7 +396,13 @@ def calculate_kpi_score(kpi, kpi_type):
             if kpi.kpi_type.lower() == 'addition':
                 kpi_score = (kpi.kpi_target/kpi_sum) * 100
             elif kpi.kpi_type.lower() == 'average':
-                kpi_score = (kpi.kpi_target/kpi_average) * 100
+                if kpi_average != 0:
+                    kpi_score = (kpi.kpi_target/kpi_average) * 100
+                else:
+                    if kpi_average >= kpi.kpi_target:
+                        kpi_score = 100
+                    else:
+                        kpi_score = 0
             elif kpi.kpi_type.lower() == 'ytd':
                 if datetime.date.today() <= kpi.kpi_pms.pms_year_end_date:
                     this_month = datetime.date.today().strftime("%B")
@@ -389,8 +418,7 @@ def calculate_kpi_score(kpi, kpi_type):
                     if mar is None:
                         mar = 0
                     kpi_score = (mar/kpi.kpi_target) * 100
-
-    return kpi_score
+    return round(kpi_score, 2)
 
 
 def calculate_overall_kpi_score(staff, pms):
@@ -487,7 +515,7 @@ def calculate_overall_check_in_score(staff, pms):
 
 def calculate_overall_assessment_score(staff, pms):
     score = 0
-    assessments = Assessment.objects.filter(assessment_pms=pms, assessment_end_date__lt=datetime.datetime.now(),
+    assessments = Assessment.objects.filter(assessment_pms=pms, assessment_end_date__lt=datetime.datetime.now(tz=timezone.utc),
                                             assessment_scoring_use=True)
     for assessment in assessments:
         if Level.objects.filter(level_head=staff):
@@ -501,6 +529,22 @@ def calculate_overall_assessment_score(staff, pms):
             score = score + calculate_assessment_score(assessment, staff, 'Bottom')
     if assessments:
         score = round(score/assessments.count())
+    return score
+
+
+def calculate_one_assessment_score(staff, pms, assessment):
+    score = 0
+
+    if Level.objects.filter(level_head=staff):
+        if LevelMembership.objects.filter(membership_staff=staff):
+            s_tl_score = calculate_assessment_score(assessment, staff, 'Top')
+            tl_s_score = calculate_assessment_score(assessment, staff, 'Bottom')
+            score = score + (s_tl_score + tl_s_score) / 2
+        else:
+            score = score + calculate_assessment_score(assessment, staff, 'Top')
+    else:
+        score = score + calculate_assessment_score(assessment, staff, 'Bottom')
+
     return score
 
 
@@ -593,7 +637,7 @@ def calculate_overall_score(staff, pms):
     bu_score = get_bu_score(staff, pms)
     company_score = get_company_score(staff, pms)
 
-    score = (kpi_score + assessment_score + bu_score + assessment_score + company_score) * checkin_score
+    score = round((kpi_score + assessment_score + bu_score + assessment_score + company_score) * checkin_score/100, 2)
 
     return score
 
@@ -601,14 +645,16 @@ def calculate_overall_score(staff, pms):
 def get_bu_score(staff, pms):
     score = 0
     categories = []
+    levels_up = []
     all_categories_up(staff.staff_category, categories)
     for category in categories:
         if category.category_kpi_view and category != categories[-1]:
-            if not Level.objects.filter(level_head=staff, level_category=category):
-                level = Level.objects.filter(level_category=category)
-                if level:
-                    score = calculate_overall_kpi_score(level.first().level_head, pms)
-
+            if Level.objects.filter(level_category=category).exclude(level_head=staff):
+                all_levels_up(get_staff_level(staff), levels_up)
+                for level in Level.objects.filter(level_category=category).exclude(level_head=staff):
+                    if level in levels_up:
+                        score = calculate_overall_kpi_score(level.level_head, pms)
+                        break
     return score
 
 

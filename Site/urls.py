@@ -97,6 +97,23 @@ urlpatterns = [
     path('<int:company_id>/Help/Edit/<int:pk>', HelpEdit.as_view(template_name='Site/Help/edit.html'),
          name='Help_Edit'),
 
-    path('<int:company_id>/Report', Report.as_view(template_name='Site/Reports/list.html'), name='Report')
+    path('<int:company_id>/Report', Report.as_view(template_name='Site/Reports/list.html'), name='Report'),
+    path('<int:company_id>/Report/KPIResult', ReportKPIResults.as_view(template_name='Site/Reports/kpi_results.html'),
+         name='Report_KPI_Results'),
+    path('<int:company_id>/Report/AssessmentResult', ReportAssessments.as_view(
+        template_name='Site/Reports/assessment.html'), name='Report_Assessment_Results'),
+    path('<int:company_id>/Report/AssessmentResult/<int:pk>', ReportAssessmentsDetails.as_view(
+        template_name='Site/Reports/assessment_details.html'), name='Report_Assessment_Results_Detail'),
+    path('<int:company_id>/Report/Check-In', ReportCheckIn.as_view(template_name='Site/Reports/checkin.html'),
+         name='Report_Check-In'),
+    path('<int:company_id>/Report/KPI-Submission', ReportKPISubmissions.as_view(
+        template_name='Site/Reports/kpi_submission.html'), name='Report_KPI_Submission'),
+    path('<int:company_id>/Report/Check-In', ReportKPIResults.as_view(template_name='Site/Reports/kpi_results.html'),
+         name='Report_KPI_Results'),path('<int:company_id>/Report/KPIResult', ReportKPIResults.as_view(
+        template_name='Site/Reports/kpi_results.html'), name='Report_KPI_Results'),
 
+
+    path('<int:company_id>/Communication', Communication.as_view(template_name='Site/Communication/message.html'),
+         name='Communication'),
+    path('<int:company_id>/Communicate', communicate, name='Communicate'),
 ]

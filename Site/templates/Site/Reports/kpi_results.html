@@ -1,0 +1,103 @@
+{% extends 'Site/Reports/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Report' company_id %}">Report</a></li>
+        <li class="breadcrumb-item active">Report - KPI Results</li>
+    {% endblock %}
+    {% block page_title %}Report - KPI Results{% endblock %}
+    {% block content %}
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>My Members</h5>
+                </div>
+                <div style="overflow-x: scroll">
+                    <table class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Staff</th>
+                            <th>KPI</th>
+                            <th>Details</th>
+                            <th>Score</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        {% for member in my_members_kpi_score %}
+                            <tr>
+                                    <td rowspan="{{ member.1|length }}">{{ member.0 }}</td>
+                                {% if member.1|length < 1 %}
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td></td>
+                                    </tr>
+                                {% else %}
+                                    <td>{{ member.1.0.0 }}</td>
+                                    <td>{{ member.1.0.1 }}</td>
+                                    <td rowspan="{{ member.1|length }}">{{ member.2 }}</td>
+                                    </tr>
+                                    {% for kpi in member.1 %}
+                                        {% if kpi != member.1.0 %}
+                                           <tr>
+                                                <td>{{ kpi.0 }}</td>
+                                                <td>{{ kpi.1 }}</td>
+                                           </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+                <br>
+            </div>
+            {% if levels_down_kpi_score %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Level Down Members</h5>
+                    </div>
+                    <div style="overflow-x: scroll">
+                        <table class="table table-bordered table-hover">
+                          <thead>
+                              <tr>
+                                <th>Staff</th>
+                                <th>KPI</th>
+                                <th>Details</th>
+                                <th>Score</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            {% for member in levels_down_kpi_score %}
+                                <tr>
+                                        <td rowspan="{{ member.1|length }}">{{ member.0 }}</td>
+                                    {% if member.1|length < 1 %}
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td></td>
+                                        </tr>
+                                    {% else %}
+                                        <td>{{ member.1.0.0 }}</td>
+                                        <td>{{ member.1.0.1 }}</td>
+                                        <td rowspan="{{ member.1|length }}">{{ member.2 }}</td>
+                                        </tr>
+                                        {% for kpi in member.1 %}
+                                            {% if kpi != member.1.0 %}
+                                               <tr>
+                                                    <td>{{ kpi.0 }}</td>
+                                                    <td>{{ kpi.1 }}</td>
+                                               </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                    </div>
+                    <br>
+                </div>
+            {% endif %}
+        </div>
+
+
+    {% endblock %}

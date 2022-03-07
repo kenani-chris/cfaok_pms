@@ -284,12 +284,22 @@
               </p>
             </a>
           </li>
-        {% if staff.staff_superuser or request.user.is_superuser %}
+        {% if staff.staff_superuser is True or request.user.is_superuser %}
           <li class="nav-item">
             <a href="{% url 'admin:index' %}" class="nav-link">
               <i class="nav-icon fas fa-folder-open"></i>
               <p>
                 Admin
+              </p>
+            </a>
+          </li>
+        {% endif %}
+        {% if staff.staff_superuser is True or request.user.is_superuser %}
+          <li class="nav-item">
+            <a href="{% url 'Site:Communication' company_id %}" class="nav-link">
+              <i class="nav-icon fas fa-bullhorn"></i>
+              <p>
+                Communication
               </p>
             </a>
           </li>
@@ -333,7 +343,7 @@
     <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      <strong>Version</strong> 3.2.0 {{ kpi_results }}
+      <strong>Version</strong> 3.2.0
     </div>
   </footer>
 
@@ -353,19 +363,6 @@
   $('textarea').attr('rows', 4);
 
 </script>
-{% for message in messages %}
-  <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
-    $(function() {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000
-      });
-      toastr.success('Success :)');
-    });
-  </script>
-{% endfor %}
 <!-- Bootstrap 4 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js" integrity="sha512-wV7Yj1alIZDqZFCUQJy85VN+qvEIly93fIQAN7iqDFCPEucLCeNFz4r35FCo9s6WrpdDQPi80xbljXB8Bjtvcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- ChartJS -->
@@ -397,27 +394,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js" integrity="sha512-zlWWyZq71UMApAjih4WkaRpikgY9Bz1oXIW5G0fED4vk14JjGlQ1UmkGM392jEULP8jbNMiwLWdM8Z87Hu88Fw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js" integrity="sha512-kZsqvmw94Y8hyhwtWZJvDtobwQ9pLhF1DuIvcqSuracbRn6WJs1Ih+04fpH/8d1CFKysp7XA1tR0Aa2jKLTQUg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js" integrity="sha512-f0VlzJbcEB6KiW8ZVtL+5HWPDyW1+nJEjguZ5IVnSQkvZbwBt2RfCBY0CBO1PsMAqxxrG4Di6TfsCPP3ZRwKpA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script>
-    {% for message in messages %}
-        $.toast({
-            text: "{{ message }}",
-            heading: 'Success', // Optional heading to be shown on the toast
-            icon: 'success', // Type of toast icon
-            showHideTransition: 'plain', // fade, slide or plain
-            allowToastClose: true, // Boolean value true or false
-            hideAfter: 5000, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
-            stack: 6, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
-            position: 'top-right', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
 
-
-
-            textAlign: 'left',  // Text alignment i.e. left, right or center
-            loader: true,  // Whether to show loader or not. True by default
-            loaderBg: '#9EC600',  // Background color of the toast loader
-
-        });
-    {% endfor %}
-</script>
 <script>
   $(function () {
     $("#simpleTable").DataTable({

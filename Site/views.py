@@ -59,7 +59,7 @@ class Dashboard(TemplateView):
             context['company_score'] = get_company_score(context['staff'], context['pms'])
             context['bu_score'] = get_bu_score(context['staff'], context['pms'])
             for kpi in KPI.objects.filter(kpi_staff=context['staff'], kpi_pms=context['pms']):
-                kpi_results.append([kpi, calculate_kpi_score(kpi, kpi_type)])
+                kpi_results.append([kpi, calculate_kpi_score(kpi, context['kpi_type'])])
         context['kpi_results'] = kpi_results
 
         return context
@@ -501,7 +501,7 @@ class KPILevelDownDetailStaff(DetailView):
             context['kpi_type'] = "Annual Target"
 
         for kpi in KPI.objects.filter(kpi_staff=context['select_staff'], kpi_pms=context['pms']):
-            kpi_results.append([kpi, calculate_kpi_score(kpi, kpi_type)])
+            kpi_results.append([kpi, calculate_kpi_score(kpi, context['kpi_type'])])
         context['kpi_results'] = kpi_results
         context['kpi_overall_results'] = calculate_overall_kpi_score(context['select_staff'], context['pms'])
         context['kpis'] = KPI.objects.filter(kpi_staff=context['select_staff'], kpi_pms=context['pms'])
@@ -511,8 +511,6 @@ class KPILevelDownDetailStaff(DetailView):
 
 def staff_kpi_results(request, company_id, lev_id, staff_id, pk):
     if request.method == "POST":
-        print("=================================================================================")
-        print(request.POST.get("march_results"))
 
         kpi_id = request.POST.get("kpi_id")
 
@@ -606,7 +604,24 @@ class KPICategory(DetailView):
         context = super(KPICategory, self).get_context_data()
         global_context(self.kwargs['company_id'], self.request.user, context)
         context['level_category'] = get_object_or_404(LevelCategory, category_id=self.kwargs['pk'])
-        context['level_in_category'] = Level.objects.filter(level_category=context['level_category'])
+        categories = []
+        levels_up = []
+        levels_in_category = []
+
+        staff_level =get_staff_level(context['staff'])
+        if staff_level:
+            all_levels_up(staff_level, levels_up)
+
+        print(levels_up)
+
+        levels = Level.objects.filter(level_category=context['level_category'])
+        for level in levels:
+            if level in levels_up:
+                levels_in_category.append(level)
+                print(level)
+                print("this is in list")
+
+        context['level_in_category'] = levels_in_category
 
         return context
 
@@ -631,7 +646,7 @@ class KPICategoryLevel(DetailView):
             context['kpi_type'] = "Annual Target"
 
         for kpi in KPI.objects.filter(kpi_staff=level.level_head, kpi_pms=context['pms']):
-            kpi_results.append([kpi, calculate_kpi_score(kpi, kpi_type)])
+            kpi_results.append([kpi, calculate_kpi_score(kpi, context['kpi_type'])])
         context['kpi_results'] = kpi_results
         context['kpi_overall_results'] = calculate_overall_kpi_score(level.level_head, context['pms'])
         context['kpis'] = KPI.objects.filter(kpi_staff=level.level_head, kpi_pms=context['pms'])
@@ -841,10 +856,9 @@ class AssessmentView(DetailView):
             context['assessment_status'] = False
 
         all_questions = Questions.objects.filter(question_assessment=assessment)
-        if all_questions:
-            context['questions'] = all_questions
-            context['top_questions'] = all_questions.filter(question_direction='Top')
-            context['bottom_questions'] = all_questions.filter(question_direction='Bottom')
+        context['questions'] = all_questions
+        context['top_questions'] = all_questions.filter(question_direction='Top')
+        context['bottom_questions'] = all_questions.filter(question_direction='Bottom')
 
         level_members = []
         level_heads = []
@@ -1109,7 +1123,7 @@ class Report(TemplateView):
                 kpi_score = calculate_overall_kpi_score(member_staff, context['pms'])
                 bu_score = get_bu_score(member_staff, context['pms'])
                 company_score = get_company_score(member_staff, context['pms'])
-                overall_score = calculate_overall_kpi_score(member_staff, context['pms'])
+                overall_score = calculate_overall_score(member_staff, context['pms'])
 
                 my_members_score.append([member_staff, level, assessment_score, check_in_score, kpi_score, bu_score,
                                          company_score, overall_score])
@@ -1122,7 +1136,7 @@ class Report(TemplateView):
                     kpi_score = calculate_overall_kpi_score(members.membership_staff, context['pms'])
                     bu_score = get_bu_score(members.membership_staff, context['pms'])
                     company_score = get_company_score(members.membership_staff, context['pms'])
-                    overall_score = calculate_overall_kpi_score(members.membership_staff, context['pms'])
+                    overall_score = calculate_overall_score(members.membership_staff, context['pms'])
 
                     my_members_score.append([members.membership_staff, level, assessment_score, check_in_score,
                                              kpi_score, bu_score, company_score, overall_score])
@@ -1140,10 +1154,355 @@ class Report(TemplateView):
                         kpi_score = calculate_overall_kpi_score(members.membership_staff, context['pms'])
                         bu_score = get_bu_score(members.membership_staff, context['pms'])
                         company_score = get_company_score(members.membership_staff, context['pms'])
-                        overall_score = calculate_overall_kpi_score(members.membership_staff, context['pms'])
+                        overall_score = calculate_overall_score(members.membership_staff, context['pms'])
 
                         levels_down_score.append([members.membership_staff, level, assessment_score, check_in_score,
                                                   kpi_score, bu_score, company_score, overall_score])
+
+        context['my_members_score'] = my_members_score
+        context['levels_down_score'] = levels_down_score
+        return context
+
+
+class ReportKPIResults(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportKPIResults, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        staff = context['staff']
+
+        my_members_kpi_score = []
+        levels_down_kpi_score = []
+
+        if staff.staff_superuser:
+            for member_staff in Staff.objects.filter(staff_company=context['company']):
+                kpis = []
+                kpi_type = KPIType.objects.filter(type_pms=context['pms'],
+                                                  type_category=member_staff.staff_category)
+                if kpi_type:
+                    k_type = kpi_type.first().type_kpi
+                else:
+                    k_type = "Annual Target"
+                for kpi in KPI.objects.filter(kpi_staff=member_staff, kpi_pms=context['pms']):
+                    kpis.append([kpi, calculate_kpi_score(kpi, k_type)])
+
+                my_members_kpi_score.append([member_staff, kpis,
+                                             calculate_overall_kpi_score(member_staff, context['pms']), kpis])
+
+        else:
+            for level in Level.objects.filter(level_head=staff):
+                for members in LevelMembership.objects.filter(membership_level=level):
+                    kpis = []
+                    kpi_type = KPIType.objects.filter(type_pms=context['pms'],
+                                                      type_category=members.membership_staff.staff_category)
+                    if kpi_type:
+                        k_type = kpi_type.first().type_kpi
+                    else:
+                        k_type = "Annual Target"
+                    for kpi in KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms']):
+                        print("kpi score for " + kpi.kpi_title + " " + str(calculate_kpi_score(kpi, kpi_type)))
+                        kpis.append([kpi, calculate_kpi_score(kpi, k_type)])
+
+                    my_members_kpi_score.append([members.membership_staff, kpis,
+                                                 calculate_overall_kpi_score(members.membership_staff, context['pms'])])
+
+            if check_staff_is_level_head(self.kwargs['company_id'], staff):
+                levels_down = []
+                for levels in Level.objects.filter(level_head=staff):
+                    all_levels_down(levels, levels_down)
+
+                for level in levels_down:
+                    for members in LevelMembership.objects.filter(membership_level=level):
+                        kpis = []
+                        kpi_type = KPIType.objects.filter(type_pms=context['pms'],
+                                                          type_category=members.membership_staff.staff_category)
+                        if kpi_type:
+                            k_type = kpi_type.first().type_kpi
+                        else:
+                            k_type = "Annual Target"
+                        for kpi in KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms']):
+                            kpis.append([kpi, calculate_kpi_score(kpi, k_type)])
+
+                        levels_down_kpi_score.append([members.membership_staff, kpis,
+                                                     calculate_overall_kpi_score(members.membership_staff,
+                                                                                 context['pms'])])
+
+        context['my_members_kpi_score'] = my_members_kpi_score
+        context['levels_down_kpi_score'] = levels_down_kpi_score
+        return context
+
+
+class ReportKPISubmissions(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportKPISubmissions, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        staff = context['staff']
+
+        my_members_submissions = []
+        levels_down_submissions = []
+
+        staff_with_pending = 0
+        staff_with_required = 0
+        staff_with_less = 0
+        minimum_kpi = 5
+
+        if staff.staff_superuser:
+            for member_staff in Staff.objects.filter(staff_company=context['company']):
+                kpis = KPI.objects.filter(kpi_staff=member_staff, kpi_pms=context['pms'])
+                submitted = kpis.filter(kpi_status="Submitted")
+                approved = kpis.filter(kpi_status="Approved")
+                pending = kpis.filter(kpi_status="Pending")
+                considered = submitted.count() + approved.count() + pending.count()
+
+                if pending.count() > 0:
+                    staff_with_pending += 1
+
+                submission = SubmissionKPI.objects.filter(submission_level_category=member_staff.staff_category)
+                if submission:
+                    minimum_kpi = submission.first().submission_minimum_number
+
+                if considered >= minimum_kpi:
+                    staff_with_required += 1
+                else:
+                    staff_with_less += 1
+
+                my_members_submissions.append([member_staff, submitted.count(), pending.count(), approved.count(),
+                                               considered, minimum_kpi])
+
+        else:
+            for level in Level.objects.filter(level_head=staff):
+                for members in LevelMembership.objects.filter(membership_level=level):
+                    kpis = KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms'])
+                    submitted = kpis.filter(kpi_status="Submitted")
+                    approved = kpis.filter(kpi_status="Approved")
+                    pending = kpis.filter(kpi_status="Pending")
+                    considered = submitted.count() + approved.count() + pending.count()
+
+                    if pending.count() > 0:
+                        staff_with_pending += 1
+
+                    submission = SubmissionKPI.objects.filter(
+                        submission_level_category=members.membership_staff.staff_category)
+                    if submission:
+                        minimum_kpi = submission.first().submission_minimum_number
+
+                    if considered >= minimum_kpi:
+                        staff_with_required += 1
+                    else:
+                        staff_with_less += 1
+
+                    my_members_submissions.append([members.membership_staff, submitted.count(), pending.count(),
+                                                   approved.count(),  considered, minimum_kpi])
+
+
+        if check_staff_is_level_head(self.kwargs['company_id'], staff):
+                levels_down = []
+                for levels in Level.objects.filter(level_head=staff):
+                    all_levels_down(levels, levels_down)
+
+                for level in levels_down:
+                    for members in LevelMembership.objects.filter(membership_level=level):
+                        kpis = KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms'])
+                        submitted = kpis.filter(kpi_status="Submitted")
+                        approved = kpis.filter(kpi_status="Approved")
+                        pending = kpis.filter(kpi_status="Pending")
+                        considered = submitted.count() + approved.count() + pending.count()
+
+                        if pending.count() > 0:
+                            staff_with_pending += 1
+
+                        submission = SubmissionKPI.objects.filter(
+                            submission_level_category=members.membership_staff.staff_category)
+                        if submission:
+                            minimum_kpi = submission.first().submission_minimum_number
+
+                        if considered >= minimum_kpi:
+                            staff_with_required += 1
+                        else:
+                            staff_with_less += 1
+
+                        my_members_submissions.append([members.membership_staff, submitted.count(), pending.count(),
+                                                       approved.count(), considered, minimum_kpi])
+
+        context['staff_with_pending'] = staff_with_pending
+        context['staff_with_required'] = staff_with_required
+        context['staff_with_less'] = staff_with_required
+
+        context['my_members_submission'] = my_members_submissions
+        context['levels_down_submission'] = levels_down_submissions
+        return context
+
+
+class ReportAssessments(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportAssessments, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        staff = context['staff']
+
+        my_members_score = []
+        levels_down_score = []
+
+        context['Assessments'] = Assessment.objects.filter(assessment_pms=context['pms'])
+
+        if staff.staff_superuser:
+            for member_staff in Staff.objects.filter(staff_company=context['company']):
+
+                assessment_score = calculate_overall_assessment_score(member_staff, context['pms'])
+
+                my_members_score.append([member_staff, assessment_score])
+        else:
+            for level in Level.objects.filter(level_head=staff):
+                for members in LevelMembership.objects.filter(membership_level=level):
+
+                    assessment_score = calculate_overall_assessment_score(members.membership_staff, context['pms'])
+
+                    my_members_score.append([members.membership_staff, assessment_score])
+
+            if check_staff_is_level_head(self.kwargs['company_id'], staff):
+                levels_down = []
+                for levels in Level.objects.filter(level_head=staff):
+                    all_levels_down(levels, levels_down)
+
+                for level in levels_down:
+                    for members in LevelMembership.objects.filter(membership_level=level):
+                        assessment_score = calculate_overall_assessment_score(members.membership_staff, context['pms'])
+
+                        levels_down_score.append([members.membership_staff, assessment_score])
+
+        context['my_members_score'] = my_members_score
+        context['levels_down_score'] = levels_down_score
+        return context
+
+
+class ReportAssessmentsDetails(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportAssessmentsDetails, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        staff = context['staff']
+
+        my_members_score = []
+        levels_down_score = []
+
+        assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
+
+        if staff.staff_superuser:
+            for member_staff in Staff.objects.filter(staff_company=context['company']):
+
+                s_tl = calculate_assessment_score(assessment, member_staff, "Top")
+                tl_s = calculate_assessment_score(assessment, member_staff, "Bottom")
+                score = calculate_one_assessment_score(member_staff, context['pms'], assessment)
+
+                my_members_score.append([member_staff, s_tl, tl_s, score])
+        else:
+            for level in Level.objects.filter(level_head=staff):
+                for members in LevelMembership.objects.filter(membership_level=level):
+
+                    s_tl = calculate_assessment_score(assessment, members.membership_staff, "Top")
+                    tl_s = calculate_assessment_score(assessment, members.membership_staff, "Bottom")
+                    score = calculate_one_assessment_score(members.membership_staff, context['pms'], assessment)
+
+                    my_members_score.append([members.membership_staff, s_tl, tl_s, score])
+
+            if check_staff_is_level_head(self.kwargs['company_id'], staff):
+                levels_down = []
+                for levels in Level.objects.filter(level_head=staff):
+                    all_levels_down(levels, levels_down)
+
+                for level in levels_down:
+                    for members in LevelMembership.objects.filter(membership_level=level):
+                        s_tl = calculate_assessment_score(assessment, members.membership_staff, "Top")
+                        tl_s = calculate_assessment_score(assessment, members.membership_staff, "Bottom")
+                        score = calculate_one_assessment_score(members.membership_staff, context['pms'], assessment)
+
+                        levels_down_score.append([members.membership_staff, s_tl, tl_s, score])
+        context['assessment'] = assessment
+        context['my_members_score'] = my_members_score
+        context['levels_down_score'] = levels_down_score
+        return context
+
+
+class ReportCheckIn(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportCheckIn, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        staff = context['staff']
+
+        my_members_score = []
+        levels_down_score = []
+
+        if staff.staff_superuser:
+            for member_staff in Staff.objects.filter(staff_company=context['company']):
+                cis = CheckIn.objects.filter(check_in_Staff=member_staff, check_in_pms=context['pms'])
+                apr = cis.filter(check_in_month="April").count()
+                may = cis.filter(check_in_month="May").count()
+                jun = cis.filter(check_in_month="June").count()
+                jul = cis.filter(check_in_month="July").count()
+                aug = cis.filter(check_in_month="August").count()
+                sep = cis.filter(check_in_month="September").count()
+                oct = cis.filter(check_in_month="October").count()
+                nov = cis.filter(check_in_month="November").count()
+                dec = cis.filter(check_in_month="December").count()
+                jan = cis.filter(check_in_month="January").count()
+                feb = cis.filter(check_in_month="February").count()
+                mar = cis.filter(check_in_month="March").count()
+
+                months = [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
+                ci_score = calculate_overall_check_in_score(member_staff, context['pms'])
+
+                my_members_score.append([member_staff, months, ci_score])
+        else:
+            for level in Level.objects.filter(level_head=staff):
+                for members in LevelMembership.objects.filter(membership_level=level):
+
+                    cis = CheckIn.objects.filter(check_in_Staff=members.membership_staff, check_in_pms=context['pms'])
+                    apr = cis.filter(check_in_month="April").count()
+                    may = cis.filter(check_in_month="May").count()
+                    jun = cis.filter(check_in_month="June").count()
+                    jul = cis.filter(check_in_month="July").count()
+                    aug = cis.filter(check_in_month="August").count()
+                    sep = cis.filter(check_in_month="September").count()
+                    oct = cis.filter(check_in_month="October").count()
+                    nov = cis.filter(check_in_month="November").count()
+                    dec = cis.filter(check_in_month="December").count()
+                    jan = cis.filter(check_in_month="January").count()
+                    feb = cis.filter(check_in_month="February").count()
+                    mar = cis.filter(check_in_month="March").count()
+
+                    months = [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
+                    ci_score = calculate_overall_check_in_score(members.membership_staff, context['pms'])
+
+                    my_members_score.append([members.membership_staff, months, ci_score])
+
+            if check_staff_is_level_head(self.kwargs['company_id'], staff):
+                levels_down = []
+                for levels in Level.objects.filter(level_head=staff):
+                    all_levels_down(levels, levels_down)
+
+                for level in levels_down:
+                    for members in LevelMembership.objects.filter(membership_level=level):
+                        cis = CheckIn.objects.filter(check_in_Staff=members.membership_staff,
+                                                     check_in_pms=context['pms'])
+                        apr = cis.filter(check_in_month="April").count()
+                        may = cis.filter(check_in_month="May").count()
+                        jun = cis.filter(check_in_month="June").count()
+                        jul = cis.filter(check_in_month="July").count()
+                        aug = cis.filter(check_in_month="August").count()
+                        sep = cis.filter(check_in_month="September").count()
+                        oct = cis.filter(check_in_month="October").count()
+                        nov = cis.filter(check_in_month="November").count()
+                        dec = cis.filter(check_in_month="December").count()
+                        jan = cis.filter(check_in_month="January").count()
+                        feb = cis.filter(check_in_month="February").count()
+                        mar = cis.filter(check_in_month="March").count()
+
+                        months = [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
+                        ci_score = calculate_overall_check_in_score(members.membership_staff, context['pms'])
+
+                        levels_down_score.append([members.membership_staff, months, ci_score])
 
         context['my_members_score'] = my_members_score
         context['levels_down_score'] = levels_down_score
@@ -1219,3 +1578,39 @@ class HelpDelete(DeleteView):
         global_context(self.kwargs['company_id'], self.request.user, context)
         context['help_list'] = Help.objects.filter(help_staff=context['staff'])
         return context
+
+
+class Communication(TemplateView):
+    def get_context_data(self, **kwargs):
+        context = super(Communication, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        context['notification_list'] = Notification.objects.filter(
+            notification_recipient__staff_company__company_id=self.kwargs['company_id'])
+
+        return context
+
+
+def communicate(request, company_id):
+
+    if request.method == "POST":
+
+        def get_value(x):
+            if str(x).strip():
+                return str(x).strip()
+            else:
+                return None
+
+        title = get_value(request.POST.get("communication_title"))
+        message = get_value(request.POST.get("communication_message"))
+
+        for staff in Staff.objects.filter(staff_company=get_object_or_404(Company, company_id=company_id)):
+            notification = Notification()
+            notification.notification_message = message
+            notification.notification_title = title
+            notification.notification_recipient = staff
+            notification.notification_status = "Pending"
+            notification.notification_type = "Notification"
+            notification.notification_reference_key = "N/A"
+            notification.save()
+
+    return HttpResponseRedirect(reverse('Site:Communication', kwargs={'company_id': company_id}))

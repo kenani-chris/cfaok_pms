@@ -1,3 +1,35 @@
 {% extends 'Site/default.html' %}
 
-{% block page_link%}<a class="navbar-brand" href="{% url 'Site:Profile' company_id %}" ><strong style="color: {{ company.company_color1 }}">Report Home</strong></a>{% endblock %}
+{% block page_link%}<a class="navbar-brand" href="{% url 'Site:Report' company_id %}" ><strong style="color: {{ company.company_color1 }}">Report Home</strong></a>{% endblock %}
+
+{% block Create %}
+    <div class="dropdown">
+      <button class="btn bg-color1 dropdown-toggle" type="button" id="KPIMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 5px">
+        KPI
+      </button>
+      <div class="dropdown-menu" aria-labelledby="KPIMenu">
+        <a class="dropdown-item" href="{% url 'Site:Report_KPI_Results' company_id %}">Results</a>
+        <a class="dropdown-item" href="{% url 'Site:Report_KPI_Submission' company_id %}">Submissions</a>
+      </div>
+    </div>
+{% endblock %}
+{% block Update %}
+    <div class="dropdown">
+      <button class="btn bg-color1  btn-secondary dropdown-toggle" type="button" id="Check-InMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 5px">
+        Check-In
+      </button>
+      <div class="dropdown-menu" aria-labelledby="Check-InMenu">
+        <a class="dropdown-item" href="{% url 'Site:Report_Check-In' company_id %}">Results</a>
+      </div>
+    </div>
+{% endblock %}
+{% block Read %}
+    <div class="dropdown">
+      <button class="btn bg-color1 dropdown-toggle" type="button" id="AssessmentMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 5px">
+        Assessment
+      </button>
+      <div class="dropdown-menu" aria-labelledby="AssessmentMenu">
+        <a class="dropdown-item" href="{% url 'Site:Report_Assessment_Results' company_id %}">Results</a>
+      </div>
+    </div>
+{% endblock %}
