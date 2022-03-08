@@ -10,21 +10,6 @@ from django.utils import timezone
 
 now = timezone.now()
 
-year = {
-    'April': datetime.datetime.now().year,
-    'May': datetime.datetime.now().year,
-    'June': datetime.datetime.now().year,
-    'July': datetime.datetime.now().year,
-    'August': datetime.datetime.now().year,
-    'September': datetime.datetime.now().year,
-    'October': datetime.datetime.now().year,
-    'November': datetime.datetime.now().year,
-    'December': datetime.datetime.now().year,
-    'January': datetime.datetime.now().year + 1,
-    'February': datetime.datetime.now().year + 1,
-    'March': datetime.datetime.now().year + 1,
-}
-
 errorList = {
     'Error001': "Staff not Found. It appears you do not have an account in the given company",
     'Error002': "Company not Found. It appears this company does not exist",
@@ -127,11 +112,6 @@ class MyKPICreate(CreateView):
 
     def form_valid(self, form):
         super(MyKPICreate, self).form_valid(form)
-
-        notification_send('KPI', get_staff_account(get_company(self.kwargs['company_id']), self.request.user),
-                          'KPI Submitted', str(self.request.user.get_full_name) +
-                          ' has  submitted a KPI for your approval')
-
         return HttpResponseRedirect(reverse('Site:My_KPI_Create', kwargs={'company_id': self.kwargs['company_id']}))
 
 
@@ -190,10 +170,6 @@ class MyKPIEdit(UpdateView):
     def form_valid(self, form):
         super(MyKPIEdit, self).form_valid(form)
         kpi = get_object_or_404(KPI, kpi_id=self.kwargs['pk'])
-
-        notification_send('KPI', get_staff_account(get_company(self.kwargs['company_id']), self.request.user),
-                          'KPI Edited', str(self.request.user.get_full_name) + ' Has edited ' + str(kpi.kpi_title))
-
         return HttpResponseRedirect(reverse('Site:My_KPI_View', kwargs={'company_id': self.kwargs['company_id'],
                                                                         'pk': self.kwargs['pk']}))
 
@@ -234,8 +210,10 @@ class MyKPIResults(UpdateView):
         months = {}
         reveal = {}
         if context['pms']:
+            year = context['calendar_dict']
             context = context | kpi_list(context['staff'], context['pms'])
             submission = get_user_submission_data(context['staff'], context['pms'])
+            print(submission)
             if submission:
                 months['April'] = submission.submission_april_results
                 months['May'] = submission.submission_may_results
@@ -249,10 +227,37 @@ class MyKPIResults(UpdateView):
                 months['January'] = submission.submission_january_results
                 months['February'] = submission.submission_february_results
                 months['March'] = submission.submission_march_results
+
+                context['april_overide'] = submission.submission_april_results_override
+                context['may_overide'] = submission.submission_may_results_override
+                context['june_overide'] = submission.submission_june_results_override
+                context['july_overide'] = submission.submission_july_results_override
+                context['august_overide'] = submission.submission_august_results_override
+                context['september_overide'] = submission.submission_april_results_override
+                context['october_overide'] = submission.submission_april_results_override
+                context['november_overide'] = submission.submission_april_results_override
+                context['december_overide'] = submission.submission_april_results_override
+                context['january_overide'] = submission.submission_april_results_override
+                context['february_overide'] = submission.submission_april_results_override
+                context['march_overide'] = submission.submission_april_results_override
+
             else:
                 months['April'] = months['May'] = months['June'] = months['July'] = months['August'] = \
                     months['September'] = months['October'] = months['November'] = months['December'] = \
                     months['January'] = months['February'] = months['March'] = 15
+
+                context['april_overide'] = False
+                context['may_overide'] = False
+                context['june_overide'] = False
+                context['july_overide'] = False
+                context['august_overide'] = False
+                context['september_overide'] = False
+                context['october_overide'] = False
+                context['november_overide'] = False
+                context['december_overide'] = False
+                context['january_overide'] = False
+                context['february_overide'] = False
+                context['march_overide'] = False
 
             # check if the field result field should show
 
@@ -273,11 +278,14 @@ class MyKPIResults(UpdateView):
                 if kpi.kpi_april_score_approve is True:
                     reveal['April'] = False
                 else:
-                    april_end_month = datetime.date(year=year['April'], month=4, day=monthrange(year['April'], 4)[1])
-                    april_deadline = april_end_month + datetime.timedelta(days=months['April'])
-
-                    if april_end_month <= today_date <= april_deadline:
+                    if context['april_overide'] is True:
                         reveal['April'] = True
+                    else:
+                        april_end_month = datetime.date(year=year['April'], month=4, day=monthrange(year['April'], 4)[1])
+                        april_deadline = april_end_month + datetime.timedelta(days=months['April'])
+
+                        if april_end_month <= today_date <= april_deadline:
+                            reveal['April'] = True
 
                 # May Check
                 if kpi.kpi_may_score_approve is True:
@@ -378,12 +386,18 @@ class MyKPIResults(UpdateView):
                 if kpi.kpi_february_score_approve is True:
                     reveal['February'] = False
                 else:
+                    print("here we are")
                     february_end_month = datetime.date(year=year['February'], month=2,
                                                        day=monthrange(year['February'], 2)[1])
                     february_deadline = february_end_month + datetime.timedelta(days=months['February'])
 
+                    print(february_end_month)
+                    print(today_date)
+                    print(february_deadline)
+
                     if february_end_month <= today_date <= february_deadline:
                         reveal['February'] = True
+                        print("we again here")
 
                 # March Check
                 if kpi.kpi_march_score_approve is True:
@@ -400,21 +414,20 @@ class MyKPIResults(UpdateView):
 
     def get_initial(self):
         initial = super(MyKPIResults, self).get_initial()
-        initial['kpi_user'] = self.request.user
+        initial['kpi_staff'] = get_staff_account(get_company(self.kwargs['company_id']), self.request.user)
         initial['kpi_pms'] = get_active_pms(get_company(self.kwargs['company_id']))
 
         return initial
 
     def get_success_url(self):
-        return '{}'.format(reverse('Site:My_KPI_Results', kwargs={'pk': self.kwargs['pk']}))
+        return '{}'.format(reverse('Site:My_KPI_Results', kwargs={'company_id': self.kwargs['company_id'],
+                                                                  'pk': self.kwargs['pk']}))
 
     def form_valid(self, form):
         super(MyKPIResults, self).form_valid(form)
         kpi = get_object_or_404(KPI, kpi_id=self.kwargs['pk'])
-        notification_send('KPI', self.request.user, 'KPI results fed',
-                          str(self.request.user.get_full_name) + ' Has edited ' + str(kpi.kpi_title) + ' ')
-
-        return HttpResponseRedirect(reverse('Site:My_KPI_Results', kwargs={'pk': self.kwargs['pk']}))
+        return HttpResponseRedirect(reverse('Site:My_KPI_Results', kwargs={'company_id': self.kwargs['company_id'],
+                                                                           'pk': self.kwargs['pk']}))
 
 
 class MyKPIResultsList(TemplateView):
@@ -444,8 +457,8 @@ class KPILevelDown(TemplateView):
         context['level_head'] = Level.objects.filter(level_head=context['staff'],
                                                      level_category__category_company__company_id=context['company_id'])
         levels_down = []
-        if get_staff_level(context['staff']):
-            all_levels_down(get_staff_level(context['staff']), levels_down)
+        for level in context['level_head']:
+            all_levels_down(level, levels_down)
         context['levels_down'] = levels_down
 
         return context
@@ -608,8 +621,10 @@ class KPICategory(DetailView):
         levels_up = []
         levels_in_category = []
 
-        staff_level =get_staff_level(context['staff'])
+        staff_level = get_staff_level(context['staff'])
         if staff_level:
+            if staff_level.level_category.category_kpi_view is True and not staff_level.level_head == context['staff'] and staff_level.level_category == context['level_category']:
+                levels_in_category.append(staff_level)
             all_levels_up(staff_level, levels_up)
 
         print(levels_up)
@@ -748,8 +763,8 @@ class CheckInLevelDown(TemplateView):
         context['level_head'] = Level.objects.filter(level_head=context['staff'],
                                                      level_category__category_company__company_id=context['company_id'])
         levels_down = []
-        if get_staff_level(context['staff']):
-            all_levels_down(get_staff_level(context['staff']), levels_down)
+        for level in context['level_head']:
+            all_levels_down(level, levels_down)
         context['levels_down'] = levels_down
 
         return context
