@@ -1,7 +1,5 @@
 import datetime
-
 from django.utils import timezone
-
 from .models import *
 
 
@@ -152,7 +150,8 @@ def kpi_submission_checks(staff, pms):
         submission_end = get_user_submission_data(staff, pms).submission_end_date
 
         # check dates
-        if (datetime.datetime.now() >= submission_start) and (datetime.datetime.now() <= submission_end):
+        if (datetime.datetime.now(timezone.utc) >= submission_start) and \
+                (datetime.datetime.now(timezone.utc) <= submission_end):
             date_check = True
         else:
             date_check = False
@@ -811,3 +810,5 @@ def get_company_score(staff, pms):
                     score = calculate_overall_kpi_score(level.first().level_head, pms)
 
     return score
+
+

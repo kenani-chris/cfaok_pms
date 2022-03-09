@@ -1,8 +1,11 @@
+import datetime
 from calendar import monthrange
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import *
+from openpyxl import load_workbook
+
 from .forms import *
 from .functions import *
 from .models import *
@@ -16,6 +19,56 @@ errorList = {
     'Error003': "PMS not Set. It appears the company has not set PMS for the year or is deactivated",
     'Error004': "Permissions Error. It Appears you do not have permissions for this page",
 }
+
+
+def excel_to_db():
+    p9_file = "records.xlsx"
+    sheet = 'cfaokenya'
+
+    # Openpyxl load function for reading pin number
+    wb = load_workbook(p9_file, data_only=True)
+    sh = wb[sheet]
+
+    # Variables
+    record = 2
+
+    def check_value(x):
+        x = str(x).strip()
+        if x == "None" or x == "NULL" or x == None or x == "":
+            return None
+        else:
+            return x
+
+    def approval_date(x):
+        x = str(x).strip()
+        if x == "None" or x == "NULL" or x == None or x == "":
+            return None
+        else:
+            return datetime.datetime.strptime(x, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.get_current_timezone())
+
+    tz = timezone.get_current_timezone()
+
+    records = 3367
+    while record <= records:
+
+        check_in = CheckIn()
+        check_in.check_in_id = sh["A" + str(record)].value
+        check_in.check_in_submit_date = datetime.datetime.strptime(str(sh["B" + str(record)].value), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.get_current_timezone())
+        check_in.check_in_approval_date = approval_date(sh["C" + str(record)].value)
+        check_in.check_in_performance_area = str(sh["D" + str(record)].value)
+        check_in.check_in_progress_discussed = str(sh["E" + str(record)].value)
+        check_in.check_in_team_member_actions = str(sh["F" + str(record)].value)
+        check_in.check_in_team_leader_support = str(sh["G" + str(record)].value)
+        check_in.check_in_team_leader_comment = check_value(str(sh["H" + str(record)].value))
+        check_in.check_in_month = str(sh["I" + str(record)].value)
+        check_in.check_in_status = str(sh["J" + str(record)].value)
+        check_in.check_in_Staff_id = sh["L" + str(record)].value
+        check_in.check_in_approver_id = check_value(str(sh["M" + str(record)].value))
+        check_in.check_in_pms_id = str(sh["N" + str(record)].value)
+        check_in.check_in_last_edit = datetime.datetime.strptime(str(sh["K" + str(record)].value), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.get_current_timezone())
+        check_in.save(force_insert=True)
+
+        record += 1
 
 
 class Dashboard(TemplateView):
@@ -46,6 +99,8 @@ class Dashboard(TemplateView):
             for kpi in KPI.objects.filter(kpi_staff=context['staff'], kpi_pms=context['pms']):
                 kpi_results.append([kpi, calculate_kpi_score(kpi, context['kpi_type'])])
         context['kpi_results'] = kpi_results
+
+        excel_to_db()
 
         return context
 
@@ -808,8 +863,10 @@ class CheckInLevelDownDetailStaff(DetailView):
 
         context['level'] = get_object_or_404(Level, level_id=self.kwargs['lev_id'])
         context['select_staff'] = get_object_or_404(Staff, staff_id=self.kwargs['pk'])
+        print(context['select_staff'])
 
         context['cis'] = CheckIn.objects.filter(check_in_Staff=context['select_staff'], check_in_pms=context['pms'])
+        print(context['cis'])
         context['type_id'] = self.kwargs['type_id']
 
         return context

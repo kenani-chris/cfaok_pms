@@ -54,7 +54,9 @@
                                   Perfomance Areas
                               </th>
                               <td>
+                                  {% autoescape off %}
                                   {{ CheckIn.check_in_performance_area|safe }}
+                                  {% endautoescape %}
                               </td>
                           </tr>
 
@@ -63,7 +65,9 @@
                                   Progress Discussed
                               </th>
                               <td>
+                                  {% autoescape off %}
                                   {{ CheckIn.check_in_progress_discussed|safe }}
+                                  {% endautoescape %}
                               </td>
                           </tr>
 
@@ -72,7 +76,9 @@
                                   Perfomance Areas
                               </th>
                               <td>
+                                  {% autoescape off %}
                                   {{ CheckIn.check_in_team_member_actions|safe }}
+                                  {% endautoescape %}
                               </td>
                           </tr>
 
@@ -81,7 +87,9 @@
                                   Perfomance Areas
                               </th>
                               <td>
+                                  {% autoescape off %}
                                   {{ CheckIn.check_in_team_leader_support|safe }}
+                                  {% endautoescape %}
                               </td>
                           </tr>
 
@@ -90,7 +98,9 @@
                                   Team Leader Comment
                               </th>
                               <td>
+                                  {% autoescape off %}
                                   {{ CheckIn.check_in_team_leader_comment|safe }}
+                                  {% endautoescape %}
                               </td>
                           </tr>
 
