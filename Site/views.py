@@ -267,7 +267,6 @@ class MyKPIResults(UpdateView):
             year = context['calendar_dict']
             context = context | kpi_list(context['staff'], context['pms'])
             submission = get_user_submission_data(context['staff'], context['pms'])
-            print(submission)
             if submission:
                 months['April'] = submission.submission_april_results
                 months['May'] = submission.submission_may_results
@@ -440,18 +439,13 @@ class MyKPIResults(UpdateView):
                 if kpi.kpi_february_score_approve is True:
                     reveal['February'] = False
                 else:
-                    print("here we are")
+
                     february_end_month = datetime.date(year=year['February'], month=2,
                                                        day=monthrange(year['February'], 2)[1])
                     february_deadline = february_end_month + datetime.timedelta(days=months['February'])
 
-                    print(february_end_month)
-                    print(today_date)
-                    print(february_deadline)
-
                     if february_end_month <= today_date <= february_deadline:
                         reveal['February'] = True
-                        print("we again here")
 
                 # March Check
                 if kpi.kpi_march_score_approve is True:
@@ -681,14 +675,10 @@ class KPICategory(DetailView):
                 levels_in_category.append(staff_level)
             all_levels_up(staff_level, levels_up)
 
-        print(levels_up)
-
         levels = Level.objects.filter(level_category=context['level_category'])
         for level in levels:
             if level in levels_up:
                 levels_in_category.append(level)
-                print(level)
-                print("this is in list")
 
         context['level_in_category'] = levels_in_category
 
@@ -862,10 +852,8 @@ class CheckInLevelDownDetailStaff(DetailView):
 
         context['level'] = get_object_or_404(Level, level_id=self.kwargs['lev_id'])
         context['select_staff'] = get_object_or_404(Staff, staff_id=self.kwargs['pk'])
-        print(context['select_staff'])
 
         context['cis'] = CheckIn.objects.filter(check_in_Staff=context['select_staff'], check_in_pms=context['pms'])
-        print(context['cis'])
         context['type_id'] = self.kwargs['type_id']
 
         return context
@@ -1271,7 +1259,6 @@ class ReportKPIResults(TemplateView):
                     else:
                         k_type = "Annual Target"
                     for kpi in KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms']):
-                        print("kpi score for " + kpi.kpi_title + " " + str(calculate_kpi_score(kpi, kpi_type)))
                         kpis.append([kpi, calculate_kpi_score(kpi, k_type)])
 
                     my_members_kpi_score.append([members.membership_staff, kpis,
