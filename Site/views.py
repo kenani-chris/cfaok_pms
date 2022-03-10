@@ -20,7 +20,7 @@ errorList = {
     'Error004': "Permissions Error. It Appears you do not have permissions for this page",
 }
 
-
+'''
 def excel_to_db():
     p9_file = "records.xlsx"
     sheet = 'cfaokenya'
@@ -50,7 +50,7 @@ def excel_to_db():
 
     records = 3367
     while record <= records:
-
+        print("Doing - " + str(sh["A" + str(record)].value))
         check_in = CheckIn()
         check_in.check_in_id = sh["A" + str(record)].value
         check_in.check_in_submit_date = datetime.datetime.strptime(str(sh["B" + str(record)].value), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.get_current_timezone())
@@ -68,8 +68,9 @@ def excel_to_db():
         check_in.check_in_last_edit = datetime.datetime.strptime(str(sh["K" + str(record)].value), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.get_current_timezone())
         check_in.save(force_insert=True)
 
+        print("Done - " + str(sh["A" + str(record)].value))
         record += 1
-
+'''
 
 class Dashboard(TemplateView):
     def get_context_data(self, **kwargs):
@@ -99,8 +100,6 @@ class Dashboard(TemplateView):
             for kpi in KPI.objects.filter(kpi_staff=context['staff'], kpi_pms=context['pms']):
                 kpi_results.append([kpi, calculate_kpi_score(kpi, context['kpi_type'])])
         context['kpi_results'] = kpi_results
-
-        excel_to_db()
 
         return context
 
