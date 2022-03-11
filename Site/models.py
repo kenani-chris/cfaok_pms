@@ -446,8 +446,8 @@ class Notification(models.Model):
     )
 
     notification_type = models.CharField(max_length=12, choices=type)
-    notification_reference_key = models.CharField(max_length=30)
-    notification_recipient = models.ForeignKey('Staff', on_delete=models.RESTRICT, related_name="Notification_Receiver")
+    notification_reference_key = models.CharField(max_length=30, null=True)
+    notification_email = models.CharField(max_length=50, null=True)
     notification_title = models.CharField(max_length=15)
     notification_message = models.TextField()
     notification_date = models.DateField(auto_now=True)

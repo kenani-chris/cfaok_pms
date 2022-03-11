@@ -7,6 +7,45 @@
     {% block content %}
 
         <div class="container-fluid">
+            <div class="card card-danger">
+                <div class="card-header">
+                    <h3 class="card-title">Pie Chart</h3>
+                </div>
+                <div class="card-body row">
+                    <div class="col-md-6">
+                        <div class="chartjs-size-monitor">
+                            <div class="chartjs-size-monitor-expand">
+                                <div class=""></div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink">
+                                <div class="">
+
+                                </div>
+                            </div>
+                        </div>
+                        <canvas id="piechart_submissions" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 486px;" width="486" height="250" class="chartjs-render-monitor"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-bordered">
+                            <thead>
+                                <th>Required</th>
+                                <th>Pending</th>
+                                <th>Less</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ staff_with_required }}</td>
+                                    <td>{{ staff_with_pending }}</td>
+                                    <td>{{ staff_with_less }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+
             <div class="card">
                 <div class="card-header">
                     <h5>My Members</h5>

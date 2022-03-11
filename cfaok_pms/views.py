@@ -38,3 +38,7 @@ def self_change_password(request):
 @require_safe
 def self_password_change_done(request):
     return render(request, 'registration/change-password-done.html',)
+
+
+def lockout(request, credentials):
+    return render(request, 'registration/locked_out.html', )

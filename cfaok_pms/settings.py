@@ -1,6 +1,7 @@
 from pathlib import Path
 import pymysql
 import os
+from account import conf
 pymysql.install_as_MySQLdb()
 
 # Base Dir
@@ -23,8 +24,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Site.apps.SiteConfig',
-    'colorfield'
+    'colorfield',
+    'background_task',
+    'axes',
 ]
+
+
+AUTHENTICATION_BACKENDS = [
+    # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
+    'axes.backends.AxesBackend',
+
+    # Django ModelBackend is the default authentication backend.
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -34,6 +47,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
 
 ROOT_URLCONF = 'cfaok_pms.urls'
@@ -60,7 +74,7 @@ WSGI_APPLICATION = 'cfaok_pms.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cfaok_pms_local',
+        'NAME': 'cfaok_pms_v3',
         'USER': 'cfaok_pms_v3_user',
         'PASSWORD': 'Changeme*12',
         'HOST': '127.0.0.1',
@@ -99,6 +113,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Axes
+AXES_ONLY_USER_FAILURES = True
+AXES_LOCKOUT_CALLABLE = "cfaok_pms.views.lockout"
+
+
 # Language and Time
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Africa/Nairobi'
@@ -121,12 +140,11 @@ LOGIN_REDIRECT_URL = '/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Email setup
+# Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.office365.com'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'dummy_eamil@dummy.com'
-EMAIL_HOST_PASSWORD = '(-AY6b@d'
+EMAIL_HOST_USER = 'pms_notifier@ck-pms.com'
+EMAIL_HOST_PASSWORD = 'EZed9t&gZ%=S6HQ@h7R6X&4'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

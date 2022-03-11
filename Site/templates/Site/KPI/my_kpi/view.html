@@ -19,6 +19,7 @@
                         <a href="{% url 'Site:My_KPI_Results' company_id kpi.kpi_id %}"><div class="float-right btn btn-info" style="margin-right: 10px">Results</div></a>
                     {% endif %}
                 </div>
+                <div class="card-body" style="overflow-x: scroll">
                     {% if kpi_type == "Monthly Target" %}
                         <table class="table table-bordered table-hover">
                               <tbody>
@@ -446,6 +447,7 @@
                             </tbody>
                         </table>
                     {% endif %}
+                </div>
             </div>
         </div>
 

@@ -1,0 +1,18 @@
+{% extends "registration/login_out.html" %}
+  {% block content %}
+    <div class="login-logo" style="margin-top: -100px">
+      <hr>
+      <strong>Online</strong> PMS
+      <hr>
+    </div>
+    <p class="login-box-msg"></p>
+
+
+      <p class="text-center bg-danger" style="padding: 10px; border-radius: 5px">Account Locked</p>
+      <p class="text-center">Account locked due to many login attempts. <br>Please write HR to assist</p>
+      <p class="text-center"><a href="{% url 'login'%}">Back to login</a></p>
+
+
+<hr>
+    <!-- /.social-auth-links -->
+  {% endblock %}

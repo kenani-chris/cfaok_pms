@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" integrity="sha512-wJgJNTBBkLit7ymC6vvzM1EcSWeM9mmOu+1USHaRBbHkm6W9EgM0HY27+UtUaprntaYQJF75rc8gjxllKs5OIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- Ion Range slider -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css" integrity="sha512-NWCafukXClS6fKch6bSMl/WvPzZrD1OGMf1oMAnFYXSSKZ7hgeswls+r4SdK4bFJauVwmvFf7HlMwji2TsjROA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 
   <style>
       .bg-color1{
@@ -394,6 +394,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js" integrity="sha512-zlWWyZq71UMApAjih4WkaRpikgY9Bz1oXIW5G0fED4vk14JjGlQ1UmkGM392jEULP8jbNMiwLWdM8Z87Hu88Fw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js" integrity="sha512-kZsqvmw94Y8hyhwtWZJvDtobwQ9pLhF1DuIvcqSuracbRn6WJs1Ih+04fpH/8d1CFKysp7XA1tR0Aa2jKLTQUg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js" integrity="sha512-f0VlzJbcEB6KiW8ZVtL+5HWPDyW1+nJEjguZ5IVnSQkvZbwBt2RfCBY0CBO1PsMAqxxrG4Di6TfsCPP3ZRwKpA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
 
 <script>
   $(function () {
@@ -423,6 +429,95 @@
       "responsive": true,
     });
   });
+</script>
+<script>
+    var ExportTable = document.getElementsByClassName("ExportTable");
+    if(ExportTable)
+    {
+        function exportReportToExcel() {
+          let table = document.getElementsByTagName("table"); // you can use document.getElementById('tableId') as well by providing id to the table tag
+          TableToExcel.convert(table[0], { // html code may contain multiple tables so here we are refering to 1st table tag
+            name: `OCR.xlsx`, // fileName you could use any name
+            sheet: {
+              name: 'Sheet 1' // sheetName
+            }
+          });
+        }
+    }
+
+</script>
+<script>
+    $(document).ready(function () {
+        var table_check = document.getElementsByClassName("ReportTable");
+        if(table_check)
+        {
+            // Setup - add a text input to each footer cell
+            $('.ReportTable thead tr')
+                .clone(true)
+                .addClass('filters')
+                .appendTo('.ReportTable thead');
+
+            var table = $('.ReportTable').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5'
+                ],
+                orderCellsTop: true,
+                fixedHeader: true,
+                initComplete: function () {
+                    var api = this.api();
+
+                    // For each column
+                    api
+                        .columns()
+                        .eq(0)
+                        .each(function (colIdx) {
+                            // Set the header cell to contain the input element
+                            var cell = $('.filters th').eq(
+                                $(api.column(colIdx).header()).index()
+                            );
+                            var title = $(cell).text();
+                            $(cell).html('<input type="text" placeholder="' + title + '" />');
+
+                            // On every keypress in this input
+                            $(
+                                'input',
+                                $('.filters th').eq($(api.column(colIdx).header()).index())
+                            )
+                                .off('keyup change')
+                                .on('keyup change', function (e) {
+                                    e.stopPropagation();
+
+                                    // Get the search value
+                                    $(this).attr('title', $(this).val());
+                                    var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                    var cursorPosition = this.selectionStart;
+                                    // Search the column for that value
+                                    api
+                                        .column(colIdx)
+                                        .search(
+                                            this.value != ''
+                                                ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                                : '',
+                                            this.value != '',
+                                            this.value == ''
+                                        )
+                                        .draw();
+
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                });
+                        });
+                },
+            });
+
+        }
+    });
 </script>
 <script>
 
@@ -706,10 +801,101 @@
         })
     }
 
+    var canvas4 = document.getElementById("piechart_category");
+    var canvas5 = document.getElementById("piechart_submissions");
+    var canvas6 = document.getElementById("piechart_submissions_results");
+    var canvas7 = document.getElementById("piechart_kpi_approvals");
 
+    var canvas8 = document.getElementById("piechart_kpi_results");
+    var canvas9 = document.getElementById("piechart_kpi_submissions");
+    var canvas10 = document.getElementById("piechart_kpi_approvals");
 
+    var canvas11 = document.getElementById("piechart_kpi_results");
+    var canvas12 = document.getElementById("piechart_kpi_submissions");
+    var canvas13 = document.getElementById("piechart_kpi_approvals");
 
+    var category_label = [
+                          '>= 75%',
+                          '>= 50% < 75%',
+                          '>= 25% < 50%',
+                          '< 25%',
+                          ];
 
+    var pie_cat_data = ["{{ cat_75 }}", "{{ cat_50 }}", "{{ cat_25 }}", "{{ cat_0 }}"];
+    var pie_cat_colors = ['#f56954', '#00a65a', '#f39c12', '#00c0ef'];
+    if(canvas4) {
+        var donutData= {
+          labels: category_label,
+          datasets: [
+            {
+              data: pie_cat_data,
+              backgroundColor : pie_cat_colors,
+            }
+          ]
+        }
+        var pieChartCanvas = $('#piechart_category').get(0).getContext('2d')
+        var pieData        = donutData;
+        var pieOptions     = {
+          maintainAspectRatio : false,
+          responsive : true,
+        }
+
+        new Chart(pieChartCanvas, {
+          type: 'pie',
+          data: pieData,
+          options: pieOptions
+        })
+
+    }
+    if(canvas5) {
+        var donutData= {
+          labels: ["Required", "Pending", "Less"],
+          datasets: [
+            {
+              data: ["{{ staff_with_required }}", "{{ staff_with_pending }}", "{{ staff_with_less }}"],
+              backgroundColor : ['#f56954', '#00a65a', '#f39c12'],
+            }
+          ]
+        }
+        var pieChartCanvas = $('#piechart_submissions').get(0).getContext('2d')
+        var pieData        = donutData;
+        var pieOptions     = {
+          maintainAspectRatio : false,
+          responsive : true,
+        }
+
+        new Chart(pieChartCanvas, {
+          type: 'pie',
+          data: pieData,
+          options: pieOptions
+        })
+
+    }
+
+    if(canvas6) {
+        var donutData= {
+          labels: ["Approved", "Not Approved"],
+          datasets: [
+            {
+              data: ["{{ staff_with_approved }}", "{{ staff_with_unapproved }}"],
+              backgroundColor : ['#f56954', '#00a65a'],
+            }
+          ]
+        }
+        var pieChartCanvas = $('#piechart_submissions_results').get(0).getContext('2d')
+        var pieData        = donutData;
+        var pieOptions     = {
+          maintainAspectRatio : false,
+          responsive : true,
+        }
+
+        new Chart(pieChartCanvas, {
+          type: 'pie',
+          data: pieData,
+          options: pieOptions
+        })
+
+    }
 
   })
 </script>

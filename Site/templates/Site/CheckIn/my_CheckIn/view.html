@@ -15,98 +15,99 @@
                         <a href="{% url 'Site:My_CheckIn_Edit' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit</div></a>
                     {% endif %}
                 </div>
-                <table class="table table-bordered">
-                      <tbody>
-                          <tr class="bg-color2">
-                              <th>
-                                  Status
-                              </th>
-                              <th>
-                                  Submit Date
-                              </th>
-                              <th>
-                                  Approval Date
-                              </th>
-                              <th>
-                                  Appprover
-                              </th>
-                          </tr>
-                          <tr>
-                              <td>
-                                  {{ CheckIn.check_in_status }}
-                              </td>
-                              <td>
-                                  {{ CheckIn.check_in_submit_date }}
-                              </td>
-                              <td>
-                                  {{ CheckIn.check_in_approval_date }}
-                              </td>
-                              <td>
-                                  {{ CheckIn.check_in_approver }}
-                              </td>
-                          </tr>
-                      </tbody>
-                 </table>
-                 <table class="table table-bordered table-hover">
-                      <tbody>
-                          <tr>
-                              <th>
-                                  Perfomance Areas
-                              </th>
-                              <td>
-                                  {% autoescape off %}
-                                  {{ CheckIn.check_in_performance_area|safe }}
-                                  {% endautoescape %}
-                              </td>
-                          </tr>
+                <div class="card-body" style="overflow-x: scroll">
+                    <table class="table table-bordered">
+                          <tbody>
+                              <tr class="bg-color2">
+                                  <th>
+                                      Status
+                                  </th>
+                                  <th>
+                                      Submit Date
+                                  </th>
+                                  <th>
+                                      Approval Date
+                                  </th>
+                                  <th>
+                                      Appprover
+                                  </th>
+                              </tr>
+                              <tr>
+                                  <td>
+                                      {{ CheckIn.check_in_status }}
+                                  </td>
+                                  <td>
+                                      {{ CheckIn.check_in_submit_date }}
+                                  </td>
+                                  <td>
+                                      {{ CheckIn.check_in_approval_date }}
+                                  </td>
+                                  <td>
+                                      {{ CheckIn.check_in_approver }}
+                                  </td>
+                              </tr>
+                          </tbody>
+                     </table>
+                     <table class="table table-bordered table-hover">
+                          <tbody>
+                              <tr>
+                                  <th>
+                                      Perfomance Areas
+                                  </th>
+                                  <td>
+                                      {% autoescape off %}
+                                      {{ CheckIn.check_in_performance_area|safe }}
+                                      {% endautoescape %}
+                                  </td>
+                              </tr>
 
-                          <tr>
-                              <th>
-                                  Progress Discussed
-                              </th>
-                              <td>
-                                  {% autoescape off %}
-                                  {{ CheckIn.check_in_progress_discussed|safe }}
-                                  {% endautoescape %}
-                              </td>
-                          </tr>
+                              <tr>
+                                  <th>
+                                      Progress Discussed
+                                  </th>
+                                  <td>
+                                      {% autoescape off %}
+                                      {{ CheckIn.check_in_progress_discussed|safe }}
+                                      {% endautoescape %}
+                                  </td>
+                              </tr>
 
-                          <tr>
-                              <th>
-                                  Perfomance Areas
-                              </th>
-                              <td>
-                                  {% autoescape off %}
-                                  {{ CheckIn.check_in_team_member_actions|safe }}
-                                  {% endautoescape %}
-                              </td>
-                          </tr>
+                              <tr>
+                                  <th>
+                                      Perfomance Areas
+                                  </th>
+                                  <td>
+                                      {% autoescape off %}
+                                      {{ CheckIn.check_in_team_member_actions|safe }}
+                                      {% endautoescape %}
+                                  </td>
+                              </tr>
 
-                          <tr>
-                              <th>
-                                  Perfomance Areas
-                              </th>
-                              <td>
-                                  {% autoescape off %}
-                                  {{ CheckIn.check_in_team_leader_support|safe }}
-                                  {% endautoescape %}
-                              </td>
-                          </tr>
+                              <tr>
+                                  <th>
+                                      Perfomance Areas
+                                  </th>
+                                  <td>
+                                      {% autoescape off %}
+                                      {{ CheckIn.check_in_team_leader_support|safe }}
+                                      {% endautoescape %}
+                                  </td>
+                              </tr>
 
-                          <tr>
-                              <th>
-                                  Team Leader Comment
-                              </th>
-                              <td>
-                                  {% autoescape off %}
-                                  {{ CheckIn.check_in_team_leader_comment|safe }}
-                                  {% endautoescape %}
-                              </td>
-                          </tr>
+                              <tr>
+                                  <th>
+                                      Team Leader Comment
+                                  </th>
+                                  <td>
+                                      {% autoescape off %}
+                                      {{ CheckIn.check_in_team_leader_comment|safe }}
+                                      {% endautoescape %}
+                                  </td>
+                              </tr>
 
-                      </tbody>
-                 </table>
-
+                          </tbody>
+                     </table>
+                </div>
             </div>
         </div>
 

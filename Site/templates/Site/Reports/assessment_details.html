@@ -8,6 +8,45 @@
     {% block content %}
 
         <div class="container-fluid">
+            <div class="card card-danger">
+                <div class="card-header">
+                    <h3 class="card-title">Pie Chart</h3>
+                </div>
+                <div class="card-body row">
+                    <div class="col-md-6">
+                        <div class="chartjs-size-monitor">
+                            <div class="chartjs-size-monitor-expand">
+                                <div class=""></div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink">
+                                <div class="">
+
+                                </div>
+                            </div>
+                        </div>
+                        <canvas id="piechart_category" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 486px;" width="486" height="250" class="chartjs-render-monitor"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-bordered">
+                            <thead>
+                                <th>>75%/th>
+                                <th>>= 50% < 75%</th>
+                                <th>>= 25% < 50%</th>
+                                <th><25%</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ cat_75 }}</td>
+                                    <td>{{ cat_50 }}</td>
+                                    <td>{{ cat_25 }}</td>
+                                    <td>{{ cat_0 }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
             <table class="table table-bordered">
                 <thead>
                     <th>Assessment</th>
@@ -28,7 +67,7 @@
                 <div class="card-header">
                     <h5>My Members</h5>
                 </div>
-                 <table id="simpleTable" class="table table-bordered table-hover">
+                 <table class="table table-bordered table-hover ReportTable">
                       <thead>
                           <tr>
                             <th>Staff</th>
@@ -59,7 +98,7 @@
                     <div class="card-header">
                         <h5>My Members</h5>
                     </div>
-                     <table id="simpleTable" class="table table-bordered table-hover">
+                     <table id="simpleTable" class="table table-bordered table-hover ReportTable">
                           <thead>
                               <tr>
                                 <th>Staff</th>

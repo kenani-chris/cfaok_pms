@@ -1,0 +1,108 @@
+{% extends 'Site/Reports/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Report' company_id %}">Report</a></li>
+        <li class="breadcrumb-item active">Report - KPI Submissions - Results</li>
+    {% endblock %}
+    {% block page_title %}Report - KPI Submissions - Results{% endblock %}
+    {% block content %}
+
+        <div class="container-fluid">
+            <div class="card card-danger">
+                <div class="card-header">
+                    <h3 class="card-title">Pie Chart</h3>
+                </div>
+                <div class="card-body row">
+                    <div class="col-md-6">
+                        <div class="chartjs-size-monitor">
+                            <div class="chartjs-size-monitor-expand">
+                                <div class=""></div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink">
+                                <div class="">
+
+                                </div>
+                            </div>
+                        </div>
+                        <canvas id="piechart_submissions_results" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 486px;" width="486" height="250" class="chartjs-render-monitor"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-bordered">
+                            <thead>
+                                <th>Staff withh unapproved results</th>
+                                <th>Staff with approved results</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ staff_with_unapproved }}</td>
+                                    <td>{{ staff_with_approved }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5>My Members</h5>
+                </div>
+                <div style="overflow-x: scroll">
+                    <table class="table table-bordered table-hover ReportTable table-striped">
+                      <thead>
+                          <tr>
+                            <th>Staff</th>
+                            <th>KPIs</th>
+                            <th>Approved</th>
+                            <th>Not Approved</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        {% for member in my_members_kpi_score %}
+                            <tr>
+                                <td>{{ member.0 }}</td>
+                                <td>{{ member.1.count }}</td>
+                                <td>{{ member.2 }}</td>
+                                <td>{{ member.3 }}</td>
+                            </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+                <br>
+            </div>
+            {% if levels_down_kpi_score %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Level Down Members</h5>
+                    </div>
+                    <div style="overflow-x: scroll">
+                        <button onclick="exportReportToExcel()">Export to excel</button>
+                        <table class="table table-bordered table-hover ExportTable table-striped">
+                          <thead>
+                              <tr>
+                                <th>Staff</th>
+                                <th>KPI</th>
+                                <th>Details</th>
+                                <th>Score</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            {% for member in levels_down_kpi_score %}
+                                <tr>
+                                    <td>{{ member.0 }}</td>
+                                    <td>{{ member.1.count }}</td>
+                                    <td>{{ member.2 }}</td>
+                                    <td>{{ member.3 }}</td>
+                                </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                    </div>
+                    <br>
+                </div>
+            {% endif %}
+        </div>
+
+
+    {% endblock %}

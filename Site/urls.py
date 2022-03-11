@@ -106,6 +106,8 @@ urlpatterns = [
         template_name='Site/Reports/assessment_details.html'), name='Report_Assessment_Results_Detail'),
     path('<int:company_id>/Report/Check-In', ReportCheckIn.as_view(template_name='Site/Reports/checkin.html'),
          name='Report_Check-In'),
+    path('<int:company_id>/Report/KPI-Submission-Results', ReportKPISubmissionsResults.as_view(
+        template_name='Site/Reports/kpi_submissions_results.html'), name='Report_KPI_Submission_Results'),
     path('<int:company_id>/Report/KPI-Submission', ReportKPISubmissions.as_view(
         template_name='Site/Reports/kpi_submission.html'), name='Report_KPI_Submission'),
     path('<int:company_id>/Report/Check-In', ReportKPIResults.as_view(template_name='Site/Reports/kpi_results.html'),

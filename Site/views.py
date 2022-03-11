@@ -1,11 +1,16 @@
 import datetime
+import os
 from calendar import monthrange
+
+from background_task.models import Task
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views.generic import *
 from openpyxl import load_workbook
-
+from background_task import background
 from .forms import *
 from .functions import *
 from .models import *
@@ -72,6 +77,29 @@ def excel_to_db():
         record += 1
 '''
 
+
+@background(queue="email_task_queue", schedule=now)
+def email_task():
+    with open("task.txt", 'w') as file:
+        file.write(str(datetime.datetime.now()) + "\n")
+    notifications = Notification.objects.filter(notification_status="Pending")
+    with open("task.txt", 'a') as file:
+        file.write(str(datetime.datetime.now()) + "\n")
+    for notification in notifications:
+        try:
+            send_email(notification.notification_title, notification.notification_email,
+                       notification.notification_message)
+            log_issue("Sent email to " + notification.notification_email)
+            notification.notification_status = "Sent"
+            notification.save()
+        except Exception as e:
+            log_issue("error sending message to " + notification.notification_email + "  :   " + e.__str__())
+
+
+email_task(repeat=Task.HOURLY, repeat_until=None)
+
+
+@method_decorator(login_required, name='dispatch')
 class Dashboard(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Dashboard, self).get_context_data()
@@ -105,6 +133,7 @@ class Dashboard(TemplateView):
 
 
 # Error
+@method_decorator(login_required, name='dispatch')
 class ErrorPage(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -114,6 +143,7 @@ class ErrorPage(TemplateView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class MyKPI(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -127,6 +157,7 @@ class MyKPI(TemplateView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class MyKPICreate(CreateView):
     form_class = KPIForm
 
@@ -169,6 +200,7 @@ class MyKPICreate(CreateView):
         return HttpResponseRedirect(reverse('Site:My_KPI_Create', kwargs={'company_id': self.kwargs['company_id']}))
 
 
+@method_decorator(login_required, name='dispatch')
 class MyKPIView(DetailView):
     model = KPI
 
@@ -189,6 +221,7 @@ class MyKPIView(DetailView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class MyKPIEdit(UpdateView):
     model = KPI
     form_class = KPIForm
@@ -228,6 +261,7 @@ class MyKPIEdit(UpdateView):
                                                                         'pk': self.kwargs['pk']}))
 
 
+@method_decorator(login_required, name='dispatch')
 class MyKPIDelete(DeleteView):
     model = KPI
 
@@ -242,6 +276,7 @@ class MyKPIDelete(DeleteView):
         return '{}'.format(reverse('Site:My_KPI', kwargs={'company_id': self.kwargs['company_id']}))
 
 
+@method_decorator(login_required, name='dispatch')
 class MyKPIResults(UpdateView):
     model = KPI
     form_class = KPIForm
@@ -281,36 +316,36 @@ class MyKPIResults(UpdateView):
                 months['February'] = submission.submission_february_results
                 months['March'] = submission.submission_march_results
 
-                context['april_overide'] = submission.submission_april_results_override
-                context['may_overide'] = submission.submission_may_results_override
-                context['june_overide'] = submission.submission_june_results_override
-                context['july_overide'] = submission.submission_july_results_override
-                context['august_overide'] = submission.submission_august_results_override
-                context['september_overide'] = submission.submission_april_results_override
-                context['october_overide'] = submission.submission_april_results_override
-                context['november_overide'] = submission.submission_april_results_override
-                context['december_overide'] = submission.submission_april_results_override
-                context['january_overide'] = submission.submission_april_results_override
-                context['february_overide'] = submission.submission_april_results_override
-                context['march_overide'] = submission.submission_april_results_override
+                context['april_override'] = submission.submission_april_results_override
+                context['may_override'] = submission.submission_may_results_override
+                context['june_override'] = submission.submission_june_results_override
+                context['july_override'] = submission.submission_july_results_override
+                context['august_override'] = submission.submission_august_results_override
+                context['september_override'] = submission.submission_april_results_override
+                context['october_override'] = submission.submission_april_results_override
+                context['november_override'] = submission.submission_april_results_override
+                context['december_override'] = submission.submission_april_results_override
+                context['january_override'] = submission.submission_april_results_override
+                context['february_override'] = submission.submission_april_results_override
+                context['march_override'] = submission.submission_april_results_override
 
             else:
                 months['April'] = months['May'] = months['June'] = months['July'] = months['August'] = \
                     months['September'] = months['October'] = months['November'] = months['December'] = \
                     months['January'] = months['February'] = months['March'] = 15
 
-                context['april_overide'] = False
-                context['may_overide'] = False
-                context['june_overide'] = False
-                context['july_overide'] = False
-                context['august_overide'] = False
-                context['september_overide'] = False
-                context['october_overide'] = False
-                context['november_overide'] = False
-                context['december_overide'] = False
-                context['january_overide'] = False
-                context['february_overide'] = False
-                context['march_overide'] = False
+                context['april_override'] = False
+                context['may_override'] = False
+                context['june_override'] = False
+                context['july_override'] = False
+                context['august_override'] = False
+                context['september_override'] = False
+                context['october_override'] = False
+                context['november_override'] = False
+                context['december_override'] = False
+                context['january_override'] = False
+                context['february_override'] = False
+                context['march_override'] = False
 
             # check if the field result field should show
 
@@ -331,10 +366,11 @@ class MyKPIResults(UpdateView):
                 if kpi.kpi_april_score_approve is True:
                     reveal['April'] = False
                 else:
-                    if context['april_overide'] is True:
+                    if context['april_override'] is True:
                         reveal['April'] = True
                     else:
-                        april_end_month = datetime.date(year=year['April'], month=4, day=monthrange(year['April'], 4)[1])
+                        april_end_month = datetime.date(year=year['April'], month=4,
+                                                        day=monthrange(year['April'], 4)[1])
                         april_deadline = april_end_month + datetime.timedelta(days=months['April'])
 
                         if april_end_month <= today_date <= april_deadline:
@@ -344,118 +380,150 @@ class MyKPIResults(UpdateView):
                 if kpi.kpi_may_score_approve is True:
                     reveal['May'] = False
                 else:
-                    may_end_month = datetime.date(year=year['May'], month=5, day=monthrange(year['May'], 5)[1])
-                    may_deadline = may_end_month + datetime.timedelta(days=months['May'])
-
-                    if may_end_month <= today_date <= may_deadline:
+                    if context['may_override'] == True:
                         reveal['May'] = True
+                    else:
+                        may_end_month = datetime.date(year=year['May'], month=5, day=monthrange(year['May'], 5)[1])
+                        may_deadline = may_end_month + datetime.timedelta(days=months['May'])
+
+                        if may_end_month <= today_date <= may_deadline:
+                            reveal['May'] = True
 
                 # June Check
                 if kpi.kpi_june_score_approve is True:
                     reveal['June'] = False
                 else:
-                    june_end_month = datetime.date(year=year['June'], month=6, day=monthrange(year['June'], 6)[1])
-                    june_deadline = june_end_month + datetime.timedelta(days=months['June'])
-
-                    if june_end_month <= today_date <= june_deadline:
+                    if context['june_override'] == True:
                         reveal['June'] = True
+                    else:
+                        june_end_month = datetime.date(year=year['June'], month=6, day=monthrange(year['June'], 6)[1])
+                        june_deadline = june_end_month + datetime.timedelta(days=months['June'])
+
+                        if june_end_month <= today_date <= june_deadline:
+                            reveal['June'] = True
 
                 # July Check
                 if kpi.kpi_july_score_approve is True:
                     reveal['July'] = False
                 else:
-                    july_end_month = datetime.date(year=year['July'], month=7, day=monthrange(year['July'], 7)[1])
-                    july_deadline = july_end_month + datetime.timedelta(days=months['July'])
+                    if context['july_override'] == True:
+                        reveal['June'] = True
+                    else:
+                        july_end_month = datetime.date(year=year['July'], month=7, day=monthrange(year['July'], 7)[1])
+                        july_deadline = july_end_month + datetime.timedelta(days=months['July'])
 
-                    if july_end_month <= today_date <= july_deadline:
-                        reveal['July'] = True
+                        if july_end_month <= today_date <= july_deadline:
+                            reveal['July'] = True
 
                 # August Check
                 if kpi.kpi_august_score_approve is True:
                     reveal['August'] = False
                 else:
-                    august_end_month = datetime.date(year=year['August'], month=8, day=monthrange(year['August'], 8)[1])
-                    august_deadline = august_end_month + datetime.timedelta(days=months['August'])
-
-                    if august_end_month <= today_date <= august_deadline:
+                    if context['august_override'] == True:
                         reveal['August'] = True
+                    else:
+                        august_end_month = datetime.date(year=year['August'], month=8, day=monthrange(year['August'], 8)[1])
+                        august_deadline = august_end_month + datetime.timedelta(days=months['August'])
+
+                        if august_end_month <= today_date <= august_deadline:
+                            reveal['August'] = True
 
                 # September Check
                 if kpi.kpi_september_score_approve is True:
                     reveal['September'] = False
                 else:
-                    september_end_month = datetime.date(year=year['September'], month=9,
-                                                        day=monthrange(year['September'], 9)[1])
-                    september_deadline = september_end_month + datetime.timedelta(days=months['September'])
-
-                    if september_end_month <= today_date <= september_deadline:
+                    if context['september_override'] == True:
                         reveal['September'] = True
+                    else:
+                        september_end_month = datetime.date(year=year['September'], month=9,
+                                                            day=monthrange(year['September'], 9)[1])
+                        september_deadline = september_end_month + datetime.timedelta(days=months['September'])
+
+                        if september_end_month <= today_date <= september_deadline:
+                            reveal['September'] = True
 
                 # October Check
                 if kpi.kpi_october_score_approve is True:
                     reveal['October'] = False
                 else:
-                    october_end_month = datetime.date(year=year['October'], month=10,
-                                                      day=monthrange(year['October'], 10)[1])
-                    october_deadline = october_end_month + datetime.timedelta(days=months['October'])
-
-                    if october_end_month <= today_date <= october_deadline:
+                    if context['october_override'] == True:
                         reveal['October'] = True
+                    else:
+                        october_end_month = datetime.date(year=year['October'], month=10,
+                                                          day=monthrange(year['October'], 10)[1])
+                        october_deadline = october_end_month + datetime.timedelta(days=months['October'])
+
+                        if october_end_month <= today_date <= october_deadline:
+                            reveal['October'] = True
 
                 # November Check
                 if kpi.kpi_november_score_approve is True:
                     reveal['November'] = False
                 else:
-                    november_end_month = datetime.date(year=year['November'], month=11,
-                                                       day=monthrange(year['November'], 11)[1])
-                    november_deadline = november_end_month + datetime.timedelta(days=months['November'])
-
-                    if november_end_month <= today_date <= november_deadline:
+                    if context['november_override'] == True:
                         reveal['November'] = True
+                    else:
+                        november_end_month = datetime.date(year=year['November'], month=11,
+                                                           day=monthrange(year['November'], 11)[1])
+                        november_deadline = november_end_month + datetime.timedelta(days=months['November'])
+
+                        if november_end_month <= today_date <= november_deadline:
+                            reveal['November'] = True
 
                 # December Check
                 if kpi.kpi_december_score_approve is True:
                     reveal['December'] = False
                 else:
-                    december_end_month = datetime.date(year=year['December'], month=12,
-                                                       day=monthrange(year['December'], 12)[1])
-                    december_deadline = december_end_month + datetime.timedelta(days=months['December'])
+                    if context['december_override'] == True:
+                        reveal['December'] == True
+                    else:
+                        december_end_month = datetime.date(year=year['December'], month=12,
+                                                           day=monthrange(year['December'], 12)[1])
+                        december_deadline = december_end_month + datetime.timedelta(days=months['December'])
 
-                    if december_end_month <= today_date <= december_deadline:
-                        reveal['December'] = True
+                        if december_end_month <= today_date <= december_deadline:
+                            reveal['December'] = True
 
                 # January Check
                 if kpi.kpi_january_score_approve is True:
                     reveal['January'] = False
                 else:
-                    january_end_month = datetime.date(year=year['January'], month=1,
-                                                      day=monthrange(year['January'], 1)[1])
-                    january_deadline = january_end_month + datetime.timedelta(days=months['January'])
-
-                    if january_end_month <= today_date <= january_deadline:
+                    if context['january_override'] == True:
                         reveal['January'] = True
+                    else:
+                        january_end_month = datetime.date(year=year['January'], month=1,
+                                                          day=monthrange(year['January'], 1)[1])
+                        january_deadline = january_end_month + datetime.timedelta(days=months['January'])
+
+                        if january_end_month <= today_date <= january_deadline:
+                            reveal['January'] = True
 
                 # February Check
                 if kpi.kpi_february_score_approve is True:
                     reveal['February'] = False
                 else:
-
-                    february_end_month = datetime.date(year=year['February'], month=2,
-                                                       day=monthrange(year['February'], 2)[1])
-                    february_deadline = february_end_month + datetime.timedelta(days=months['February'])
-
-                    if february_end_month <= today_date <= february_deadline:
+                    if context['february_override'] == True:
                         reveal['February'] = True
+                    else:
+                        february_end_month = datetime.date(year=year['February'], month=2,
+                                                           day=monthrange(year['February'], 2)[1])
+                        february_deadline = february_end_month + datetime.timedelta(days=months['February'])
+
+                        if february_end_month <= today_date <= february_deadline:
+                            reveal['February'] = True
 
                 # March Check
                 if kpi.kpi_march_score_approve is True:
                     reveal['March'] = False
                 else:
-                    march_end_month = datetime.date(year=year['March'], month=3, day=monthrange(year['March'], 3)[1])
-                    march_deadline = march_end_month + datetime.timedelta(days=months['March'])
-
-                    if march_end_month <= today_date <= march_deadline:
+                    if context['may_override'] == True:
                         reveal['March'] = True
+                    else:
+                        march_end_month = datetime.date(year=year['March'], month=3, day=monthrange(year['March'], 3)[1])
+                        march_deadline = march_end_month + datetime.timedelta(days=months['March'])
+
+                        if march_end_month <= today_date <= march_deadline:
+                            reveal['March'] = True
 
         context['reveal'] = reveal
         return context
@@ -478,6 +546,7 @@ class MyKPIResults(UpdateView):
                                                                            'pk': self.kwargs['pk']}))
 
 
+@method_decorator(login_required, name='dispatch')
 class MyKPIResultsList(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(MyKPIResultsList, self).get_context_data()
@@ -497,6 +566,7 @@ class MyKPIResultsList(TemplateView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class KPILevelDown(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -512,6 +582,7 @@ class KPILevelDown(TemplateView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class KPILevelDownDetail(DetailView):
     model = Level
 
@@ -542,6 +613,7 @@ class KPILevelDownDetail(DetailView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class KPILevelDownDetailStaff(DetailView):
     model = Staff
 
@@ -658,6 +730,7 @@ def staff_kpi_results(request, company_id, lev_id, staff_id, pk):
                                         kwargs={'company_id': company_id, 'lev_id': lev_id, 'pk': staff_id}))
 
 
+@method_decorator(login_required, name='dispatch')
 class KPICategory(DetailView):
     model = LevelCategory
 
@@ -671,7 +744,8 @@ class KPICategory(DetailView):
 
         staff_level = get_staff_level(context['staff'])
         if staff_level:
-            if staff_level.level_category.category_kpi_view is True and not staff_level.level_head == context['staff'] and staff_level.level_category == context['level_category']:
+            if staff_level.level_category.category_kpi_view is True and not staff_level.level_head == context[
+                'staff'] and staff_level.level_category == context['level_category']:
                 levels_in_category.append(staff_level)
             all_levels_up(staff_level, levels_up)
 
@@ -685,6 +759,7 @@ class KPICategory(DetailView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class KPICategoryLevel(DetailView):
     model = Level
 
@@ -712,6 +787,7 @@ class KPICategoryLevel(DetailView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class MyCheckIn(TemplateView):
     model = CheckIn
     context_object_name = 'CheckIn'
@@ -729,6 +805,7 @@ class MyCheckIn(TemplateView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class MyCheckInCreate(CreateView):
     form_class = CheckInForm
 
@@ -759,6 +836,7 @@ class MyCheckInCreate(CreateView):
         return initial
 
 
+@method_decorator(login_required, name='dispatch')
 class MyCheckInView(DetailView):
     model = CheckIn
     context_object_name = 'CheckIn'
@@ -769,6 +847,7 @@ class MyCheckInView(DetailView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class MyCheckInEdit(UpdateView):
     model = CheckIn
     form_class = CheckInForm
@@ -785,6 +864,7 @@ class MyCheckInEdit(UpdateView):
                                                                    'pk': self.kwargs['pk']}))
 
 
+@method_decorator(login_required, name='dispatch')
 class MyCheckInDelete(DeleteView):
     model = CheckIn
     context_object_name = 'CheckIn'
@@ -799,6 +879,7 @@ class MyCheckInDelete(DeleteView):
         return '{}'.format(reverse('Site:My_CheckIn', kwargs={'company_id': self.kwargs['company_id']}))
 
 
+@method_decorator(login_required, name='dispatch')
 class CheckInLevelDown(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -814,6 +895,7 @@ class CheckInLevelDown(TemplateView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class CheckInLevelDownDetail(DetailView):
     model = Level
 
@@ -843,6 +925,7 @@ class CheckInLevelDownDetail(DetailView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class CheckInLevelDownDetailStaff(DetailView):
     model = Staff
 
@@ -881,6 +964,7 @@ def staff_check_in_approve(request, company_id, lev_id, type_id, staff_id, pk):
                                                 'pk': staff_id}))
 
 
+@method_decorator(login_required, name='dispatch')
 class AssessmentList(TemplateView):
     model = Assessment
     context_object_name = 'Assessment'
@@ -899,6 +983,7 @@ class AssessmentList(TemplateView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class AssessmentView(DetailView):
     model = Assessment
     context_object_name = 'Assessment'
@@ -952,6 +1037,7 @@ class AssessmentView(DetailView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class AssessmentViewMember(DetailView):
     model = Assessment
     context_object_name = 'Assessment'
@@ -992,6 +1078,7 @@ class AssessmentViewMember(DetailView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class AssessmentViewMemberResponseCreate(CreateView):
     form_class = QuestionResponseForm
 
@@ -1040,6 +1127,7 @@ class AssessmentViewMemberResponseCreate(CreateView):
                                            'uid': self.kwargs['uid'], 'dir': self.kwargs['dir']}))
 
 
+@method_decorator(login_required, name='dispatch')
 class AssessmentViewMemberResponseEdit(UpdateView):
     pk_url_kwarg = 'qrid'
     model = QuestionResponses
@@ -1073,6 +1161,7 @@ class AssessmentViewMemberResponseEdit(UpdateView):
                                                                           'dir': self.kwargs['dir']}))
 
 
+@method_decorator(login_required, name='dispatch')
 class AssessmentViewMy(DetailView):
     model = Assessment
     context_object_name = 'Assessment'
@@ -1164,6 +1253,7 @@ def staff_edit_question_response(request, company_id, aid, staff_id, dir, rid):
                                         kwargs={'company_id': company_id, 'pk': aid, 'uid': staff_id, 'dir': dir}))
 
 
+@method_decorator(login_required, name='dispatch')
 class Report(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -1173,6 +1263,12 @@ class Report(TemplateView):
 
         my_members_score = []
         levels_down_score = []
+
+        average_score = 0
+        cat_75 = 0
+        cat_50 = 0
+        cat_25 = 0
+        cat_0 = 0
 
         if staff.staff_superuser:
             for member_staff in Staff.objects.filter(staff_company=context['company']):
@@ -1184,10 +1280,24 @@ class Report(TemplateView):
                 company_score = get_company_score(member_staff, context['pms'])
                 overall_score = calculate_overall_score(member_staff, context['pms'])
 
+                average_score += overall_score
+                if overall_score >= 75:
+                    cat_75 += 1
+                elif 50 <= overall_score < 75:
+                    cat_50 += 1
+                elif 25 <= overall_score < 50:
+                    cat_25 += 1
+                else:
+                    cat_0 += 1
+
                 my_members_score.append([member_staff, level, assessment_score, check_in_score, kpi_score, bu_score,
                                          company_score, overall_score])
+            if Staff.objects.filter(staff_company=context['company']).count() > 0:
+                average_score = round(average_score/Staff.objects.filter(staff_company=context['company']).count(), 2)
+
         else:
             for level in Level.objects.filter(level_head=staff):
+                level_score = 0
                 for members in LevelMembership.objects.filter(membership_level=level):
                     level = members.membership_level
                     assessment_score = calculate_overall_assessment_score(members.membership_staff, context['pms'])
@@ -1197,15 +1307,34 @@ class Report(TemplateView):
                     company_score = get_company_score(members.membership_staff, context['pms'])
                     overall_score = calculate_overall_score(members.membership_staff, context['pms'])
 
+                    level_score += overall_score
+                    if overall_score >= 75:
+                        cat_75 += 1
+                    elif 50 <= overall_score < 75:
+                        cat_50 += 1
+                    elif 25 <= overall_score < 50:
+                        cat_25 += 1
+                    else:
+                        cat_0 += 1
+
                     my_members_score.append([members.membership_staff, level, assessment_score, check_in_score,
                                              kpi_score, bu_score, company_score, overall_score])
+                if LevelMembership.objects.filter(membership_level=level).count() > 0:
+                    level_score = round(level_score/LevelMembership.objects.filter(membership_level=level).count(), 2)
+
+                average_score += level_score
+
+            if Level.objects.filter(level_head=staff).count() > 0:
+                average_score = round(average_score/Level.objects.filter(level_head=staff).count(), 2)
 
             if check_staff_is_level_head(self.kwargs['company_id'], staff):
                 levels_down = []
                 for levels in Level.objects.filter(level_head=staff):
                     all_levels_down(levels, levels_down)
-
+                if len(levels_down) > 0:
+                    average_score = 0
                 for level in levels_down:
+                    level_score = 0
                     for members in LevelMembership.objects.filter(membership_level=level):
                         level = members.membership_level
                         assessment_score = calculate_overall_assessment_score(members.membership_staff, context['pms'])
@@ -1215,14 +1344,36 @@ class Report(TemplateView):
                         company_score = get_company_score(members.membership_staff, context['pms'])
                         overall_score = calculate_overall_score(members.membership_staff, context['pms'])
 
+                        level_score += overall_score
+                        if overall_score >= 75:
+                            cat_75 += 1
+                        elif 50 <= overall_score < 75:
+                            cat_50 += 1
+                        elif 25 <= overall_score < 50:
+                            cat_25 += 1
+                        else:
+                            cat_0 += 1
+
+
                         levels_down_score.append([members.membership_staff, level, assessment_score, check_in_score,
                                                   kpi_score, bu_score, company_score, overall_score])
+                    if LevelMembership.objects.filter(membership_level=level).count() > 0:
+                        level_score = round(level_score/LevelMembership.objects.filter(membership_level=level).count(), 2)
+                    average_score += level_score
+                if len(levels_down) > 0:
+                    average_score = round(average_score/len(levels_down), 2)
 
         context['my_members_score'] = my_members_score
         context['levels_down_score'] = levels_down_score
+        context['cat_75'] = cat_75
+        context['cat_50'] = cat_50
+        context['cat_25'] = cat_25
+        context['cat_0'] = cat_0
+        context['average_score'] = average_score
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class ReportKPIResults(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -1232,6 +1383,11 @@ class ReportKPIResults(TemplateView):
 
         my_members_kpi_score = []
         levels_down_kpi_score = []
+        average_score = 0
+        cat_75 = 0
+        cat_50 = 0
+        cat_25 = 0
+        cat_0 = 0
 
         if staff.staff_superuser:
             for member_staff in Staff.objects.filter(staff_company=context['company']):
@@ -1245,11 +1401,25 @@ class ReportKPIResults(TemplateView):
                 for kpi in KPI.objects.filter(kpi_staff=member_staff, kpi_pms=context['pms']):
                     kpis.append([kpi, calculate_kpi_score(kpi, k_type)])
 
+                overall_kpi_score = calculate_overall_kpi_score(member_staff, context['pms'])
+                average_score += overall_kpi_score
+                if overall_kpi_score >= 75:
+                    cat_75 += 1
+                elif 50 <= overall_kpi_score < 75:
+                    cat_50 += 1
+                elif 25 <= overall_kpi_score < 50:
+                    cat_25 += 1
+                else:
+                    cat_0 += 1
+
                 my_members_kpi_score.append([member_staff, kpis,
                                              calculate_overall_kpi_score(member_staff, context['pms']), kpis])
+            if Staff.objects.filter(staff_company=context['company']).count() > 0:
+                average_score = round(average_score/Staff.objects.filter(staff_company=context['company']).count(), 2)
 
         else:
             for level in Level.objects.filter(level_head=staff):
+                kpi_score = 0
                 for members in LevelMembership.objects.filter(membership_level=level):
                     kpis = []
                     kpi_type = KPIType.objects.filter(type_pms=context['pms'],
@@ -1261,15 +1431,36 @@ class ReportKPIResults(TemplateView):
                     for kpi in KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms']):
                         kpis.append([kpi, calculate_kpi_score(kpi, k_type)])
 
+                    overall_kpi_score = calculate_overall_kpi_score(members.membership_staff, context['pms'])
+                    kpi_score += overall_kpi_score
+                    if overall_kpi_score >= 75:
+                        cat_75 += 1
+                    elif 50 <= overall_kpi_score < 75:
+                        cat_50 += 1
+                    elif 25 <= overall_kpi_score < 50:
+                        cat_25 += 1
+                    else:
+                        cat_0 += 1
+
                     my_members_kpi_score.append([members.membership_staff, kpis,
                                                  calculate_overall_kpi_score(members.membership_staff, context['pms'])])
+                if LevelMembership.objects.filter(membership_level=level).count() > 0:
+                    kpi_score = round(kpi_score/LevelMembership.objects.filter(membership_level=level).count(), 2)
+                average_score += kpi_score
+
+            if Level.objects.filter(level_head=staff).count() > 0:
+                average_score += round(average_score/Level.objects.filter(level_head=staff).count(), 2)
 
             if check_staff_is_level_head(self.kwargs['company_id'], staff):
                 levels_down = []
                 for levels in Level.objects.filter(level_head=staff):
                     all_levels_down(levels, levels_down)
 
+                if len(levels_down) > 0:
+                    average_score = 0
+
                 for level in levels_down:
+                    kpi_score = 0
                     for members in LevelMembership.objects.filter(membership_level=level):
                         kpis = []
                         kpi_type = KPIType.objects.filter(type_pms=context['pms'],
@@ -1281,15 +1472,37 @@ class ReportKPIResults(TemplateView):
                         for kpi in KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms']):
                             kpis.append([kpi, calculate_kpi_score(kpi, k_type)])
 
-                        levels_down_kpi_score.append([members.membership_staff, kpis,
-                                                     calculate_overall_kpi_score(members.membership_staff,
-                                                                                 context['pms'])])
+                        overall_kpi_score = calculate_overall_kpi_score(members.membership_staff, context['pms'])
+                        kpi_score += overall_kpi_score
+                        if overall_kpi_score >= 75:
+                            cat_75 += 1
+                        elif 50 <= overall_kpi_score < 75:
+                            cat_50 += 1
+                        elif 25 <= overall_kpi_score < 50:
+                            cat_25 += 1
+                        else:
+                            cat_0 += 1
 
+                        levels_down_kpi_score.append([members.membership_staff, kpis,
+                                                      calculate_overall_kpi_score(members.membership_staff,
+                                                                                  context['pms'])])
+                    if LevelMembership.objects.filter(membership_level=level).count() > 0:
+                        kpi_score = round(kpi_score / LevelMembership.objects.filter(membership_level=level).count(), 2)
+                    average_score += kpi_score
+                if len(levels_down) > 0:
+                    average_score = round(average_score/len(levels_down), 2)
+
+        context['cat_75'] = cat_75
+        context['cat_50'] = cat_50
+        context['cat_25'] = cat_25
+        context['cat_0'] = cat_0
+        context['average_score'] = average_score
         context['my_members_kpi_score'] = my_members_kpi_score
         context['levels_down_kpi_score'] = levels_down_kpi_score
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class ReportKPISubmissions(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -1351,47 +1564,292 @@ class ReportKPISubmissions(TemplateView):
                         staff_with_less += 1
 
                     my_members_submissions.append([members.membership_staff, submitted.count(), pending.count(),
-                                                   approved.count(),  considered, minimum_kpi])
-
+                                                   approved.count(), considered, minimum_kpi])
 
         if check_staff_is_level_head(self.kwargs['company_id'], staff):
-                levels_down = []
-                for levels in Level.objects.filter(level_head=staff):
-                    all_levels_down(levels, levels_down)
+            levels_down = []
+            for levels in Level.objects.filter(level_head=staff):
+                all_levels_down(levels, levels_down)
 
-                for level in levels_down:
-                    for members in LevelMembership.objects.filter(membership_level=level):
-                        kpis = KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms'])
-                        submitted = kpis.filter(kpi_status="Submitted")
-                        approved = kpis.filter(kpi_status="Approved")
-                        pending = kpis.filter(kpi_status="Pending")
-                        considered = submitted.count() + approved.count() + pending.count()
+            for level in levels_down:
+                for members in LevelMembership.objects.filter(membership_level=level):
+                    kpis = KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms'])
+                    submitted = kpis.filter(kpi_status="Submitted")
+                    approved = kpis.filter(kpi_status="Approved")
+                    pending = kpis.filter(kpi_status="Pending")
+                    considered = submitted.count() + approved.count() + pending.count()
 
-                        if pending.count() > 0:
-                            staff_with_pending += 1
+                    if pending.count() > 0:
+                        staff_with_pending += 1
 
-                        submission = SubmissionKPI.objects.filter(
-                            submission_level_category=members.membership_staff.staff_category)
-                        if submission:
-                            minimum_kpi = submission.first().submission_minimum_number
+                    submission = SubmissionKPI.objects.filter(
+                        submission_level_category=members.membership_staff.staff_category)
+                    if submission:
+                        minimum_kpi = submission.first().submission_minimum_number
 
-                        if considered >= minimum_kpi:
-                            staff_with_required += 1
-                        else:
-                            staff_with_less += 1
+                    if considered >= minimum_kpi:
+                        staff_with_required += 1
+                    else:
+                        staff_with_less += 1
 
-                        my_members_submissions.append([members.membership_staff, submitted.count(), pending.count(),
-                                                       approved.count(), considered, minimum_kpi])
+                    my_members_submissions.append([members.membership_staff, submitted.count(), pending.count(),
+                                                   approved.count(), considered, minimum_kpi])
 
         context['staff_with_pending'] = staff_with_pending
         context['staff_with_required'] = staff_with_required
-        context['staff_with_less'] = staff_with_required
+        context['staff_with_less'] = staff_with_less
 
         context['my_members_submission'] = my_members_submissions
         context['levels_down_submission'] = levels_down_submissions
         return context
 
 
+@method_decorator(login_required, name='dispatch')
+class ReportKPISubmissionsResults(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportKPISubmissionsResults, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        staff = context['staff']
+
+        my_members_kpi_score = []
+        levels_down_kpi_score = []
+        apr = may = jun = jul = aug = sep = oct = nov = dec = jan = feb = mar = 0
+
+        staff_with_unapproved = 0
+        staff_with_approved = 0
+
+        if staff.staff_superuser:
+            for member_staff in Staff.objects.filter(staff_company=context['company']):
+                kpis = KPI.objects.filter(kpi_staff=member_staff, kpi_pms=context['pms'])
+                submission = SubmissionKPI.objects.filter(submission_level_category=member_staff.staff_category,
+                                                          submission_pms=context['pms'])
+                if submission:
+                    staff_submission = submission.first()
+                    apr_r = staff_submission.submission_april_results
+                    may_r = staff_submission.submission_may_results
+                    jun_r = staff_submission.submission_june_results
+                    jul_r = staff_submission.submission_july_results
+                    aug_r = staff_submission.submission_august_results
+                    sep_r = staff_submission.submission_september_results
+                    oct_r = staff_submission.submission_october_results
+                    nov_r = staff_submission.submission_november_results
+                    dec_r = staff_submission.submission_december_results
+                    jan_r = staff_submission.submission_january_results
+                    feb_r = staff_submission.submission_february_results
+                    mar_r = staff_submission.submission_march_results
+                else:
+                    apr_r = may_r = jun_r = jul_r = aug_r = sep_r = oct_r = nov_r = dec_r = jan_r = feb_r = mar_r = True
+
+                approve_list = []
+
+                for kpi in kpis:
+                    kpi_approved = True
+                    if kpi.kpi_april_score_approve != apr_r:
+                        kpi_approved = False
+
+                    if kpi.kpi_may_score_approve != may_r:
+                        kpi_approved = False
+
+                    if kpi.kpi_june_score_approve != jun_r:
+                        kpi_approved = False
+
+                    if kpi.kpi_july_score_approve != jul_r:
+                        kpi_approved = False
+
+                    if kpi.kpi_august_score_approve != aug_r:
+                        kpi_approved = False
+
+                    if kpi.kpi_september_score_approve != sep_r:
+                        kpi_approved = False
+
+                    if kpi.kpi_october_score_approve != oct_r:
+                        kpi_approved = False
+
+                    if kpi.kpi_november_score_approve != nov_r:
+                        kpi_approved = False
+
+                    if kpi.kpi_december_score_approve != dec_r:
+                        kpi_approved = False
+
+                    if kpi.kpi_january_score_approve != jan_r:
+                        kpi_approved = False
+
+                    if kpi.kpi_february_score_approve != feb_r:
+                        kpi_approved = False
+
+                    if kpi.kpi_march_score_approve != mar_r:
+                        kpi_approved = False
+
+                    approve_list.append(kpi_approved)
+
+                if False in approve_list or kpis.count() == 0:
+                    staff_with_unapproved += 1
+                else:
+                    staff_with_approved += 1
+
+                my_members_kpi_score.append([member_staff, approve_list.count(True), approve_list.count(False)])
+
+        else:
+            for level in Level.objects.filter(level_head=staff):
+                for members in LevelMembership.objects.filter(membership_level=level):
+                    kpis = KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms'])
+                    submission = SubmissionKPI.objects.filter(submission_level_category=members.membership_staff.staff_category,
+                                                              submission_pms=context['pms'])
+                    if submission:
+                        staff_submission = submission.first()
+                        apr_r = staff_submission.submission_april_results
+                        may_r = staff_submission.submission_may_results
+                        jun_r = staff_submission.submission_june_results
+                        jul_r = staff_submission.submission_july_results
+                        aug_r = staff_submission.submission_august_results
+                        sep_r = staff_submission.submission_september_results
+                        oct_r = staff_submission.submission_october_results
+                        nov_r = staff_submission.submission_november_results
+                        dec_r = staff_submission.submission_december_results
+                        jan_r = staff_submission.submission_january_results
+                        feb_r = staff_submission.submission_february_results
+                        mar_r = staff_submission.submission_march_results
+                    else:
+                        apr_r = may_r = jun_r = jul_r = aug_r = sep_r = oct_r = nov_r = dec_r = jan_r = feb_r = mar_r = True
+
+                    approve_list = []
+
+                    for kpi in kpis:
+                        kpi_approved = True
+                        if kpi.kpi_april_score_approve != apr_r:
+                            kpi_approved = False
+
+                        if kpi.kpi_may_score_approve != may_r:
+                            kpi_approved = False
+
+                        if kpi.kpi_june_score_approve != jun_r:
+                            kpi_approved = False
+
+                        if kpi.kpi_july_score_approve != jul_r:
+                            kpi_approved = False
+
+                        if kpi.kpi_august_score_approve != aug_r:
+                            kpi_approved = False
+
+                        if kpi.kpi_september_score_approve != sep_r:
+                            kpi_approved = False
+
+                        if kpi.kpi_october_score_approve != oct_r:
+                            kpi_approved = False
+
+                        if kpi.kpi_november_score_approve != nov_r:
+                            kpi_approved = False
+
+                        if kpi.kpi_december_score_approve != dec_r:
+                            kpi_approved = False
+
+                        if kpi.kpi_january_score_approve != jan_r:
+                            kpi_approved = False
+
+                        if kpi.kpi_february_score_approve != feb_r:
+                            kpi_approved = False
+
+                        if kpi.kpi_march_score_approve != mar_r:
+                            kpi_approved = False
+
+                        approve_list.append(kpi_approved)
+
+                    if False in approve_list or kpis.count() == 0:
+                        staff_with_unapproved += 1
+                    else:
+                        staff_with_approved += 1
+
+                    my_members_kpi_score.append([members.membership_staff, kpis, approve_list.count(True), approve_list.count(False)])
+
+            if check_staff_is_level_head(self.kwargs['company_id'], staff):
+                levels_down = []
+                for levels in Level.objects.filter(level_head=staff):
+                    all_levels_down(levels, levels_down)
+
+                if len(levels_down) > 0:
+                    average_score = 0
+
+                for level in levels_down:
+                    kpi_score = 0
+                    for members in LevelMembership.objects.filter(membership_level=level):
+                        kpis = KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms'])
+                        submission = SubmissionKPI.objects.filter(submission_level_category=members.membership_staff.staff_category,
+                                                                  submission_pms=context['pms'])
+                        if submission:
+                            staff_submission = submission.first()
+                            apr_r = staff_submission.submission_april_results
+                            may_r = staff_submission.submission_may_results
+                            jun_r = staff_submission.submission_june_results
+                            jul_r = staff_submission.submission_july_results
+                            aug_r = staff_submission.submission_august_results
+                            sep_r = staff_submission.submission_september_results
+                            oct_r = staff_submission.submission_october_results
+                            nov_r = staff_submission.submission_november_results
+                            dec_r = staff_submission.submission_december_results
+                            jan_r = staff_submission.submission_january_results
+                            feb_r = staff_submission.submission_february_results
+                            mar_r = staff_submission.submission_march_results
+                        else:
+                            apr_r = may_r = jun_r = jul_r = aug_r = sep_r = oct_r = nov_r = dec_r = jan_r = feb_r = mar_r = True
+
+                        approve_list = []
+
+                        for kpi in kpis:
+                            kpi_approved = True
+                            if kpi.kpi_april_score_approve != apr_r:
+                                kpi_approved = False
+
+                            if kpi.kpi_may_score_approve != may_r:
+                                kpi_approved = False
+
+                            if kpi.kpi_june_score_approve != jun_r:
+                                kpi_approved = False
+
+                            if kpi.kpi_july_score_approve != jul_r:
+                                kpi_approved = False
+
+                            if kpi.kpi_august_score_approve != aug_r:
+                                kpi_approved = False
+
+                            if kpi.kpi_september_score_approve != sep_r:
+                                kpi_approved = False
+
+                            if kpi.kpi_october_score_approve != oct_r:
+                                kpi_approved = False
+
+                            if kpi.kpi_november_score_approve != nov_r:
+                                kpi_approved = False
+
+                            if kpi.kpi_december_score_approve != dec_r:
+                                kpi_approved = False
+
+                            if kpi.kpi_january_score_approve != jan_r:
+                                kpi_approved = False
+
+                            if kpi.kpi_february_score_approve != feb_r:
+                                kpi_approved = False
+
+                            if kpi.kpi_march_score_approve != mar_r:
+                                kpi_approved = False
+
+                            approve_list.append(kpi_approved)
+
+                        if False in approve_list or kpis.count() == 0:
+                            staff_with_unapproved += 1
+                        else:
+                            staff_with_approved += 1
+
+                        my_members_kpi_score.append([members.membership_staff, kpis, approve_list.count(True), approve_list.count(False)])
+
+        context['staff_with_approved'] = staff_with_approved
+        context['staff_with_unapproved'] = staff_with_unapproved
+        context['my_members_kpi_score'] = my_members_kpi_score
+        context['levels_down_kpi_score'] = levels_down_kpi_score
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
 class ReportAssessments(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -1402,21 +1860,41 @@ class ReportAssessments(TemplateView):
         my_members_score = []
         levels_down_score = []
 
+        cat_75 = 0
+        cat_50 = 0
+        cat_25 = 0
+        cat_0 = 0
+
         context['Assessments'] = Assessment.objects.filter(assessment_pms=context['pms'])
 
         if staff.staff_superuser:
             for member_staff in Staff.objects.filter(staff_company=context['company']):
-
                 assessment_score = calculate_overall_assessment_score(member_staff, context['pms'])
-
                 my_members_score.append([member_staff, assessment_score])
+
+                if assessment_score >= 75:
+                    cat_75 += 1
+                elif 50 <= assessment_score < 75:
+                    cat_50 += 1
+                elif 25 <= assessment_score < 50:
+                    cat_25 += 1
+                else:
+                    cat_0 += 1
         else:
             for level in Level.objects.filter(level_head=staff):
                 for members in LevelMembership.objects.filter(membership_level=level):
-
                     assessment_score = calculate_overall_assessment_score(members.membership_staff, context['pms'])
 
                     my_members_score.append([members.membership_staff, assessment_score])
+
+                    if assessment_score >= 75:
+                        cat_75 += 1
+                    elif 50 <= assessment_score < 75:
+                        cat_50 += 1
+                    elif 25 <= assessment_score < 50:
+                        cat_25 += 1
+                    else:
+                        cat_0 += 1
 
             if check_staff_is_level_head(self.kwargs['company_id'], staff):
                 levels_down = []
@@ -1429,11 +1907,25 @@ class ReportAssessments(TemplateView):
 
                         levels_down_score.append([members.membership_staff, assessment_score])
 
+                        if assessment_score >= 75:
+                            cat_75 += 1
+                        elif 50 <= assessment_score < 75:
+                            cat_50 += 1
+                        elif 25 <= assessment_score < 50:
+                            cat_25 += 1
+                        else:
+                            cat_0 += 1
+
+        context['cat_75'] = cat_75
+        context['cat_50'] = cat_50
+        context['cat_25'] = cat_25
+        context['cat_0'] = cat_0
         context['my_members_score'] = my_members_score
         context['levels_down_score'] = levels_down_score
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class ReportAssessmentsDetails(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -1443,24 +1935,45 @@ class ReportAssessmentsDetails(TemplateView):
 
         my_members_score = []
         levels_down_score = []
+        cat_75 = 0
+        cat_50 = 0
+        cat_25 = 0
+        cat_0 = 0
+
 
         assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
 
         if staff.staff_superuser:
             for member_staff in Staff.objects.filter(staff_company=context['company']):
-
                 s_tl = calculate_assessment_score(assessment, member_staff, "Top")
                 tl_s = calculate_assessment_score(assessment, member_staff, "Bottom")
                 score = calculate_one_assessment_score(member_staff, context['pms'], assessment)
+                
+                if score >= 75:
+                    cat_75 += 1
+                elif 50 <= score < 75:
+                    cat_50 += 1
+                elif 25 <= score < 50:
+                    cat_25 += 1
+                else:
+                    cat_0 += 1
 
                 my_members_score.append([member_staff, s_tl, tl_s, score])
         else:
             for level in Level.objects.filter(level_head=staff):
                 for members in LevelMembership.objects.filter(membership_level=level):
-
                     s_tl = calculate_assessment_score(assessment, members.membership_staff, "Top")
                     tl_s = calculate_assessment_score(assessment, members.membership_staff, "Bottom")
                     score = calculate_one_assessment_score(members.membership_staff, context['pms'], assessment)
+
+                    if score >= 75:
+                        cat_75 += 1
+                    elif 50 <= score < 75:
+                        cat_50 += 1
+                    elif 25 <= score < 50:
+                        cat_25 += 1
+                    else:
+                        cat_0 += 1
 
                     my_members_score.append([members.membership_staff, s_tl, tl_s, score])
 
@@ -1475,19 +1988,39 @@ class ReportAssessmentsDetails(TemplateView):
                         tl_s = calculate_assessment_score(assessment, members.membership_staff, "Bottom")
                         score = calculate_one_assessment_score(members.membership_staff, context['pms'], assessment)
 
+                        if score >= 75:
+                            cat_75 += 1
+                        elif 50 <= score < 75:
+                            cat_50 += 1
+                        elif 25 <= score < 50:
+                            cat_25 += 1
+                        else:
+                            cat_0 += 1
+
                         levels_down_score.append([members.membership_staff, s_tl, tl_s, score])
+
+        context['cat_75'] = cat_75
+        context['cat_50'] = cat_50
+        context['cat_25'] = cat_25
+        context['cat_0'] = cat_0
         context['assessment'] = assessment
         context['my_members_score'] = my_members_score
         context['levels_down_score'] = levels_down_score
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class ReportCheckIn(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ReportCheckIn, self).get_context_data()
         global_context(self.kwargs['company_id'], self.request.user, context)
         staff = context['staff']
+
+        cat_75 = 0
+        cat_50 = 0
+        cat_25 = 0
+        cat_0 = 0
 
         my_members_score = []
         levels_down_score = []
@@ -1511,11 +2044,19 @@ class ReportCheckIn(TemplateView):
                 months = [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
                 ci_score = calculate_overall_check_in_score(member_staff, context['pms'])
 
+                if ci_score >= 75:
+                    cat_75 += 1
+                elif 50 <= ci_score < 75:
+                    cat_50 += 1
+                elif 25 <= ci_score < 50:
+                    cat_25 += 1
+                else:
+                    cat_0 += 1
+
                 my_members_score.append([member_staff, months, ci_score])
         else:
             for level in Level.objects.filter(level_head=staff):
                 for members in LevelMembership.objects.filter(membership_level=level):
-
                     cis = CheckIn.objects.filter(check_in_Staff=members.membership_staff, check_in_pms=context['pms'])
                     apr = cis.filter(check_in_month="April").count()
                     may = cis.filter(check_in_month="May").count()
@@ -1532,6 +2073,15 @@ class ReportCheckIn(TemplateView):
 
                     months = [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
                     ci_score = calculate_overall_check_in_score(members.membership_staff, context['pms'])
+
+                    if ci_score >= 75:
+                        cat_75 += 1
+                    elif 50 <= ci_score < 75:
+                        cat_50 += 1
+                    elif 25 <= ci_score < 50:
+                        cat_25 += 1
+                    else:
+                        cat_0 += 1
 
                     my_members_score.append([members.membership_staff, months, ci_score])
 
@@ -1560,13 +2110,27 @@ class ReportCheckIn(TemplateView):
                         months = [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
                         ci_score = calculate_overall_check_in_score(members.membership_staff, context['pms'])
 
+                        if ci_score >= 75:
+                            cat_75 += 1
+                        elif 50 <= ci_score < 75:
+                            cat_50 += 1
+                        elif 25 <= ci_score < 50:
+                            cat_25 += 1
+                        else:
+                            cat_0 += 1
+
                         levels_down_score.append([members.membership_staff, months, ci_score])
 
+        context['cat_75'] = cat_75
+        context['cat_50'] = cat_50
+        context['cat_25'] = cat_25
+        context['cat_0'] = cat_0
         context['my_members_score'] = my_members_score
         context['levels_down_score'] = levels_down_score
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class Profile(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -1585,6 +2149,7 @@ class Profile(TemplateView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class HelpList(TemplateView):
 
     def get_context_data(self, **kwargs):
@@ -1594,6 +2159,7 @@ class HelpList(TemplateView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class HelpCreate(CreateView):
     form_class = HelpForm
 
@@ -1615,6 +2181,7 @@ class HelpCreate(CreateView):
         return '{}'.format(reverse('Site:Help_List', kwargs={'company_id': self.kwargs['company_id']}))
 
 
+@method_decorator(login_required, name='dispatch')
 class HelpEdit(UpdateView):
     model = Help
     form_class = HelpForm
@@ -1629,6 +2196,7 @@ class HelpEdit(UpdateView):
         return '{}'.format(reverse('Site:Help_List', kwargs={'company_id': self.kwargs['company_id']}))
 
 
+@method_decorator(login_required, name='dispatch')
 class HelpDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
@@ -1638,18 +2206,18 @@ class HelpDelete(DeleteView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class Communication(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Communication, self).get_context_data()
         global_context(self.kwargs['company_id'], self.request.user, context)
-        context['notification_list'] = Notification.objects.filter(
-            notification_recipient__staff_company__company_id=self.kwargs['company_id'])
+        context['notification_list'] = Notification.objects.all()
 
         return context
 
 
+@login_required
 def communicate(request, company_id):
-
     if request.method == "POST":
 
         def get_value(x):
@@ -1665,7 +2233,7 @@ def communicate(request, company_id):
             notification = Notification()
             notification.notification_message = message
             notification.notification_title = title
-            notification.notification_recipient = staff
+            notification.notification_email = staff.staff_person.email
             notification.notification_status = "Pending"
             notification.notification_type = "Notification"
             notification.notification_reference_key = "N/A"

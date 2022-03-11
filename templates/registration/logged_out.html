@@ -1,6 +1,14 @@
 {% extends "registration/login_out.html" %}
-
-{% block content %}
-  <p>Logged out!</p>
-  <a href="{% url 'login'%}">Click here to login again.</a>
-{% endblock %}
+  {% block content %}
+    <div class="login-logo" style="margin-top: -100px">
+      <hr>
+      <strong>Online</strong> PMS
+      <hr>
+    </div>
+    <p class="login-box-msg"></p>
+      <p class="text-center bg-success" style="padding: 10px; border-radius: 5px">Logged out!</p>
+      <p>You have been successfully logged out of your session</p>
+      <p class="text-center"><a href="{% url 'login'%}">Want to login again?</a></p>
+    <hr>
+    <!-- /.social-auth-links -->
+  {% endblock %}

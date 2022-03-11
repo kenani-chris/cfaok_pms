@@ -6,50 +6,52 @@
     {% block content %}
 
         <div class="container-fluid">
+            <div class="card card-danger">
+                <div class="card-header">
+                    <h3 class="card-title">Pie Chart</h3>
+                </div>
+                <div class="card-body row">
+                    <div class="col-md-6">
+                        <div class="chartjs-size-monitor">
+                            <div class="chartjs-size-monitor-expand">
+                                <div class=""></div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink">
+                                <div class="">
+
+                                </div>
+                            </div>
+                        </div>
+                        <canvas id="piechart_category" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 486px;" width="486" height="250" class="chartjs-render-monitor"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <h2 class="text-center">Average score <strong>{{ average_score }}</strong></h2>
+                        <table class="table table-bordered">
+                            <thead>
+                                <th>>75%/th>
+                                <th>>= 50% < 75%</th>
+                                <th>>= 25% < 50%</th>
+                                <th><25%</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ cat_75 }}</td>
+                                    <td>{{ cat_50 }}</td>
+                                    <td>{{ cat_25 }}</td>
+                                    <td>{{ cat_0 }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
             <div class="card">
                 <div class="card-header">
                     <h5>My Members</h5>
                 </div>
-                 <table id="simpleTable" class="table table-bordered table-hover">
-                      <thead>
-                          <tr>
-                            <th>Staff</th>
-                            <th>PF</th>
-                            <th>Level</th>
-                            <th>Assessment Score</th>
-                            <th>Check-In Score</th>
-                            <th>KPI Score</th>
-                            <th>BU Score</th>
-                            <th>Company Score</th>
-                            <th>Overall Score</th>
-                          </tr>
-                          </thead>
-
-                      <tbody>
-                        {% for staff in my_members_score %}
-                        <tr>
-                            <td>{{ staff.0 }}</td>
-                            <td>{{ staff.0.staff_pf_number }}</td>
-                            <td>{{ staff.1 }}</td>
-                            <td>{{ staff.2 }}</td>
-                            <td>{{ staff.3 }}</td>
-                            <td>{{ staff.4 }}</td>
-                            <td>{{ staff.5 }}</td>
-                            <td>{{ staff.6 }}</td>
-                            <td>{{ staff.7 }}</td>
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-                 </table>
-                <br>
-
-            </div>
-            {% if levels_down_score|length > 0 %}
-                <div class="card">
-                    <div class="card-header">
-                        <h5>My Members</h5>
-                    </div>
-                     <table id="simpleTable" class="table table-bordered table-hover">
+                <div class="card-body" style="overflow-x: scroll">
+                     <table class="table table-bordered table-hover ReportTable">
                           <thead>
                               <tr>
                                 <th>Staff</th>
@@ -81,6 +83,47 @@
                           </tbody>
                      </table>
                     <br>
+                </div>
+            </div>
+            {% if levels_down_score|length > 0 %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5>My Members</h5>
+                    </div>
+                    <div class="card-body" style="overflow-x: scroll">
+                         <table class="table table-bordered table-hover ReportTable">
+                              <thead>
+                                  <tr>
+                                    <th>Staff</th>
+                                    <th>PF</th>
+                                    <th>Level</th>
+                                    <th>Assessment Score</th>
+                                    <th>Check-In Score</th>
+                                    <th>KPI Score</th>
+                                    <th>BU Score</th>
+                                    <th>Company Score</th>
+                                    <th>Overall Score</th>
+                                  </tr>
+                                  </thead>
+
+                              <tbody>
+                                {% for staff in my_members_score %}
+                                <tr>
+                                    <td>{{ staff.0 }}</td>
+                                    <td>{{ staff.0.staff_pf_number }}</td>
+                                    <td>{{ staff.1 }}</td>
+                                    <td>{{ staff.2 }}</td>
+                                    <td>{{ staff.3 }}</td>
+                                    <td>{{ staff.4 }}</td>
+                                    <td>{{ staff.5 }}</td>
+                                    <td>{{ staff.6 }}</td>
+                                    <td>{{ staff.7 }}</td>
+                                </tr>
+                                {% endfor %}
+                              </tbody>
+                         </table>
+                        <br>
+                    </div>
 
                 </div>
             {% endif %}

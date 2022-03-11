@@ -1,4 +1,4 @@
 {% extends 'Site/default.html' %}
 
 {% block page_link%}<a class="navbar-brand" href="{% url 'Site:My_CheckIn' company_id %}" ><strong style="color: {{ company.company_color1 }}">Check-In Home</strong></a>{% endblock %}
-{% block Create %}<li class="nav-item"><a class="nav-link" href="{% url 'Site:My_CheckIn_Create' company_id %}">New Check-In</a></li>{% endblock %}
+{% block Create %}<li class="nav-item"><a class="nav-link" href="{% url 'Site:My_CheckIn_Create' company_id %}">Submit {{ month }} Check-In(New)</a></li>{% endblock %}

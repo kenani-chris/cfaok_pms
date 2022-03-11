@@ -1,5 +1,11 @@
 import datetime
+import os
+from email.mime.image import MIMEImage
+
+from django.core.mail import EmailMultiAlternatives
 from django.utils import timezone
+
+from cfaok_pms import settings
 from .models import *
 
 
@@ -47,6 +53,7 @@ def global_context(company_id, user, local_context):
         # staff context
         context['staff'] = get_staff_account(get_company(company_id), user)
         context['company_id'] = company_id
+        context['month'] = datetime.date.today().strftime('%B')
         # pms context
         context['pms'] = get_active_pms(get_company(company_id))
 
@@ -176,9 +183,16 @@ def kpi_submission_checks(staff, pms):
             'weight_check': weight_check}
 
 
-def notification_send(n_type, receiver, title, msg):
-    Notification.objects.create(notification_type=n_type, notification_recipient=receiver, notification_title=title,
-                                notification_message=msg, notification_status='Pending')
+def notification_log(n_type, ref_key, receiver, title, msg):
+    notification = Notification()
+    notification.notification_type = n_type
+    notification.notification_reference_key = ref_key
+    notification.notification_email = receiver
+    notification.notification_title = title
+    notification.notification_message = msg
+    notification.notification_date = datetime.datetime.now()
+    notification.notification_status = "Pending"
+    notification.save()
 
 
 def all_categories_up(cat, cat_list):
@@ -417,7 +431,7 @@ def calculate_kpi_score(kpi, kpi_type):
                         if result_dict[last_month] is None:
                             kpi_score = 0
                         else:
-                            if result_dict[last_month] == 0:
+                            if result_dict[last_month] == float(0):
                                 if kpi.kpi_target >= 0:
                                     kpi_score = 100
                                 else:
@@ -681,7 +695,7 @@ def calculate_one_assessment_score(staff, pms, assessment):
     else:
         score = score + calculate_assessment_score(assessment, staff, 'Bottom')
 
-    return score
+    return round(score, 2)
 
 
 def calculate_assessment_score(assessment, staff, direction):
@@ -697,8 +711,8 @@ def calculate_assessment_score(assessment, staff, direction):
         score += ((question_score - assessment.assessment_min_score) / (
                     assessment.assessment_max_score - assessment.assessment_min_score) * 100)
     if questions:
-        score = (score / questions.count() * 100)
-    return score
+        score = (score / questions.count())
+    return round(score, 2)
 
 
 def get_matrix(staff, pms):
@@ -812,3 +826,62 @@ def get_company_score(staff, pms):
     return score
 
 
+def send_email(title, receiver, message):
+    user = User.objects.filter(email=receiver)
+    if user is not None:
+        name = user.first().first_name
+    else:
+        name = "Receiver"
+
+    body_html = '''
+        <html>
+            <body>
+                <br>Dear ''' + name + ''',
+                <br>
+                <br>
+                ''' + message + '''
+                <br>
+                <br>
+                <hr>
+                <b>Do not reply to this message, for it is system Generated</b>
+                <hr>
+                <br>
+                Kind regards,
+                <br>
+                Notifier, PMS
+                <br>
+                A solution of CFAO Kenya Limited<br>
+                <img src='cid:logo.png' />
+            </body>
+        </html>'''
+
+    from_email = settings.EMAIL_HOST_USER
+    msg = EmailMultiAlternatives(title, body_html, from_email=from_email, to=[receiver])
+
+    msg.mixed_subtype = 'related'
+    msg.attach_alternative(body_html, "text/html")
+    img_dir = 'static/images'
+    image = 'cfao_kenya_sign.jpg'
+    file_path = os.path.join(img_dir, image)
+    with open(file_path, 'rb') as f:
+        img = MIMEImage(f.read())
+        img.add_header('Content-ID', 'logo.png')
+        img.add_header('Content-Disposition', 'inline', filename=image)
+    msg.attach(img)
+    msg.send()
+
+
+def log_issue(message):
+    now = datetime.datetime.now()
+    message = str(now) + "  :   " + message
+
+    log_file = "logs/Log_" + str(now.day) + "_" + str(now.month) + "_" + str(now.year) + ".txt"
+    if os.path.isdir("logs"):
+        if os.path.isfile(log_file):
+            with open(log_file, 'a') as file:
+                file.write(message + "\n")
+        else:
+            with open(log_file, 'w') as file:
+                file.write(message + "\n")
+    else:
+        os.mkdir("logs")
