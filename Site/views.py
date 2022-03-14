@@ -78,7 +78,7 @@ def excel_to_db():
 '''
 
 
-@background(queue="email_task_queue", schedule=now)
+# @background(queue="email_task_queue", schedule=now)
 def email_task():
     with open("task.txt", 'w') as file:
         file.write(str(datetime.datetime.now()) + "\n")
@@ -96,7 +96,7 @@ def email_task():
             log_issue("error sending message to " + notification.notification_email + "  :   " + e.__str__())
 
 
-email_task(repeat=Task.HOURLY, repeat_until=None)
+# email_task(repeat=Task.HOURLY, repeat_until=None)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -2006,6 +2006,95 @@ class ReportAssessmentsDetails(TemplateView):
         context['assessment'] = assessment
         context['my_members_score'] = my_members_score
         context['levels_down_score'] = levels_down_score
+        return context
+
+
+
+@method_decorator(login_required, name='dispatch')
+class ReportAssessmentsParticipation(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportAssessmentsParticipation, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        staff = context['staff']
+
+        s_tl = []
+        tl_s = []
+        s_tl_participated = 0
+        s_tl_not_participated = 0
+        s_tl_partially_participated = 0
+        
+        tl_s_not_participated = 0
+        tl_s_participated = 0
+        tl_s_partially_participated = 0
+        
+        assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
+
+        all_questions = Questions.objects.filter(question_assessment=assessment)
+        context['questions'] = all_questions
+        top_questions = all_questions.filter(question_direction='Top')
+        bottom_questions = all_questions.filter(question_direction='Bottom')
+
+        if staff.staff_superuser:
+            for member_staff in Staff.objects.filter(staff_company=context['company']):
+                levels_count = Level.objects.filter(level_head=member_staff).count()
+                if Level.objects.filter(level_head=member_staff):
+                    for level in Level.objects.filter(level_head=member_staff):
+                        if LevelMembership.objects.filter(membership_level=level, membership_is_active=True):
+                            for records in LevelMembership.objects.filter(membership_level=level,
+                                                                          membership_is_active=True):
+                                count = 0
+                                for question in bottom_questions:
+                                    if QuestionResponses.objects.filter(response_question=question,
+                                                                        response_evaluated=records.membership_staff):
+                                        count += 1
+                                if bottom_questions.count() == 0:
+                                    status = 0
+                                else:
+                                    status = round(count/bottom_questions.count(), 2)
+                                
+                                if status <= 0:
+                                    tl_s_not_participated += 1
+                                elif 0 < status < 1:
+                                    tl_s_partially_participated += 1
+                                else:
+                                    tl_s_participated += 1
+                
+                                tl_s.append([member_staff, records.membership_staff, status])
+                                
+                if LevelMembership.objects.filter(membership_staff=member_staff, membership_is_active=True):
+                    for level in LevelMembership.objects.filter(membership_staff=member_staff,
+                                                                membership_is_active=True):
+                        count = 0
+                        for question in top_questions:
+                            if QuestionResponses.objects.filter(response_question=question,
+                                                                response_evaluated=level.membership_level.level_head):
+                                count += 1
+                        if top_questions.count() == 0:
+                            status = 0
+                        else:
+                            status = count / top_questions.count()
+
+                        if status <= 0:
+                            s_tl_not_participated += 1
+                        elif 0 < status < 1:
+                            s_tl_partially_participated += 1
+                        else:
+                            s_tl_participated += 1
+                            
+                        s_tl.append([member_staff, level.membership_level.level_head, status])
+                
+                
+        context['s_tl'] = s_tl
+        context['tl_s'] = tl_s
+        context['s_tl_participated'] = s_tl_participated
+        context['tl_s_participated'] = tl_s_participated
+
+        context['s_tl_partially_participated'] = s_tl_partially_participated
+        context['tl_s_partially_participated'] = tl_s_partially_participated
+
+        context['s_tl_not_participated'] = s_tl_not_participated
+        context['tl_s_not_participated'] = tl_s_not_participated
         return context
 
 

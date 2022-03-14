@@ -1,7 +1,6 @@
 from pathlib import Path
 import pymysql
 import os
-from account import conf
 pymysql.install_as_MySQLdb()
 
 # Base Dir
@@ -86,7 +85,7 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cfaok_pms_v3',
+        'NAME': 'cfaok_pms_v3_01',
         'USER': 'cfaok_pms',
         'PASSWORD': 'XJ;&z[|Fgt!(1~S|t*QlZ9u9kWVsPt2N',
         'HOST': 'ls-fcd4a90cb760069e747f52d43c81980f8213bf57.cull5gpq2pfe.ap-south-1.rds.amazonaws.com',

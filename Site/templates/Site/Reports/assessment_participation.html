@@ -1,9 +1,10 @@
 {% extends 'Site/Reports/default.html' %}
     {% block breadcrumb %}
         <li class="breadcrumb-item active"><a href="{% url 'Site:Report' company_id %}">Report</a></li>
-        <li class="breadcrumb-item active">Report - Assessments</li>
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Report_Assessment_Results' company_id %}">Report - Assessments</a></li>
+        <li class="breadcrumb-item active">Assessment</li>
     {% endblock %}
-    {% block page_title %}Report - Assessments{% endblock %}
+    {% block page_title %}Report - {{ assessment.assessment_name }} - Participation{% endblock %}
     {% block content %}
 
         <div class="container-fluid">
@@ -28,17 +29,23 @@
                     <div class="col-md-6">
                         <table class="table table-bordered">
                             <thead>
-                                <th>>75%/th>
-                                <th>>= 50% < 75%</th>
-                                <th>>= 25% < 50%</th>
-                                <th><25%</th>
+                                <th>></th>
+                                <th>Fully Participated</th>
+                                <th>Partially Participated</th>
+                                <th>Not Participated</th>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{ cat_75 }}</td>
-                                    <td>{{ cat_50 }}</td>
-                                    <td>{{ cat_25 }}</td>
-                                    <td>{{ cat_0 }}</td>
+                                    <td>s_tl</td>
+                                    <td>{{ s_tl_participated }}</td>
+                                    <td>{{ s_tl_partially_participated }}</td>
+                                    <td>{{ s_tl_not_participated }}</td>
+                                </tr>
+                                <tr>
+                                    <td>tl_s</td>
+                                    <td>{{ tl_s_participated }}</td>
+                                    <td>{{ tl_s_partially_participated }}</td>
+                                    <td>{{ tl_s_not_participated }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -54,41 +61,56 @@
                     <th>Scoring Use</th>
                 </thead>
                 <tbody>
-                    {% for assessment in Assessments %}
-                        <tr>
-                            <td><a href="{% url 'Site:Report_Assessment_Results_Detail' company_id assessment.assessment_id %}">{{ assessment.assessment_name}} Results</a></td>
-                            <td>{{ assessment.assessment_start_date }}</td>
-                            <td>{{ assessment.assessment_end_date }}</td>
-                            <td>{{ assessment.assessment_scoring_use }}</td>
-                        </tr>
-                        <tr>
-                            <td><a href="{% url 'Site:Report_Assessment_Results_participation' company_id assessment.assessment_id %}">{{ assessment.assessment_name}} Participation</a></td>
-                            <td>{{ assessment.assessment_start_date }}</td>
-                            <td>{{ assessment.assessment_end_date }}</td>
-                            <td>{{ assessment.assessment_scoring_use }}</td>
-                        </tr>
-                    {% endfor %}
+                    <tr>
+                        <td>{{ assessment.assessment_name}}</td>
+                        <td>{{ assessment.assessment_start_date }}</td>
+                        <td>{{ assessment.assessment_end_date }}</td>
+                        <td>{{ assessment.assessment_scoring_use }}</td>
+                    </tr>
                 </tbody>
             </table>
             <div class="card">
                 <div class="card-header">
-                    <h5>My Members</h5>
+                    <h5>TL Assessments</h5>
                 </div>
                  <table class="table table-bordered table-hover ReportTable">
                       <thead>
                           <tr>
+                            <th>TL</th>
                             <th>Staff</th>
-                            <th>PF</th>
-                            <th>Score</th>
+                            <th>Status</th>
                           </tr>
                           </thead>
 
                       <tbody>
-                        {% for staff in my_members_score %}
+                        {% for staff in tl_s %}
                         <tr>
                             <td>{{ staff.0 }}</td>
-                            <td>{{ staff.0.staff_pf_number }}</td>
                             <td>{{ staff.1 }}</td>
+                            <td>{{ staff.2 }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                 </table>
+                <br>
+                <div class="card-header">
+                    <h5>Staff Assessments</h5>
+                </div>
+                 <table class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>TL</th>
+                            <th>Staff</th>
+                            <th>Status</th>
+                          </tr>
+                          </thead>
+
+                      <tbody>
+                        {% for staff in s_tl %}
+                        <tr>
+                            <td>{{ staff.0 }}</td>
+                            <td>{{ staff.1 }}</td>
+                            <td>{{ staff.2 }}</td>
                         </tr>
                         {% endfor %}
                       </tbody>
@@ -101,12 +123,15 @@
                     <div class="card-header">
                         <h5>My Members</h5>
                     </div>
-                     <table class="table table-bordered table-hover ReportTable">
+                     <table id="simpleTable" class="table table-bordered table-hover ReportTable">
                           <thead>
                               <tr>
                                 <th>Staff</th>
                                 <th>PF</th>
                                 <th>Score</th>
+                                <th>S_TL</th>
+                                <th>TL_S</th>
+                                <th>Total</th>
                               </tr>
                               </thead>
 
@@ -116,6 +141,8 @@
                                 <td>{{ staff.0 }}</td>
                                 <td>{{ staff.0.staff_pf_number }}</td>
                                 <td>{{ staff.1 }}</td>
+                                <td>{{ staff.2 }}</td>
+                                <td>{{ staff.3 }}</td>
                             </tr>
                             {% endfor %}
                           </tbody>

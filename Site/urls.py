@@ -103,7 +103,9 @@ urlpatterns = [
     path('<int:company_id>/Report/AssessmentResult', ReportAssessments.as_view(
         template_name='Site/Reports/assessment.html'), name='Report_Assessment_Results'),
     path('<int:company_id>/Report/AssessmentResult/<int:pk>', ReportAssessmentsDetails.as_view(
-        template_name='Site/Reports/assessment_details.html'), name='Report_Assessment_Results_Detail'),
+        template_name='Site/Reports/assessment_results.html'), name='Report_Assessment_Results_Detail'),
+    path('<int:company_id>/Report/AssessmentParticipation/<int:pk>', ReportAssessmentsParticipation.as_view(
+        template_name='Site/Reports/assessment_participation.html'), name='Report_Assessment_Results_participation'),
     path('<int:company_id>/Report/Check-In', ReportCheckIn.as_view(template_name='Site/Reports/checkin.html'),
          name='Report_Check-In'),
     path('<int:company_id>/Report/KPI-Submission-Results', ReportKPISubmissionsResults.as_view(
