@@ -78,7 +78,7 @@ def excel_to_db():
 '''
 
 
-# @background(queue="email_task_queue", schedule=now)
+@background(queue="email_task_queue", schedule=now)
 def email_task():
     with open("task.txt", 'w') as file:
         file.write(str(datetime.datetime.now()) + "\n")
@@ -96,7 +96,7 @@ def email_task():
             log_issue("error sending message to " + notification.notification_email + "  :   " + e.__str__())
 
 
-# email_task(repeat=Task.HOURLY, repeat_until=None)
+email_task(repeat=Task.HOURLY, repeat_until=None)
 
 
 @method_decorator(login_required, name='dispatch')

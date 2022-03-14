@@ -85,7 +85,7 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cfaok_pms_v3_01',
+        'NAME': 'cfaok_pms_v3',
         'USER': 'cfaok_pms',
         'PASSWORD': 'XJ;&z[|Fgt!(1~S|t*QlZ9u9kWVsPt2N',
         'HOST': 'ls-fcd4a90cb760069e747f52d43c81980f8213bf57.cull5gpq2pfe.ap-south-1.rds.amazonaws.com',
@@ -141,9 +141,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.outlook.office365.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'pms_notifier@ck-pms.com'
-EMAIL_HOST_PASSWORD = 'EZed9t&gZ%=S6HQ@h7R6X&4'
+EMAIL_HOST_USER = 'cpms@cfao.com'
+EMAIL_HOST_PASSWORD = 'xQ25m)S!yc.(eGg@$%iOJOG!3Udq74A9'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False

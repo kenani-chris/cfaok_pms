@@ -20,7 +20,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5>KPIs</h5>
-                    {{ kpi_type }}
+                    {% if kpi_type == "Annual Target" %}then annual{% endif %}
                 </div>
                 <div class="card-body" style="overflow-x: scroll">
                     {% for kpi in kpis %}
@@ -36,7 +36,7 @@
                                     <form method="post" action="{% url 'Site:Staff_KPI_Results' company_id level.level_id select_staff.staff_id kpi.kpi_id %}" id="form-{{ kpi.kpi_id }}">
                                                 {% csrf_token %}
                                     <div class="modal-body">
-                                        {% if kpi.kpi_status != "Approved" %}
+                                        {% if kpi.kpi_status == "Approved" %}
                                                 <input type="number" value="{{ kpi.kpi_id }}" name="kpi_id" hidden>
                                             {% if kpi_type == "Monthly Target" %}
                                                 <table class="table table-bordered table-hover">
@@ -654,6 +654,7 @@
                                                     </table>
                                                 </div>
                                             {% else %}
+                                                here
                                                 <table class="table table-bordered table-hover">
                                                       <tbody>
                                                           <tr>
@@ -951,11 +952,7 @@
                                                     </table>
                                                 </div>
                                             {% endif %}
-                                        {% else %}
                                         {% endif %}
-
-
-
 
                                     </div>
                                     <div class="modal-footer justify-content-between">

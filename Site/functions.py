@@ -833,14 +833,19 @@ def send_email(title, receiver, message):
     else:
         name = "Receiver"
 
+    pms_guide = '<a href="https://1drv.ms/b/s!AvHDzgs7pzmrundGQQj6-nrkpP-H?e=eDM6SR">PMS Guide</a>'
+    pms_link = '<a href="https:ck-pms.com">PMS Link</a>'
+
     body_html = '''
         <html>
             <body>
                 <br>Dear ''' + name + ''',
                 <br>
                 <br>
-                ''' + message + '''
+                ''' + message + ''' this thing is bogous
                 <br>
+                <br>
+                  ''' + pms_guide + '''  |  ''' + pms_link + '''
                 <br>
                 <hr>
                 <b>Do not reply to this message, for it is system Generated</b>
