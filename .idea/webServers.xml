@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="a888443f-6756-4c88-84b5-78749a318875" name="AWS_cfaok_pms_server" url="https://ck-pms.com">
-        <fileTransfer rootFolder="/home/ubuntu" accessType="SFTP" host="3.109.57.124" port="22" sshConfigId="901db7d2-bf13-46e2-ac26-7d31d81bc096" sshConfig="ubuntu@3.109.57.124:22 key" keyPair="true">
+        <fileTransfer rootFolder="/home/cfaok_pms_user" accessType="SFTP" host="3.109.57.124" port="22" sshConfigId="901db7d2-bf13-46e2-ac26-7d31d81bc096" sshConfig="ubuntu@3.109.57.124:22 key" keyPair="true">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

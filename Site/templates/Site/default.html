@@ -93,15 +93,24 @@
           <i class="far fa-user-circle"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <a href="#" class="dropdown-item">
+          <div class="dropdown-item">
               <h3 class="dropdown-item-title">
                   {{ request.user.get_full_name }}
               </h3>
               <p class="text-sm">{{ request.user.email }}</p>
-              <a href="{% url 'Site:Profile' company_id %}" class="btn btn-sm btn-default float-left m-2">Profile</a>
-              <a href="{% url 'logout' %}" class="btn btn-sm btn-danger float-right m-2">Logout</a>
-            <!-- Message End -->
-          </a>
+
+          </div>
+          <div class="dropdown-item">
+              <h3 class="dropdown-item-title">
+                <a href="{% url 'main_home' %}">Switch Company</a>
+              </h3>
+          </div>
+          <div class="dropdown-item">
+            <h3 class="dropdown-item-title">
+                <a href="{% url 'Site:Profile' company_id %}" class="btn btn-sm btn-default float-left m-2">Profile</a>
+                <a href="{% url 'logout' %}" class="btn btn-sm btn-danger float-right m-2">Logout</a>
+            </h3>
+          </div>
         </div>
       </li>
     </ul>
@@ -267,7 +276,7 @@
               </p>
             </a>
           </li>
-
+          {% if staff_is_level_head or staff.staff_superuser is True or request.user.is_superuser  %}
           <li class="nav-item has-treeview menu-open">
             <a href="#" class="nav-link bg-some-grey">
               <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -284,6 +293,7 @@
               </p>
             </a>
           </li>
+
         {% if staff.staff_superuser is True or request.user.is_superuser %}
           <li class="nav-item">
             <a href="{% url 'admin:index' %}" class="nav-link">
@@ -303,6 +313,7 @@
               </p>
             </a>
           </li>
+        {% endif %}
         {% endif %}
             <br>
             <br>

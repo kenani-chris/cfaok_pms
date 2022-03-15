@@ -55,7 +55,6 @@ def excel_to_db():
 
     records = 3367
     while record <= records:
-        print("Doing - " + str(sh["A" + str(record)].value))
         check_in = CheckIn()
         check_in.check_in_id = sh["A" + str(record)].value
         check_in.check_in_submit_date = datetime.datetime.strptime(str(sh["B" + str(record)].value), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.get_current_timezone())
@@ -287,6 +286,7 @@ class MyKPIResults(UpdateView):
         context['company_id'] = self.kwargs['company_id']
         context['error_code'] = checks(self.kwargs['company_id'], self.request.user)
         global_context(self.kwargs['company_id'], self.request.user, context)
+        context = context | kpi_list(context['staff'], context['pms'])
 
         kpi_type = KPIType.objects.filter(type_pms=context['pms'],
                                           type_category=get_staff_account(get_company(self.kwargs['company_id']),

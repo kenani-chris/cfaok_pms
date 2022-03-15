@@ -549,7 +549,7 @@ def calculate_kpi_score(kpi, kpi_type):
                     this_month = datetime.date.today().strftime("%B")
                     last_month = (datetime.date.today() - datetime.timedelta(days=31)).strftime("%B")
                     if result_dict[this_month] is None or result_dict[this_month] == 0:
-                        if result_dict[last_month] is None or result_dict[this_month] == 0:
+                        if result_dict[last_month] is None or result_dict[last_month] == 0:
                             if kpi.kpi_target >= 0:
                                 kpi_score = 100
                             else:

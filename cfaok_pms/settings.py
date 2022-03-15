@@ -69,7 +69,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cfaok_pms.wsgi.application'
 
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -92,7 +92,7 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-'''
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {

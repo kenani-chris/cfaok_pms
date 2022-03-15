@@ -419,7 +419,7 @@
                               </tr>
                               </thead>
                           <tbody>
-                              {% for kpi in submitted_kpi %}
+                              {% for kpi in approved_kpi %}
                                   <tr>
                                     <td><a href="{% url 'Site:My_KPI_Results' company_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
                                     <td>{{ kpi.kpi_function }}</td>
@@ -470,7 +470,7 @@
                               </tr>
                               </thead>
                           <tbody>
-                              {% for kpi in submitted_kpi %}
+                              {% for kpi in approved_kpi %}
                                   <tr>
                                     <td rowspan="2"><a href="{% url 'Site:My_KPI_Results' company_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
                                     <td rowspan="2">{{ kpi.kpi_function }}</td>
@@ -532,7 +532,7 @@
                               </tr>
                               </thead>
                           <tbody>
-                              {% for kpi in submitted_kpi %}
+                              {% for kpi in approved_kpi %}
                                   <tr>
                                     <td><a href="{% url 'Site:My_KPI_Results' company_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
                                     <td>{{ kpi.kpi_function }}</td>

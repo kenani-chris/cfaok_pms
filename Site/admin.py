@@ -4,7 +4,7 @@ from .models import *
 from .urls import app_name
 
 
-excempt_list = ['Staff', 'PMS', 'LevelCategory', 'KPIType', 'CheckIn', 'Level']
+excempt_list = ['Staff', 'PMS', 'LevelCategory', 'KPIType', 'CheckIn', 'Level', 'KPI']
 
 for name, app in apps.app_configs.items():
     if name == app_name:
@@ -40,9 +40,16 @@ class LevelAdmin(admin.ModelAdmin):
     list_display = ('level_name', 'level_description', 'level_head', 'level_parent', 'level_category')
 
 
+class KPIAdmin(admin.ModelAdmin):
+    list_display = ('kpi_staff', 'kpi_title', 'kpi_function', 'kpi_type', 'kpi_pms', 'kpi_status')
+
+    list_filter = ('kpi_staff', 'kpi_pms', 'kpi_status')
+
+
 admin.site.register(Staff, StaffAdmin)
 admin.site.register(PMS, PMSAdmin)
 admin.site.register(LevelCategory, LevelCategoryAdmin)
 admin.site.register(KPIType, KPITypeAdmin)
 admin.site.register(CheckIn, CheckInAdmin)
 admin.site.register(Level, LevelAdmin)
+admin.site.register(KPI, KPIAdmin)
