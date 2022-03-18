@@ -84,7 +84,7 @@ class SubmissionKPI(models.Model):
     submission_february_results = models.IntegerField(default=15)
     submission_march_results = models.IntegerField(default=15)
 
-    # KPI Populate Overide
+    # KPI Populate Override
     submission_april_results_calculation = models.BooleanField(default=True)
     submission_may_results_calculation = models.BooleanField(default=True)
     submission_june_results_calculation = models.BooleanField(default=True)
@@ -447,8 +447,9 @@ class Notification(models.Model):
 
     notification_type = models.CharField(max_length=12, choices=type)
     notification_reference_key = models.CharField(max_length=30, null=True)
+    notification_user_name = models.CharField(max_length=50, default="Staff")
     notification_email = models.CharField(max_length=50, null=True)
-    notification_title = models.CharField(max_length=15)
+    notification_title = models.CharField(max_length=50)
     notification_message = models.TextField()
     notification_date = models.DateField(auto_now=True)
     status = (

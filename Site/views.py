@@ -1,15 +1,12 @@
 import datetime
 import os
 from calendar import monthrange
-
-from background_task.models import Task
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import *
-from openpyxl import load_workbook
 from background_task import background
 from .forms import *
 from .functions import *
@@ -75,28 +72,6 @@ def excel_to_db():
         print("Done - " + str(sh["A" + str(record)].value))
         record += 1
 '''
-
-
-@background(queue="email_task_queue", schedule=now)
-def email_task():
-    with open("task.txt", 'w') as file:
-        file.write(str(datetime.datetime.now()) + "\n")
-    notifications = Notification.objects.filter(notification_status="Pending")
-    with open("task.txt", 'a') as file:
-        file.write(str(datetime.datetime.now()) + "\n")
-    for notification in notifications:
-        try:
-            send_email(notification.notification_title, notification.notification_email,
-                       notification.notification_message)
-            log_issue("Sent email to " + notification.notification_email)
-            notification.notification_status = "Sent"
-            notification.save()
-        except Exception as e:
-            log_issue("error sending message to " + notification.notification_email + "  :   " + e.__str__())
-
-
-email_task(repeat=Task.HOURLY, repeat_until=None)
-
 
 @method_decorator(login_required, name='dispatch')
 class Dashboard(TemplateView):
@@ -255,7 +230,6 @@ class MyKPIEdit(UpdateView):
 
     def form_valid(self, form):
         super(MyKPIEdit, self).form_valid(form)
-        kpi = get_object_or_404(KPI, kpi_id=self.kwargs['pk'])
         return HttpResponseRedirect(reverse('Site:My_KPI_View', kwargs={'company_id': self.kwargs['company_id'],
                                                                         'pk': self.kwargs['pk']}))
 
@@ -1139,7 +1113,6 @@ class AssessmentViewMemberResponseEdit(UpdateView):
 
         assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
         member = get_object_or_404(Staff, staff_id=self.kwargs['uid'])
-        # direction = self.kwargs['dir']
         # response = get_object_or_404(QuestionResponses, response_id=self.kwargs['qrid'])
 
         if assessment.assessment_start_date <= datetime.datetime.now(assessment.assessment_start_date.tzinfo) <= \
@@ -1198,7 +1171,7 @@ class AssessmentViewMy(DetailView):
         return context
 
 
-def staff_create_question_response(request, company_id, aid, staff_id, dir, qid):
+def staff_create_question_response(request, company_id, aid, staff_id, a_dir, qid):
     if request.method == "POST":
 
         def get_value(x):
@@ -1223,10 +1196,10 @@ def staff_create_question_response(request, company_id, aid, staff_id, dir, qid)
         response.save()
 
     return HttpResponseRedirect(reverse('Site:Assessment_View_Member',
-                                        kwargs={'company_id': company_id, 'pk': aid, 'uid': staff_id, 'dir': dir}))
+                                        kwargs={'company_id': company_id, 'pk': aid, 'uid': staff_id, 'dir': a_dir}))
 
 
-def staff_edit_question_response(request, company_id, aid, staff_id, dir, rid):
+def staff_edit_question_response(request, company_id, aid, staff_id, a_dir, rid):
     if request.method == "POST":
 
         def get_value(x):
@@ -1250,7 +1223,7 @@ def staff_edit_question_response(request, company_id, aid, staff_id, dir, rid):
             response.save()
 
     return HttpResponseRedirect(reverse('Site:Assessment_View_Member',
-                                        kwargs={'company_id': company_id, 'pk': aid, 'uid': staff_id, 'dir': dir}))
+                                        kwargs={'company_id': company_id, 'pk': aid, 'uid': staff_id, 'dir': a_dir}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1354,11 +1327,11 @@ class Report(TemplateView):
                         else:
                             cat_0 += 1
 
-
                         levels_down_score.append([members.membership_staff, level, assessment_score, check_in_score,
                                                   kpi_score, bu_score, company_score, overall_score])
                     if LevelMembership.objects.filter(membership_level=level).count() > 0:
-                        level_score = round(level_score/LevelMembership.objects.filter(membership_level=level).count(), 2)
+                        level_score = round(level_score/LevelMembership.objects.filter(membership_level=level).count(),
+                                            2)
                     average_score += level_score
                 if len(levels_down) > 0:
                     average_score = round(average_score/len(levels_down), 2)
@@ -1614,7 +1587,6 @@ class ReportKPISubmissionsResults(TemplateView):
 
         my_members_kpi_score = []
         levels_down_kpi_score = []
-        apr = may = jun = jul = aug = sep = oct = nov = dec = jan = feb = mar = 0
 
         staff_with_unapproved = 0
         staff_with_approved = 0
@@ -2009,7 +1981,6 @@ class ReportAssessmentsDetails(TemplateView):
         return context
 
 
-
 @method_decorator(login_required, name='dispatch')
 class ReportAssessmentsParticipation(TemplateView):
 
@@ -2319,13 +2290,8 @@ def communicate(request, company_id):
         message = get_value(request.POST.get("communication_message"))
 
         for staff in Staff.objects.filter(staff_company=get_object_or_404(Company, company_id=company_id)):
-            notification = Notification()
-            notification.notification_message = message
-            notification.notification_title = title
-            notification.notification_email = staff.staff_person.email
-            notification.notification_status = "Pending"
-            notification.notification_type = "Notification"
-            notification.notification_reference_key = "N/A"
-            notification.save()
+
+            notification_log("Notification", "None", staff.staff_person.get_full_name(), staff.staff_person.email,
+                             title, message)
 
     return HttpResponseRedirect(reverse('Site:Communication', kwargs={'company_id': company_id}))

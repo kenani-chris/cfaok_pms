@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 import pymysql
 import os
@@ -24,7 +25,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Site.apps.SiteConfig',
     'colorfield',
-    'background_task',
     'axes',
 ]
 
@@ -69,7 +69,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cfaok_pms.wsgi.application'
 
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -92,7 +92,7 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-
+'''
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -115,6 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Axes
 AXES_ONLY_USER_FAILURES = True
 AXES_LOCKOUT_CALLABLE = "cfaok_pms.views.lockout"
+
 
 
 # Language and Time

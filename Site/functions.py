@@ -183,10 +183,11 @@ def kpi_submission_checks(staff, pms):
             'weight_check': weight_check}
 
 
-def notification_log(n_type, ref_key, receiver, title, msg):
+def notification_log(n_type, ref_key, user_name, receiver, title, msg):
     notification = Notification()
     notification.notification_type = n_type
     notification.notification_reference_key = ref_key
+    notification.notification_user_name = user_name
     notification.notification_email = receiver
     notification.notification_title = title
     notification.notification_message = msg
@@ -842,7 +843,7 @@ def send_email(title, receiver, message):
                 <br>Dear ''' + name + ''',
                 <br>
                 <br>
-                ''' + message + ''' this thing is bogous
+                ''' + message + '''
                 <br>
                 <br>
                   ''' + pms_guide + '''  |  ''' + pms_link + '''
@@ -879,9 +880,10 @@ def send_email(title, receiver, message):
 def log_issue(message):
     now = datetime.datetime.now()
     message = str(now) + "  :   " + message
-
-    log_file = "logs/Log_" + str(now.day) + "_" + str(now.month) + "_" + str(now.year) + ".txt"
-    if os.path.isdir("logs"):
+    folder_path = "/home/cfaok_pms_user/cfaok_pms_project/logs/"
+    file = "Log_" + str(now.day) + "_" + str(now.month) + "_" + str(now.year) + ".txt"
+    log_file = os.path.join(folder_path, file)
+    if os.path.isdir(folder_path):
         if os.path.isfile(log_file):
             with open(log_file, 'a') as file:
                 file.write(message + "\n")
@@ -889,4 +891,4 @@ def log_issue(message):
             with open(log_file, 'w') as file:
                 file.write(message + "\n")
     else:
-        os.mkdir("logs")
+        os.mkdir(folder_path)
