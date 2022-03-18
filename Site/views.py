@@ -180,7 +180,7 @@ class MyKPICreate(CreateView):
         if get_staff_level(staff) is not None:
             level = get_staff_level(staff)
             notification_log("KPI", "None", level.level_head.staff_person.get_full_name(),
-                             level.level_head.staff_person.get_full_name(),
+                             level.level_head.staff_person.email,
                              "Staff KPI: Submitted",
                              "It appears " + staff.staff_person.get_full_name() +
                              " has submitted a KPI for your review")
@@ -251,7 +251,7 @@ class MyKPIEdit(UpdateView):
         if get_staff_level(staff) is not None:
             level = get_staff_level(staff)
             notification_log("KPI", self.kwargs['pk'], level.level_head.staff_person.get_full_name(),
-                             level.level_head.staff_person.get_full_name(),
+                             level.level_head.staff_person.email,
                              "Staff KPI: " + kpi.kpi_title,
                              "It appears " + staff.staff_person.get_full_name() +
                              " has modified or populated results for KPI " + kpi.kpi_title +
@@ -551,7 +551,7 @@ class MyKPIResults(UpdateView):
         if get_staff_level(staff) is not None:
             level = get_staff_level(staff)
             notification_log("KPI", self.kwargs['pk'], level.level_head.staff_person.get_full_name(),
-                             level.level_head.staff_person.get_full_name(),
+                             level.level_head.staff_person.email,
                              "Staff KPI: " + kpi.kpi_title,
                              "It appears " + staff.staff_person.get_full_name() +
                              " has modified or populated results for KPI " + kpi.kpi_title +
@@ -748,7 +748,7 @@ def staff_kpi_results(request, company_id, lev_id, staff_id, pk):
                              " for user " + staff_member.staff_person.get_full_name())
 
             notification_log("KPI", pk, staff_member.staff_person.get_full_name(),
-                             staff_member.staff_person.get_full_name(),
+                             staff_member.staff_person.email,
                              "My KPI: " + kpi.kpi_title,
                              "It appears " + kpi.kpi_title +
                              " results have been modified or approved for KPI " + kpi.kpi_title + " by " +
@@ -872,7 +872,7 @@ class MyCheckInCreate(CreateView):
         if get_staff_level(staff) is not None:
             level = get_staff_level(staff)
             notification_log("CheckIn", "None", level.level_head.staff_person.get_full_name(),
-                             level.level_head.staff_person.get_full_name(), "Staff CheckIn Submitted",
+                             level.level_head.staff_person.email, "Staff CheckIn Submitted",
                              "It appears " + staff.staff_person.get_full_name() +
                              " has submitted a checkin for your review")
 
@@ -915,7 +915,7 @@ class MyCheckInEdit(UpdateView):
         if get_staff_level(staff) is not None:
             level = get_staff_level(staff)
             notification_log("CheckIn", self.kwargs['pk'], level.level_head.staff_person.get_full_name(),
-                             level.level_head.staff_person.get_full_name(),
+                             level.level_head.staff_person.email,
                              "Staff Check-In: " + checkin.check_in_month,
                              "It appears " + staff.staff_person.get_full_name() +
                              " has modified or check-in for month  " + checkin.check_in_month +
@@ -1030,7 +1030,7 @@ def staff_check_in_approve(request, company_id, lev_id, type_id, staff_id, pk):
                              staff_member.staff_person.get_full_name() + " for the month " + checkin.check_in_month)
 
             notification_log("CheckIn", pk, staff_member.staff_person.get_full_name(),
-                             staff_member.staff_person.get_full_name(),
+                             staff_member.staff_person.email,
                              "My Check-In: " + checkin.check_in_month,
                              "It appears checkin for the month " + checkin.check_in_month +
                              " has been approved by " + team_leader.staff_person.get_full_name())

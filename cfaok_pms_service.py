@@ -30,7 +30,7 @@ def send_notification():
                     for (notification_id, notification_type, notification_reference_key, notification_title,
                          notification_message, notification_date, notification_status, notification_email, notification_user_name) in cursor:
                         try:
-                            send_email(notification_title,notification_user_name, notification_email,
+                            send_email(notification_title, notification_user_name, notification_email,
                                        notification_message)
                             log_issue("Sent email to " + notification_email)
                             update_notification(notification_id, cursor, cnx)
