@@ -28,8 +28,7 @@ def send_notification():
                     cursor.execute(query)
 
                     for (notification_id, notification_type, notification_reference_key, notification_title,
-                         notification_message,
-                         notification_date, notification_status, notification_email, notification_user_name) in cursor:
+                         notification_message, notification_date, notification_status, notification_email, notification_user_name) in cursor:
                         try:
                             send_email(notification_title,notification_user_name, notification_email,
                                        notification_message)
@@ -45,8 +44,7 @@ def send_notification():
                 log_issue("No connection to DB")
 
             cnx.disconnect()
-            log_issue("Still Running")
-            time.sleep(60)
+            time.sleep(300)
 
     except Exception as e:
         log_issue("error connecting to DB  " + e.__str__())
@@ -134,7 +132,7 @@ def send_email(title, user_name, receiver, msg):
             guide_dir = '/home/cfaok_pms_user/cfaok_pms_project/cfaok_pms/static/images'
             guide = 'cfaok_pms_guide.pdf'
             guide_path = os.path.join(guide_dir, guide)
-            filename = "PMS Guide"
+            filename = "PMS Guide.pdf"
 
             with open(guide_path, "rb") as attachment:
                 part = MIMEBase("application", "octet-stream")

@@ -73,6 +73,7 @@ def excel_to_db():
         record += 1
 '''
 
+
 @method_decorator(login_required, name='dispatch')
 class Dashboard(TemplateView):
     def get_context_data(self, **kwargs):
@@ -171,6 +172,18 @@ class MyKPICreate(CreateView):
 
     def form_valid(self, form):
         super(MyKPICreate, self).form_valid(form)
+        staff = get_staff_account(get_company(self.kwargs['company_id']), self.request.user)
+
+        notification_log("KPI", "None", staff.staff_person.get_full_name(), staff.staff_person.email,
+                         "My KPI: Submitted",
+                         "It appears you have submitted a KPI ")
+        if get_staff_level(staff) is not None:
+            level = get_staff_level(staff)
+            notification_log("KPI", "None", level.level_head.staff_person.get_full_name(),
+                             level.level_head.staff_person.get_full_name(),
+                             "Staff KPI: Submitted",
+                             "It appears " + staff.staff_person.get_full_name() +
+                             " has submitted a KPI for your review")
         return HttpResponseRedirect(reverse('Site:My_KPI_Create', kwargs={'company_id': self.kwargs['company_id']}))
 
 
@@ -230,6 +243,19 @@ class MyKPIEdit(UpdateView):
 
     def form_valid(self, form):
         super(MyKPIEdit, self).form_valid(form)
+        staff = get_staff_account(get_company(self.kwargs['company_id']), self.request.user)
+        kpi = get_object_or_404(KPI, kpi_id=self.kwargs['pk'])
+        notification_log("KPI", self.kwargs['pk'], staff.staff_person.get_full_name(), staff.staff_person.email,
+                         "My KPI: " + kpi.kpi_title,
+                         "It appears you have modified or populated results for KPI " + kpi.kpi_title)
+        if get_staff_level(staff) is not None:
+            level = get_staff_level(staff)
+            notification_log("KPI", self.kwargs['pk'], level.level_head.staff_person.get_full_name(),
+                             level.level_head.staff_person.get_full_name(),
+                             "Staff KPI: " + kpi.kpi_title,
+                             "It appears " + staff.staff_person.get_full_name() +
+                             " has modified or populated results for KPI " + kpi.kpi_title +
+                             " for your review")
         return HttpResponseRedirect(reverse('Site:My_KPI_View', kwargs={'company_id': self.kwargs['company_id'],
                                                                         'pk': self.kwargs['pk']}))
 
@@ -490,11 +516,13 @@ class MyKPIResults(UpdateView):
                 if kpi.kpi_march_score_approve is True:
                     reveal['March'] = False
                 else:
-                    if context['may_override'] == True:
+                    if context['march_override'] == True:
                         reveal['March'] = True
                     else:
                         march_end_month = datetime.date(year=year['March'], month=3, day=monthrange(year['March'], 3)[1])
                         march_deadline = march_end_month + datetime.timedelta(days=months['March'])
+                        print(march_end_month)
+                        print(march_deadline)
 
                         if march_end_month <= today_date <= march_deadline:
                             reveal['March'] = True
@@ -515,7 +543,19 @@ class MyKPIResults(UpdateView):
 
     def form_valid(self, form):
         super(MyKPIResults, self).form_valid(form)
+        staff = get_staff_account(get_company(self.kwargs['company_id']), self.request.user)
         kpi = get_object_or_404(KPI, kpi_id=self.kwargs['pk'])
+        notification_log("KPI", self.kwargs['pk'], staff.staff_person.get_full_name(), staff.staff_person.email,
+                         "My KPI: " + kpi.kpi_title,
+                         "It appears you have modified or populated results for KPI " + kpi.kpi_title )
+        if get_staff_level(staff) is not None:
+            level = get_staff_level(staff)
+            notification_log("KPI", self.kwargs['pk'], level.level_head.staff_person.get_full_name(),
+                             level.level_head.staff_person.get_full_name(),
+                             "Staff KPI: " + kpi.kpi_title,
+                             "It appears " + staff.staff_person.get_full_name() +
+                             " has modified or populated results for KPI " + kpi.kpi_title +
+                             " for your review")
         return HttpResponseRedirect(reverse('Site:My_KPI_Results', kwargs={'company_id': self.kwargs['company_id'],
                                                                            'pk': self.kwargs['pk']}))
 
@@ -700,6 +740,20 @@ def staff_kpi_results(request, company_id, lev_id, staff_id, pk):
 
             kpi.save()
 
+            team_leader = get_staff_account(get_company(company_id), request.user)
+            staff_member = get_object_or_404(Staff, staff_id=staff_id)
+            notification_log("KPI", pk, team_leader.staff_person.get_full_name(), team_leader.staff_person.email,
+                             "Staff KPI: " + kpi.kpi_title,
+                             "It appears you have modified or approved results for KPI " + kpi.kpi_title +
+                             " for user " + staff_member.staff_person.get_full_name())
+
+            notification_log("KPI", pk, staff_member.staff_person.get_full_name(),
+                             staff_member.staff_person.get_full_name(),
+                             "My KPI: " + kpi.kpi_title,
+                             "It appears " + kpi.kpi_title +
+                             " results have been modified or approved for KPI " + kpi.kpi_title + " by " +
+                             team_leader.staff_person.get_full_name())
+
     return HttpResponseRedirect(reverse('Site:KPI_LevelDownDetailStaff',
                                         kwargs={'company_id': company_id, 'lev_id': lev_id, 'pk': staff_id}))
 
@@ -809,6 +863,21 @@ class MyCheckInCreate(CreateView):
         initial['check_in_month'] = datetime.date.today().strftime('%B')
         return initial
 
+    def form_valid(self, form):
+        super(MyCheckInCreate, self).form_valid(form)
+        staff = get_staff_account(get_company(self.kwargs['company_id']), self.request.user)
+
+        notification_log("CheckIn", "None", staff.staff_person.get_full_name(), staff.staff_person.email,
+                         "My CheckIn Submit", "It appears you have submitted a Check-In")
+        if get_staff_level(staff) is not None:
+            level = get_staff_level(staff)
+            notification_log("CheckIn", "None", level.level_head.staff_person.get_full_name(),
+                             level.level_head.staff_person.get_full_name(), "Staff CheckIn Submitted",
+                             "It appears " + staff.staff_person.get_full_name() +
+                             " has submitted a checkin for your review")
+
+        return HttpResponseRedirect(reverse('Site:My_CheckIn_Create', kwargs={'company_id': self.kwargs['company_id']}))
+
 
 @method_decorator(login_required, name='dispatch')
 class MyCheckInView(DetailView):
@@ -830,12 +899,30 @@ class MyCheckInEdit(UpdateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(MyCheckInEdit, self).get_context_data()
         global_context(self.kwargs['company_id'], self.request.user, context)
-
         return context
 
     def get_success_url(self):
         return '{}'.format(reverse('Site:My_CheckIn_View', kwargs={'company_id': self.kwargs['company_id'],
                                                                    'pk': self.kwargs['pk']}))
+
+    def form_valid(self, form):
+        super(MyCheckInEdit, self).form_valid()
+        staff = get_staff_account(get_company(self.kwargs['company_id']), self.request.user)
+        checkin = get_object_or_404(CheckIn, check_in_id=self.kwargs['pk'])
+        notification_log("CheckIn", self.kwargs['pk'], staff.staff_person.get_full_name(), staff.staff_person.email,
+                         "My Check-In: " + checkin.check_in_month,
+                         "It appears you have modified check-in for month " + checkin.check_in_month)
+        if get_staff_level(staff) is not None:
+            level = get_staff_level(staff)
+            notification_log("CheckIn", self.kwargs['pk'], level.level_head.staff_person.get_full_name(),
+                             level.level_head.staff_person.get_full_name(),
+                             "Staff Check-In: " + checkin.check_in_month,
+                             "It appears " + staff.staff_person.get_full_name() +
+                             " has modified or check-in for month  " + checkin.check_in_month +
+                             " for your review")
+
+        return HttpResponseRedirect(reverse('Site:My_CheckIn_View', kwargs={'company_id': self.kwargs['company_id'],
+                                                                            'pk': self.kwargs['pk']}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -932,6 +1019,21 @@ def staff_check_in_approve(request, company_id, lev_id, type_id, staff_id, pk):
             checkin.check_in_status = "Approved"
             checkin.check_in_team_leader_comment = check_in_comments
             checkin.save()
+
+            staff_member = get_object_or_404(Staff, staff_id=staff_id)
+            team_leader = get_staff_account(get_company(company_id), request.user)
+
+            checkin = get_object_or_404(CheckIn, check_in_id=pk)
+            notification_log("CheckIn", pk, team_leader.staff_person.get_full_name(), team_leader.staff_person.email,
+                             "Staff Check-In: " + checkin.check_in_month,
+                             "It appears you have approved check-in for staff " +
+                             staff_member.staff_person.get_full_name() + " for the month " + checkin.check_in_month)
+
+            notification_log("CheckIn", pk, staff_member.staff_person.get_full_name(),
+                             staff_member.staff_person.get_full_name(),
+                             "My Check-In: " + checkin.check_in_month,
+                             "It appears checkin for the month " + checkin.check_in_month +
+                             " has been approved by " + team_leader.staff_person.get_full_name())
 
     return HttpResponseRedirect(reverse('Site:Check_in_LevelDownDetailStaff',
                                         kwargs={'company_id': company_id, 'lev_id': lev_id, 'type_id': type_id,
