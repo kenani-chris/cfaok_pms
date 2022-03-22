@@ -69,7 +69,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cfaok_pms.wsgi.application'
 
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -92,7 +92,7 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-'''
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -116,6 +116,8 @@ AUTH_PASSWORD_VALIDATORS = [
 AXES_ONLY_USER_FAILURES = True
 AXES_LOCKOUT_CALLABLE = "cfaok_pms.views.lockout"
 
+# Password Expire in days
+PASSWORD_CHANGE_DURATION = 90
 
 
 # Language and Time

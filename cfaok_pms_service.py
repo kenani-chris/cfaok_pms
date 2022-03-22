@@ -23,7 +23,7 @@ def send_notification():
                                           host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
             if cnx:
                 try:
-                    cursor = cnx.cursor()
+                    cursor = cnx.cursor(buffered=True)
                     query = "Select * from Site_notification where notification_status = 'Pending'"
                     cursor.execute(query)
 
@@ -33,7 +33,7 @@ def send_notification():
                             send_email(notification_title, notification_user_name, notification_email,
                                        notification_message)
                             log_issue("Sent email to " + notification_email)
-                            update_notification(notification_id, cursor, cnx)
+                            update_notification(notification_id, cnx)
 
                         except Exception as e:
                             log_issue("error sending message to " + notification_email + "  :   " + e.__str__())
@@ -44,15 +44,16 @@ def send_notification():
                 log_issue("No connection to DB")
 
             cnx.disconnect()
-            time.sleep(300)
+            time.sleep(180)
 
     except Exception as e:
         log_issue("error connecting to DB  " + e.__str__())
 
 
-def update_notification(notification_id, cursor, cnx):
+def update_notification(notification_id, cnx):
     query = "update Site_notification set notification_status='Sent' where notification_id = %s"
     val = (notification_id, )
+    cursor = cnx.cursor()
 
     try:
         cursor.execute(query, val)

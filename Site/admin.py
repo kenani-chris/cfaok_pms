@@ -5,7 +5,7 @@ from .urls import app_name
 
 
 excempt_list = ['Staff', 'PMS', 'LevelCategory', 'KPIType', 'CheckIn', 'Level', 'KPI', 'LevelMembership', 'Assessment',
-                'Questions', 'QuestionResponses']
+                'Questions', 'QuestionResponses', 'PasswordChange']
 
 for name, app in apps.app_configs.items():
     if name == app_name:
@@ -83,6 +83,12 @@ class ResponsesAdmin(admin.ModelAdmin):
                      'response_evaluated__staff_person__last_name', 'response_evaluated__staff_pf_number')
 
 
+class PasswordChangeAdmin(admin.ModelAdmin):
+    list_display = ('change_user', 'change_last_date')
+    ordering = ('-change_last_date',)
+    search_fields = ('change_user__first_name', 'change_user__last_name', 'change_user__email')
+
+
 admin.site.register(Staff, StaffAdmin)
 admin.site.register(PMS, PMSAdmin)
 admin.site.register(LevelCategory, LevelCategoryAdmin)
@@ -94,3 +100,4 @@ admin.site.register(LevelMembership, MembershipAdmin)
 admin.site.register(Assessment, AssessmentAdmin)
 admin.site.register(Questions, QuestionsAdmin)
 admin.site.register(QuestionResponses, ResponsesAdmin)
+admin.site.register(PasswordChange, PasswordChangeAdmin)

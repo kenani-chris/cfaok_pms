@@ -1,3 +1,4 @@
+import datetime
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -6,10 +7,12 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST, require_safe
 from django.views.generic import TemplateView
-from Site.models import Staff
+from Site.models import Staff, PasswordChange
+from Site.functions import password_change_decorator
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(password_change_decorator, name='dispatch')
 class Home(TemplateView):
     template_name = 'home.html'
 
@@ -19,7 +22,6 @@ class Home(TemplateView):
         return context
 
 
-@require_POST
 def self_change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
@@ -27,12 +29,23 @@ def self_change_password(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated!')
+
+            change = PasswordChange()
+            change.change_user = request.user
+            change.change_last_date = datetime.datetime.now()
+            change.save()
+
             return redirect('self_change_user_password_done')
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'registration/change-password.html', {
         'form': form
     })
+
+
+@require_safe
+def password_expire(request):
+    return render(request, 'registration/password_expire.html',)
 
 
 @require_safe

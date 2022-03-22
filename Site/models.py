@@ -4,6 +4,13 @@ import uuid
 from colorfield.fields import ColorField
 
 
+# Password Expiry =====================================================================================================
+class PasswordChange(models.Model):
+    change_id = models.AutoField(primary_key=True)
+    change_user = models.ForeignKey(User, on_delete=models.RESTRICT)
+    change_last_date = models.DateTimeField(auto_now=False, null=True)
+
+
 # Company Info
 class Company(models.Model):
     company_id = models.AutoField(primary_key=True)

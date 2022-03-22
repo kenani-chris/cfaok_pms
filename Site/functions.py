@@ -1,11 +1,12 @@
 import datetime
 import os
 from email.mime.image import MIMEImage
-
 from django.core.mail import EmailMultiAlternatives
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.utils import timezone
-
 from cfaok_pms import settings
+from cfaok_pms.settings import PASSWORD_CHANGE_DURATION
 from .models import *
 
 
@@ -892,3 +893,18 @@ def log_issue(message):
                 file.write(message + "\n")
     else:
         os.mkdir(folder_path)
+
+
+def password_change_decorator(func):
+    def function(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            changes = PasswordChange.objects.filter(change_user=request.user)
+            if changes:
+                last_change = changes.last()
+                now = datetime.datetime.now(last_change.change_last_date.tzinfo)
+                if abs((last_change.change_last_date - now).days) >= PASSWORD_CHANGE_DURATION:
+                    return HttpResponseRedirect(reverse('password_expire'))
+            else:
+                return HttpResponseRedirect(reverse('password_expire'))
+        return func(request, *args, **kwargs)
+    return function

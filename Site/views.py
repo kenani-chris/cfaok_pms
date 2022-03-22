@@ -1,13 +1,15 @@
 import datetime
 import os
 from calendar import monthrange
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import *
 from background_task import background
+from openpyxl import load_workbook
+
 from .forms import *
 from .functions import *
 from .models import *
@@ -22,63 +24,128 @@ errorList = {
     'Error004': "Permissions Error. It Appears you do not have permissions for this page",
 }
 
-'''
+
 def excel_to_db():
-    p9_file = "records.xlsx"
+    file = "kpi_records.xlsx"
     sheet = 'cfaokenya'
 
-    # Openpyxl load function for reading pin number
-    wb = load_workbook(p9_file, data_only=True)
+    wb = load_workbook(file, data_only=True)
     sh = wb[sheet]
-
-    # Variables
     record = 2
 
     def check_value(x):
         x = str(x).strip()
-        if x == "None" or x == "NULL" or x == None or x == "":
+        if x == "None" or x == "NULL" or x is None or x == "":
             return None
         else:
             return x
 
+    def check_number_value(x):
+        x = str(x).strip()
+        if x == "None" or x == "NULL" or x is None or x == "":
+            return None
+        else:
+            return int(x)
+        
+    def check_float_value(x):
+        x = str(x).strip()
+        if x == "None" or x == "NULL" or x is None or x == "":
+            return None
+        else:
+            return float(x)
+
+    def check_if_true(x):
+        if int(x) == 1:
+            return True
+        else:
+            return False
+
     def approval_date(x):
         x = str(x).strip()
-        if x == "None" or x == "NULL" or x == None or x == "":
+        if x == "None" or x == "NULL" or x is None or x == "":
             return None
         else:
             return datetime.datetime.strptime(x, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.get_current_timezone())
 
     tz = timezone.get_current_timezone()
 
-    records = 3367
+    records = 2291
     while record <= records:
-        check_in = CheckIn()
-        check_in.check_in_id = sh["A" + str(record)].value
-        check_in.check_in_submit_date = datetime.datetime.strptime(str(sh["B" + str(record)].value), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.get_current_timezone())
-        check_in.check_in_approval_date = approval_date(sh["C" + str(record)].value)
-        check_in.check_in_performance_area = str(sh["D" + str(record)].value)
-        check_in.check_in_progress_discussed = str(sh["E" + str(record)].value)
-        check_in.check_in_team_member_actions = str(sh["F" + str(record)].value)
-        check_in.check_in_team_leader_support = str(sh["G" + str(record)].value)
-        check_in.check_in_team_leader_comment = check_value(str(sh["H" + str(record)].value))
-        check_in.check_in_month = str(sh["I" + str(record)].value)
-        check_in.check_in_status = str(sh["J" + str(record)].value)
-        check_in.check_in_Staff_id = sh["L" + str(record)].value
-        check_in.check_in_approver_id = check_value(str(sh["M" + str(record)].value))
-        check_in.check_in_pms_id = str(sh["N" + str(record)].value)
-        check_in.check_in_last_edit = datetime.datetime.strptime(str(sh["K" + str(record)].value), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.get_current_timezone())
-        check_in.save(force_insert=True)
+        kpi = KPI()
+        kpi.kpi_id = sh["A" + str(record)].value
+        kpi.kpi_title = sh["B" + str(record)].value
+        kpi.kpi_details = check_value(sh["C" + str(record)].value)
+        kpi.kpi_criteria = None
+        kpi.kpi_target = 0
+        kpi.kpi_weight = 20
+        kpi.kpi_units = check_value(sh["G" + str(record)].value)
+        kpi.kpi_function = check_value(sh["H" + str(record)].value)
 
-        print("Done - " + str(sh["A" + str(record)].value))
+        kpi.kpi_april_target = sh["I" + str(record)].value
+        kpi.kpi_may_target = sh["J" + str(record)].value
+        kpi.kpi_june_target = sh["K" + str(record)].value
+        kpi.kpi_july_target = sh["L" + str(record)].value
+        kpi.kpi_august_target = sh["M" + str(record)].value
+        kpi.kpi_september_target = sh["N" + str(record)].value
+        kpi.kpi_october_target = sh["O" + str(record)].value
+        kpi.kpi_november_target = sh["P" + str(record)].value
+        kpi.kpi_december_target = sh["Q" + str(record)].value
+        kpi.kpi_january_target = sh["R" + str(record)].value
+        kpi.kpi_february_target = sh["S" + str(record)].value
+        kpi.kpi_march_target = sh["T" + str(record)].value
+
+        kpi.kpi_april_score = None
+        kpi.kpi_may_score = None
+        kpi.kpi_june_score = None
+        kpi.kpi_july_score = None
+        kpi.kpi_august_score = check_float_value(sh["Y" + str(record)].value)
+        kpi.kpi_september_score = check_float_value(sh["Z" + str(record)].value)
+        kpi.kpi_october_score = check_float_value(sh["AA" + str(record)].value)
+        kpi.kpi_november_score = check_float_value(sh["AB" + str(record)].value)
+        kpi.kpi_december_score = check_float_value(sh["AC" + str(record)].value)
+        kpi.kpi_january_score = check_float_value(sh["AD" + str(record)].value)
+        kpi.kpi_february_score = check_float_value(sh["AE" + str(record)].value)
+        kpi.kpi_march_score = check_float_value(sh["AF" + str(record)].value)
+
+        kpi.kpi_bsc_s_target = None
+        kpi.kpi_bsc_a_target = None
+        kpi.kpi_bsc_b_target = None
+        kpi.kpi_bsc_c_target = None
+        kpi.kpi_bsc_d_target = None
+
+        kpi.kpi_april_score_approve = check_if_true(sh["AL" + str(record)].value)
+        kpi.kpi_may_score_approve = check_if_true(sh["AM" + str(record)].value)
+        kpi.kpi_june_score_approve = check_if_true(sh["AN" + str(record)].value)
+        kpi.kpi_july_score_approve = check_if_true(sh["AO" + str(record)].value)
+        kpi.kpi_august_score_approve = check_if_true(sh["AP" + str(record)].value)
+        kpi.kpi_september_score_approve = check_if_true(sh["AQ" + str(record)].value)
+        kpi.kpi_october_score_approve = check_if_true(sh["AR" + str(record)].value)
+        kpi.kpi_november_score_approve = check_if_true(sh["AS" + str(record)].value)
+        kpi.kpi_december_score_approve = check_if_true(sh["AT" + str(record)].value)
+        kpi.kpi_january_score_approve = check_if_true(sh["AU" + str(record)].value)
+        kpi.kpi_february_score_approve = check_if_true(sh["AV" + str(record)].value)
+        kpi.kpi_march_score_approve = check_if_true(sh["AW" + str(record)].value)
+
+        kpi.kpi_submit_date = sh["AX" + str(record)].value
+        kpi.kpi_status = sh["AY" + str(record)].value
+        kpi.kpi_type = "Average"
+        kpi.kpi_all_results_approve = False
+        kpi.kpi_bsc_pillar = None
+        kpi.kpi_pms_id = "44c5c6383e524f1d9e5646534f9faab5"
+        kpi.kpi_staff_id = sh["BD" + str(record)].value
+        kpi.save()
+
+        print("Done - " + str(get_object_or_404(Staff, staff_id=int(sh["BD" + str(record)].value))) + " " + str(record))
         record += 1
-'''
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(password_change_decorator, name='dispatch')
 class Dashboard(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Dashboard, self).get_context_data()
         context['company_id'] = self.kwargs['company_id']
+
         context['error_code'] = checks(self.kwargs['company_id'], self.request.user)
         global_context(self.kwargs['company_id'], self.request.user, context)
 
@@ -521,8 +588,6 @@ class MyKPIResults(UpdateView):
                     else:
                         march_end_month = datetime.date(year=year['March'], month=3, day=monthrange(year['March'], 3)[1])
                         march_deadline = march_end_month + datetime.timedelta(days=months['March'])
-                        print(march_end_month)
-                        print(march_deadline)
 
                         if march_end_month <= today_date <= march_deadline:
                             reveal['March'] = True
@@ -1130,7 +1195,7 @@ class AssessmentViewMember(DetailView):
             context['assessment_status'] = False
 
         question_responses = []
-        questions = Questions.objects.filter(question_assessment=assessment, question_direction=self.kwargs['dir'])
+        questions = Questions.objects.filter(question_assessment=assessment, question_direction=self.kwargs['a_dir'])
         completed = 0
 
         if questions.count():
@@ -1149,7 +1214,7 @@ class AssessmentViewMember(DetailView):
         context['question_responses'] = question_responses
         context['completed'] = completed
         context['member'] = member
-        context['direction'] = self.kwargs['dir']
+        context['direction'] = self.kwargs['a_dir']
 
         return context
 
@@ -1164,7 +1229,7 @@ class AssessmentViewMemberResponseCreate(CreateView):
 
         assessment = get_object_or_404(Assessment, assessment_id=self.kwargs['pk'])
         member = get_object_or_404(Staff, staff_id=self.kwargs['uid'])
-        # direction = self.kwargs['dir']
+        # direction = self.kwargs['a_dir']
         question = get_object_or_404(Questions, question_id=self.kwargs['qid'])
 
         if assessment.assessment_start_date <= datetime.datetime.now(
@@ -1184,7 +1249,7 @@ class AssessmentViewMemberResponseCreate(CreateView):
         context['completed'] = completed
         context['question'] = question
         context['member'] = member
-        context['direction'] = self.kwargs['dir']
+        context['direction'] = self.kwargs['a_dir']
 
         return context
 
@@ -1200,7 +1265,7 @@ class AssessmentViewMemberResponseCreate(CreateView):
     def get_success_url(self):
         return '{}'.format(reverse('Site:Assessment_View_Member',
                                    kwargs={'company_id': self.kwargs['company_id'], 'pk': self.kwargs['pk'],
-                                           'uid': self.kwargs['uid'], 'dir': self.kwargs['dir']}))
+                                           'uid': self.kwargs['uid'], 'a_dir': self.kwargs['a_dir']}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1225,7 +1290,7 @@ class AssessmentViewMemberResponseEdit(UpdateView):
 
         context['Assessment'] = assessment
         context['member'] = member
-        context['direction'] = self.kwargs['dir']
+        context['direction'] = self.kwargs['a_dir']
 
         return context
 
@@ -1233,7 +1298,7 @@ class AssessmentViewMemberResponseEdit(UpdateView):
         return '{}'.format(reverse('Site:Assessment_View_Member', kwargs={'company_id': self.kwargs[''],
                                                                           'pk': self.kwargs['pk'],
                                                                           'uid': self.kwargs['uid'],
-                                                                          'dir': self.kwargs['dir']}))
+                                                                          'a_dir': self.kwargs['a_dir']}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1251,7 +1316,7 @@ class AssessmentViewMy(DetailView):
             context['assessment_status'] = False
 
         question_responses = []
-        questions = Questions.objects.filter(question_assessment=assessment, question_direction=self.kwargs['dir'])
+        questions = Questions.objects.filter(question_assessment=assessment, question_direction=self.kwargs['a_dir'])
 
         if questions.count():
             for question in questions:
@@ -1269,7 +1334,7 @@ class AssessmentViewMy(DetailView):
                     question_responses.append([question, None, 'Not Done', score, comments])
 
         context['question_responses'] = question_responses
-        context['direction'] = self.kwargs['dir']
+        context['direction'] = self.kwargs['a_dir']
         return context
 
 
@@ -1298,7 +1363,7 @@ def staff_create_question_response(request, company_id, aid, staff_id, a_dir, qi
         response.save()
 
     return HttpResponseRedirect(reverse('Site:Assessment_View_Member',
-                                        kwargs={'company_id': company_id, 'pk': aid, 'uid': staff_id, 'dir': a_dir}))
+                                        kwargs={'company_id': company_id, 'pk': aid, 'uid': staff_id, 'a_dir': a_dir}))
 
 
 def staff_edit_question_response(request, company_id, aid, staff_id, a_dir, rid):
@@ -1325,7 +1390,7 @@ def staff_edit_question_response(request, company_id, aid, staff_id, a_dir, rid)
             response.save()
 
     return HttpResponseRedirect(reverse('Site:Assessment_View_Member',
-                                        kwargs={'company_id': company_id, 'pk': aid, 'uid': staff_id, 'dir': a_dir}))
+                                        kwargs={'company_id': company_id, 'pk': aid, 'uid': staff_id, 'a_dir': a_dir}))
 
 
 @method_decorator(login_required, name='dispatch')
