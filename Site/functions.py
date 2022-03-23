@@ -5,8 +5,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
-from cfaok_pms import settings
-from cfaok_pms.settings import PASSWORD_CHANGE_DURATION
+import settings
+from settings import PASSWORD_CHANGE_DURATION
 from .models import *
 
 

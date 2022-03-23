@@ -1,5 +1,4 @@
 import smtplib
-import ssl
 import time
 import datetime
 import os
@@ -10,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import mysql.connector
-from cfaok_pms.settings import DATABASES, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_HOST
+from settings import DATABASES, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_HOST
 
 pms_guide = '<a href="https://1drv.ms/b/s!AvHDzgs7pzmrundGQQj6-nrkpP-H?e=eDM6SR">PMS Guide</a>'
 pms_link = '<a href="https:ck-pms.com">PMS Link</a>'

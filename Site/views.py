@@ -139,6 +139,42 @@ def excel_to_db():
         record += 1
 
 
+def update_to_db():
+    file = "tken_kpi_update.xlsx"
+    sheet = 'cfaokenya'
+
+    wb = load_workbook(file, data_only=True)
+    sh = wb[sheet]
+    record = 2
+
+    def check_float_value(x):
+        x = str(x).strip()
+        if x == "None" or x == "NULL" or x is None or x == "":
+            return None
+        else:
+            return float(x)
+
+    records = 83
+    while record <= records:
+        kpi = KPI.objects.get(kpi_id=sh["A" + str(record)].value, kpi_staff_id=sh["N" + str(record)].value)
+        kpi.kpi_april_target = check_float_value(sh["B" + str(record)].value)
+        kpi.kpi_may_target = check_float_value(sh["C" + str(record)].value)
+        kpi.kpi_june_target = check_float_value(sh["D" + str(record)].value)
+        kpi.kpi_july_target = check_float_value(sh["E" + str(record)].value)
+        kpi.kpi_august_target = check_float_value(sh["F" + str(record)].value)
+        kpi.kpi_september_target = check_float_value(sh["G" + str(record)].value)
+        kpi.kpi_october_target = check_float_value(sh["H" + str(record)].value)
+        kpi.kpi_november_target = check_float_value(sh["I" + str(record)].value)
+        kpi.kpi_december_target = check_float_value(sh["J" + str(record)].value)
+        kpi.kpi_january_target = check_float_value(sh["K" + str(record)].value)
+        kpi.kpi_february_target = check_float_value(sh["L" + str(record)].value)
+        kpi.kpi_march_target = check_float_value(sh["M" + str(record)].value)
+        kpi.save()
+
+        print("Done - " + str(get_object_or_404(Staff, staff_id=int(sh["N" + str(record)].value))) + " " + str(record))
+        record += 1
+
+
 @method_decorator(login_required, name='dispatch')
 @method_decorator(password_change_decorator, name='dispatch')
 class Dashboard(TemplateView):
