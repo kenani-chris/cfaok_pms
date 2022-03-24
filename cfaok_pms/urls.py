@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.views import PasswordResetConfirmView
 from django.urls import path, include
 from . import views
 
@@ -11,4 +12,5 @@ urlpatterns = [
     path('accounts/password_expire/', views.password_expire, name='password_expire'),
     path('accounts/self_password_change/', views.self_change_password, name='self_change_user_password'),
     path('accounts/self_password_change/done/', views.self_password_change_done, name='self_change_user_password_done'),
+    path('reset/<uidb64>/<token>/', PasswordResetConfirmView.as_view(template_name="registration/password_reset_confirm.html"), name='password_reset_confirm'),
 ]

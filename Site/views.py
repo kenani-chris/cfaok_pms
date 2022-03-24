@@ -1007,7 +1007,7 @@ class MyCheckInEdit(UpdateView):
                                                                    'pk': self.kwargs['pk']}))
 
     def form_valid(self, form):
-        super(MyCheckInEdit, self).form_valid()
+        super(MyCheckInEdit, self).form_valid(form)
         staff = get_staff_account(get_company(self.kwargs['company_id']), self.request.user)
         checkin = get_object_or_404(CheckIn, check_in_id=self.kwargs['pk'])
         notification_log("CheckIn", self.kwargs['pk'], staff.staff_person.get_full_name(), staff.staff_person.email,
