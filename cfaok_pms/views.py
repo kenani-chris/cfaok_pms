@@ -1,12 +1,12 @@
 import datetime
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.forms import PasswordChangeForm
-from django.shortcuts import render, redirect
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST, require_safe
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from Site.models import Staff, PasswordChange
 from Site.functions import password_change_decorator
 
@@ -42,6 +42,10 @@ def self_change_password(request):
         'form': form
     })
 
+
+class PasswordResetConfirmView(FormView):
+    success_url = 'registration/password_reset_complete.html'
+    form_class = SetPasswordForm
 
 @require_safe
 def password_expire(request):
