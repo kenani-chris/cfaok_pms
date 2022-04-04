@@ -10,45 +10,50 @@
             {% include 'Site/errors/checkin_submission_complete.html' %}
         {% else %}
 
-<div class="container-fluid">
-        <div class="card">
-            <div class="card-header">
-                <strong>{{ form.checkIn_month.value }} CheckIn</strong>
-            </div>
-                <!-- todo Change the fields pa, pd, tma, tls to customize type -->
-                <form method="post">
-                    {{ form.errors }}
-                    {% csrf_token %}
-                    <div class="card-body">
-                        {{ form.check_in_id.as_hidden }}
-                        {{ form.check_in_pms.as_hidden }}
-                        {{ form.check_in_Staff.as_hidden }}
-                        {{ form.check_in_submit_date.as_hidden }}
-                        {{ form.check_in_approver.as_hidden }}
-                        {{ form.check_in_approval_date.as_hidden }}
-                        {{ form.check_in_approval_date.as_hidden }}
-                        {{ form.check_in_month.as_hidden }}
-                        {{ form.check_in_status.as_hidden }}
-                        Performance Area
-                        {{ form.check_in_performance_area }}
-                        Progress Discussed
-                        {{ form.check_in_progress_discussed }}
-                        <br>
-                        Team member actions
-                        {{ form.check_in_team_member_actions }}
-                        <br>
-                        Team Leader Support
-                        {{ form.check_in_team_leader_support }}
-                        <br>
+        {% if today > pms.pms_year_end_date %}
+            {% include 'Site/errors/checkin_submission_complete_pms.html' %}
+        {% else %}
 
-                        {{ form.check_in_team_leader_comment.as_hidden }}
+            <div class="container-fluid">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>{{ form.checkIn_month.value }} CheckIn</strong>
                     </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-info">Submit</button>
+                        <!-- todo Change the fields pa, pd, tma, tls to customize type -->
+                        <form method="post">
+                            {{ form.errors }}
+                            {% csrf_token %}
+                            <div class="card-body">
+                                {{ form.check_in_id.as_hidden }}
+                                {{ form.check_in_pms.as_hidden }}
+                                {{ form.check_in_Staff.as_hidden }}
+                                {{ form.check_in_submit_date.as_hidden }}
+                                {{ form.check_in_approver.as_hidden }}
+                                {{ form.check_in_approval_date.as_hidden }}
+                                {{ form.check_in_approval_date.as_hidden }}
+                                {{ form.check_in_month.as_hidden }}
+                                {{ form.check_in_status.as_hidden }}
+                                Performance Area
+                                {{ form.check_in_performance_area }}
+                                Progress Discussed
+                                {{ form.check_in_progress_discussed }}
+                                <br>
+                                Team member actions
+                                {{ form.check_in_team_member_actions }}
+                                <br>
+                                Team Leader Support
+                                {{ form.check_in_team_leader_support }}
+                                <br>
+
+                                {{ form.check_in_team_leader_comment.as_hidden }}
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-info">Submit</button>
+                            </div>
+                        </form>
                     </div>
-                </form>
-            </div>
-    </div>
+                </div>
+        {% endif %}
         {% endif %}
 
         <div class="container-fluid">

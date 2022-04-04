@@ -1,0 +1,134 @@
+{% extends 'Site/CheckIn/my_CheckIn/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active">My Check-In Previous</li>
+    {% endblock %}
+    {% block page_title %}My Check-In - Previous{% endblock %}
+    {% block content %}
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    Allowed Previous CheckIns
+                </div>
+                 <table class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Month</th>
+                            <th>Status</th>
+                            <th>Allowed to submit?</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+                          <tr>
+                              {% if April %}
+                                  <td><a href="{% url 'Site:My_CheckIn_Create_Previous_Month' company_id 'April' %}">April</a></td>
+                              {% else %}
+                                <td>April</td>
+                              {% endif %}
+                              <td>{% if april_check_in == True %}Done{% else %}Not Done{% endif %}</td>
+                              <td>{{ April }}</td>
+                          </tr>
+                          <tr>
+                              {% if May %}
+                                  <td><a href="{% url 'Site:My_CheckIn_Create_Previous_Month' company_id 'May' %}">May</a></td>
+                              {% else %}
+                                <td>May</td>
+                              {% endif %}
+                              <td>{% if may_check_in == True %}Done{% else %}Not Done{% endif %}</td>
+                              <td>{{ May }}</td>
+                          </tr>
+                          <tr>
+                              {% if June %}
+                                  <td><a href="{% url 'Site:My_CheckIn_Create_Previous_Month' company_id 'June' %}">June</a></td>
+                              {% else %}
+                                <td>June</td>
+                              {% endif %}
+                              <td>{% if june_check_in == True %}Done{% else %}Not Done{% endif %}</td>
+                              <td>{{ June }}</td>
+                          </tr>
+                          <tr>
+                              {% if July %}
+                                  <td><a href="{% url 'Site:My_CheckIn_Create_Previous_Month' company_id 'July' %}">July</a></td>
+                              {% else %}
+                                <td>July</td>
+                              {% endif %}
+                              <td>{% if july_check_in == True %}Done{% else %}Not Done{% endif %}</td>
+                              <td>{{ July }}</td>
+                          </tr>
+                          <tr>
+                              {% if August %}
+                                  <td><a href="{% url 'Site:My_CheckIn_Create_Previous_Month' company_id 'August' %}">August</a></td>
+                              {% else %}
+                                <td>August</td>
+                              {% endif %}
+                              <td>{% if august_check_in == True %}Done{% else %}Not Done{% endif %}</td>
+                              <td>{{ August }}</td>
+                          </tr>
+                          <tr>
+                              {% if September %}
+                                  <td><a href="{% url 'Site:My_CheckIn_Create_Previous_Month' company_id 'September' %}">September</a></td>
+                              {% else %}
+                                <td>September</td>
+                              {% endif %}
+                              <td>{% if september_check_in == True %}Done{% else %}Not Done{% endif %}</td>
+                              <td>{{ September }}</td>
+                          </tr>
+                          <tr>
+                              {% if October %}
+                                  <td><a href="{% url 'Site:My_CheckIn_Create_Previous_Month' company_id 'October' %}">October</a></td>
+                              {% else %}
+                                <td>October</td>
+                              {% endif %}
+                              <td>{% if october_check_in == True %}Done{% else %}Not Done{% endif %}</td>
+                              <td>{{ October }}</td>
+                          </tr>
+                          <tr>
+                              {% if November %}
+                                  <td><a href="{% url 'Site:My_CheckIn_Create_Previous_Month' company_id 'November' %}">November</a></td>
+                              {% else %}
+                                <td>November</td>
+                              {% endif %}
+                              <td>{% if november_check_in == True %}Done{% else %}Not Done{% endif %}</td>
+                              <td>{{ November }}</td>
+                          </tr>
+                          <tr>
+                              {% if December %}
+                                  <td><a href="{% url 'Site:My_CheckIn_Create_Previous_Month' company_id 'December' %}">December</a></td>
+                              {% else %}
+                                <td>December</td>
+                              {% endif %}
+                              <td>{% if december_check_in == True %}Done{% else %}Not Done{% endif %}</td>
+                              <td>{{ December }}</td>
+                          </tr>
+                          <tr>
+                              {% if January %}
+                                  <td><a href="{% url 'Site:My_CheckIn_Create_Previous_Month' company_id 'January' %}">January</a></td>
+                              {% else %}
+                                <td>January</td>
+                              {% endif %}
+                              <td>{% if january_check_in == True %}Done{% else %}Not Done{% endif %}</td>
+                              <td>{{ January }}</td>
+                          </tr>
+                          <tr>
+                              {% if February %}
+                                  <td><a href="{% url 'Site:My_CheckIn_Create_Previous_Month' company_id 'February' %}">February</a></td>
+                              {% else %}
+                                <td>February</td>
+                              {% endif %}
+                              <td>{% if february_check_in_check_in == True %}Done{% else %}Not Done{% endif %}</td>
+                              <td>{{ February }}</td>
+                          </tr>
+                          <tr>
+                              {% if March %}
+                                  <td><a href="{% url 'Site:My_CheckIn_Create_Previous_Month' company_id 'March' %}">March</a></td>
+                              {% else %}
+                                <td>March</td>
+                              {% endif %}
+                              <td>{% if march_check_in == True %}Done{% else %}Not Done{% endif %}</td>
+                              <td>{{ March }}</td>
+                          </tr>
+                      </tbody>
+                 </table>
+            </div>
+        </div>
+
+    {% endblock %}

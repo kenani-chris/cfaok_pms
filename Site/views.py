@@ -140,7 +140,7 @@ def excel_to_db():
 
 
 def update_to_db():
-    file = "tken_kpi_update.xlsx"
+    file = "tken_update_kpi.xlsx"
     sheet = 'cfaokenya'
 
     wb = load_workbook(file, data_only=True)
@@ -154,7 +154,7 @@ def update_to_db():
         else:
             return float(x)
 
-    records = 83
+    records = 142
     while record <= records:
         kpi = KPI.objects.get(kpi_id=sh["A" + str(record)].value, kpi_staff_id=sh["N" + str(record)].value)
         kpi.kpi_april_target = check_float_value(sh["B" + str(record)].value)
@@ -947,7 +947,7 @@ class MyCheckInCreate(CreateView):
         else:
             context['done'] = False
         context['CheckIn'] = CheckIn.objects.filter(check_in_Staff=context['staff'])
-
+        context['today'] = datetime.date.today()
         return context
 
     def get_success_url(self):
@@ -978,6 +978,164 @@ class MyCheckInCreate(CreateView):
                              " has submitted a checkin for your review")
 
         return HttpResponseRedirect(reverse('Site:My_CheckIn_Create', kwargs={'company_id': self.kwargs['company_id']}))
+
+
+@method_decorator(login_required, name='dispatch')
+class MyCheckInPrevious(TemplateView):
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(MyCheckInPrevious, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        
+        context['April'] = False
+        context['May'] = False
+        context['June'] = False
+        context['July'] = False
+        context["August"] = False
+        context['September'] = False
+        context['October'] = False
+        context['November'] = False
+        context['December'] = False
+        context['January'] = False
+        context['February'] = False
+        context['March'] = False
+
+        submissions = SubmissionCheckin.objects.filter(submission_level_category=context['staff'].staff_category,
+                                                       submission_pms=context['pms'])
+        if submissions:
+            submission_checkin = submissions.first()
+            context['April'] = submission_checkin.submission_april_checkin_override
+            context['May'] = submission_checkin.submission_may_checkin_override
+            context['June'] = submission_checkin.submission_june_checkin_override
+            context['July'] = submission_checkin.submission_july_checkin_override
+            context['August'] = submission_checkin.submission_august_checkin_override
+            context['September'] = submission_checkin.submission_september_checkin_override
+            context['October'] = submission_checkin.submission_october_checkin_override
+            context['November'] =submission_checkin.submission_november_checkin_override
+            context['December'] = submission_checkin.submission_december_checkin_override
+            context['January'] = submission_checkin.submission_january_checkin_override
+            context['February'] = submission_checkin.submission_february_checkin_override
+            context['March'] = submission_checkin.submission_march_checkin_override
+
+        context['april_check_in'] = False
+        context['may_check_in'] = False
+        context['june_check_in'] = False
+        context['july_check_in'] = False
+        context['august_check_in'] = False
+        context['september_check_in'] = False
+        context['october_check_in'] = False
+        context['november_check_in'] = False
+        context['december_check_in'] = False
+        context['january_check_in'] = False
+        context['february_check_in'] = False
+        context['march_check_in'] = False
+
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month="April"):
+            context['april_check_in'] = True
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month="May"):
+            context['may_check_in'] = True
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month="June"):
+            context['june_check_in'] = True
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month="July"):
+            context['july_check_in'] = True
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month="August"):
+            context['august_check_in'] = True
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month="September"):
+            context['september_check_in'] = True
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month="October"):
+            context['october_check_in'] = True
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month="November"):
+            context['november_check_in'] = True
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month="December"):
+            context['december_check_in'] = True
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month="January"):
+            context['january_check_in'] = True
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month="February"):
+            context['february_check_in'] = True
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month="March"):
+            context['march_check_in'] = True
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class MyCheckInCreatePrevious(CreateView):
+    form_class = CheckInForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(MyCheckInCreatePrevious, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+
+        if CheckIn.objects.filter(check_in_Staff=context['staff'], check_in_month=self.kwargs['month']):
+            context['done'] = True
+        else:
+            context['done'] = False
+
+        submissions = SubmissionCheckin.objects.filter(submission_pms=context['pms'],
+                                                       submission_level_category=context['staff'].staff_category)
+
+        context['allowed'] = False
+        if submissions:
+            submission_checkin = submissions.first()
+
+            if self.kwargs['month'] == 'April' and submission_checkin.submission_april_checkin_override is True:
+                context['allowed'] = True
+            if self.kwargs['month'] == 'May' and submission_checkin.submission_may_checkin_override is True:
+                context['allowed'] = True
+            if self.kwargs['month'] == 'June' and submission_checkin.submission_june_checkin_override is True:
+                context['allowed'] = True
+            if self.kwargs['month'] == 'July' and submission_checkin.submission_july_checkin_override is True:
+                context['allowed'] = True
+            if self.kwargs['month'] == 'August' and submission_checkin.submission_august_checkin_override is True:
+                context['allowed'] = True
+            if self.kwargs['month'] == 'September' and submission_checkin.submission_september_checkin_override is True:
+                context['allowed'] = True
+            if self.kwargs['month'] == 'October' and submission_checkin.submission_october_checkin_override is True:
+                context['allowed'] = True
+            if self.kwargs['month'] == 'November' and submission_checkin.submission_november_checkin_override is True:
+                context['allowed'] = True
+            if self.kwargs['month'] == 'December' and submission_checkin.submission_december_checkin_override is True:
+                context['allowed'] = True
+            if self.kwargs['month'] == 'January' and submission_checkin.submission_january_checkin_override is True:
+                context['allowed'] = True
+            if self.kwargs['month'] == 'February' and submission_checkin.submission_february_checkin_override is True:
+                context['allowed'] = True
+            if self.kwargs['month'] == 'March' and submission_checkin.submission_march_checkin_override is True:
+                context['allowed'] = True
+
+        context['month'] = self.kwargs['month']
+        context['CheckIn'] = CheckIn.objects.filter(check_in_Staff=context['staff'])
+        return context
+
+    def get_success_url(self):
+        return '{}'.format(reverse('Site:My_CheckIn_Create_Previous', kwargs={'company_id': self.kwargs['company_id']}))
+
+    def get_initial(self):
+        initial = super(MyCheckInCreatePrevious, self).get_initial()
+        context = {}
+        global_context(self.kwargs['company_id'], self.request.user, context)
+
+        initial['check_in_pms'] = context['pms']
+        initial['check_in_Staff'] = context['staff']
+        initial['check_in_submit_date'] = datetime.datetime.now()
+        initial['check_in_month'] = self.kwargs['month']
+        return initial
+
+    def form_valid(self, form):
+        super(MyCheckInCreatePrevious, self).form_valid(form)
+        staff = get_staff_account(get_company(self.kwargs['company_id']), self.request.user)
+
+        notification_log("CheckIn", "None", staff.staff_person.get_full_name(), staff.staff_person.email,
+                         "My CheckIn Submit", "It appears you have submitted a Check-In")
+        if get_staff_level(staff) is not None:
+            level = get_staff_level(staff)
+            notification_log("CheckIn", "None", level.level_head.staff_person.get_full_name(),
+                             level.level_head.staff_person.email, "Staff CheckIn Submitted",
+                             "It appears " + staff.staff_person.get_full_name() +
+                             " has submitted a checkin for your review")
+
+        return HttpResponseRedirect(reverse('Site:My_CheckIn_Create_Previous',
+                                            kwargs={'company_id': self.kwargs['company_id']}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1192,7 +1350,8 @@ class AssessmentView(DetailView):
                         count = 0
                         for question in context['bottom_questions']:
                             if QuestionResponses.objects.filter(response_question=question,
-                                                                response_evaluated=records.membership_staff):
+                                                                response_evaluated=records.membership_staff,
+                                                                response_staff=context['staff']):
                                 count += 1
                         status = str(count) + "/" + str(context['bottom_questions'].count())
                         level_members.append([records, status])
@@ -1203,7 +1362,8 @@ class AssessmentView(DetailView):
                 count = 0
                 for question in context['top_questions']:
                     if QuestionResponses.objects.filter(response_question=question,
-                                                        response_evaluated=level.membership_level.level_head):
+                                                        response_evaluated=level.membership_level.level_head,
+                                                        response_staff=context['staff']):
                         count += 1
                 status = str(count) + "/" + str(context['top_questions'].count())
                 level_heads.append([level.membership_level, status])
