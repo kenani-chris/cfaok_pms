@@ -742,7 +742,7 @@ class KPILevelDownDetailStaff(DetailView):
         kpi_results = []
         kpi_type = KPIType.objects.filter(type_pms=context['pms'],
                                           type_category=get_staff_account(get_company(self.kwargs['company_id']),
-                                                                          self.request.user).staff_category)
+                                                                          context['select_staff'].staff_person).staff_category)
         if kpi_type:
             context['kpi_type'] = kpi_type.first().type_kpi
         else:
