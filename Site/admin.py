@@ -5,7 +5,7 @@ from .urls import app_name
 
 
 excempt_list = ['Staff', 'PMS', 'LevelCategory', 'KPIType', 'CheckIn', 'Level', 'KPI', 'LevelMembership', 'Assessment',
-                'Questions', 'QuestionResponses', 'PasswordChange']
+                'Questions', 'QuestionResponses', 'PasswordChange', 'SubmissionKPI', 'SubmissionCheckin']
 
 for name, app in apps.app_configs.items():
     if name == app_name:
@@ -89,6 +89,29 @@ class PasswordChangeAdmin(admin.ModelAdmin):
     search_fields = ('change_user__first_name', 'change_user__last_name', 'change_user__email')
 
 
+class SubmissionKPIAdmin(admin.ModelAdmin):
+    list_display = ('submission_pms', 'submission_level_category', 'submission_start_date', 'submission_end_date',
+                    'submission_minimum_number', 'submission_maximum_number',
+                    'submission_april_results_calculation', 'submission_may_results_calculation',
+                    'submission_june_results_calculation', 'submission_july_results_calculation',
+                    'submission_august_results_calculation', 'submission_september_results_calculation',
+                    'submission_october_results_calculation', 'submission_november_results_calculation',
+                    'submission_december_results_calculation', 'submission_january_results_calculation',
+                    'submission_february_results_calculation', 'submission_march_results_calculation',)
+    list_filter = ('submission_pms', 'submission_level_category',)
+    search_fields = ('submission_level_category',)
+
+
+class SubmissionCheckinAdmin(admin.ModelAdmin):
+    list_display = ('submission_pms', 'submission_level_category',
+                    'submission_one_results', 'submission_two_results', 'submission_three_results',
+                    'submission_four_results', 'submission_five_results', 'submission_six_results',
+                    'submission_seven_results', 'submission_eight_results', 'submission_nine_results',
+                    'submission_ten_results', 'submission_eleven_results', 'submission_twelve_results',)
+    list_filter = ('submission_pms',  'submission_level_category',)
+    search_fields = ('submission_level_category',)
+
+
 admin.site.register(Staff, StaffAdmin)
 admin.site.register(PMS, PMSAdmin)
 admin.site.register(LevelCategory, LevelCategoryAdmin)
@@ -101,3 +124,5 @@ admin.site.register(Assessment, AssessmentAdmin)
 admin.site.register(Questions, QuestionsAdmin)
 admin.site.register(QuestionResponses, ResponsesAdmin)
 admin.site.register(PasswordChange, PasswordChangeAdmin)
+admin.site.register(SubmissionCheckin, SubmissionCheckinAdmin)
+admin.site.register(SubmissionKPI, SubmissionKPIAdmin)

@@ -1,13 +1,8 @@
-import datetime
-import os
 from calendar import monthrange
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import *
-from background_task import background
 from openpyxl import load_workbook
 
 from .forms import *
@@ -135,7 +130,7 @@ def excel_to_db():
         kpi.kpi_staff_id = sh["BD" + str(record)].value
         kpi.save()
 
-        print("Done - " + str(get_object_or_404(Staff, staff_id=int(sh["BD" + str(record)].value))) + " " + str(record))
+        # print("Done - " + str(get_object_or_404(Staff, staff_id=int(sh["BD" + str(record)].value))) + " " + str(record))
         record += 1
 
 
@@ -171,7 +166,7 @@ def update_to_db():
         kpi.kpi_march_target = check_float_value(sh["M" + str(record)].value)
         kpi.save()
 
-        print("Done - " + str(get_object_or_404(Staff, staff_id=int(sh["N" + str(record)].value))) + " " + str(record))
+        # print("Done - " + str(get_object_or_404(Staff, staff_id=int(sh["N" + str(record)].value))) + " " + str(record))
         record += 1
 
 
@@ -405,6 +400,7 @@ class MyKPIResults(UpdateView):
             year = context['calendar_dict']
             context = context | kpi_list(context['staff'], context['pms'])
             submission = get_user_submission_data(context['staff'], context['pms'])
+
             if submission:
                 months['April'] = submission.submission_april_results
                 months['May'] = submission.submission_may_results
@@ -424,13 +420,13 @@ class MyKPIResults(UpdateView):
                 context['june_override'] = submission.submission_june_results_override
                 context['july_override'] = submission.submission_july_results_override
                 context['august_override'] = submission.submission_august_results_override
-                context['september_override'] = submission.submission_april_results_override
-                context['october_override'] = submission.submission_april_results_override
-                context['november_override'] = submission.submission_april_results_override
-                context['december_override'] = submission.submission_april_results_override
-                context['january_override'] = submission.submission_april_results_override
-                context['february_override'] = submission.submission_april_results_override
-                context['march_override'] = submission.submission_april_results_override
+                context['september_override'] = submission.submission_september_results_override
+                context['october_override'] = submission.submission_october_results_override
+                context['november_override'] = submission.submission_november_results_override
+                context['december_override'] = submission.submission_december_results_override
+                context['january_override'] = submission.submission_january_results_override
+                context['february_override'] = submission.submission_february_results_override
+                context['march_override'] = submission.submission_march_results_override
 
             else:
                 months['April'] = months['May'] = months['June'] = months['July'] = months['August'] = \
@@ -578,7 +574,7 @@ class MyKPIResults(UpdateView):
                     reveal['December'] = False
                 else:
                     if context['december_override'] == True:
-                        reveal['December'] == True
+                        reveal['December'] = True
                     else:
                         december_end_month = datetime.date(year=year['December'], month=12,
                                                            day=monthrange(year['December'], 12)[1])
@@ -1002,6 +998,7 @@ class MyCheckInPrevious(TemplateView):
 
         submissions = SubmissionCheckin.objects.filter(submission_level_category=context['staff'].staff_category,
                                                        submission_pms=context['pms'])
+
         if submissions:
             submission_checkin = submissions.first()
             context['April'] = submission_checkin.submission_april_checkin_override
