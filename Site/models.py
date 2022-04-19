@@ -228,8 +228,8 @@ class SubmissionCheckin(models.Model):
 class Matrix(models.Model):
     matrix_id = models.AutoField(primary_key=True)
     matrix_pms = models.ForeignKey('PMS', on_delete=models.RESTRICT, null=True)
-    matrix_grade = models.ForeignKey('StaffGrades', on_delete=models.RESTRICT, null=True)
-    matrix_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT, null=True)
+    matrix_grade = models.ForeignKey('StaffGrades', on_delete=models.RESTRICT, null=True, blank=True)
+    matrix_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT, null=True, blank=True)
     matrix_checkin_weight = models.FloatField(null=True, blank=True, default=100)
     matrix_kpi_weight = models.FloatField(null=True, blank=True, default=50)
     matrix_assessment_weight = models.FloatField(null=True, blank=True, default=20)

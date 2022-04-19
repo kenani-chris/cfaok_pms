@@ -263,52 +263,54 @@ def calculate_kpi_score(kpi, kpi_type):
     if get_user_submission_data(kpi.kpi_staff, kpi.kpi_pms):
 
         submission = get_user_submission_data(kpi.kpi_staff, kpi.kpi_pms)
+        print(submission)
+        print("checking submissions")
 
-        if submission.submission_april_results_calculation:
+        if submission.submission_april_results_calculation == True:
             month_results.append(apr)
             month_targets.append(tar_apr)
 
-        if submission.submission_may_results_calculation:
+        if submission.submission_may_results_calculation == True:
             month_results.append(may)
             month_targets.append(tar_may)
 
-        if submission.submission_june_results_calculation:
+        if submission.submission_june_results_calculation == True:
             month_results.append(jun)
             month_targets.append(tar_jun)
 
-        if submission.submission_july_results_calculation:
+        if submission.submission_july_results_calculation == True:
             month_results.append(jul)
             month_targets.append(tar_jul)
 
-        if submission.submission_august_results_calculation:
+        if submission.submission_august_results_calculation == True:
             month_results.append(aug)
             month_targets.append(tar_aug)
 
-        if submission.submission_september_results_calculation:
+        if submission.submission_september_results_calculation == True:
             month_results.append(sep)
             month_targets.append(tar_sep)
 
-        if submission.submission_october_results_calculation:
+        if submission.submission_october_results_calculation == True:
             month_results.append(oct)
             month_targets.append(tar_oct)
 
-        if submission.submission_november_results_calculation:
+        if submission.submission_november_results_calculation == True:
             month_results.append(nov)
             month_targets.append(tar_nov)
 
-        if submission.submission_december_results_calculation:
+        if submission.submission_december_results_calculation == True:
             month_results.append(dec)
             month_targets.append(tar_dec)
 
-        if submission.submission_january_results_calculation:
+        if submission.submission_january_results_calculation == True:
             month_results.append(jan)
             month_targets.append(tar_jan)
 
-        if submission.submission_february_results_calculation:
+        if submission.submission_february_results_calculation == True:
             month_results.append(feb)
             month_targets.append(tar_feb)
 
-        if submission.submission_march_results_calculation:
+        if submission.submission_march_results_calculation == True:
             month_results.append(mar)
             month_targets.append(tar_mar)
 
@@ -316,6 +318,8 @@ def calculate_kpi_score(kpi, kpi_type):
         month_results = [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
         month_targets = [tar_apr, tar_may, tar_jun, tar_jul, tar_aug, tar_sep, tar_oct, tar_nov, tar_dec, tar_jan,
                          tar_feb, tar_mar]
+
+    print(month_results)
 
     month_results = [0 if v is None else v for v in month_results]
     month_targets = [0 if v is None else v for v in month_targets]
@@ -463,6 +467,7 @@ def calculate_kpi_score(kpi, kpi_type):
 
         kpi_sum = round(sum(month_results), 2)
         kpi_average = round(kpi_sum / len(month_results), 2)
+        print(str(kpi.kpi_title) + " -  of lenght - " + str(len(month_results)))
 
         if kpi.kpi_function.lower() == 'maximize':
             if kpi.kpi_type.lower() == 'addition':
@@ -721,7 +726,7 @@ def get_matrix(staff, pms):
     if Matrix.objects.filter(matrix_pms=pms, matrix_grade=staff.staff_grade):
         return Matrix.objects.filter(matrix_pms=pms, matrix_grade=staff.staff_grade).first()
     elif Matrix.objects.filter(matrix_pms=pms, matrix_category=staff.staff_category):
-        return Matrix.objects.filter(matrix_pms=pms, matrix_category=staff.staff_category)
+        return Matrix.objects.filter(matrix_pms=pms, matrix_category=staff.staff_category).first()
     else:
         return None
 
