@@ -263,8 +263,6 @@ def calculate_kpi_score(kpi, kpi_type):
     if get_user_submission_data(kpi.kpi_staff, kpi.kpi_pms):
 
         submission = get_user_submission_data(kpi.kpi_staff, kpi.kpi_pms)
-        print(submission)
-        print("checking submissions")
 
         if submission.submission_april_results_calculation == True:
             month_results.append(apr)
@@ -318,8 +316,6 @@ def calculate_kpi_score(kpi, kpi_type):
         month_results = [apr, may, jun, jul, aug, sep, oct, nov, dec, jan, feb, mar]
         month_targets = [tar_apr, tar_may, tar_jun, tar_jul, tar_aug, tar_sep, tar_oct, tar_nov, tar_dec, tar_jan,
                          tar_feb, tar_mar]
-
-    print(month_results)
 
     month_results = [0 if v is None else v for v in month_results]
     month_targets = [0 if v is None else v for v in month_targets]
@@ -467,7 +463,6 @@ def calculate_kpi_score(kpi, kpi_type):
 
         kpi_sum = round(sum(month_results), 2)
         kpi_average = round(kpi_sum / len(month_results), 2)
-        print(str(kpi.kpi_title) + " -  of lenght - " + str(len(month_results)))
 
         if kpi.kpi_function.lower() == 'maximize':
             if kpi.kpi_type.lower() == 'addition':
@@ -791,9 +786,9 @@ def calculate_overall_score(staff, pms):
 
     kpi_score = kpi_weight / 100 * calculate_overall_kpi_score(staff, pms)
     assessment_score = assessment_weight / 100 * calculate_overall_assessment_score(staff, pms)
-    checkin_score = checkin_weight / 100 * calculate_overall_check_in_score(staff, pms)
-    bu_score = get_bu_score(staff, pms)
-    company_score = get_company_score(staff, pms)
+    checkin_score = calculate_overall_check_in_score(staff, pms)
+    bu_score = bu_weight / 100 * get_bu_score(staff, pms)
+    company_score = company_weight / 100 * get_company_score(staff, pms)
 
     score = round((kpi_score + assessment_score + bu_score + assessment_score + company_score) * checkin_score / 100, 2)
 
