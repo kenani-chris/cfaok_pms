@@ -785,6 +785,7 @@ def display_months_used(staff, pms):
         month_use['February'] = submission_kpi.submission_february_results_calculation
         month_use['March'] = submission_kpi.submission_march_results_calculation
 
+        print(submission_kpi)
     return month_use
 
 
