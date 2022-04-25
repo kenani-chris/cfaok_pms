@@ -570,6 +570,11 @@ def calculate_kpi_score(kpi, kpi_type):
                             kpi_score = 0
                     else:
                         kpi_score = (mar / kpi.kpi_target) * 100
+
+    if kpi.kpi_pms.pms_cap_results:
+        if kpi_score > 100.00:
+            kpi_score = 100.00
+
     return round(kpi_score, 2)
 
 
@@ -748,6 +753,74 @@ def display_matrix(staff, pms):
         matrix_applied = default_matrix
 
     return matrix_applied
+
+
+def display_months_used(staff, pms):
+    submission_kpi = get_user_submission_data(staff, pms)
+    month_use = {
+        'April': True,
+        'May': True,
+        'June': True,
+        'July': True,
+        'August': True,
+        'September': True,
+        'October': True,
+        'November': True,
+        'December': True,
+        'January': True,
+        'February': True,
+        'March': True,
+    }
+    if submission_kpi is not None:
+        month_use['April'] = submission_kpi.submission_april_results_calculation
+        month_use['May'] = submission_kpi.submission_may_results_calculation
+        month_use['June'] = submission_kpi.submission_june_results_calculation
+        month_use['July'] = submission_kpi.submission_july_results_calculation
+        month_use['August'] = submission_kpi.submission_august_results_calculation
+        month_use['September'] = submission_kpi.submission_september_results_calculation
+        month_use['October'] = submission_kpi.submission_october_results_calculation
+        month_use['November'] = submission_kpi.submission_november_results_calculation
+        month_use['December'] = submission_kpi.submission_december_results_calculation
+        month_use['January'] = submission_kpi.submission_january_results_calculation
+        month_use['February'] = submission_kpi.submission_february_results_calculation
+        month_use['March'] = submission_kpi.submission_march_results_calculation
+
+    return month_use
+
+
+def display_checkin_scoring_used(staff, pms):
+    checkin_scores = {
+        "1": "0%",
+        "2": "0%",
+        "3": "10%",
+        "4": "20%",
+        "5": "30%",
+        "6": "40%",
+        "7": "50%",
+        "8": "60%",
+        "9": "70%",
+        "10": "80%",
+        "11": "90%",
+        "12": "100%",
+    }
+
+    if SubmissionCheckin.objects.filter(submission_pms=pms, submission_level_category=staff.staff_category):
+        submission = SubmissionCheckin.objects.filter(submission_pms=pms,
+                                                      submission_level_category=staff.staff_category).first()
+        checkin_scores["1"] = str(submission.submission_one_results) + "%"
+        checkin_scores["2"] = str(submission.submission_two_results) + "%"
+        checkin_scores["3"] = str(submission.submission_three_results) + "%"
+        checkin_scores["4"] = str(submission.submission_four_results) + "%"
+        checkin_scores["5"] = str(submission.submission_five_results) + "%"
+        checkin_scores["6"] = str(submission.submission_six_results) + "%"
+        checkin_scores["7"] = str(submission.submission_seven_results) + "%"
+        checkin_scores["8"] = str(submission.submission_eight_results) + "%"
+        checkin_scores["9"] = str(submission.submission_nine_results) + "%"
+        checkin_scores["10"] = str(submission.submission_ten_results) + "%"
+        checkin_scores["11"] = str(submission.submission_eleven_results) + "%"
+        checkin_scores["12"] = str(submission.submission_twelve_results) + "%"
+
+    return checkin_scores
 
 
 def calculate_overall_score(staff, pms):

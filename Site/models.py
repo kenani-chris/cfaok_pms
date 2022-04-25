@@ -62,6 +62,7 @@ class PMS(models.Model):
     pms_year_end_date = models.DateField(auto_now=False, auto_now_add=False)
     pms_active = models.BooleanField(default=True)
     pms_company = models.ForeignKey('Company', on_delete=models.RESTRICT)
+    pms_cap_results = models.BooleanField(default=False, help_text="By checking this all results will not exceed 100%")
 
     def __str__(self):
         return self.pms_name

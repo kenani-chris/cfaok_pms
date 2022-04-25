@@ -197,6 +197,9 @@ class Dashboard(TemplateView):
             context['overall_score'] = calculate_overall_score(context['staff'], context['pms'])
             context['matrix_applied'] = display_matrix(context['staff'], context['pms'])
             context['company_score'] = get_company_score(context['staff'], context['pms'])
+            context['kpi_months_used'] = display_months_used(context['staff'], context['pms'])
+            context['assessment_used'] = Assessment.objects.filter(assessment_pms=context['pms'])
+            context['checkin_used'] = display_checkin_scoring_used(context['staff'], context['pms'])
             context['bu_score'] = get_bu_score(context['staff'], context['pms'])
             for kpi in KPI.objects.filter(kpi_staff=context['staff'], kpi_pms=context['pms']):
                 kpi_results.append([kpi, calculate_kpi_score(kpi, context['kpi_type'])])

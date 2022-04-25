@@ -40,14 +40,192 @@
                 </div>
             </div>
 
+            <div class="modal fade" id="modal-kpi_months_used">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Months used in KPI result</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Apr</th>
+                                        <th>May</th>
+                                        <th>Jun</th>
+                                        <th>Jul</th>
+                                        <th>Aug</th>
+                                        <th>Sep</th>
+                                        <th>Oct</th>
+                                        <th>Nov</th>
+                                        <th>Dec</th>
+                                        <th>Jan</th>
+                                        <th>Feb</th>
+                                        <th>Mar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ kpi_months_used.April }}</td>
+                                        <td>{{ kpi_months_used.May }}</td>
+                                        <td>{{ kpi_months_used.June }}</td>
+                                        <td>{{ kpi_months_used.July }}</td>
+                                        <td>{{ kpi_months_used.August }}</td>
+                                        <td>{{ kpi_months_used.April }}</td>
+                                        <td>{{ kpi_months_used.April }}</td>
+                                        <td>{{ kpi_months_used.April }}</td>
+                                        <td>{{ kpi_months_used.April }}</td>
+                                        <td>{{ kpi_months_used.April }}</td>
+                                        <td>{{ kpi_months_used.April }}</td>
+                                        <td>{{ kpi_months_used.April }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <hr>
+                            <strong>Key</strong>
+                            <br>
+                            True:   Month result is regarded in KPI results
+                            <br>
+                            False:  Month result is disregarded
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal-assessment_used">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Assessment(s) used</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Assessment</th>
+                                        <th>Used</th>
+                                    </tr>
+                                </thead>
+                                    {% for assessment in assessment_used%}
+                                        <tr>
+                                            <td>
+                                                {{ assessment.assessment_name }}
+                                            </td>
+                                            <td>
+                                                {{ assessment.assessment_scoring_use }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                <tr>
+                                </tr>
+                            </table>
+                            <hr>
+                            <strong>Key</strong>
+                            <br>
+                            Yes:   Assessment result is regarded in KPI results
+                            <br>
+                            No:  Assessment result is disregarded
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal-checkin_scoring_used">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Check In scoring</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="bg-info">Number</th>
+                                        <th>1</th>
+                                        <th>2</th>
+                                        <th>3</th>
+                                        <th>4</th>
+                                        <th>5</th>
+                                        <th>6</th>
+                                        <th>7</th>
+                                        <th>8</th>
+                                        <th>9</th>
+                                        <th>10</th>
+                                        <th>11</th>
+                                        <th>12</th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <th class="bg-info">Score</th>
+                                    <td>{{ checkin_used.1 }}</td>
+                                    <td>{{ checkin_used.2 }}</td>
+                                    <td>{{ checkin_used.3 }}</td>
+                                    <td>{{ checkin_used.4 }}</td>
+                                    <td>{{ checkin_used.5 }}</td>
+                                    <td>{{ checkin_used.6 }}</td>
+                                    <td>{{ checkin_used.7 }}</td>
+                                    <td>{{ checkin_used.8 }}</td>
+                                    <td>{{ checkin_used.9 }}</td>
+                                    <td>{{ checkin_used.10 }}</td>
+                                    <td>{{ checkin_used.11 }}</td>
+                                    <td>{{ checkin_used.12 }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal-results_cap">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Results cap</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <strong>Definition</strong>
+                            <br>
+                            If set to "True", it means all individual KPI results are capped not to exceed 100%
+                            <br>
+                            If set to "False", individual KPI are not capped from exceeding 100%
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-md-5 card">
                 <div class="card-body">
                     <h1>{{ pms.pms_name }}</h1>
                     <p>{{ pms.pms_description }}</p>
                     <p>{{ pms.pms_year_start_date }} - {{ pms.pms_year_end_date }}</p>
+                    Results Capping: <a href="" data-toggle="modal" data-target="#modal-results_cap">{{ pms.pms_cap_results }}</a>
                 </div>
                 <div class="card-footer">
-                    <p class="fixed-bottomx"><a href="" data-toggle="modal" data-target="#modal-matrix">Matrix</a></p>
+                    <p class="fixed-bottomx">
+                        <a href="" data-toggle="modal" data-target="#modal-matrix">Matrix Used</a> |
+                        <a href="" data-toggle="modal" data-target="#modal-kpi_months_used">KPI months used</a> |
+                        <a href="" data-toggle="modal" data-target="#modal-assessment_used">Assessment used</a> |
+                        <a href="" data-toggle="modal" data-target="#modal-checkin_scoring_used">CheckIn scoring used</a></p>
                 </div>
 
             </div>
