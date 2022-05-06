@@ -1,0 +1,172 @@
+{% extends 'Site/Reports/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Report' company_id %}">Report</a></li>
+        <li class="breadcrumb-item active">Report - KPI Submissions</li>
+    {% endblock %}
+    {% block page_title %}Report - KPI Submissions{% endblock %}
+    {% block content %}
+
+
+
+            <div class="card">
+                <div class="card-header">
+                    <h5>My Members</h5>
+                </div>
+                <div style="overflow-x: scroll">
+                     <table class="table table-bordered table-hover ReportTable">
+                          <thead>
+                              <tr>
+                                <th>Staff</th>
+                                <th>PF</th>
+                                <th>Approved</th>
+                                <th>Pending</th>
+                                <th>Rejected</th>
+                                <th>Apr</th>
+                                <th>Approved</th>
+                                <th>May</th>
+                                <th>Approved</th>
+                                <th>Jun</th>
+                                <th>Approved</th>
+                                <th>Jul</th>
+                                <th>Approved</th>
+                                <th>Aug</th>
+                                <th>Approved</th>
+                                <th>Sep</th>
+                                <th>Approved</th>
+                                <th>Oct</th>
+                                <th>Approved</th>
+                                <th>Nov</th>
+                                <th>Approved</th>
+                                <th>Dec</th>
+                                <th>Approved</th>
+                                <th>Jan</th>
+                                <th>Appproved</th>
+                                <th>Feb</th>
+                                <th>Approved</th>
+                                <th>Mar</th>
+                                <th>Approved</th>
+                              </tr>
+                              </thead>
+
+                          <tbody>
+                            {% for staff in my_members_submission %}
+                            <tr>
+                                <td>{{ staff.0 }}</td>
+                                <td>{{ staff.0.staff_pf_number }}</td>
+                                <td>{{ staff.1 }}</td>
+                                <td>{{ staff.2 }}</td>
+                                <td>{{ staff.3 }}</td>
+                                <td>{{ staff.4.apr_r }}</td>
+                                <td>{{ staff.5.apr_a }}</td>
+                                <td>{{ staff.4.may_r }}</td>
+                                <td>{{ staff.5.may_a }}</td>
+                                <td>{{ staff.4.jun_r }}</td>
+                                <td>{{ staff.5.jun_a }}</td>
+                                <td>{{ staff.4.jul_r }}</td>
+                                <td>{{ staff.5.jul_a }}</td>
+                                <td>{{ staff.4.aug_r }}</td>
+                                <td>{{ staff.5.aug_a }}</td>
+                                <td>{{ staff.4.sep_r }}</td>
+                                <td>{{ staff.5.sep_a }}</td>
+                                <td>{{ staff.4.oct_r }}</td>
+                                <td>{{ staff.5.oct_a }}</td>
+                                <td>{{ staff.4.nov_r }}</td>
+                                <td>{{ staff.5.nov_a }}</td>
+                                <td>{{ staff.4.dec_r }}</td>
+                                <td>{{ staff.5.dec_a }}</td>
+                                <td>{{ staff.4.jan_r }}</td>
+                                <td>{{ staff.5.jan_a }}</td>
+                                <td>{{ staff.4.feb_r }}</td>
+                                <td>{{ staff.5.feb_a }}</td>
+                                <td>{{ staff.4.mar_r }}</td>
+                                <td>{{ staff.5.mar_a }}</td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                     </table>
+                    <br>
+                </div>
+
+            </div>
+            {% if levels_down_submission|length > 0 %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Level down Members</h5>
+                    </div>
+                    <div style="overflow-x: scroll">
+                        <table class="table table-bordered table-hover ReportTable">
+                            <thead>
+                            <tr>
+                                <th>Staff</th>
+                                <th>PF</th>
+                                <th>Approved</th>
+                                <th>Pending</th>
+                                <th>Rejected</th>
+                                <th>Apr</th>
+                                <th>Approved</th>
+                                <th>May</th>
+                                <th>Approved</th>
+                                <th>Jun</th>
+                                <th>Approved</th>
+                                <th>Jul</th>
+                                <th>Approved</th>
+                                <th>Aug</th>
+                                <th>Approved</th>
+                                <th>Sep</th>
+                                <th>Approved</th>
+                                <th>Oct</th>
+                                <th>Approved</th>
+                                <th>Nov</th>
+                                <th>Approved</th>
+                                <th>Dec</th>
+                                <th>Approved</th>
+                                <th>Jan</th>
+                                <th>Appproved</th>
+                                <th>Feb</th>
+                                <th>Approved</th>
+                                <th>Mar</th>
+                                <th>Approved</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for staff in my_members_submission %}
+                                <tr>
+                                    <td>{{ staff.0 }}</td>
+                                    <td>{{ staff.0.staff_pf_number }}</td>
+                                    <td>{{ staff.1 }}</td>
+                                    <td>{{ staff.2 }}</td>
+                                    <td>{{ staff.3 }}</td>
+                                    <td>{{ staff.4.apr_r }}</td>
+                                    <td>{{ staff.5.apr_a }}</td>
+                                    <td>{{ staff.4.may_r }}</td>
+                                    <td>{{ staff.5.may_a }}</td>
+                                    <td>{{ staff.4.jun_r }}</td>
+                                    <td>{{ staff.5.jun_a }}</td>
+                                    <td>{{ staff.4.jul_r }}</td>
+                                    <td>{{ staff.5.jul_a }}</td>
+                                    <td>{{ staff.4.aug_r }}</td>
+                                    <td>{{ staff.5.aug_a }}</td>
+                                    <td>{{ staff.4.sep_r }}</td>
+                                    <td>{{ staff.5.sep_a }}</td>
+                                    <td>{{ staff.4.oct_r }}</td>
+                                    <td>{{ staff.5.oct_a }}</td>
+                                    <td>{{ staff.4.nov_r }}</td>
+                                    <td>{{ staff.5.nov_a }}</td>
+                                    <td>{{ staff.4.dec_r }}</td>
+                                    <td>{{ staff.5.dec_a }}</td>
+                                    <td>{{ staff.4.jan_r }}</td>
+                                    <td>{{ staff.5.jan_a }}</td>
+                                    <td>{{ staff.4.feb_r }}</td>
+                                    <td>{{ staff.5.feb_a }}</td>
+                                    <td>{{ staff.4.mar_r }}</td>
+                                    <td>{{ staff.5.mar_a }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <br>
+                    </div>
+                </div>
+            {% endif %}
+    {% endblock %}

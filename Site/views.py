@@ -1949,153 +1949,154 @@ class ReportKPISubmissionsResults(TemplateView):
         staff = context['staff']
 
         my_members_kpi_score = []
-        levels_down_kpi_score = []
-
-        staff_with_unapproved = 0
-        staff_with_approved = 0
 
         if staff.staff_superuser:
             for member_staff in Staff.objects.filter(staff_company=context['company']):
                 kpis = KPI.objects.filter(kpi_staff=member_staff, kpi_pms=context['pms'])
-                submission = SubmissionKPI.objects.filter(submission_level_category=member_staff.staff_category,
-                                                          submission_pms=context['pms'])
-                if submission:
-                    staff_submission = submission.first()
-                    apr_r = staff_submission.submission_april_results
-                    may_r = staff_submission.submission_may_results
-                    jun_r = staff_submission.submission_june_results
-                    jul_r = staff_submission.submission_july_results
-                    aug_r = staff_submission.submission_august_results
-                    sep_r = staff_submission.submission_september_results
-                    oct_r = staff_submission.submission_october_results
-                    nov_r = staff_submission.submission_november_results
-                    dec_r = staff_submission.submission_december_results
-                    jan_r = staff_submission.submission_january_results
-                    feb_r = staff_submission.submission_february_results
-                    mar_r = staff_submission.submission_march_results
-                else:
-                    apr_r = may_r = jun_r = jul_r = aug_r = sep_r = oct_r = nov_r = dec_r = jan_r = feb_r = mar_r = True
+                approved_kpis = kpis.filter(kpi_status="Approved")
+                pending_kpis = kpis.filter(kpi_status="Pending")
+                rejected_kpis = kpis.filter(kpi_status="Rejected")
 
-                approve_list = []
+                apr_r = may_r = jun_r = jul_r = aug_r = sep_r = oct_r = nov_r = dec_r = jan_r = feb_r = mar_r = 0
+                apr_a = may_a = jun_a = jul_a = aug_a = sep_a = oct_a = nov_a = dec_a = jan_a = feb_a = mar_a = 0
+                
+                for kpi in approved_kpis:
+                    if kpi.kpi_april_score is not None:
+                        apr_r += 1
+                    if kpi.kpi_may_score is not None:
+                        may_r += 1
+                    if kpi.kpi_june_score is not None:
+                        jun_r += 1
+                    if kpi.kpi_july_score is not None:
+                        jul_r += 1
+                    if kpi.kpi_august_score is not None:
+                        aug_r += 1
+                    if kpi.kpi_september_score is not None:
+                        sep_r += 1
+                    if kpi.kpi_october_score is not None:
+                        oct_r += 1
+                    if kpi.kpi_november_score is not None:
+                        nov_r += 1
+                    if kpi.kpi_december_score is not None:
+                        dec_r += 1
+                    if kpi.kpi_january_score is not None:
+                        jan_r += 1
+                    if kpi.kpi_february_score is not None:
+                        feb_r += 1
+                    if kpi.kpi_march_score is not None:
+                        mar_r += 1
 
-                for kpi in kpis:
-                    kpi_approved = True
-                    if kpi.kpi_april_score_approve != apr_r:
-                        kpi_approved = False
+                    if kpi.kpi_april_score_approve is True:
+                        apr_a += 1
+                    if kpi.kpi_may_score_approve is True:
+                        may_a += 1
+                    if kpi.kpi_june_score_approve is True:
+                        jun_a += 1
+                    if kpi.kpi_july_score_approve is True:
+                        jul_a += 1
+                    if kpi.kpi_august_score_approve is True:
+                        aug_a += 1
+                    if kpi.kpi_september_score_approve is True:
+                        sep_a += 1
+                    if kpi.kpi_october_score_approve is True:
+                        oct_a += 1
+                    if kpi.kpi_november_score_approve is True:
+                        nov_a += 1
+                    if kpi.kpi_december_score_approve is True:
+                        dec_a += 1
+                    if kpi.kpi_january_score_approve is True:
+                        jan_a += 1
+                    if kpi.kpi_february_score_approve is True:
+                        feb_a += 1
+                    if kpi.kpi_march_score_approve is True:
+                        mar_a += 1
+                results = {
+                    'apr_r': apr_r, 'may_r': may_r, 'jun_r': jun_r, 'jul_r': jul_r, 'aug_r': aug_r, 'sep_r': sep_r,
+                    'oct_r': oct_r, 'nov_r': nov_r, 'dec_r': dec_r, 'jan_r': jan_r, 'feb_r': feb_r, 'mar_r': mar_r
+                }
 
-                    if kpi.kpi_may_score_approve != may_r:
-                        kpi_approved = False
-
-                    if kpi.kpi_june_score_approve != jun_r:
-                        kpi_approved = False
-
-                    if kpi.kpi_july_score_approve != jul_r:
-                        kpi_approved = False
-
-                    if kpi.kpi_august_score_approve != aug_r:
-                        kpi_approved = False
-
-                    if kpi.kpi_september_score_approve != sep_r:
-                        kpi_approved = False
-
-                    if kpi.kpi_october_score_approve != oct_r:
-                        kpi_approved = False
-
-                    if kpi.kpi_november_score_approve != nov_r:
-                        kpi_approved = False
-
-                    if kpi.kpi_december_score_approve != dec_r:
-                        kpi_approved = False
-
-                    if kpi.kpi_january_score_approve != jan_r:
-                        kpi_approved = False
-
-                    if kpi.kpi_february_score_approve != feb_r:
-                        kpi_approved = False
-
-                    if kpi.kpi_march_score_approve != mar_r:
-                        kpi_approved = False
-
-                    approve_list.append(kpi_approved)
-
-                if False in approve_list or kpis.count() == 0:
-                    staff_with_unapproved += 1
-                else:
-                    staff_with_approved += 1
-
-                my_members_kpi_score.append([member_staff, approve_list.count(True), approve_list.count(False)])
+                approvals = {
+                    'apr_a': apr_a, 'may_a': may_a, 'jun_a': jun_a, 'jul_a': jul_a, 'aug_a': aug_a, 'sep_a': sep_a,
+                    'oct_a': oct_a, 'nov_a': nov_a, 'dec_a': dec_a, 'jan_a': jan_a, 'feb_a': feb_a, 'mar_a': mar_a
+                }
+                
+                my_members_kpi_score.append([member_staff, approved_kpis.count(), pending_kpis.count(),
+                                             rejected_kpis.count(), results, approvals],)
 
         else:
             for level in Level.objects.filter(level_head=staff):
                 for members in LevelMembership.objects.filter(membership_level=level):
                     kpis = KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms'])
-                    submission = SubmissionKPI.objects.filter(submission_level_category=members.membership_staff.staff_category,
-                                                              submission_pms=context['pms'])
-                    if submission:
-                        staff_submission = submission.first()
-                        apr_r = staff_submission.submission_april_results
-                        may_r = staff_submission.submission_may_results
-                        jun_r = staff_submission.submission_june_results
-                        jul_r = staff_submission.submission_july_results
-                        aug_r = staff_submission.submission_august_results
-                        sep_r = staff_submission.submission_september_results
-                        oct_r = staff_submission.submission_october_results
-                        nov_r = staff_submission.submission_november_results
-                        dec_r = staff_submission.submission_december_results
-                        jan_r = staff_submission.submission_january_results
-                        feb_r = staff_submission.submission_february_results
-                        mar_r = staff_submission.submission_march_results
-                    else:
-                        apr_r = may_r = jun_r = jul_r = aug_r = sep_r = oct_r = nov_r = dec_r = jan_r = feb_r = mar_r = True
+                    approved_kpis = kpis.filter(kpi_status="Approved")
+                    pending_kpis = kpis.filter(kpi_status="Pending")
+                    rejected_kpis = kpis.filter(kpi_status="Rejected")
 
-                    approve_list = []
+                    apr_r = may_r = jun_r = jul_r = aug_r = sep_r = oct_r = nov_r = dec_r = jan_r = feb_r = mar_r = 0
+                    apr_a = may_a = jun_a = jul_a = aug_a = sep_a = oct_a = nov_a = dec_a = jan_a = feb_a = mar_a = 0
 
-                    for kpi in kpis:
-                        kpi_approved = True
-                        if kpi.kpi_april_score_approve != apr_r:
-                            kpi_approved = False
+                    for kpi in approved_kpis:
+                        if kpi.kpi_april_score is not None:
+                            apr_r += 1
+                        if kpi.kpi_may_score is not None:
+                            may_r += 1
+                        if kpi.kpi_june_score is not None:
+                            jun_r += 1
+                        if kpi.kpi_july_score is not None:
+                            jul_r += 1
+                        if kpi.kpi_august_score is not None:
+                            aug_r += 1
+                        if kpi.kpi_september_score is not None:
+                            sep_r += 1
+                        if kpi.kpi_october_score is not None:
+                            oct_r += 1
+                        if kpi.kpi_november_score is not None:
+                            nov_r += 1
+                        if kpi.kpi_december_score is not None:
+                            dec_r += 1
+                        if kpi.kpi_january_score is not None:
+                            jan_r += 1
+                        if kpi.kpi_february_score is not None:
+                            feb_r += 1
+                        if kpi.kpi_march_score is not None:
+                            mar_r += 1
 
-                        if kpi.kpi_may_score_approve != may_r:
-                            kpi_approved = False
+                        if kpi.kpi_april_score_approve is True:
+                            apr_a += 1
+                        if kpi.kpi_may_score_approve is True:
+                            may_a += 1
+                        if kpi.kpi_june_score_approve is True:
+                            jun_a += 1
+                        if kpi.kpi_july_score_approve is True:
+                            jul_a += 1
+                        if kpi.kpi_august_score_approve is True:
+                            aug_a += 1
+                        if kpi.kpi_september_score_approve is True:
+                            sep_a += 1
+                        if kpi.kpi_october_score_approve is True:
+                            oct_a += 1
+                        if kpi.kpi_november_score_approve is True:
+                            nov_a += 1
+                        if kpi.kpi_december_score_approve is True:
+                            dec_a += 1
+                        if kpi.kpi_january_score_approve is True:
+                            jan_a += 1
+                        if kpi.kpi_february_score_approve is True:
+                            feb_a += 1
+                        if kpi.kpi_march_score_approve is True:
+                            mar_a += 1
+                    results = {
+                        'apr_r': apr_r, 'may_r': may_r, 'jun_r': jun_r, 'jul_r': jul_r, 'aug_r': aug_r, 'sep_r': sep_r,
+                        'oct_r': oct_r, 'nov_r': nov_r, 'dec_r': dec_r, 'jan_r': jan_r, 'feb_r': feb_r, 'mar_r': mar_r
+                    }
 
-                        if kpi.kpi_june_score_approve != jun_r:
-                            kpi_approved = False
+                    approvals = {
+                        'apr_a': apr_a, 'may_a': may_a, 'jun_a': jun_a, 'jul_a': jul_a, 'aug_a': aug_a, 'sep_a': sep_a,
+                        'oct_a': oct_a, 'nov_a': nov_a, 'dec_a': dec_a, 'jan_a': jan_a, 'feb_a': feb_a, 'mar_a': mar_a
+                    }
 
-                        if kpi.kpi_july_score_approve != jul_r:
-                            kpi_approved = False
+                    my_members_kpi_score.append([members.membership_staff, approved_kpis.count(), pending_kpis.count(),
+                                                 rejected_kpis.count(), results, approvals],)
 
-                        if kpi.kpi_august_score_approve != aug_r:
-                            kpi_approved = False
-
-                        if kpi.kpi_september_score_approve != sep_r:
-                            kpi_approved = False
-
-                        if kpi.kpi_october_score_approve != oct_r:
-                            kpi_approved = False
-
-                        if kpi.kpi_november_score_approve != nov_r:
-                            kpi_approved = False
-
-                        if kpi.kpi_december_score_approve != dec_r:
-                            kpi_approved = False
-
-                        if kpi.kpi_january_score_approve != jan_r:
-                            kpi_approved = False
-
-                        if kpi.kpi_february_score_approve != feb_r:
-                            kpi_approved = False
-
-                        if kpi.kpi_march_score_approve != mar_r:
-                            kpi_approved = False
-
-                        approve_list.append(kpi_approved)
-
-                    if False in approve_list or kpis.count() == 0:
-                        staff_with_unapproved += 1
-                    else:
-                        staff_with_approved += 1
-
-                    my_members_kpi_score.append([members.membership_staff, kpis, approve_list.count(True), approve_list.count(False)])
 
             if check_staff_is_level_head(self.kwargs['company_id'], staff):
                 levels_down = []
@@ -2109,78 +2110,78 @@ class ReportKPISubmissionsResults(TemplateView):
                     kpi_score = 0
                     for members in LevelMembership.objects.filter(membership_level=level):
                         kpis = KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms'])
-                        submission = SubmissionKPI.objects.filter(submission_level_category=members.membership_staff.staff_category,
-                                                                  submission_pms=context['pms'])
-                        if submission:
-                            staff_submission = submission.first()
-                            apr_r = staff_submission.submission_april_results
-                            may_r = staff_submission.submission_may_results
-                            jun_r = staff_submission.submission_june_results
-                            jul_r = staff_submission.submission_july_results
-                            aug_r = staff_submission.submission_august_results
-                            sep_r = staff_submission.submission_september_results
-                            oct_r = staff_submission.submission_october_results
-                            nov_r = staff_submission.submission_november_results
-                            dec_r = staff_submission.submission_december_results
-                            jan_r = staff_submission.submission_january_results
-                            feb_r = staff_submission.submission_february_results
-                            mar_r = staff_submission.submission_march_results
-                        else:
-                            apr_r = may_r = jun_r = jul_r = aug_r = sep_r = oct_r = nov_r = dec_r = jan_r = feb_r = mar_r = True
+                        kpis = KPI.objects.filter(kpi_staff=members.membership_staff, kpi_pms=context['pms'])
+                        approved_kpis = kpis.filter(kpi_status="Approved")
+                        pending_kpis = kpis.filter(kpi_status="Pending")
+                        rejected_kpis = kpis.filter(kpi_status="Rejected")
 
-                        approve_list = []
+                        apr_r = may_r = jun_r = jul_r = aug_r = sep_r = oct_r = nov_r = dec_r = jan_r = feb_r = mar_r = 0
+                        apr_a = may_a = jun_a = jul_a = aug_a = sep_a = oct_a = nov_a = dec_a = jan_a = feb_a = mar_a = 0
 
-                        for kpi in kpis:
-                            kpi_approved = True
-                            if kpi.kpi_april_score_approve != apr_r:
-                                kpi_approved = False
+                        for kpi in approved_kpis:
+                            if kpi.kpi_april_score is not None:
+                                apr_r += 1
+                            if kpi.kpi_may_score is not None:
+                                may_r += 1
+                            if kpi.kpi_june_score is not None:
+                                jun_r += 1
+                            if kpi.kpi_july_score is not None:
+                                jul_r += 1
+                            if kpi.kpi_august_score is not None:
+                                aug_r += 1
+                            if kpi.kpi_september_score is not None:
+                                sep_r += 1
+                            if kpi.kpi_october_score is not None:
+                                oct_r += 1
+                            if kpi.kpi_november_score is not None:
+                                nov_r += 1
+                            if kpi.kpi_december_score is not None:
+                                dec_r += 1
+                            if kpi.kpi_january_score is not None:
+                                jan_r += 1
+                            if kpi.kpi_february_score is not None:
+                                feb_r += 1
+                            if kpi.kpi_march_score is not None:
+                                mar_r += 1
 
-                            if kpi.kpi_may_score_approve != may_r:
-                                kpi_approved = False
+                            if kpi.kpi_april_score_approve is True:
+                                apr_a += 1
+                            if kpi.kpi_may_score_approve is True:
+                                may_a += 1
+                            if kpi.kpi_june_score_approve is True:
+                                jun_a += 1
+                            if kpi.kpi_july_score_approve is True:
+                                jul_a += 1
+                            if kpi.kpi_august_score_approve is True:
+                                aug_a += 1
+                            if kpi.kpi_september_score_approve is True:
+                                sep_a += 1
+                            if kpi.kpi_october_score_approve is True:
+                                oct_a += 1
+                            if kpi.kpi_november_score_approve is True:
+                                nov_a += 1
+                            if kpi.kpi_december_score_approve is True:
+                                dec_a += 1
+                            if kpi.kpi_january_score_approve is True:
+                                jan_a += 1
+                            if kpi.kpi_february_score_approve is True:
+                                feb_a += 1
+                            if kpi.kpi_march_score_approve is True:
+                                mar_a += 1
+                        results = {
+                            'apr_r': apr_r, 'may_r': may_r, 'jun_r': jun_r, 'jul_r': jul_r, 'aug_r': aug_r, 'sep_r': sep_r,
+                            'oct_r': oct_r, 'nov_r': nov_r, 'dec_r': dec_r, 'jan_r': jan_r, 'feb_r': feb_r, 'mar_r': mar_r
+                        }
 
-                            if kpi.kpi_june_score_approve != jun_r:
-                                kpi_approved = False
+                        approvals = {
+                            'apr_a': apr_a, 'may_a': may_a, 'jun_a': jun_a, 'jul_a': jul_a, 'aug_a': aug_a, 'sep_a': sep_a,
+                            'oct_a': oct_a, 'nov_a': nov_a, 'dec_a': dec_a, 'jan_a': jan_a, 'feb_a': feb_a, 'mar_a': mar_a
+                        }
 
-                            if kpi.kpi_july_score_approve != jul_r:
-                                kpi_approved = False
+                        my_members_kpi_score.append([members.membership_staff, approved_kpis.count(), pending_kpis.count(),
+                                                     rejected_kpis.count(), results, approvals],)
 
-                            if kpi.kpi_august_score_approve != aug_r:
-                                kpi_approved = False
-
-                            if kpi.kpi_september_score_approve != sep_r:
-                                kpi_approved = False
-
-                            if kpi.kpi_october_score_approve != oct_r:
-                                kpi_approved = False
-
-                            if kpi.kpi_november_score_approve != nov_r:
-                                kpi_approved = False
-
-                            if kpi.kpi_december_score_approve != dec_r:
-                                kpi_approved = False
-
-                            if kpi.kpi_january_score_approve != jan_r:
-                                kpi_approved = False
-
-                            if kpi.kpi_february_score_approve != feb_r:
-                                kpi_approved = False
-
-                            if kpi.kpi_march_score_approve != mar_r:
-                                kpi_approved = False
-
-                            approve_list.append(kpi_approved)
-
-                        if False in approve_list or kpis.count() == 0:
-                            staff_with_unapproved += 1
-                        else:
-                            staff_with_approved += 1
-
-                        my_members_kpi_score.append([members.membership_staff, kpis, approve_list.count(True), approve_list.count(False)])
-
-        context['staff_with_approved'] = staff_with_approved
-        context['staff_with_unapproved'] = staff_with_unapproved
-        context['my_members_kpi_score'] = my_members_kpi_score
-        context['levels_down_kpi_score'] = levels_down_kpi_score
+        context['my_members_submission'] = my_members_kpi_score
         return context
 
 
