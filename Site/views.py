@@ -1598,6 +1598,7 @@ class Report(TemplateView):
         staff = context['staff']
 
         my_members_score = []
+        member_error_list = []
         levels_down_score = []
 
         average_score = 0
@@ -1611,10 +1612,16 @@ class Report(TemplateView):
                 level = get_staff_level(member_staff)
                 assessment_score = calculate_overall_assessment_score(member_staff, context['pms'])
                 check_in_score = calculate_overall_check_in_score(member_staff, context['pms'])
-                kpi_score = calculate_overall_kpi_score(member_staff, context['pms'])
                 bu_score = get_bu_score(member_staff, context['pms'])
                 company_score = get_company_score(member_staff, context['pms'])
-                overall_score = calculate_overall_score(member_staff, context['pms'])
+
+                try:
+                    kpi_score = calculate_overall_kpi_score(member_staff, context['pms'])
+                    overall_score = calculate_overall_score(member_staff, context['pms'])
+                except Exception as e:
+                    kpi_score = 0
+                    overall_score = 0
+                    member_error_list.append([member_staff, e])
 
                 average_score += overall_score
                 if overall_score >= 75:
@@ -1718,6 +1725,7 @@ class ReportKPIResults(TemplateView):
         staff = context['staff']
 
         my_members_kpi_score = []
+        member_error_list = []
         levels_down_kpi_score = []
         average_score = 0
         cat_75 = 0
@@ -1737,7 +1745,11 @@ class ReportKPIResults(TemplateView):
                 for kpi in KPI.objects.filter(kpi_staff=member_staff, kpi_pms=context['pms']):
                     kpis.append([kpi, calculate_kpi_score(kpi, k_type)])
 
-                overall_kpi_score = calculate_overall_kpi_score(member_staff, context['pms'])
+                try:
+                    overall_kpi_score = calculate_overall_kpi_score(member_staff, context['pms'])
+                except Exception as e:
+                    overall_kpi_score = 0
+                    member_error_list.append([member_staff, e])
                 average_score += overall_kpi_score
                 if overall_kpi_score >= 75:
                     cat_75 += 1

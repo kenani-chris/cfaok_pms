@@ -47,6 +47,30 @@
                 </div>
 
             </div>
+            <div class="card">
+                <div class="card-header">
+                    <h5>Issues</h5>
+                </div>
+                <div style="overflow-x: scroll">
+                    <table class="table table-bordered table-hover ExportTable table-striped">
+                        <thead>
+                        <tr>
+                            <th>Staff</th>
+                            <th>Member</th>
+                            <th>Issue</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in member_error_list %}
+                                <tr>
+                                    <td>{{ member.0 }}</td>
+                                    <td>{{ member.1 }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
             <div class="card">
                 <div class="card-header">
@@ -59,6 +83,8 @@
                           <tr>
                             <th>Staff</th>
                             <th>KPI</th>
+                            <th>Function</th>
+                            <th>Type</th>
                             <th>Result</th>
                             <th>Apr</th>
                             <th>Apr approved</th>
@@ -90,12 +116,12 @@
                       <tbody>
                         {% for member in my_members_kpi_score %}
                             <tr>
-                                    <td rowspan="{{ member.1|length }}">{{ member.0 }}</td>
                                 {% if member.1|length < 1 %}
+                                    <td>{{ member.0 }}</td>
                                     <td>-</td>
                                     <td>-</td>
                                     <td>-</td>
-
+                                    <td>-</td>
                                     <td>-</td>
                                     <td>-</td>
                                     <td>-</td>
@@ -120,68 +146,69 @@
                                     <td>-</td>
                                     <td>-</td>
                                     <td>0</td>
-
+                                    <td>0</td>
 
                                     </tr>
                                 {% else %}
+                                    <td rowspan="{{ member.1|length }}">{{ member.0 }}</td>
                                     <td>{{ member.1.0.0 }}</td>
-                                    <td>{{ member.1.0.1 }}</td>
-                                    <td>{% if member.1.0.0.kpi_april_score is None%}0{% else %}1{% endif %}</td>
-                                    <td>{% if member.1.0.0.kpi_april_score_approve is False %}0{% else %}1{% endif %}</td>
                                     
-                                    <td>{% if member.1.0.0.kpi_may_score is None%}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.0.kpi_april_score }}</td>
+                                    <td>{% if member.1.0.0.kpi_april_score_approve is False %}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.0.kpi_may_score }}</td>
                                     <td>{% if member.1.0.0.kpi_may_score_approve is False %}0{% else %}1{% endif %}</td>
-                                    <td>{% if member.1.0.0.kpi_june_score is None%}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.0.kpi_june_score }}</td>
                                     <td>{% if member.1.0.0.kpi_june_score_approve is False %}0{% else %}1{% endif %}</td>
-                                    <td>{% if member.1.0.0.kpi_july_score is None%}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.0.kpi_july_score }}</td>
                                     <td>{% if member.1.0.0.kpi_july_score_approve is False %}0{% else %}1{% endif %}</td>
-                                    <td>{% if member.1.0.0.kpi_august_score is None%}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.0.kpi_august_score }}</td>
                                     <td>{% if member.1.0.0.kpi_august_score_approve is False %}0{% else %}1{% endif %}</td>
-                                    <td>{% if member.1.0.0.kpi_september_score is None%}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.0.kpi_september_score }}</td>
                                     <td>{% if member.1.0.0.kpi_september_score_approve is False %}0{% else %}1{% endif %}</td>
-                                    <td>{% if member.1.0.0.kpi_october_score is None%}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.0.kpi_october_score }}</td>
                                     <td>{% if member.1.0.0.kpi_october_score_approve is False %}0{% else %}1{% endif %}</td>
-                                    <td>{% if member.1.0.0.kpi_november_score is None%}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.0.kpi_november_score }}</td>
                                     <td>{% if member.1.0.0.kpi_november_score_approve is False %}0{% else %}1{% endif %}</td>
-                                    <td>{% if member.1.0.0.kpi_december_score is None%}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.0.kpi_december_score }}</td>
                                     <td>{% if member.1.0.0.kpi_december_score_approve is False %}0{% else %}1{% endif %}</td>
-                                    <td>{% if member.1.0.0.kpi_january_score is None%}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.0.kpi_january_score }}</td>
                                     <td>{% if member.1.0.0.kpi_january_score_approve is False %}0{% else %}1{% endif %}</td>
-                                    <td>{% if member.1.0.0.kpi_february_score is None%}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.0.kpi_february_score }}</td>
                                     <td>{% if member.1.0.0.kpi_february_score_approve is False %}0{% else %}1{% endif %}</td>
-                                    <td>{% if member.1.0.0.kpi_march_score is None%}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.0.kpi_march_score }}</td>
                                     <td>{% if member.1.0.0.kpi_march_score_approve is False %}0{% else %}1{% endif %}</td>
+                                    <td>{{ member.1.0.1 }}</td>
                                     <td rowspan="{{ member.1|length }}">{{ member.2 }}</td>
                                     </tr>
                                     {% for kpi in member.1 %}
                                         {% if kpi != member.1.0 %}
                                            <tr>
                                                 <td>{{ kpi.0 }}</td>
-                                                <td>{{ kpi.1 }}</td>
-                                                <td>{% if kpi.0.kpi_april_score is None%}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.0.kpi_april_score }}</td>
                                                 <td>{% if kpi.0.kpi_april_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                <td>{% if kpi.0.kpi_may_score is None%}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.0.kpi_may_score }}</td>
                                                 <td>{% if kpi.0.kpi_may_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                <td>{% if kpi.0.kpi_june_score is None%}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.0.kpi_june_score }}</td>
                                                 <td>{% if kpi.0.kpi_june_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                <td>{% if kpi.0.kpi_july_score is None%}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.0.kpi_july_score }}</td>
                                                 <td>{% if kpi.0.kpi_july_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                <td>{% if kpi.0.kpi_august_score is None%}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.0.kpi_august_score }}</td>
                                                 <td>{% if kpi.0.kpi_august_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                <td>{% if kpi.0.kpi_september_score is None%}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.0.kpi_september_score }}</td>
                                                 <td>{% if kpi.0.kpi_september_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                <td>{% if kpi.0.kpi_october_score is None%}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.0.kpi_october_score }}</td>
                                                 <td>{% if kpi.0.kpi_october_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                <td>{% if kpi.0.kpi_november_score is None%}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.0.kpi_november_score }}</td>
                                                 <td>{% if kpi.0.kpi_november_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                <td>{% if kpi.0.kpi_december_score is None%}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.0.kpi_december_score }}</td>
                                                 <td>{% if kpi.0.kpi_december_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                <td>{% if kpi.0.kpi_january_score is None%}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.0.kpi_january_score }}</td>
                                                 <td>{% if kpi.0.kpi_january_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                <td>{% if kpi.0.kpi_february_score is None%}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.0.kpi_february_score }}</td>
                                                 <td>{% if kpi.0.kpi_february_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                <td>{% if kpi.0.kpi_march_score is None%}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.0.kpi_march_score }}</td>
                                                 <td>{% if kpi.0.kpi_march_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                <td>{{ kpi.1 }}</td>
                                            </tr>
                                         {% endif %}
                                     {% endfor %}
@@ -206,7 +233,6 @@
                                 <th>Staff</th>
                                 <th>KPI</th>
                                 <th>Details</th>
-                                <th>Score</th>
                                 <th>Apr</th>
                                 <th>Apr approved</th>
                                 <th>May</th>
@@ -231,7 +257,8 @@
                                 <th>Feb Approved</th>
                                 <th>Mar</th>
                                 <th>Mar Approved</th>
-                                <th>Score</th>
+                                <th>KPI score</th>
+                                <th>Overall Score</th>
                               </tr>
                           </thead>
                           <tbody>
@@ -263,65 +290,69 @@
                                         <td>-</td>
                                         <td>-</td>
                                         <td>-</td>
-                                        <td>-</td>
+                                        <td>0</td>
                                         <td>0</td>
                                         </tr>
                                     {% else %}
+                                        <td rowspan="{{ member.1|length }}">{{ member.0 }}</td>
                                         <td>{{ member.1.0.0 }}</td>
-                                        <td>{{ member.1.0.1 }}</td>
-                                        <td>{% if member.1.0.0.kpi_may_score is None%}0{% else %}1{% endif %}</td>
+
+                                        <td>{{ member.1.0.0.kpi_april_score }}</td>
+                                        <td>{% if member.1.0.0.kpi_april_score_approve is False %}0{% else %}1{% endif %}</td>
+                                        <td>{{ member.1.0.0.kpi_may_score }}</td>
                                         <td>{% if member.1.0.0.kpi_may_score_approve is False %}0{% else %}1{% endif %}</td>
-                                        <td>{% if member.1.0.0.kpi_june_score is None%}0{% else %}1{% endif %}</td>
+                                        <td>{{ member.1.0.0.kpi_june_score }}</td>
                                         <td>{% if member.1.0.0.kpi_june_score_approve is False %}0{% else %}1{% endif %}</td>
-                                        <td>{% if member.1.0.0.kpi_july_score is None%}0{% else %}1{% endif %}</td>
+                                        <td>{{ member.1.0.0.kpi_july_score }}</td>
                                         <td>{% if member.1.0.0.kpi_july_score_approve is False %}0{% else %}1{% endif %}</td>
-                                        <td>{% if member.1.0.0.kpi_august_score is None%}0{% else %}1{% endif %}</td>
+                                        <td>{{ member.1.0.0.kpi_august_score }}</td>
                                         <td>{% if member.1.0.0.kpi_august_score_approve is False %}0{% else %}1{% endif %}</td>
-                                        <td>{% if member.1.0.0.kpi_september_score is None%}0{% else %}1{% endif %}</td>
+                                        <td>{{ member.1.0.0.kpi_september_score }}</td>
                                         <td>{% if member.1.0.0.kpi_september_score_approve is False %}0{% else %}1{% endif %}</td>
-                                        <td>{% if member.1.0.0.kpi_october_score is None%}0{% else %}1{% endif %}</td>
+                                        <td>{{ member.1.0.0.kpi_october_score }}</td>
                                         <td>{% if member.1.0.0.kpi_october_score_approve is False %}0{% else %}1{% endif %}</td>
-                                        <td>{% if member.1.0.0.kpi_november_score is None%}0{% else %}1{% endif %}</td>
+                                        <td>{{ member.1.0.0.kpi_november_score }}</td>
                                         <td>{% if member.1.0.0.kpi_november_score_approve is False %}0{% else %}1{% endif %}</td>
-                                        <td>{% if member.1.0.0.kpi_december_score is None%}0{% else %}1{% endif %}</td>
+                                        <td>{{ member.1.0.0.kpi_december_score }}</td>
                                         <td>{% if member.1.0.0.kpi_december_score_approve is False %}0{% else %}1{% endif %}</td>
-                                        <td>{% if member.1.0.0.kpi_january_score is None%}0{% else %}1{% endif %}</td>
+                                        <td>{{ member.1.0.0.kpi_january_score }}</td>
                                         <td>{% if member.1.0.0.kpi_january_score_approve is False %}0{% else %}1{% endif %}</td>
-                                        <td>{% if member.1.0.0.kpi_february_score is None%}0{% else %}1{% endif %}</td>
+                                        <td>{{ member.1.0.0.kpi_february_score }}</td>
                                         <td>{% if member.1.0.0.kpi_february_score_approve is False %}0{% else %}1{% endif %}</td>
-                                        <td>{% if member.1.0.0.kpi_march_score is None%}0{% else %}1{% endif %}</td>
+                                        <td>{{ member.1.0.0.kpi_march_score }}</td>
                                         <td>{% if member.1.0.0.kpi_march_score_approve is False %}0{% else %}1{% endif %}</td>
+                                        <td>{{ member.1.0.1 }}</td>
                                         <td rowspan="{{ member.1|length }}">{{ member.2 }}</td>
                                         </tr>
                                         {% for kpi in member.1 %}
                                             {% if kpi != member.1.0 %}
                                                <tr>
-                                                    <td>{{ kpi.0 }}</td>
-                                                    <td>{{ kpi.1 }}</td>
-                                                    <td>{% if kpi.0.kpi_april_score is None%}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_april_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_may_score is None%}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_may_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_june_score is None%}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_june_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_july_score is None%}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_july_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_august_score is None%}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_august_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_september_score is None%}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_september_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_october_score is None%}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_october_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_november_score is None%}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_november_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_december_score is None%}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_december_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_january_score is None%}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_january_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_february_score is None%}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_february_score_approve is False %}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_march_score is None%}0{% else %}1{% endif %}</td>
-                                                    <td>{% if kpi.0.kpi_march_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.0 }}</td>
+                                                   <td>{{ kpi.0.kpi_april_score }}</td>
+                                                   <td>{% if kpi.0.kpi_april_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.0.kpi_may_score }}</td>
+                                                   <td>{% if kpi.0.kpi_may_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.0.kpi_june_score }}</td>
+                                                   <td>{% if kpi.0.kpi_june_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.0.kpi_july_score }}</td>
+                                                   <td>{% if kpi.0.kpi_july_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.0.kpi_august_score }}</td>
+                                                   <td>{% if kpi.0.kpi_august_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.0.kpi_september_score }}</td>
+                                                   <td>{% if kpi.0.kpi_september_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.0.kpi_october_score }}</td>
+                                                   <td>{% if kpi.0.kpi_october_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.0.kpi_november_score }}</td>
+                                                   <td>{% if kpi.0.kpi_november_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.0.kpi_december_score }}</td>
+                                                   <td>{% if kpi.0.kpi_december_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.0.kpi_january_score }}</td>
+                                                   <td>{% if kpi.0.kpi_january_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.0.kpi_february_score }}</td>
+                                                   <td>{% if kpi.0.kpi_february_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.0.kpi_march_score }}</td>
+                                                   <td>{% if kpi.0.kpi_march_score_approve is False %}0{% else %}1{% endif %}</td>
+                                                   <td>{{ kpi.1 }}</td>
                                                </tr>
                                             {% endif %}
                                         {% endfor %}

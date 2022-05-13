@@ -561,11 +561,19 @@ def calculate_kpi_score(kpi, kpi_type):
                     else:
                         kpi_score = (kpi.kpi_target / result_dict[this_month]) * 100
                 else:
-                    if mar is None or mar == 0:
-                        if mar <= kpi.kpi_target:
-                            kpi_score = 100
+                    if mar is None:
+                        mar = 0
+                    if mar == 0:
+                        if kpi.kpi_target is None:
+                            if mar <= 0:
+                                kpi_score = 100
+                            else:
+                                kpi_score = 0
                         else:
-                            kpi_score = 0
+                            if mar <= kpi.kpi_target:
+                                kpi_score = 100
+                            else:
+                                kpi_score = 0
                     else:
                         kpi_score = (kpi.kpi_target / mar) * 100
 

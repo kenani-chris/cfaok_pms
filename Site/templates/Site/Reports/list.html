@@ -48,6 +48,30 @@
             </div>
             <div class="card">
                 <div class="card-header">
+                    <h5>Issues</h5>
+                </div>
+                <div style="overflow-x: scroll">
+                    <table class="table table-bordered table-hover ExportTable table-striped">
+                        <thead>
+                        <tr>
+                            <th>Staff</th>
+                            <th>Member</th>
+                            <th>Issue</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for member in member_error_list %}
+                            <tr>
+                                <td>{{ member.0 }}</td>
+                                <td>{{ member.1 }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
                     <h5>My Members</h5>
                 </div>
                 <div class="card-body" style="overflow-x: scroll">
