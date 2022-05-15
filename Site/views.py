@@ -201,6 +201,9 @@ class Dashboard(TemplateView):
             context['assessment_used'] = Assessment.objects.filter(assessment_pms=context['pms'])
             context['checkin_used'] = display_checkin_scoring_used(context['staff'], context['pms'])
             context['bu_score'] = get_bu_score(context['staff'], context['pms'])
+            context['the_bu'] = get_bu(context['staff'])
+            context['the_company'] = get_company_used(context['staff'])
+
             for kpi in KPI.objects.filter(kpi_staff=context['staff'], kpi_pms=context['pms']):
                 kpi_results.append([kpi, calculate_kpi_score(kpi, context['kpi_type'])])
         context['kpi_results'] = kpi_results
@@ -1614,6 +1617,9 @@ class Report(TemplateView):
                 check_in_score = calculate_overall_check_in_score(member_staff, context['pms'])
                 bu_score = get_bu_score(member_staff, context['pms'])
                 company_score = get_company_score(member_staff, context['pms'])
+                the_bu = get_bu(member_staff)
+                the_company = get_company_used(member_staff)
+
 
                 try:
                     kpi_score = calculate_overall_kpi_score(member_staff, context['pms'])
@@ -1634,7 +1640,7 @@ class Report(TemplateView):
                     cat_0 += 1
 
                 my_members_score.append([member_staff, level, assessment_score, check_in_score, kpi_score, bu_score,
-                                         company_score, overall_score])
+                                         company_score, overall_score, the_bu, the_company])
             if Staff.objects.filter(staff_company=context['company']).count() > 0:
                 average_score = round(average_score/Staff.objects.filter(staff_company=context['company']).count(), 2)
 
@@ -1649,6 +1655,8 @@ class Report(TemplateView):
                     bu_score = get_bu_score(members.membership_staff, context['pms'])
                     company_score = get_company_score(members.membership_staff, context['pms'])
                     overall_score = calculate_overall_score(members.membership_staff, context['pms'])
+                    the_bu = get_bu(members)
+                    the_company = get_company_used(members)
 
                     level_score += overall_score
                     if overall_score >= 75:
@@ -1661,7 +1669,7 @@ class Report(TemplateView):
                         cat_0 += 1
 
                     my_members_score.append([members.membership_staff, level, assessment_score, check_in_score,
-                                             kpi_score, bu_score, company_score, overall_score])
+                                             kpi_score, bu_score, company_score, overall_score, the_bu, the_company])
                 if LevelMembership.objects.filter(membership_level=level).count() > 0:
                     level_score = round(level_score/LevelMembership.objects.filter(membership_level=level).count(), 2)
 
@@ -1686,6 +1694,8 @@ class Report(TemplateView):
                         bu_score = get_bu_score(members.membership_staff, context['pms'])
                         company_score = get_company_score(members.membership_staff, context['pms'])
                         overall_score = calculate_overall_score(members.membership_staff, context['pms'])
+                        the_bu = get_bu(members)
+                        the_company = get_company_used(members)
 
                         level_score += overall_score
                         if overall_score >= 75:
@@ -1698,7 +1708,7 @@ class Report(TemplateView):
                             cat_0 += 1
 
                         levels_down_score.append([members.membership_staff, level, assessment_score, check_in_score,
-                                                  kpi_score, bu_score, company_score, overall_score])
+                                                  kpi_score, bu_score, company_score, overall_score, the_bu, the_company])
                     if LevelMembership.objects.filter(membership_level=level).count() > 0:
                         level_score = round(level_score/LevelMembership.objects.filter(membership_level=level).count(),
                                             2)
@@ -1759,9 +1769,9 @@ class ReportKPIResults(TemplateView):
                     cat_25 += 1
                 else:
                     cat_0 += 1
-
+                bu = get_bu(member_staff)
                 my_members_kpi_score.append([member_staff, kpis,
-                                             calculate_overall_kpi_score(member_staff, context['pms']), kpis])
+                                             calculate_overall_kpi_score(member_staff, context['pms']), kpis, bu])
             if Staff.objects.filter(staff_company=context['company']).count() > 0:
                 average_score = round(average_score/Staff.objects.filter(staff_company=context['company']).count(), 2)
 
@@ -1789,9 +1799,10 @@ class ReportKPIResults(TemplateView):
                         cat_25 += 1
                     else:
                         cat_0 += 1
+                    bu = get_bu(members)
 
                     my_members_kpi_score.append([members.membership_staff, kpis,
-                                                 calculate_overall_kpi_score(members.membership_staff, context['pms'])])
+                                                 calculate_overall_kpi_score(members.membership_staff, context['pms']), bu],)
                 if LevelMembership.objects.filter(membership_level=level).count() > 0:
                     kpi_score = round(kpi_score/LevelMembership.objects.filter(membership_level=level).count(), 2)
                 average_score += kpi_score
@@ -1830,10 +1841,10 @@ class ReportKPIResults(TemplateView):
                             cat_25 += 1
                         else:
                             cat_0 += 1
-
+                        bu = get_bu(members)
                         levels_down_kpi_score.append([members.membership_staff, kpis,
                                                       calculate_overall_kpi_score(members.membership_staff,
-                                                                                  context['pms'])])
+                                                                                  context['pms']), bu])
                     if LevelMembership.objects.filter(membership_level=level).count() > 0:
                         kpi_score = round(kpi_score / LevelMembership.objects.filter(membership_level=level).count(), 2)
                     average_score += kpi_score
@@ -1968,6 +1979,8 @@ class ReportKPISubmissionsResults(TemplateView):
                 approved_kpis = kpis.filter(kpi_status="Approved")
                 pending_kpis = kpis.filter(kpi_status="Pending")
                 rejected_kpis = kpis.filter(kpi_status="Rejected")
+                the_bu = get_bu(member_staff)
+                the_company = get_company_used(member_staff)
 
                 apr_r = may_r = jun_r = jul_r = aug_r = sep_r = oct_r = nov_r = dec_r = jan_r = feb_r = mar_r = 0
                 apr_a = may_a = jun_a = jul_a = aug_a = sep_a = oct_a = nov_a = dec_a = jan_a = feb_a = mar_a = 0
@@ -2033,7 +2046,7 @@ class ReportKPISubmissionsResults(TemplateView):
                 }
                 
                 my_members_kpi_score.append([member_staff, approved_kpis.count(), pending_kpis.count(),
-                                             rejected_kpis.count(), results, approvals],)
+                                             rejected_kpis.count(), results, approvals, the_bu, the_company],)
 
         else:
             for level in Level.objects.filter(level_head=staff):
@@ -2042,6 +2055,8 @@ class ReportKPISubmissionsResults(TemplateView):
                     approved_kpis = kpis.filter(kpi_status="Approved")
                     pending_kpis = kpis.filter(kpi_status="Pending")
                     rejected_kpis = kpis.filter(kpi_status="Rejected")
+                    the_bu = get_bu(members)
+                    the_company = get_company_used(members)
 
                     apr_r = may_r = jun_r = jul_r = aug_r = sep_r = oct_r = nov_r = dec_r = jan_r = feb_r = mar_r = 0
                     apr_a = may_a = jun_a = jul_a = aug_a = sep_a = oct_a = nov_a = dec_a = jan_a = feb_a = mar_a = 0
@@ -2107,7 +2122,7 @@ class ReportKPISubmissionsResults(TemplateView):
                     }
 
                     my_members_kpi_score.append([members.membership_staff, approved_kpis.count(), pending_kpis.count(),
-                                                 rejected_kpis.count(), results, approvals],)
+                                                 rejected_kpis.count(), results, approvals, the_bu, the_company],)
 
 
             if check_staff_is_level_head(self.kwargs['company_id'], staff):
@@ -2126,6 +2141,8 @@ class ReportKPISubmissionsResults(TemplateView):
                         approved_kpis = kpis.filter(kpi_status="Approved")
                         pending_kpis = kpis.filter(kpi_status="Pending")
                         rejected_kpis = kpis.filter(kpi_status="Rejected")
+                        the_bu = get_bu(members)
+                        the_company = get_company_used(members)
 
                         apr_r = may_r = jun_r = jul_r = aug_r = sep_r = oct_r = nov_r = dec_r = jan_r = feb_r = mar_r = 0
                         apr_a = may_a = jun_a = jul_a = aug_a = sep_a = oct_a = nov_a = dec_a = jan_a = feb_a = mar_a = 0
@@ -2191,7 +2208,7 @@ class ReportKPISubmissionsResults(TemplateView):
                         }
 
                         my_members_kpi_score.append([members.membership_staff, approved_kpis.count(), pending_kpis.count(),
-                                                     rejected_kpis.count(), results, approvals],)
+                                                     rejected_kpis.count(), results, approvals, the_bu, the_company],)
 
         context['my_members_submission'] = my_members_kpi_score
         return context

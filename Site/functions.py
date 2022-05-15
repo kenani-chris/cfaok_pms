@@ -892,6 +892,26 @@ def get_bu_score(staff, pms):
     return score
 
 
+def get_bu(staff):
+
+    bu = None
+    categories = []
+    levels_up = []
+
+    if not Level.objects.filter(level_head=staff, level_category__category_kpi_view=True):
+        all_categories_up(staff.staff_category, categories)
+        for category in categories:
+            if category.category_kpi_view is True and category != categories[-1]:
+                if Level.objects.filter(level_category=category).exclude(level_head=staff):
+                    all_levels_up(get_staff_level(staff), levels_up)
+                    levels_up.append(get_staff_level(staff))
+                    for level in Level.objects.filter(level_category=category).exclude(level_head=staff):
+                        if level in levels_up:
+                            bu = level
+                            break
+    return bu
+
+
 def get_company_score(staff, pms):
     score = 0
     categories = []
@@ -899,13 +919,29 @@ def get_company_score(staff, pms):
 
     if len(categories) > 0:
         if categories[0] != categories[-1]:
-            if not Level.objects.filter(level_head=staff, level_category=categories[0]):
-                level = Level.objects.filter(level_category=categories[0])
+            if not Level.objects.filter(level_head=staff, level_category=categories[-1]):
+                level = Level.objects.filter(level_category=categories[-1])
                 if level:
                     level.first()
                     score = calculate_overall_kpi_score(level.first().level_head, pms)
 
     return score
+
+
+def get_company_used(staff):
+
+    the_company = None
+    categories = []
+    all_categories_up(staff.staff_category, categories)
+
+    if len(categories) > 0:
+        if categories[0] != categories[-1]:
+            if not Level.objects.filter(level_head=staff, level_category=categories[-1]):
+                level = Level.objects.filter(level_category=categories[-1])
+                if level:
+                    the_company = level.first()
+
+    return the_company
 
 
 def send_email(title, receiver, message):
