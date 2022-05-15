@@ -78,14 +78,31 @@
                 </div>
                 <div style="overflow-x: scroll">
                     <button onclick="exportReportToExcel()">Export to excel</button>
-                    <table class="table table-bordered table-hover ExportTable table-striped">
+                    <table class="table table-bordered table-hover table-striped">
                       <thead>
                           <tr>
                             <th>Staff</th>
                             <th>KPI</th>
                             <th>Function</th>
                             <th>Type</th>
-                            <th>Result</th>
+                            <th>S</th>
+                            <th>A</th>
+                            <th>B</th>
+                            <th>C</th>
+                            <th>D</th>
+                            <th>Tar Apr</th>
+                            <th>Tar May</th>
+                            <th>Tar Jun</th>
+                            <th>Tar Jul</th>
+                            <th>Tar Aug</th>
+                            <th>Tar Sep</th>
+                            <th>Tar Oct</th>
+                            <th>Tar Nov</th>
+                            <th>Tar Dec</th>
+                            <th>Tar Jan</th>
+                            <th>Tar Feb</th>
+                            <th>Tar Mar</th>
+
                             <th>Apr</th>
                             <th>Apr approved</th>
                             <th>May</th>
@@ -110,6 +127,7 @@
                             <th>Feb Approved</th>
                             <th>Mar</th>
                             <th>Mar Approved</th>
+                            <th>Result</th>
                             <th>Score</th>
                           </tr>
                       </thead>
@@ -145,6 +163,23 @@
                                     <td>-</td>
                                     <td>-</td>
                                     <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
                                     <td>0</td>
                                     <td>0</td>
 
@@ -152,7 +187,29 @@
                                 {% else %}
                                     <td rowspan="{{ member.1|length }}">{{ member.0 }}</td>
                                     <td>{{ member.1.0.0 }}</td>
+                                    <td>{{ member.1.0.0.kpi_function }}</td>
+                                    <td>{{ member.1.0.0.kpi_type }}</td>
+
+                                    <td>{{ member.1.0.0.kpi_bsc_s_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_bsc_a_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_bsc_b_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_bsc_c_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_bsc_d_target }}</td>
+
+                                    <td>{{ member.1.0.0.kpi_april_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_may_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_june_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_july_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_august_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_september_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_october_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_november_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_december_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_january_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_february_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_march_target }}</td>
                                     
+
                                     <td>{{ member.1.0.0.kpi_april_score }}</td>
                                     <td>{% if member.1.0.0.kpi_april_score_approve is False %}0{% else %}1{% endif %}</td>
                                     <td>{{ member.1.0.0.kpi_may_score }}</td>
@@ -184,6 +241,28 @@
                                         {% if kpi != member.1.0 %}
                                            <tr>
                                                 <td>{{ kpi.0 }}</td>
+                                                <td>{{ kpi.0.kpi_function }}</td>
+                                                <td>{{ kpi.0.kpi_type }}</td>
+
+                                               <td>{{ kpi.0.kpi_bsc_s_target }}</td>
+                                               <td>{{ kpi.0.kpi_bsc_a_target }}</td>
+                                               <td>{{ kpi.0.kpi_bsc_b_target }}</td>
+                                               <td>{{ kpi.0.kpi_bsc_c_target }}</td>
+                                               <td>{{ kpi.0.kpi_bsc_d_target }}</td>
+
+                                               <td>{{ kpi.0.kpi_april_target }}</td>
+                                               <td>{{ kpi.0.kpi_may_target }}</td>
+                                               <td>{{ kpi.0.kpi_june_target }}</td>
+                                               <td>{{ kpi.0.kpi_july_target }}</td>
+                                               <td>{{ kpi.0.kpi_august_target }}</td>
+                                               <td>{{ kpi.0.kpi_september_target }}</td>
+                                               <td>{{ kpi.0.kpi_october_target }}</td>
+                                               <td>{{ kpi.0.kpi_november_target }}</td>
+                                               <td>{{ kpi.0.kpi_december_target }}</td>
+                                               <td>{{ kpi.0.kpi_january_target }}</td>
+                                               <td>{{ kpi.0.kpi_february_target }}</td>
+                                               <td>{{ kpi.0.kpi_march_target }}</td>
+                                           
                                                 <td>{{ kpi.0.kpi_april_score }}</td>
                                                 <td>{% if kpi.0.kpi_april_score_approve is False %}0{% else %}1{% endif %}</td>
                                                 <td>{{ kpi.0.kpi_may_score }}</td>
@@ -227,7 +306,7 @@
                     </div>
                     <div style="overflow-x: scroll">
                         <button onclick="exportReportToExcel()">Export to excel</button>
-                        <table class="table table-bordered table-hover ExportTable table-striped">
+                        <table class="table table-bordered table-hover ReportTable table-striped ">
                           <thead>
                               <tr>
                                 <th>Staff</th>
@@ -266,6 +345,27 @@
                                 <tr>
                                         <td rowspan="{{ member.1|length }}">{{ member.0 }}</td>
                                     {% if member.1|length < 1 %}
+                                        <td>{{ member.0 }}</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
                                         <td>-</td>
                                         <td>-</td>
                                         <td>-</td>
@@ -294,8 +394,31 @@
                                         <td>0</td>
                                         </tr>
                                     {% else %}
+
                                         <td rowspan="{{ member.1|length }}">{{ member.0 }}</td>
                                         <td>{{ member.1.0.0 }}</td>
+                                        <td>{{ member.1.0.0.kpi_function }}</td>
+                                        <td>{{ member.1.0.0.kpi_type }}</td>
+
+                                        <td>{{ member.1.0.0.kpi_bsc_s_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_bsc_a_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_bsc_b_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_bsc_c_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_bsc_d_target }}</td>
+
+                                        <td>{{ member.1.0.0.kpi_april_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_may_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_june_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_july_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_august_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_september_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_october_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_november_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_december_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_january_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_february_target }}</td>
+                                        <td>{{ member.1.0.0.kpi_march_target }}</td>
+
 
                                         <td>{{ member.1.0.0.kpi_april_score }}</td>
                                         <td>{% if member.1.0.0.kpi_april_score_approve is False %}0{% else %}1{% endif %}</td>
@@ -328,6 +451,28 @@
                                             {% if kpi != member.1.0 %}
                                                <tr>
                                                    <td>{{ kpi.0 }}</td>
+                                                   <td>{{ kpi.0.kpi_function }}</td>
+                                                   <td>{{ kpi.0.kpi_type }}</td>
+
+                                                   <td>{{ kpi.0.kpi_bsc_s_target }}</td>
+                                                   <td>{{ kpi.0.kpi_bsc_a_target }}</td>
+                                                   <td>{{ kpi.0.kpi_bsc_b_target }}</td>
+                                                   <td>{{ kpi.0.kpi_bsc_c_target }}</td>
+                                                   <td>{{ kpi.0.kpi_bsc_d_target }}</td>
+
+                                                   <td>{{ kpi.0.kpi_april_target }}</td>
+                                                   <td>{{ kpi.0.kpi_may_target }}</td>
+                                                   <td>{{ kpi.0.kpi_june_target }}</td>
+                                                   <td>{{ kpi.0.kpi_july_target }}</td>
+                                                   <td>{{ kpi.0.kpi_august_target }}</td>
+                                                   <td>{{ kpi.0.kpi_september_target }}</td>
+                                                   <td>{{ kpi.0.kpi_october_target }}</td>
+                                                   <td>{{ kpi.0.kpi_november_target }}</td>
+                                                   <td>{{ kpi.0.kpi_december_target }}</td>
+                                                   <td>{{ kpi.0.kpi_january_target }}</td>
+                                                   <td>{{ kpi.0.kpi_february_target }}</td>
+                                                   <td>{{ kpi.0.kpi_march_target }}</td>
+
                                                    <td>{{ kpi.0.kpi_april_score }}</td>
                                                    <td>{% if kpi.0.kpi_april_score_approve is False %}0{% else %}1{% endif %}</td>
                                                    <td>{{ kpi.0.kpi_may_score }}</td>
