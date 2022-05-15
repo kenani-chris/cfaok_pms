@@ -85,6 +85,7 @@
                             <th>KPI</th>
                             <th>Function</th>
                             <th>Type</th>
+                            <th>Target</th>
                             <th>S</th>
                             <th>A</th>
                             <th>B</th>
@@ -180,6 +181,7 @@
                                     <td>-</td>
                                     <td>-</td>
                                     <td>-</td>
+                                    <td>-</td>
                                     <td>0</td>
                                     <td>0</td>
 
@@ -189,6 +191,8 @@
                                     <td>{{ member.1.0.0 }}</td>
                                     <td>{{ member.1.0.0.kpi_function }}</td>
                                     <td>{{ member.1.0.0.kpi_type }}</td>
+
+                                    <td>{{ member.1.0.0.kpi_target }}</td>
 
                                     <td>{{ member.1.0.0.kpi_bsc_s_target }}</td>
                                     <td>{{ member.1.0.0.kpi_bsc_a_target }}</td>
@@ -244,6 +248,7 @@
                                                 <td>{{ kpi.0.kpi_function }}</td>
                                                 <td>{{ kpi.0.kpi_type }}</td>
 
+                                               <td>{{ kpi.0.kpi_target }}</td>
                                                <td>{{ kpi.0.kpi_bsc_s_target }}</td>
                                                <td>{{ kpi.0.kpi_bsc_a_target }}</td>
                                                <td>{{ kpi.0.kpi_bsc_b_target }}</td>
@@ -309,35 +314,55 @@
                         <table class="table table-bordered table-hover ReportTable table-striped ">
                           <thead>
                               <tr>
-                                <th>Staff</th>
-                                <th>KPI</th>
-                                <th>Details</th>
-                                <th>Apr</th>
-                                <th>Apr approved</th>
-                                <th>May</th>
-                                <th>May Approved</th>
-                                <th>Jun</th>
-                                <th>Jun Approved</th>
-                                <th>Jul</th>
-                                <th>Jul Approved</th>
-                                <th>Aug</th>
-                                <th>Aug Approved</th>
-                                <th>Sep</th>
-                                <th>Sep Approved</th>
-                                <th>Oct</th>
-                                <th>Oct Approved</th>
-                                <th>Nov</th>
-                                <th>Nov Approved</th>
-                                <th>Dec</th>
-                                <th>Dec Approved</th>
-                                <th>Jan</th>
-                                <th>Jan Approved</th>
-                                <th>Feb</th>
-                                <th>Feb Approved</th>
-                                <th>Mar</th>
-                                <th>Mar Approved</th>
-                                <th>KPI score</th>
-                                <th>Overall Score</th>
+                                  <th>Staff</th>
+                                  <th>KPI</th>
+                                  <th>Function</th>
+                                  <th>Type</th>
+                                  <th>Target</th>
+                                  <th>S</th>
+                                  <th>A</th>
+                                  <th>B</th>
+                                  <th>C</th>
+                                  <th>D</th>
+                                  <th>Tar Apr</th>
+                                  <th>Tar May</th>
+                                  <th>Tar Jun</th>
+                                  <th>Tar Jul</th>
+                                  <th>Tar Aug</th>
+                                  <th>Tar Sep</th>
+                                  <th>Tar Oct</th>
+                                  <th>Tar Nov</th>
+                                  <th>Tar Dec</th>
+                                  <th>Tar Jan</th>
+                                  <th>Tar Feb</th>
+                                  <th>Tar Mar</th>
+
+                                  <th>Apr</th>
+                                  <th>Apr approved</th>
+                                  <th>May</th>
+                                  <th>May Approved</th>
+                                  <th>Jun</th>
+                                  <th>Jun Approved</th>
+                                  <th>Jul</th>
+                                  <th>Jul Approved</th>
+                                  <th>Aug</th>
+                                  <th>Aug Approved</th>
+                                  <th>Sep</th>
+                                  <th>Sep Approved</th>
+                                  <th>Oct</th>
+                                  <th>Oct Approved</th>
+                                  <th>Nov</th>
+                                  <th>Nov Approved</th>
+                                  <th>Dec</th>
+                                  <th>Dec Approved</th>
+                                  <th>Jan</th>
+                                  <th>Jan Approved</th>
+                                  <th>Feb</th>
+                                  <th>Feb Approved</th>
+                                  <th>Mar</th>
+                                  <th>Mar Approved</th>
+                                  <th>Result</th>
+                                  <th>Score</th>
                               </tr>
                           </thead>
                           <tbody>
@@ -346,6 +371,7 @@
                                         <td rowspan="{{ member.1|length }}">{{ member.0 }}</td>
                                     {% if member.1|length < 1 %}
                                         <td>{{ member.0 }}</td>
+                                        <td>-</td>
                                         <td>-</td>
                                         <td>-</td>
                                         <td>-</td>
@@ -400,6 +426,8 @@
                                         <td>{{ member.1.0.0.kpi_function }}</td>
                                         <td>{{ member.1.0.0.kpi_type }}</td>
 
+                                        <td>{{ member.1.0.0.kpi_target }}</td>
+
                                         <td>{{ member.1.0.0.kpi_bsc_s_target }}</td>
                                         <td>{{ member.1.0.0.kpi_bsc_a_target }}</td>
                                         <td>{{ member.1.0.0.kpi_bsc_b_target }}</td>
@@ -453,6 +481,8 @@
                                                    <td>{{ kpi.0 }}</td>
                                                    <td>{{ kpi.0.kpi_function }}</td>
                                                    <td>{{ kpi.0.kpi_type }}</td>
+
+                                                   <td>{{ kpi.0.kpi_target }}</td>
 
                                                    <td>{{ kpi.0.kpi_bsc_s_target }}</td>
                                                    <td>{{ kpi.0.kpi_bsc_a_target }}</td>
