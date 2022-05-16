@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.contrib import admin
-from .models import *
+from .models import Staff, PMS, LevelCategory, KPIType, CheckIn, Level, KPI, LevelMembership, Assessment, Questions, \
+    QuestionResponses, PasswordChange, SubmissionCheckin, SubmissionKPI
 from .urls import app_name
 
 

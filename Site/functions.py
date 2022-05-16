@@ -7,7 +7,8 @@ from django.urls import reverse
 from django.utils import timezone
 from cfaok_pms import settings
 from cfaok_pms.settings import PASSWORD_CHANGE_DURATION
-from .models import *
+from .models import Staff, Company, PMS, Level, LevelMembership, SubmissionKPI, Notification, KPI, KPIType, \
+    SubmissionCheckin, QuestionResponses, Questions, Matrix, Assessment, CheckIn, PasswordChange, User
 
 
 def get_staff_account(company, user):

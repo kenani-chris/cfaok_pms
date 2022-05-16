@@ -84,7 +84,7 @@ def send_email(title, user_name, receiver, msg):
         sender = EMAIL_HOST_USER
         pasword = EMAIL_HOST_PASSWORD
         mail = smtplib.SMTP(EMAIL_HOST, 587)
-        # context = ssl.create_default_context()
+
         mail.ehlo()
         mail.starttls()
         mail.login(sender, pasword)
