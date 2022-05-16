@@ -22,6 +22,7 @@ class Home(TemplateView):
         return context
 
 
+@require_POST
 def self_change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
