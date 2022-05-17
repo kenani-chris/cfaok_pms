@@ -413,6 +413,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.5/pdfmake.min.js" integrity="sha512-rDbVu5s98lzXZsmJoMa0DjHNE+RwPJACogUCLyq3Xxm2kJO6qsQwjbE5NDk2DqmlKcxDirCnU1wAzVLe12IM3w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.5/vfs_fonts.js" integrity="sha512-cktKDgjEiIkPVHYbn8bh/FEyYxmt4JDJJjOCu5/FQAkW4bc911XtKYValiyzBiJigjVEvrIAyQFEbRJZyDA1wQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables-buttons/2.2.2/js/buttons.html5.min.js" integrity="sha512-LqvN9oWRj2YUmy7ZDYHOjWKc52n5zvDfYSmSEr07eOTFfmWXIfAmRD2ecj4jS+npR41A2xEZaWFf38SWfJIqig==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.core.min.js" integrity="sha512-UhlYw//T419BPq/emC5xSZzkjjreRfN3426517rfsg/XIEC02ggQBb680V0VvP+zaDZ78zqse3rqnnI5EJ6rxA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.js" integrity="sha512-B+gr+zLWg81qxVwvtYwKrmjvQtZKD/GGFF7jD80OfzbqFw+NsbS5faEqpCO7Q7oRw1bYi0+WLJf54j8Vm7NADw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.min.js" integrity="sha512-XmZS54be9JGMZjf+zk61JZaLZyjTRgs41JLSmx5QlIP5F+sSGIyzD2eJyxD4K6kGGr7AsVhaitzZ2WTfzpsQzg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!--<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>-->
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>-->
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>-->
@@ -449,20 +452,14 @@
   });
 </script>
 <script>
-    var ExportTable = document.getElementsByClassName("ExportTable");
-    if(ExportTable)
-    {
-        function exportReportToExcel() {
-          let table = document.getElementsByTagName("table"); // you can use document.getElementById('tableId') as well by providing id to the table tag
-          TableToExcel.convert(table[0], { // html code may contain multiple tables so here we are refering to 1st table tag
-            name: `OCR.xlsx`, // fileName you could use any name
-            sheet: {
-              name: 'Sheet 1' // sheetName
-            }
-          });
+    function exportReportToExcel(tableId) {
+      TableToExcel.convert(document.getElementById(tableId), {
+        name: `export.xlsx`,
+        sheet: {
+          name: 'Sheet 1'
         }
+      });
     }
-
 </script>
 <script>
     $(document).ready(function () {
@@ -917,6 +914,24 @@
 
   })
 </script>
+<!--<script>
+        new TableExport(document.getElementById("exportThis"),
+        {
+            headers: true,                      // (Boolean), display table headers (th or td elements) in the <thead>, (default: true)
+            footers: true,                      // (Boolean), display table footers (th or td elements) in the <tfoot>, (default: false)
+            formats: ["xlsx", "csv", "txt"],    // (String[]), filetype(s) for the export, (default: ['xlsx', 'csv', 'txt'])
+            filename: "exported",                     // (id, String), filename for the downloaded file, (default: 'id')
+            bootstrap: true,                   // (Boolean), style buttons using bootstrap, (default: true)
+            exportButtons: true,                // (Boolean), automatically generate the built-in export buttons for each of the specified formats (default: true)
+            position: "bottom",                 // (top, bottom), position of the caption element relative to table, (default: 'bottom')
+            ignoreRows: null,                   // (Number, Number[]), row indices to exclude from the exported file(s) (default: null)
+            ignoreCols: null,                   // (Number, Number[]), column indices to exclude from the exported file(s) (default: null)
+            trimWhitespace: true,               // (Boolean), remove all leading/trailing newlines, spaces, and tabs from cell text in the exported file(s) (default: false)
+            RTL: false,                         // (Boolean), set direction of the worksheet to right-to-left (default: false)
+            sheetname: "id"                     // (id, String), sheet name for the exported spreadsheet, (default: 'id')
+        });
+
+</script>-->
 {% block jscripts %}
 {% endblock %}
 </body>

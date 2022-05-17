@@ -77,8 +77,8 @@
                     <h5>My Members</h5>
                 </div>
                 <div style="overflow-x: scroll">
-                    <button onclick="exportReportToExcel()">Export to excel</button>
-                    <table class="table table-bordered table-hover table-striped">
+                    <button onclick="exportReportToExcel('exportTable1')">Export to excel</button>
+                    <table class="table table-bordered table-hover table-striped" id="exportTable1">
                       <thead>
                           <tr>
                             <th>Staff</th>
@@ -310,8 +310,8 @@
                         <h5>Level Down Members</h5>
                     </div>
                     <div style="overflow-x: scroll">
-                        <button onclick="exportReportToExcel()">Export to excel</button>
-                        <table class="table table-bordered table-hover ReportTable table-striped ">
+                        <button onclick="exportReportToExcel('exportTable2')">Export to excel</button>
+                        <table class="table table-bordered table-hover ReportTable table-striped " id="exportTable2">
                           <thead>
                               <tr>
                                   <th>Staff</th>
