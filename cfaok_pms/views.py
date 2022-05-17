@@ -48,6 +48,7 @@ class PasswordResetConfirmView(FormView):
     success_url = 'registration/password_reset_complete.html'
     form_class = SetPasswordForm
 
+
 @require_safe
 def password_expire(request):
     return render(request, 'registration/password_expire.html',)
