@@ -1620,7 +1620,6 @@ class Report(TemplateView):
                 the_bu = get_bu(member_staff)
                 the_company = get_company_used(member_staff)
 
-
                 try:
                     kpi_score = calculate_overall_kpi_score(member_staff, context['pms'])
                     overall_score = calculate_overall_score(member_staff, context['pms'])
@@ -1771,7 +1770,8 @@ class ReportKPIResults(TemplateView):
                     cat_0 += 1
                 bu = get_bu(member_staff)
                 my_members_kpi_score.append([member_staff, kpis,
-                                             calculate_overall_kpi_score(member_staff, context['pms']), kpis, bu])
+                                             calculate_overall_kpi_score(member_staff, context['pms']), kpis,
+                                             bu, get_staff_level(member_staff)])
             if Staff.objects.filter(staff_company=context['company']).count() > 0:
                 average_score = round(average_score/Staff.objects.filter(staff_company=context['company']).count(), 2)
 
@@ -1802,7 +1802,8 @@ class ReportKPIResults(TemplateView):
                     bu = get_bu(members)
 
                     my_members_kpi_score.append([members.membership_staff, kpis,
-                                                 calculate_overall_kpi_score(members.membership_staff, context['pms']), bu],)
+                                                 calculate_overall_kpi_score(members.membership_staff, context['pms']),
+                                                 bu, get_staff_level(members)],)
                 if LevelMembership.objects.filter(membership_level=level).count() > 0:
                     kpi_score = round(kpi_score/LevelMembership.objects.filter(membership_level=level).count(), 2)
                 average_score += kpi_score
@@ -1843,8 +1844,8 @@ class ReportKPIResults(TemplateView):
                             cat_0 += 1
                         bu = get_bu(members)
                         levels_down_kpi_score.append([members.membership_staff, kpis,
-                                                      calculate_overall_kpi_score(members.membership_staff,
-                                                                                  context['pms']), bu])
+                                                      calculate_overall_kpi_score(members.membership_staff, context['pms']),
+                                                      bu, get_staff_level(members)])
                     if LevelMembership.objects.filter(membership_level=level).count() > 0:
                         kpi_score = round(kpi_score / LevelMembership.objects.filter(membership_level=level).count(), 2)
                     average_score += kpi_score

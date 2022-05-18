@@ -81,6 +81,7 @@
                                 <th>Staff</th>
                                 <th>PF</th>
                                 <th>Level</th>
+                                <th>Level head</th>
                                 <th>Assessment Score</th>
                                 <th>Check-In Score</th>
                                 <th>KPI Score</th>
@@ -97,9 +98,10 @@
                           <tbody>
                             {% for staff in my_members_score %}
                             <tr>
-                                <td>{{ staff.0 }}</td>
+                                <td>{{ staff.0.staff_person }}</td>
                                 <td>{{ staff.0.staff_pf_number }}</td>
                                 <td>{{ staff.1 }}</td>
+                                <td>{{ staff.1.level_head }}</td>
                                 <td>{{ staff.2 }}</td>
                                 <td>{{ staff.3 }}</td>
                                 <td>{{ staff.4 }}</td>

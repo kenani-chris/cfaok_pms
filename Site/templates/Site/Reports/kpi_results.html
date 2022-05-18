@@ -82,10 +82,16 @@
                       <thead>
                           <tr>
                             <th>Staff</th>
+                            <th>PF</th>
+                            <th>Level</th>
+                            <th>Level Head</th>
+                            <th>BU</th>
+                            <th>BU Head</th>
                             <th>KPI</th>
                             <th>Function</th>
                             <th>Type</th>
                             <th>Target</th>
+                            <th>Weight</th>
                             <th>S</th>
                             <th>A</th>
                             <th>B</th>
@@ -136,7 +142,13 @@
                         {% for member in my_members_kpi_score %}
                             <tr>
                                 {% if member.1|length < 1 %}
-                                    <td>{{ member.0 }}</td>
+                                    <td>{{ member.0.staff_person.get_full_name }}</td>
+                                    <td>{{ member.0.staff_pf_number }}</td>
+                                    <td>{{ member.6 }}</td>
+                                    <td>{{ member.6.level_head }}</td>
+                                    <td>{{ member.7 }}</td>
+                                    <td>{{ member.7.level_head }}</td>
+                                    <td>-</td>
                                     <td>-</td>
                                     <td>-</td>
                                     <td>-</td>
@@ -187,12 +199,18 @@
 
                                     </tr>
                                 {% else %}
-                                    <td rowspan="{{ member.1|length }}">{{ member.0 }}</td>
+                                    <td rowspan="{{ member.1|length }}">{{ member.0.staff_person.get_full_name }}</td>
+                                    <td rowspan="{{ member.1|length }}">{{ member.0.staff_pf_number }}</td>
+                                    <td rowspan="{{ member.1|length }}">{{ member.6 }}</td>
+                                    <td rowspan="{{ member.1|length }}">{{ member.6.level_head }}</td>
+                                    <td rowspan="{{ member.1|length }}">{{ member.7 }}</td>
+                                    <td rowspan="{{ member.1|length }}">{{ member.7.level_head }}</td>
                                     <td>{{ member.1.0.0 }}</td>
                                     <td>{{ member.1.0.0.kpi_function }}</td>
                                     <td>{{ member.1.0.0.kpi_type }}</td>
 
                                     <td>{{ member.1.0.0.kpi_target }}</td>
+                                    <td>{{ member.1.0.0.kpi_weight }}</td>
 
                                     <td>{{ member.1.0.0.kpi_bsc_s_target }}</td>
                                     <td>{{ member.1.0.0.kpi_bsc_a_target }}</td>
@@ -249,6 +267,7 @@
                                                 <td>{{ kpi.0.kpi_type }}</td>
 
                                                <td>{{ kpi.0.kpi_target }}</td>
+                                               <td>{{ kpi.0.kpi_weight }}</td>
                                                <td>{{ kpi.0.kpi_bsc_s_target }}</td>
                                                <td>{{ kpi.0.kpi_bsc_a_target }}</td>
                                                <td>{{ kpi.0.kpi_bsc_b_target }}</td>
