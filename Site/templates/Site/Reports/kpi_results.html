@@ -144,10 +144,10 @@
                                 {% if member.1|length < 1 %}
                                     <td>{{ member.0.staff_person.get_full_name }}</td>
                                     <td>{{ member.0.staff_pf_number }}</td>
-                                    <td>{{ member.6 }}</td>
-                                    <td>{{ member.6.level_head }}</td>
-                                    <td>{{ member.7 }}</td>
-                                    <td>{{ member.7.level_head }}</td>
+                                    <td>{{ member.5 }}</td>
+                                    <td>{{ member.5.level_head }}</td>
+                                    <td>{{ member.4 }}</td>
+                                    <td>{{ member.4.level_head }}</td>
                                     <td>-</td>
                                     <td>-</td>
                                     <td>-</td>
@@ -201,10 +201,10 @@
                                 {% else %}
                                     <td rowspan="{{ member.1|length }}">{{ member.0.staff_person.get_full_name }}</td>
                                     <td rowspan="{{ member.1|length }}">{{ member.0.staff_pf_number }}</td>
-                                    <td rowspan="{{ member.1|length }}">{{ member.6 }}</td>
-                                    <td rowspan="{{ member.1|length }}">{{ member.6.level_head }}</td>
-                                    <td rowspan="{{ member.1|length }}">{{ member.7 }}</td>
-                                    <td rowspan="{{ member.1|length }}">{{ member.7.level_head }}</td>
+                                    <td rowspan="{{ member.1|length }}">{{ member.5 }}</td>
+                                    <td rowspan="{{ member.1|length }}">{{ member.5.level_head }}</td>
+                                    <td rowspan="{{ member.1|length }}">{{ member.4 }}</td>
+                                    <td rowspan="{{ member.1|length }}">{{ member.4.level_head }}</td>
                                     <td>{{ member.1.0.0 }}</td>
                                     <td>{{ member.1.0.0.kpi_function }}</td>
                                     <td>{{ member.1.0.0.kpi_type }}</td>
