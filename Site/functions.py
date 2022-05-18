@@ -345,18 +345,18 @@ def calculate_kpi_score(kpi, kpi_type):
 
         if kpi.kpi_function.lower() == 'maximize':
             if kpi.kpi_type.lower() == 'addition':
-                if kpi.kpi_target is None or kpi.kpi_target == 0:
-                    if kpi_sum >= kpi.kpi_target:
+                if kpi.kpi_bsc_s_target is None or kpi.kpi_bsc_s_target == 0:
+                    if kpi_sum >= kpi.kpi_bsc_s_target:
                         kpi_score = 100
                     else:
                         kpi_score = 0
                 else:
-                    kpi_score = (kpi_sum / kpi.kpi_target) * 100
+                    kpi_score = (kpi_sum / kpi.kpi_bsc_s_target) * 100
             elif kpi.kpi_type.lower() == 'average':
                 if kpi_average != 0:
-                    kpi_score = (kpi.kpi_target / kpi_average) * 100
+                    kpi_score = (kpi.kpi_bsc_s_target / kpi_average) * 100
                 else:
-                    if kpi_average >= kpi.kpi_target:
+                    if kpi_average >= kpi.kpi_bsc_s_target:
                         kpi_score = 100
                     else:
                         kpi_score = 0
@@ -370,62 +370,62 @@ def calculate_kpi_score(kpi, kpi_type):
                     if result_dict[this_month] is None:
                         if result_dict[last_month] is None:
                             if result_dict[before_last_month] is None:
-                                if kpi.kpi_target is None or kpi.kpi_target == 0:
+                                if kpi.kpi_bsc_s_target is None or kpi.kpi_bsc_s_target == 0:
                                     kpi_score = 0
                                 else:
-                                    kpi_score = (0 / kpi.kpi_target) * 100
+                                    kpi_score = (0 / kpi.kpi_bsc_s_target) * 100
                             else:
-                                if kpi.kpi_target == 0 or kpi.kpi_target is None:
+                                if kpi.kpi_bsc_s_target == 0 or kpi.kpi_bsc_s_target is None:
                                     if result_dict[before_last_month] >= 0:
                                         kpi_score = 100
                                     else:
                                         kpi_score = 0
                                 else:
-                                    kpi_score = (result_dict[before_last_month] / kpi.kpi_target) * 100
+                                    kpi_score = (result_dict[before_last_month] / kpi.kpi_bsc_s_target) * 100
                         else:
-                            if kpi.kpi_target == 0 or kpi.kpi_target is None:
+                            if kpi.kpi_bsc_s_target == 0 or kpi.kpi_bsc_s_target is None:
                                 if result_dict[last_month] >= 0:
                                     kpi_score = 100
                                 else:
                                     kpi_score = 0
                             else:
-                                kpi_score = (result_dict[last_month] / kpi.kpi_target) * 100
+                                kpi_score = (result_dict[last_month] / kpi.kpi_bsc_s_target) * 100
 
                     else:
-                        if kpi.kpi_target == 0 or kpi.kpi_target is None:
+                        if kpi.kpi_bsc_s_target == 0 or kpi.kpi_bsc_s_target is None:
                             if result_dict[this_month] >= 0:
                                 kpi_score = 100
                             else:
                                 kpi_score = 0
                         else:
-                            kpi_score = (result_dict[this_month] / kpi.kpi_target) * 100
+                            kpi_score = (result_dict[this_month] / kpi.kpi_bsc_s_target) * 100
                 else:
                     if mar is None:
                         mar = 0
-                    if kpi.kpi_target is None or kpi.kpi_target == 0:
+                    if kpi.kpi_bsc_s_target is None or kpi.kpi_bsc_s_target == 0:
                         if mar > 0:
                             kpi_score = 100
                         else:
                             kpi_score = 0
                     else:
-                        kpi_score = (mar / kpi.kpi_target) * 100
+                        kpi_score = (mar / kpi.kpi_bsc_s_target) * 100
         elif kpi.kpi_function.lower() == 'minimize':
             if kpi.kpi_type.lower() == 'addition':
                 if kpi_sum == 0:
-                    if kpi.kpi_target >= 0:
+                    if kpi.kpi_bsc_s_target >= 0:
                         kpi_score = 100
                     else:
                         kpi_score = 0
                 else:
-                    kpi_score = (kpi.kpi_target / kpi_sum) * 100
+                    kpi_score = (kpi.kpi_bsc_s_target / kpi_sum) * 100
             elif kpi.kpi_type.lower() == 'average':
                 if kpi_average == 0:
-                    if kpi.kpi_target > 0:
+                    if kpi.kpi_bsc_s_target > 0:
                         kpi_score = 100
                     else:
                         kpi_score = 0
                 else:
-                    kpi_score = (kpi.kpi_target / kpi_average) * 100
+                    kpi_score = (kpi.kpi_bsc_s_target / kpi_average) * 100
             elif kpi.kpi_type.lower() == 'ytd':
                 if datetime.date.today() <= kpi.kpi_pms.pms_year_end_date:
                     this_month = datetime.date.today().strftime("%B")
@@ -435,30 +435,30 @@ def calculate_kpi_score(kpi, kpi_type):
                             kpi_score = 0
                         else:
                             if result_dict[last_month] == float(0):
-                                if kpi.kpi_target >= 0:
+                                if kpi.kpi_bsc_s_target >= 0:
                                     kpi_score = 100
                                 else:
                                     kpi_score = 0
                             else:
-                                kpi_score = (kpi.kpi_target / result_dict[last_month]) * 100
+                                kpi_score = (kpi.kpi_bsc_s_target / result_dict[last_month]) * 100
                     else:
                         if result_dict[this_month] == 0:
-                            if kpi.kpi_target >= 0:
+                            if kpi.kpi_bsc_s_target >= 0:
                                 kpi_score = 100
                             else:
                                 kpi_score = 0
                         else:
-                            kpi_score = (kpi.kpi_target / result_dict[this_month]) * 100
+                            kpi_score = (kpi.kpi_bsc_s_target / result_dict[this_month]) * 100
                 else:
                     if mar is None:
                         mar = 0
                     if mar is None or mar == 0:
-                        if kpi.kpi_target >= 0:
+                        if kpi.kpi_bsc_s_target >= 0:
                             kpi_score = 100
                         else:
                             kpi_score = 0
                     else:
-                        kpi_score = (kpi.kpi_target / mar) * 100
+                        kpi_score = (kpi.kpi_bsc_s_target / mar) * 100
 
     elif kpi_type == "Annual Target":
 
