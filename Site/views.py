@@ -205,7 +205,7 @@ class Dashboard(TemplateView):
             context['the_company'] = get_company_used(context['staff'])
 
             for kpi in KPI.objects.filter(kpi_staff=context['staff'], kpi_pms=context['pms']):
-                kpi_results.append([kpi, calculate_kpi_score(kpi, context['kpi_type'])])
+                kpi_results.append([kpi, calculate_kpi_score2(kpi, context['kpi_type'])])
         context['kpi_results'] = kpi_results
 
         return context
@@ -911,7 +911,7 @@ class KPICategoryLevel(DetailView):
             context['kpi_type'] = "Annual Target"
 
         for kpi in KPI.objects.filter(kpi_staff=level.level_head, kpi_pms=context['pms']):
-            kpi_results.append([kpi, calculate_kpi_score(kpi, context['kpi_type'])])
+            kpi_results.append([kpi, calculate_kpi_score2(kpi, context['kpi_type'])])
         context['kpi_results'] = kpi_results
         context['kpi_overall_results'] = calculate_overall_kpi_score(level.level_head, context['pms'])
         context['kpis'] = KPI.objects.filter(kpi_staff=level.level_head, kpi_pms=context['pms'])

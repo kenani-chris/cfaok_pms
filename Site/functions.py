@@ -1,6 +1,8 @@
 import datetime
 import os
 from email.mime.image import MIMEImage
+from typing import Dict, Union, Any
+
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -585,6 +587,136 @@ def calculate_kpi_score(kpi, kpi_type):
     return round(kpi_score, 2)
 
 
+def get_required_months(kpi):
+
+    results = {'april': kpi.kpi_april_score, 'may': kpi.kpi_may_score, 'june': kpi.kpi_june_score,
+                   'july': kpi.kpi_july_score, 'august': kpi.kpi_august_score, 'september': kpi.kpi_september_score,
+                   'october': kpi.kpi_october_score, 'november': kpi.kpi_november_score,
+                   'december': kpi.kpi_december_score, 'january': kpi.kpi_january_score,
+                   'february': kpi.kpi_february_score, 'march': kpi.kpi_march_score}
+
+    targets = {'april': kpi.kpi_april_target, 'may': kpi.kpi_may_target,
+                   'june': kpi.kpi_june_target,
+                   'july': kpi.kpi_july_target, 'august': kpi.kpi_august_target,
+                   'september': kpi.kpi_september_target,
+                   'october': kpi.kpi_october_target, 'november': kpi.kpi_november_target,
+                   'december': kpi.kpi_december_target, 'january': kpi.kpi_january_target,
+                   'february': kpi.kpi_february_target, 'march': kpi.kpi_march_target}
+
+    submission = get_user_submission_data(kpi.kpi_staff, kpi.kpi_pms)
+
+    if submission:
+
+        if not submission.submission_april_results_calculation:
+            results.pop('april')
+            targets.pop('april')
+        if not submission.submission_may_results_calculation:
+            results.pop('may')
+            targets.pop('may')
+        if not submission.submission_june_results_calculation:
+            results.pop('june')
+            targets.pop('june')
+        if not submission.submission_july_results_calculation:
+            results.pop('july')
+            targets.pop('july')
+        if not submission.submission_august_results_calculation:
+            results.pop('august')
+            targets.pop('august')
+        if not submission.submission_september_results_calculation:
+            results.pop('september')
+            targets.pop('september')
+        if not submission.submission_october_results_calculation:
+            results.pop('october')
+            targets.pop('october')
+        if not submission.submission_november_results_calculation:
+            results.pop('november')
+            targets.pop('november')
+        if not submission.submission_december_results_calculation:
+            results.pop('december')
+            targets.pop('december')
+        if not submission.submission_january_results_calculation:
+            results.pop('january')
+            targets.pop('january')
+        if not submission.submission_february_results_calculation:
+            results.pop('february')
+            targets.pop('february')
+        if not submission.submission_march_results_calculation:
+            results.pop('march')
+            targets.pop('march')
+            
+    return targets, results
+            
+
+def calculate_kpi_score2(kpi, kpi_type):
+    score = 0
+
+    targets, results = get_required_months(kpi)
+
+    targets = {k: v or 0 for (k, v) in targets.items()}
+    results = {k: v or 0 for (k, v) in results.items()}
+
+    if kpi_type == "Monthly Target":
+        score = calculate_kpi_monthly_target_score(kpi, targets, results)
+    elif kpi_type == "BSC":
+        score = calculate_kpi_annual_target_score(kpi, kpi.kpi_bsc_s_target, results)
+    elif kpi_type == "Annual Target":
+        score = calculate_kpi_annual_target_score(kpi, kpi.kpi_target, results)
+
+    if kpi.kpi_pms.pms_cap_results and score > 100.00:
+        score = 100.00
+
+    return round(score, 2)
+
+
+def calculate_kpi_monthly_target_score(kpi, targets, results):
+    return calculate_by_function(kpi.kpi_function, sum(targets.values()), sum(results.values()))
+
+
+def calculate_kpi_annual_target_score(kpi, targets, results):
+
+    if kpi.kpi_type.lower() == 'addition':
+        return calculate_by_function(kpi.kpi_function, targets, round(sum(results.values()), 2))
+    elif kpi.kpi_type.lower() == 'average':
+        return calculate_by_function(kpi.kpi_function, targets, round(sum(results.values())/len(results), 2))
+    else:
+        return calculate_by_function(kpi.kpi_function, targets, results[get_month_to_use_results(kpi, results)])
+
+
+def get_month_to_use_results(kpi, result):
+    if kpi.kpi_pms.pms_year_end_date < datetime.date.today():
+        return 'march'
+    else:
+        this_month = datetime.date.today().strftime("%B").lower()
+        last_month = (datetime.date.today() - datetime.timedelta(days=31)).strftime("%B").lower()
+
+        if this_month in result:
+            return this_month
+        else:
+            if last_month in result:
+                return last_month
+            else:
+                return this_month
+
+
+def calculate_by_function(function, target, result):
+    if function.lower() == "minimize":
+        if result == 0:
+            if target <= result:
+                return 100
+            else:
+                return 0
+        else:
+            return round(target/result*100, 2)
+    else:
+        if target == 0:
+            if target <= result:
+                return 100
+            else:
+                return 0
+        else:
+            return round(result/target*100, 2)
+
+
 def calculate_overall_kpi_score(staff, pms):
     kpis = kpi_list(staff, pms)
     kpi_type = KPIType.objects.filter(type_pms=pms, type_category=staff.staff_category)
@@ -595,7 +727,7 @@ def calculate_overall_kpi_score(staff, pms):
     results = []
     for kpi in kpis['approved_kpi']:
         weight = kpi.kpi_weight
-        score = calculate_kpi_score(kpi, kpi_type)
+        score = calculate_kpi_score2(kpi, kpi_type)
         weighted_score = (weight * score) / 100
         results.append(weighted_score)
     return round(sum(results), 2)
@@ -680,7 +812,7 @@ def calculate_overall_assessment_score(staff, pms):
     score = 0
     assessments = Assessment.objects.filter(assessment_pms=pms,
                                             assessment_end_date__lt=datetime.datetime.now(tz=timezone.utc),
-                                            assessment_scoring_use=True)
+                                            assessment_scoring_use="Yes")
     for assessment in assessments:
         if Level.objects.filter(level_head=staff):
             if LevelMembership.objects.filter(membership_staff=staff):
@@ -696,7 +828,7 @@ def calculate_overall_assessment_score(staff, pms):
     return score
 
 
-def calculate_one_assessment_score(staff, pms, assessment):
+def calculate_one_assessment_score(staff, assessment):
     score = 0
 
     if Level.objects.filter(level_head=staff):
