@@ -877,18 +877,9 @@ def calculate_overall_score(staff, pms):
 
 def get_bu_score(staff, pms):
     score = 0
-    categories = []
-    levels_up = []
-    all_categories_up(staff.staff_category, categories)
-    for category in categories:
-        if category.category_kpi_view is True and category != categories[-1]:
-            if Level.objects.filter(level_category=category).exclude(level_head=staff):
-                all_levels_up(get_staff_level(staff), levels_up)
-                levels_up.append(get_staff_level(staff))
-                for level in Level.objects.filter(level_category=category).exclude(level_head=staff):
-                    if level in levels_up:
-                        score = calculate_overall_kpi_score(level.level_head, pms)
-                        break
+
+    if get_bu(staff) is not None:
+        score = calculate_overall_kpi_score(get_bu(staff).level_head, pms)
     return score
 
 
@@ -898,17 +889,20 @@ def get_bu(staff):
     categories = []
     levels_up = []
 
-    if not Level.objects.filter(level_head=staff, level_category__category_kpi_view=True):
-        all_categories_up(staff.staff_category, categories)
-        for category in categories:
-            if category.category_kpi_view is True and category != categories[-1]:
-                if Level.objects.filter(level_category=category).exclude(level_head=staff):
-                    all_levels_up(get_staff_level(staff), levels_up)
-                    levels_up.append(get_staff_level(staff))
-                    for level in Level.objects.filter(level_category=category).exclude(level_head=staff):
-                        if level in levels_up:
-                            bu = level
-                            break
+    if staff.staff_bu_override is not None:
+        return staff.staff_bu_override
+    else:
+        if not Level.objects.filter(level_head=staff, level_category__category_kpi_view=True):
+            all_categories_up(staff.staff_category, categories)
+            for category in categories:
+                if category.category_kpi_view is True and category != categories[-1]:
+                    if Level.objects.filter(level_category=category).exclude(level_head=staff):
+                        all_levels_up(get_staff_level(staff), levels_up)
+                        levels_up.append(get_staff_level(staff))
+                        for level in Level.objects.filter(level_category=category).exclude(level_head=staff):
+                            if level in levels_up:
+                                bu = level
+                                break
     return bu
 
 

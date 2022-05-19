@@ -38,6 +38,7 @@ class Staff(models.Model):
     staff_company = models.ForeignKey('Company', on_delete=models.RESTRICT)
     staff_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT, null=True, default=None)
     staff_date_created = models.DateTimeField(auto_now=False, null=True)
+    staff_bu_override = models.ForeignKey('Level', on_delete=models.RESTRICT, null=True, blank=True, default=None)
 
     def __str__(self):
         return self.staff_person.get_full_name() + " - PF " + self.staff_pf_number
