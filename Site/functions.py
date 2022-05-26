@@ -343,14 +343,14 @@ def get_month_to_use_results(kpi, result):
 
 def calculate_by_function(function, target, result):
     score = 0
-    if function and target and result:
+    if function and isinstance(float(target), float) and isinstance(float(result), float):
         if function.lower() == "minimize":
             if result == 0 and target <= result:
                 score = 100
             else:
                 score = round(target/result*100, 2)
         else:
-            if target == 0 and target <= result:
+            if target == 0 and target >= result:
                 score = 100
             else:
                 score = round(result/target*100, 2)

@@ -98,7 +98,7 @@
                           <tbody>
                             {% for staff in my_members_score %}
                             <tr>
-                                <td>{{ staff.0.staff_person }}</td>
+                                <td>{{ staff.0.staff_person.get_full_name }}</td>
                                 <td>{{ staff.0.staff_pf_number }}</td>
                                 <td>{{ staff.1 }}</td>
                                 <td>{{ staff.1.level_head }}</td>
@@ -147,7 +147,7 @@
                               <tbody>
                                 {% for staff in my_members_score %}
                                 <tr>
-                                    <td>{{ staff.0 }}</td>
+                                    <td>{{ staff.0.staff_person.get_full_name }}</td>
                                     <td>{{ staff.0.staff_pf_number }}</td>
                                     <td>{{ staff.1 }}</td>
                                     <td>{{ staff.2 }}</td>
