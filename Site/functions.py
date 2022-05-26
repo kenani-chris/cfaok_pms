@@ -677,7 +677,7 @@ def get_bu(staff):
                                 break
                         '''
                         for level in levels_up:
-                            if level.level_category == category and level.level_head != staff:
+                            if level and level.level_category == category and level.level_head != staff:
                                 bu = level
                                 break
     return bu
