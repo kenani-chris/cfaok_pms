@@ -671,8 +671,13 @@ def get_bu(staff):
                     if Level.objects.filter(level_category=category).exclude(level_head=staff):
                         all_levels_up(get_staff_level(staff), levels_up)
                         levels_up.append(get_staff_level(staff))
-                        for level in Level.objects.filter(level_category=category).exclude(level_head=staff):
+                        '''for level in Level.objects.filter(level_category=category).exclude(level_head=staff):
                             if level in levels_up:
+                                bu = level
+                                break
+                        '''
+                        for level in levels_up:
+                            if level.level_category == category and level.level_head != staff:
                                 bu = level
                                 break
     return bu
