@@ -642,7 +642,7 @@ def calculate_overall_score(staff, pms):
     bu_score = bu_weight / 100 * get_bu_score(staff, pms)
     company_score = company_weight / 100 * get_company_score(staff, pms)
 
-    score = round((kpi_score + assessment_score + bu_score + assessment_score + company_score) * checkin_score / 100, 2)
+    score = round((kpi_score + bu_score + company_score + assessment_score) * checkin_score / 100, 2)
 
     return score
 
