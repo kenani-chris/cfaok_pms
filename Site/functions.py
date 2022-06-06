@@ -464,7 +464,7 @@ def calculate_overall_assessment_score(staff, pms):
         else:
             score = score + calculate_assessment_score(assessment, staff, 'Bottom')
     if assessments:
-        score = round(score / assessments.count())
+        score = round(score / assessments.count(), 2)
     return score
 
 
