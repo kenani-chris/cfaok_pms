@@ -2313,7 +2313,7 @@ class ReportAssessmentsDetails(TemplateView):
             for member_staff in Staff.objects.filter(staff_company=context['company']):
                 s_tl = calculate_assessment_score(assessment, member_staff, "Top")
                 tl_s = calculate_assessment_score(assessment, member_staff, "Bottom")
-                score = calculate_one_assessment_score(member_staff, context['pms'], assessment)
+                score = calculate_one_assessment_score(member_staff,  assessment)
                 
                 if score >= 75:
                     cat_75 += 1
