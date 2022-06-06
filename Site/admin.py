@@ -1,12 +1,12 @@
 from django.apps import apps
 from django.contrib import admin
 from .models import Staff, PMS, LevelCategory, KPIType, CheckIn, Level, KPI, LevelMembership, Assessment, Questions, \
-    QuestionResponses, PasswordChange, SubmissionCheckin, SubmissionKPI
+    QuestionResponses, PasswordChange, SubmissionCheckin, SubmissionKPI, Matrix
 from .urls import app_name
 
 
 excempt_list = ['Staff', 'PMS', 'LevelCategory', 'KPIType', 'CheckIn', 'Level', 'KPI', 'LevelMembership', 'Assessment',
-                'Questions', 'QuestionResponses', 'PasswordChange', 'SubmissionKPI', 'SubmissionCheckin']
+                'Questions', 'QuestionResponses', 'PasswordChange', 'SubmissionKPI', 'SubmissionCheckin', 'Matrix']
 
 for name, app in apps.app_configs.items():
     if name == app_name:
@@ -17,9 +17,10 @@ for name, app in apps.app_configs.items():
 
 
 class StaffAdmin(admin.ModelAdmin):
-    list_display = ('staff_person', 'staff_pf_number', 'staff_grade', 'staff_active', 'staff_superuser',
+    list_display = ('__str__', 'staff_pf_number', 'staff_grade', 'staff_active', 'staff_superuser',
                     'staff_visibility', 'staff_category', 'staff_company')
     list_filter = ('staff_active', 'staff_superuser', 'staff_visibility', 'staff_company')
+    search_fields = ('staff_person__get_full_name', 'staff_pf_number')
 
 
 class PMSAdmin(admin.ModelAdmin):
@@ -113,6 +114,12 @@ class SubmissionCheckinAdmin(admin.ModelAdmin):
     search_fields = ('submission_level_category',)
 
 
+class MatrixAdmin(admin.ModelAdmin):
+    list_display = ('matrix_pms', 'matrix_category', 'matrix_grade', 'matrix_kpi_weight', 'matrix_bu_weight',
+                    'matrix_company_weight', 'matrix_assessment_weight', 'matrix_checkin_weight')
+    list_filter = ('matrix_pms',)
+
+
 admin.site.register(Staff, StaffAdmin)
 admin.site.register(PMS, PMSAdmin)
 admin.site.register(LevelCategory, LevelCategoryAdmin)
@@ -127,3 +134,4 @@ admin.site.register(QuestionResponses, ResponsesAdmin)
 admin.site.register(PasswordChange, PasswordChangeAdmin)
 admin.site.register(SubmissionCheckin, SubmissionCheckinAdmin)
 admin.site.register(SubmissionKPI, SubmissionKPIAdmin)
+admin.site.register(Matrix, MatrixAdmin)
