@@ -2,8 +2,11 @@ import datetime
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
+from django.contrib.auth.views import PasswordResetConfirmView
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST, require_safe
 from django.views.generic import TemplateView, FormView
@@ -43,9 +46,19 @@ def self_change_password(request):
     })
 
 
-class PasswordResetConfirmView(FormView):
-    success_url = 'registration/password_reset_complete.html'
+class PasswordResetConfirmViewExtend(PasswordResetConfirmView):
     form_class = SetPasswordForm
+
+    def form_valid(self, form):
+        change = PasswordChange()
+        change.change_user = self.user
+        change.change_last_date = datetime.datetime.now()
+        change.save()
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return '{}'.format(reverse('password_reset_complete'))
 
 
 @require_safe
