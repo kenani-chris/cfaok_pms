@@ -304,6 +304,8 @@ def calculate_kpi_score(kpi, kpi_type):
 
         if kpi.kpi_pms.pms_cap_results and score > 100.00:
             score = 100.00
+        elif kpi.kpi_pms.pms_cap_results and score < 0.00:
+            score = 0.00
 
     except Exception as e:
         print(kpi.kpi_staff, " - ", kpi.kpi_title, e)
