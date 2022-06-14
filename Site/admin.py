@@ -20,7 +20,7 @@ class StaffAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'staff_pf_number', 'staff_grade', 'staff_active', 'staff_superuser',
                     'staff_visibility', 'staff_category', 'staff_company')
     list_filter = ('staff_active', 'staff_superuser', 'staff_visibility', 'staff_company')
-    search_fields = ('staff_person__first_name', 'staff_person__las_name', 'staff_pf_number')
+    search_fields = ('staff_person__first_name', 'staff_person__last_name', 'staff_pf_number')
 
 
 class PMSAdmin(admin.ModelAdmin):

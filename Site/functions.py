@@ -504,7 +504,10 @@ def calculate_assessment_score(assessment, staff, direction):
 
 
 def get_matrix(staff, pms):
-    if Matrix.objects.filter(matrix_pms=pms, matrix_grade=staff.staff_grade):
+    if Level.objects.filter(level_head=staff, level_category__category_company__company_id=staff.staff_company.company_id, level_category__category_kpi_view=True):
+        head_level = Level.objects.filter(level_head=staff, level_category__category_company__company_id=staff.staff_company.company_id, level_category__category_kpi_view=True).first()
+        return Matrix.objects.filter(matrix_pms=pms, matrix_category=head_level.level_category).first()
+    elif Matrix.objects.filter(matrix_pms=pms, matrix_grade=staff.staff_grade):
         return Matrix.objects.filter(matrix_pms=pms, matrix_grade=staff.staff_grade).first()
     elif Matrix.objects.filter(matrix_pms=pms, matrix_category=staff.staff_category):
         return Matrix.objects.filter(matrix_pms=pms, matrix_category=staff.staff_category).first()
