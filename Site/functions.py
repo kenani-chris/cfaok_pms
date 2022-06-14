@@ -495,7 +495,7 @@ def calculate_assessment_score(assessment, staff, direction):
         for response in responses:
             question_score += response.response_submitted
         if responses:
-            question_score = round(question_score / responses.count())
+            question_score = round(question_score / responses.count(), 2)
         score += ((question_score - assessment.assessment_min_score) / (
                     assessment.assessment_max_score - assessment.assessment_min_score) * 100)
     if questions:
