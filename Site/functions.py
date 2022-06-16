@@ -580,6 +580,9 @@ def display_months_used(staff, pms):
 
 def display_checkin_scoring_used(staff, pms):
     checkin_scores = {
+        "minimum_override":  None,
+        "maximum_override":  None,
+        "0": "0%",
         "1": "0%",
         "2": "0%",
         "3": "10%",
@@ -597,6 +600,9 @@ def display_checkin_scoring_used(staff, pms):
     if SubmissionCheckin.objects.filter(submission_pms=pms, submission_level_category=staff.staff_category):
         submission = SubmissionCheckin.objects.filter(submission_pms=pms,
                                                       submission_level_category=staff.staff_category).first()
+        checkin_scores["minimum_override"] = str(submission.submission_minimum_score_override)
+        checkin_scores["maximum_override"] = str(submission.submission_maximum_score_override)
+        checkin_scores["0"] = str(submission.submission_zero_results) + "%"
         checkin_scores["1"] = str(submission.submission_one_results) + "%"
         checkin_scores["2"] = str(submission.submission_two_results) + "%"
         checkin_scores["3"] = str(submission.submission_three_results) + "%"

@@ -155,6 +155,7 @@
                                 <thead>
                                     <tr>
                                         <th class="bg-info">Number</th>
+                                        <th>0</th>
                                         <th>1</th>
                                         <th>2</th>
                                         <th>3</th>
@@ -171,6 +172,7 @@
                                 </thead>
                                 <tr>
                                     <th class="bg-info">Score</th>
+                                    <td>{{ checkin_used.0 }}</td>
                                     <td>{{ checkin_used.1 }}</td>
                                     <td>{{ checkin_used.2 }}</td>
                                     <td>{{ checkin_used.3 }}</td>
@@ -185,6 +187,36 @@
                                     <td>{{ checkin_used.12 }}</td>
                                 </tr>
                             </table>
+                            <hr>
+                            <br>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3">
+                                                Definition
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>Key</th>
+                                            <th>Value</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Minimum override</th>
+                                            <th>{{ checkin_used.minimum_override }}</th>
+                                            <td>if set to a numeric value it would mean the override value would be floor value for Checkin score</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Maximum override</th>
+                                            <th>{{ checkin_used.maximum_override }}</th>
+                                            <td>if set to a numeric value it would mean the override value would be ceiling value for Checkin score</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            <hr>
+
                         </div>
                     </div>
                 </div>

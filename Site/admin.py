@@ -106,7 +106,7 @@ class SubmissionKPIAdmin(admin.ModelAdmin):
 
 class SubmissionCheckinAdmin(admin.ModelAdmin):
     list_display = ('submission_pms', 'submission_level_category',
-                    'submission_one_results', 'submission_two_results', 'submission_three_results',
+                    'submission_zero_results', 'submission_one_results', 'submission_two_results', 'submission_three_results',
                     'submission_four_results', 'submission_five_results', 'submission_six_results',
                     'submission_seven_results', 'submission_eight_results', 'submission_nine_results',
                     'submission_ten_results', 'submission_eleven_results', 'submission_twelve_results',)
