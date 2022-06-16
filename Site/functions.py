@@ -391,7 +391,7 @@ def calculate_overall_check_in_score(staff, pms):
         submission = submission.first()
 
         if ci == 0:
-            score = 0
+            score = submission.submission_zero_results
         elif ci == 1:
             score = submission.submission_one_results
         elif ci == 2:
@@ -418,6 +418,12 @@ def calculate_overall_check_in_score(staff, pms):
             score = submission.submission_twelve_results
         else:
             score = 0
+
+        if submission.submission_minimum_score_override is not None and score < submission.submission_minimum_score_override:
+            score = submission.submission_minimum_score_override
+        if submission.submission_maximum_score_override is not None and score > submission.submission_maximum_score_override:
+            score = submission.submission_maximum_score_override
+
     else:
 
         if ci == 0:

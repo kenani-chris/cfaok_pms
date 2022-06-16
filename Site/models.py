@@ -184,6 +184,7 @@ class SubmissionCheckin(models.Model):
     submission_march_results = models.IntegerField(default=0)
 
     # Specify scores you get in populating a said number of checkin
+    submission_zero_results = models.IntegerField(default=0)
     submission_one_results = models.IntegerField(default=0)
     submission_two_results = models.IntegerField(default=0)
     submission_three_results = models.IntegerField(default=10)
@@ -224,6 +225,9 @@ class SubmissionCheckin(models.Model):
     submission_january_checkin_override = models.BooleanField(default=False)
     submission_february_checkin_override = models.BooleanField(default=False)
     submission_march_checkin_override = models.BooleanField(default=False)
+
+    submission_minimum_score_override = models.FloatField(default=None, blank=True, null=True)
+    submission_maximum_score_override = models.FloatField(default=None, blank=True, null=True)
 
 
 # Matrix ===========================================================================================================
