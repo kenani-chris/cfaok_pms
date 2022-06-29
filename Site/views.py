@@ -173,6 +173,7 @@ def update_to_db():
 @method_decorator(login_required, name='dispatch')
 @method_decorator(password_change_decorator, name='dispatch')
 class Dashboard(TemplateView):
+
     def get_context_data(self, **kwargs):
         context = super(Dashboard, self).get_context_data()
         context['company_id'] = self.kwargs['company_id']
@@ -362,6 +363,7 @@ class MyKPIEdit(UpdateView):
                              " for your review")
         return HttpResponseRedirect(reverse('Site:My_KPI_View', kwargs={'company_id': self.kwargs['company_id'],
                                                                         'pk': self.kwargs['pk']}))
+
 
 
 @method_decorator(login_required, name='dispatch')
