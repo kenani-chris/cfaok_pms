@@ -12,7 +12,7 @@
                     <strong>{{ CheckIn.check_in_month }} Check-In</strong>
                     {% if CheckIn.check_in_status != "Approved" %}
                         <a href="{% url 'Site:My_CheckIn_Delete' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-danger" style="margin-right: 10px">Delete</div></a>
-                        <a href="{% url 'Site:My_CheckIn_Edit' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit</div></a>
+                        <!--<a href="{% url 'Site:My_CheckIn_Edit' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit</div></a>-->
                     {% endif %}
                 </div>
                 <div class="card-body" style="overflow-x: scroll">
@@ -50,6 +50,17 @@
                      </table>
                      <table class="table table-bordered table-hover">
                           <tbody>
+                              <tr>
+                                  <th>
+                                      Declaration
+                                  </th>
+                                  <td>
+                                      {% autoescape off %}
+                                      {{ CheckIn.check_in_declaration|safe }}
+                                      {% endautoescape %}
+                                  </td>
+                              </tr>
+                              <!--
                               <tr>
                                   <th>
                                       Perfomance Areas
@@ -93,6 +104,7 @@
                                       {% endautoescape %}
                                   </td>
                               </tr>
+                              -->
 
                               <tr>
                                   <th>

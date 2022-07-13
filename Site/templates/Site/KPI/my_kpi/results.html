@@ -400,6 +400,12 @@
                                         <td>{{ kpi.kpi_type }}</td>
                                     </tr>
                                 {% endif %}
+                                {% if kpi_type == "BSC1" %}
+                                    <tr>
+                                        <th>Pillar</th>
+                                        <td>{{ kpi.kpi_bsc_pillar }}</td>
+                                    </tr>
+                                {% endif %}
                               </tbody>
                           </table>
                     </div>

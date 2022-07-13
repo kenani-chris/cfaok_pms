@@ -33,18 +33,13 @@
                                 {{ form.check_in_approval_date.as_hidden }}
                                 {{ form.check_in_month.as_hidden }}
                                 {{ form.check_in_status.as_hidden }}
-                                Performance Area
-                                {{ form.check_in_performance_area }}
-                                Progress Discussed
-                                {{ form.check_in_progress_discussed }}
-                                <br>
-                                Team member actions
-                                {{ form.check_in_team_member_actions }}
-                                <br>
-                                Team Leader Support
-                                {{ form.check_in_team_leader_support }}
-                                <br>
+                                {{ form.check_in_declaration.as_hidden }}
 
+
+                                <div class="alert alert-info alert-dismissible container-fluid">
+                                    <h5><i class="icon fas fa-exclamation-triangle"></i> <b>Declaration</b></h5>
+                                    By clicking "submit" it's my honest declaration that I've had my monthly Check-In with my team leader.
+                                </div>
                                 {{ form.check_in_team_leader_comment.as_hidden }}
                             </div>
                             <div class="card-footer">

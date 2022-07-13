@@ -16,7 +16,7 @@
                         <p>Are you sure you want to delete Check-In <strong><a href="{% url 'Site:My_CheckIn_View' company_id CheckIn.check_in_id %}">{{ CheckIn.check_in_month }}</a></strong></p>
                         <p>You can choose to edit instead; as deleting will not allow submission past the deadline</p>
                         <button type="submit" value="Confirm" class="btn btn-danger">Confirm Delete</button>
-                        <a href="{% url 'Site:My_CheckIn_Edit' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit Instead</div></a>
+                        <!--<a href="{% url 'Site:My_CheckIn_Edit' company_id CheckIn.check_in_id %}"><div class="float-right btn btn-warning" style="margin-right: 10px">Edit Instead</div></a>-->
                         <a href="{% url 'Site:My_CheckIn' company_id %}"><div class="float-right btn bg-info" style="margin-right: 10px">Cancel</div></a>
                     </form>
                 </div>

@@ -131,11 +131,12 @@ class CheckIn(models.Model):
     check_in_approver = models.ForeignKey('Staff', on_delete=models.RESTRICT, null=True, blank=True,
                                           related_name="Approver")
     check_in_approval_date = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
-    check_in_performance_area = models.TextField()
-    check_in_progress_discussed = models.TextField()
-    check_in_team_member_actions = models.TextField()
-    check_in_team_leader_support = models.TextField()
+    check_in_performance_area = models.TextField(null=True, blank=True)
+    check_in_progress_discussed = models.TextField(null=True, blank=True)
+    check_in_team_member_actions = models.TextField(null=True, blank=True)
+    check_in_team_leader_support = models.TextField(null=True, blank=True)
     check_in_team_leader_comment = models.TextField(null=True, blank=True)
+    check_in_declaration = models.TextField(default=None)
 
     check_in_months = (
         ('April', 'April'),
@@ -482,6 +483,7 @@ class KPIType(models.Model):
         ('Annual Target', 'Annual Target'),
         ('Monthly Target', 'Monthly Target'),
         ('BSC', 'BSC'),
+        ('BSC1', 'BSC1'),
     )
     type_kpi = models.CharField(max_length=20, choices=types, default="Annual Target")
 

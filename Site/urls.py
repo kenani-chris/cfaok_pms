@@ -32,6 +32,8 @@ urlpatterns = [
          name='KPI_LevelDownDetailStaff'),
     path('<int:company_id>/KPI/LevelDown/<int:lev_id>/Staff/<int:staff_id>/StaffResults/<int:pk>',
          staff_kpi_results, name='Staff_KPI_Results'),
+    path('<int:company_id>/KPI/LevelDown/<int:lev_id>/Staff/<int:staff_id>/KPI/<int:kpi_id>/TeamLeader/<int:tl_id>/Approval/<int:pk>',
+         staff_kpi_approve, name='Staff_KPI_Approve'),
 
     # Category UP KPI links
     path('<int:company_id>/KPI/CategoryUP/<int:pk>',

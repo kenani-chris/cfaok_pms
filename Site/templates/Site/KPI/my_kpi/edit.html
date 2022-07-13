@@ -131,7 +131,53 @@
                         </table>
                     </div>
                     <br>
+                {% elif kpi_type == "BSC1" %}
 
+                    KPI Title
+                    {{ form.kpi_title }}
+                    <br>
+                    Description
+                    {{ form.kpi_details }}
+                    <br>
+                    Criteria
+                    {{ form.kpi_criteria }}
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            Target
+                            {{ form.kpi_target }}
+                        </div>
+                        <div class="col-md-4">
+                            Units
+                            {{ form.kpi_units }}
+                        </div>
+                        <div class="col-md-4">
+                            Weights
+                            {{ form.kpi_weight }}
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            Function
+                            {{ form.kpi_function }}
+                        </div>
+                        <div class="col-md-4">
+                            Type
+                            {{ form.kpi_type }}
+                        </div>
+                        <div class="col-md-4">
+                            Pillar
+                            <select name="kpi_bsc_pillar" required>
+                                <option value="">------</option>
+                                {% for pillar in pillars %}
+                                    <option value="{{ pillar.pillar_id }}">{{ pillar }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                 {% elif kpi_type == "BSC"%}
                     {{ form.kpi_target.as_hidden }}
                     KPI Title

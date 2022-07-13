@@ -262,6 +262,8 @@ class MyKPICreate(CreateView):
             else:
                 context['kpi_type'] = "Annual Target"
 
+        context["pillars"] = BSCPillar.objects.filter(pillar_pms=context['pms'])
+
         return context
 
     def get_success_url(self):
@@ -331,6 +333,8 @@ class MyKPIEdit(UpdateView):
             context['kpi_type'] = kpi_type.first().type_kpi
         else:
             context['kpi_type'] = "Annual Target"
+
+        context["pillars"] = BSCPillar.objects.filter(pillar_pms=context['pms'])
 
         return context
 
@@ -761,6 +765,37 @@ class KPILevelDownDetailStaff(DetailView):
         return context
 
 
+def staff_kpi_approve(request, company_id, lev_id, staff_id, kpi_id, tl_id, pk):
+
+        tl = get_object_or_404(Staff, staff_id=tl_id)
+        kpi = get_object_or_404(KPI, kpi_id=kpi_id)
+        print("kpi_saved before " + kpi.kpi_status)
+        staff_message = ""
+        tl_message = ""
+        if pk == 0:
+            kpi.kpi_status = "Rejected"
+            staff_message = "Your KPI '" + kpi.kpi_title + "' has been rejected by your team leader. Please " \
+                                                           "review with your team leader " + \
+                            tl.staff_person.get_full_name() + " before resubmitting"
+            tl_message = "You have rejected KPI '" + kpi.kpi_title + "' of your team member " \
+                                                                     "" + kpi.kpi_staff.staff_person.get_full_name() + \
+                         " please review with your team member before he/she resubmits"
+        elif pk == 1:
+            kpi.kpi_status = "Approved"
+            staff_message = "Your KPI '" + kpi.kpi_title + "' has been approved by your team leader"
+            tl_message = "You have approved KPI '" + kpi.kpi_title + "' of your team member " \
+                                                                     "" + kpi.kpi_staff.staff_person.get_full_name()
+
+        kpi.save()
+        print("kpi_saved after " + kpi.kpi_status)
+
+        if staff_message.strip()!="":
+            notification_log("KPI", kpi_id, tl.staff_person.get_full_name(), tl.staff_person.email, "KPI approval for - " + kpi.kpi_staff.staff_person.get_full_name(), tl_message)
+            notification_log("KPI", kpi_id, kpi.kpi_staff.staff_person.get_full_name(), kpi.kpi_staff.staff_person.email, "KPI approval for - " + kpi.kpi_staff.staff_person.get_full_name(), staff_message)
+
+        return HttpResponseRedirect(reverse('Site:KPI_LevelDownDetailStaff', kwargs={'company_id': company_id, 'lev_id': lev_id, 'pk': staff_id}))
+
+
 def staff_kpi_results(request, company_id, lev_id, staff_id, pk):
     if request.method == "POST":
 
@@ -965,6 +1000,7 @@ class MyCheckInCreate(CreateView):
         initial['check_in_pms'] = context['pms']
         initial['check_in_Staff'] = context['staff']
         initial['check_in_submit_date'] = datetime.datetime.now()
+        initial['check_in_declaration'] = '''By clicking "submit" it's my honest declaration that I've had my monthly Check-In with my team leader.'''
         initial['check_in_month'] = datetime.date.today().strftime('%B')
         return initial
 
@@ -1275,12 +1311,13 @@ def staff_check_in_approve(request, company_id, lev_id, type_id, staff_id, pk):
 
         check_in_id = get_value(request.POST.get("check_in_id"))
         check_in_comments = get_value(request.POST.get("check_in_comments"))
+        check_in_approval = get_value(request.POST.get("check_in_approval"))
 
         if int(pk) == int(check_in_id):
             checkin = get_object_or_404(CheckIn, check_in_id=check_in_id)
             checkin.check_in_approver = get_staff_account(get_company(company_id), request.user)
             checkin.check_in_approval_date = datetime.datetime.now()
-            checkin.check_in_status = "Approved"
+            checkin.check_in_status = check_in_approval
             checkin.check_in_team_leader_comment = check_in_comments
             checkin.save()
 

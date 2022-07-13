@@ -289,26 +289,30 @@ def get_required_months(kpi):
 def calculate_kpi_score(kpi, kpi_type):
     score = 0
 
-    try:
-        targets, results = get_required_months(kpi)
+    if kpi.kpi_status == "Approved":
+        try:
+            targets, results = get_required_months(kpi)
 
-        targets = {k: v or 0 for (k, v) in targets.items()}
-        results = {k: v or 0 for (k, v) in results.items()}
+            targets = {k: v or 0 for (k, v) in targets.items()}
+            results = {k: v or 0 for (k, v) in results.items()}
 
-        if kpi_type == "Monthly Target":
-            score = calculate_kpi_monthly_target_score(kpi, targets, results)
-        elif kpi_type == "BSC":
-            score = calculate_kpi_annual_target_score(kpi, kpi.kpi_bsc_s_target, results)
-        elif kpi_type == "Annual Target":
-            score = calculate_kpi_annual_target_score(kpi, kpi.kpi_target, results)
 
-        if kpi.kpi_pms.pms_cap_results and score > 100.00:
-            score = 100.00
-        elif kpi.kpi_pms.pms_cap_results and score < 0.00:
-            score = 0.00
+            if kpi_type == "Monthly Target":
+                score = calculate_kpi_monthly_target_score(kpi, targets, results)
+            elif kpi_type == "BSC":
+                score = calculate_kpi_annual_target_score(kpi, kpi.kpi_bsc_s_target, results)
+            elif kpi_type == "Annual Target":
+                score = calculate_kpi_annual_target_score(kpi, kpi.kpi_target, results)
+            elif kpi_type == "BSC1":
+                score = calculate_kpi_annual_target_score(kpi, kpi.kpi_target, results)
 
-    except Exception as e:
-        print(kpi.kpi_staff, " - ", kpi.kpi_title, e)
+            if kpi.kpi_pms.pms_cap_results and score > 100.00:
+                score = 100.00
+            elif kpi.kpi_pms.pms_cap_results and score < 0.00:
+                score = 0.00
+
+        except Exception as e:
+            print(kpi.kpi_staff, " - ", kpi.kpi_title, e)
 
     return round(score, 2)
 

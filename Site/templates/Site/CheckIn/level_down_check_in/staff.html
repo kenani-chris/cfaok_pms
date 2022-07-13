@@ -73,44 +73,11 @@
                                               <tbody>
                                                   <tr>
                                                       <th>
-                                                          Perfomance Areas
+                                                          Team Member Declaration
                                                       </th>
                                                       <td>
                                                           {% autoescape off %}
-                                                          {{ ci.check_in_performance_area }}
-                                                          {% endautoescape %}
-                                                      </td>
-                                                  </tr>
-
-                                                  <tr>
-                                                      <th>
-                                                          Progress Discussed
-                                                      </th>
-                                                      <td>
-                                                          {% autoescape off %}
-                                                          {{ ci.check_in_progress_discussed }}
-                                                          {% endautoescape %}
-                                                      </td>
-                                                  </tr>
-
-                                                  <tr>
-                                                      <th>
-                                                          Perfomance Areas
-                                                      </th>
-                                                      <td>
-                                                          {% autoescape off %}
-                                                          {{ ci.check_in_team_member_actions }}
-                                                          {% endautoescape %}
-                                                      </td>
-                                                  </tr>
-
-                                                  <tr>
-                                                      <th>
-                                                          Perfomance Areas
-                                                      </th>
-                                                      <td>
-                                                          {% autoescape off %}
-                                                          {{ ci.check_in_team_leader_support }}
+                                                          {{ ci.check_in_declaration }}
                                                           {% endautoescape %}
                                                       </td>
                                                   </tr>
@@ -165,44 +132,11 @@
                                               <tbody>
                                                   <tr>
                                                       <th>
-                                                          Perfomance Areas
+                                                          Team Member Declaration
                                                       </th>
                                                       <td>
                                                           {% autoescape off %}
                                                           {{ ci.check_in_performance_area }}
-                                                          {% endautoescape %}
-                                                      </td>
-                                                  </tr>
-
-                                                  <tr>
-                                                      <th>
-                                                          Progress Discussed
-                                                      </th>
-                                                      <td>
-                                                          {% autoescape off %}
-                                                          {{ ci.check_in_progress_discussed }}
-                                                          {% endautoescape %}
-                                                      </td>
-                                                  </tr>
-
-                                                  <tr>
-                                                      <th>
-                                                          Perfomance Areas
-                                                      </th>
-                                                      <td>
-                                                          {% autoescape off %}
-                                                          {{ ci.check_in_team_member_actions }}
-                                                          {% endautoescape %}
-                                                      </td>
-                                                  </tr>
-
-                                                  <tr>
-                                                      <th>
-                                                          Perfomance Areas
-                                                      </th>
-                                                      <td>
-                                                          {% autoescape off %}
-                                                          {{ ci.check_in_team_leader_support }}
                                                           {% endautoescape %}
                                                       </td>
                                                   </tr>
@@ -224,9 +158,9 @@
                                                       <br>
                                                   </tr>
 
-                                                    <select>
-                                                        <option value="1" selected>Approved</option>
-                                                        <option value="2">Rejected</option>
+                                                    <select name="check_in_approval">
+                                                        <option value="Approved" selected>Approved</option>
+                                                        <option value="Rejected">Rejected</option>
                                                     </select>
                                                     <br>
                                                     <div class="modal-footer justify-content-between">
