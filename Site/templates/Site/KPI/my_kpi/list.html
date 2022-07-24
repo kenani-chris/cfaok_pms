@@ -14,6 +14,7 @@
                       <thead>
                           <tr>
                             <th>KPI</th>
+                            <th class="bg-info">Pillar</th>
                             <th>Function</th>
                             <th>Calculation</th>
                             <th>Weight</th>
@@ -26,6 +27,7 @@
                           {% for kpi in submitted_kpi %}
                               <tr>
                                 <td><a href="{% url 'Site:My_KPI_View' company_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                              <td class="bg-info">{{ kpi.kpi_bsc_pillar }}</td>
                                 <td>{{ kpi.kpi_function }}</td>
                                 <td>{{ kpi.kpi_type }}</td>
                                 <td>{{ kpi.kpi_weight }}</td>
@@ -37,6 +39,7 @@
                           {% for kpi in pending_kpi %}
                               <tr>
                                 <td><a href="{% url 'Site:My_KPI_View' company_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                              <td class="bg-info">{{ kpi.kpi_bsc_pillar }}</td>
                                 <td>{{ kpi.kpi_function }}</td>
                                 <td>{{ kpi.kpi_type }}</td>
                                 <td>{{ kpi.kpi_weight }}</td>
@@ -48,6 +51,7 @@
                           {% for kpi in approved_kpi %}
                               <tr>
                                 <td><a href="{% url 'Site:My_KPI_View' company_id kpi.kpi_id %}">{{ kpi.kpi_title }}</a></td>
+                              <td class="bg-info">{{ kpi.kpi_bsc_pillar }}</td>
                                 <td>{{ kpi.kpi_function }}</td>
                                 <td>{{ kpi.kpi_type }}</td>
                                 <td>{{ kpi.kpi_weight }}</td>
@@ -59,6 +63,7 @@
                           {% for kpi in rejected_kpi %}
                               <tr>
                                 <td>{{ kpi.kpi_title }}</td>
+                                <td class="bg-info">{{ kpi.kpi_bsc_pillar }}</td>
                                 <td>{{ kpi.kpi_function }}</td>
                                 <td>{{ kpi.kpi_type }}</td>
                                 <td>{{ kpi.kpi_weight }}</td>

@@ -1,12 +1,13 @@
 from django.apps import apps
 from django.contrib import admin
 from .models import Staff, PMS, LevelCategory, KPIType, CheckIn, Level, KPI, LevelMembership, Assessment, Questions, \
-    QuestionResponses, PasswordChange, SubmissionCheckin, SubmissionKPI, Matrix
+    QuestionResponses, PasswordChange, SubmissionCheckin, SubmissionKPI, Matrix, PillarsApplications
 from .urls import app_name
 
 
 excempt_list = ['Staff', 'PMS', 'LevelCategory', 'KPIType', 'CheckIn', 'Level', 'KPI', 'LevelMembership', 'Assessment',
-                'Questions', 'QuestionResponses', 'PasswordChange', 'SubmissionKPI', 'SubmissionCheckin', 'Matrix']
+                'Questions', 'QuestionResponses', 'PasswordChange', 'SubmissionKPI', 'SubmissionCheckin', 'Matrix',
+                'PillarsApplications']
 
 for name, app in apps.app_configs.items():
     if name == app_name:
@@ -120,6 +121,13 @@ class MatrixAdmin(admin.ModelAdmin):
     list_filter = ('matrix_pms',)
 
 
+class PillarsApplicationAdmin(admin.ModelAdmin):
+    list_display = ('application_pms', 'application_category', 'application_grade', 'application_pillar',
+                    'application_minimum_kpis', 'application_maximum_kpis')
+    list_filter = ('application_pms', 'application_category', 'application_grade')
+    search_fields = ('application_pillar', 'application_grade')
+
+
 admin.site.register(Staff, StaffAdmin)
 admin.site.register(PMS, PMSAdmin)
 admin.site.register(LevelCategory, LevelCategoryAdmin)
@@ -135,3 +143,4 @@ admin.site.register(PasswordChange, PasswordChangeAdmin)
 admin.site.register(SubmissionCheckin, SubmissionCheckinAdmin)
 admin.site.register(SubmissionKPI, SubmissionKPIAdmin)
 admin.site.register(Matrix, MatrixAdmin)
+admin.site.register(PillarsApplications, PillarsApplicationAdmin)

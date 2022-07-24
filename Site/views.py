@@ -262,7 +262,25 @@ class MyKPICreate(CreateView):
             else:
                 context['kpi_type'] = "Annual Target"
 
-        context["pillars"] = BSCPillar.objects.filter(pillar_pms=context['pms'])
+            if context['kpi_type'] == "BSC1":
+
+                max_kpis_pillar = get_bsc_application(context['staff'], context['pms'])[0]
+                min_kpis_pillar = get_bsc_application(context['staff'], context['pms'])[1]
+
+                pillars = BSCPillar.objects.filter(pillar_pms=context['pms'])
+                kpis = KPI.objects.filter(kpi_staff=context['staff'], kpi_pms=context['pms']).exclude(kpi_status="Rejected")
+                display_pillars = []
+
+                for pillar in pillars:
+                    display_pillars.append(pillar)
+                    max_no = max_kpis_pillar[pillar.pillar_name]
+                    min_no = min_kpis_pillar[pillar.pillar_name]
+
+                    if max_no is not None and min_no is not None and max_no >= min_no:
+                        if kpis.filter(kpi_bsc_pillar=pillar).count() >= max_no:
+                            display_pillars.remove(pillar)
+
+                context["pillars"] = display_pillars
 
         return context
 

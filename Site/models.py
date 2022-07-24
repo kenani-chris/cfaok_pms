@@ -515,3 +515,13 @@ class Help(models.Model):
 
     def __str__(self):
         return "Help " + str(self.help_id)
+
+
+class PillarsApplications(models.Model):
+    application_id = models.AutoField(primary_key=True)
+    application_pms = models.ForeignKey('PMS', on_delete=models.RESTRICT)
+    application_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT, null=True, blank=True, related_name="pillar_application_level_category")
+    application_grade = models.ForeignKey('StaffGrades', on_delete=models.RESTRICT, null=True, blank=True, related_name="pillar_application_staff_grade")
+    application_pillar = models.ForeignKey('BSCPillar', on_delete=models.RESTRICT, related_name="pillar_application_select_pillar")
+    application_minimum_kpis = models.IntegerField()
+    application_maximum_kpis = models.IntegerField()

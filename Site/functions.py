@@ -10,7 +10,8 @@ from django.utils import timezone
 from cfaok_pms import settings
 from cfaok_pms.settings import PASSWORD_CHANGE_DURATION
 from .models import Staff, Company, PMS, Level, LevelMembership, SubmissionKPI, Notification, KPI, KPIType, \
-    SubmissionCheckin, QuestionResponses, Questions, Matrix, Assessment, CheckIn, PasswordChange, User
+    SubmissionCheckin, QuestionResponses, Questions, Matrix, Assessment, CheckIn, PasswordChange, User, \
+    PillarsApplications, BSCPillar
 
 
 def get_staff_account(company, user):
@@ -816,3 +817,26 @@ def password_change_decorator(func):
                 return HttpResponseRedirect(reverse('password_expire'))
         return func(request, *args, **kwargs)
     return function
+
+
+def get_bsc_application(staff, pms):
+    pillars = BSCPillar.objects.filter(pillar_pms=pms)
+    applications = PillarsApplications.objects.filter(application_pms=pms)
+    max_result = {}
+    min_result = {}
+
+    for pillar in pillars:
+        max_result[pillar.pillar_name] = None
+        min_result[pillar.pillar_name] = None
+
+    if applications is not None:
+        if applications.filter(application_category=staff.staff_category):
+            for single_application in applications.filter(application_category=staff.staff_category):
+                max_result[single_application.application_pillar.pillar_name] = single_application.application_maximum_kpis
+                min_result[single_application.application_pillar.pillar.pillar_name] = single_application.application_minimum_kpis
+        elif applications.filter(application_grade=staff.staff_grade):
+            for single_application in applications.filter(application_grade=staff.staff_grade):
+                max_result[single_application.application_pillar.pillar_name] = single_application.application_maximum_kpis
+                min_result[single_application.application_pillar.pillar_name] = single_application.application_minimum_kpis
+
+    return [max_result, min_result]
