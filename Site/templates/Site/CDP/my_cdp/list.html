@@ -1,0 +1,114 @@
+{% extends 'Site/CDP/my_cdp/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active">CDP</li>
+    {% endblock %}
+    {% block page_title %}CDP{% endblock %}
+    {% block content %}
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box">
+                  <span class="info-box-icon bg-info elevation-1"><i class="fas fa-check-square"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">CDP Cycles</span>
+                    <span class="info-box-number">
+                        {{ cycles.count }}
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+              </div>
+              <!-- /.col -->
+              <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon bg-success elevation-1"><i class="fas fa-check-square"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Active cycle</span>
+                    <span class="info-box-number">
+                        <div id="pending"></div>
+                        {{ cycles_current.count }}
+
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+              </div>
+              <!-- /.col -->
+
+              <!-- fix for small devices only -->
+              <div class="clearfix hidden-md-up"></div>
+
+              <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon bg-color1 elevation-1"><i class="fas fa-check-square"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Future cycle</span>
+                    <span class="info-box-number">
+                        {{ cycles_future.count }}
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+              </div>
+              <!-- /.col -->
+              <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-check-square"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Past cycle</span>
+                    <span class="info-box-number">{{ cycles_past.count }}</span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+              </div>
+              <!-- /.col -->
+            </div>
+        </div>
+
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Assessments</h5>
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                            <th>Cycle</th>
+                            <th>Status</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                          </tr>
+                          </thead>
+                      <tbody>
+
+                          {% for cycle in cycles %}
+                              <tr>
+                              <td><a href="{% url 'Site:CDP_Cycle_View' company_id cycle.cycle_id %}">{{ cycle.cycle_name }}</a></td>
+                                {% if cycle in cycles_current %}
+                                    <td class="bg-success">Active</td>
+                                {% elif cycle in cycles_past %}
+                                    <td>Closed</td>
+                                {% elif cycle in cycles_future %}
+                                    <td>Upcoming</td>
+                                {% else %}
+                                    <td>----</td>
+                                {% endif %}
+                                <td>{{ cycle.cycle_start }}</td>
+                                <td>{{ cycle.cycle_end }}</td>
+                          {% endfor %}
+                      </tbody>
+                 </table>
+            </div>
+        </div>
+
+
+    {% endblock %}

@@ -1,6 +1,7 @@
 {% extends 'Site/default.html' %}
 
 {% block page_link%}<a class="navbar-brand" href="{% url 'Site:KPI_LevelDown' company_id %}" ><strong style="color: {{ company.company_color1 }}"> Staff KPI Home</strong></a>{% endblock %}
+{% block Create %}<li class="nav-item"><a class="nav-link" href="{% url 'Site:KPI_LevelDown_Approvals' company_id %}" {% if kpi_approvals_count %}class="text-danger"{% endif %} >KPI Approvals {% if kpi_approvals_count > 0 %}<span class="right badge badge-danger">{{ kpi_approvals_count }}</span>{% endif %}</a></li>{% endblock %}
 
 
 

@@ -25,6 +25,10 @@ urlpatterns = [
     # Level Down KPI links
     path('<int:company_id>/KPI/LevelDown',
          KPILevelDown.as_view(template_name='Site/KPI/level_down_kpi/list_levels.html'), name='KPI_LevelDown'),
+    path('<int:company_id>/KPI/Approvals',
+         KPILevelDownApprovals.as_view(template_name='Site/KPI/level_down_kpi/approvals.html'), name='KPI_LevelDown_Approvals'),
+    path('<int:company_id>/KPI/Approvals/Staff/<int:pk>',
+         KPILevelDownApprovalsStaff.as_view(template_name='Site/KPI/level_down_kpi/approvals_staff.html'), name='KPI_LevelDown_Approvals_Staff'),
     path('<int:company_id>/KPI/LevelDown/<int:pk>',
          KPILevelDownDetail.as_view(template_name='Site/KPI/level_down_kpi/list.html'), name='KPI_LevelDownDetail'),
     path('<int:company_id>/KPI/LevelDown/<int:lev_id>/Staff/<int:pk>',
@@ -32,7 +36,7 @@ urlpatterns = [
          name='KPI_LevelDownDetailStaff'),
     path('<int:company_id>/KPI/LevelDown/<int:lev_id>/Staff/<int:staff_id>/StaffResults/<int:pk>',
          staff_kpi_results, name='Staff_KPI_Results'),
-    path('<int:company_id>/KPI/LevelDown/<int:lev_id>/Staff/<int:staff_id>/KPI/<int:kpi_id>/TeamLeader/<int:tl_id>/Approval/<int:pk>',
+    path('<int:company_id>/KPI/Approvals/Staff/<int:staff_id>/KPI/<int:kpi_id>/TeamLeader/<int:tl_id>/Approval/<int:pk>/<uuid:pms_id>/Approval/<int:approval_id>',
          staff_kpi_approve, name='Staff_KPI_Approve'),
 
     # Category UP KPI links
@@ -128,4 +132,20 @@ urlpatterns = [
     path('<int:company_id>/Communication', Communication.as_view(template_name='Site/Communication/message.html'),
          name='Communication'),
     path('<int:company_id>/Communicate', communicate, name='Communicate'),
+
+
+    # CDP
+    path('<int:company_id>/CDP/', CDPList.as_view(template_name='Site/CDP/my_cdp/list.html'),
+         name='CDP_List'),
+    path('<int:company_id>/CDP/Cycle/<int:pk>', CDPCycleView.as_view(template_name='Site/CDP/my_cdp/view.html'),
+         name='CDP_Cycle_View'),
+    path('<int:company_id>/CDP/Cycle/<int:cycle_id>/Staff/<int:staff_id>/competency/<int:comp_id>/approval/<int:action>',
+         cdp_action, name='CDP_Cycle_View_Submit'),
+
+    path('<int:company_id>/Staff-CDP/', StaffCDPList.as_view(template_name='Site/CDP/staff_cdp/list.html'),
+         name='Staff_CDP_List'),
+    path('<int:company_id>/Staff-CDP/Cycle/<int:pk>', StaffCDPCycleView.as_view(template_name='Site/CDP/staff_cdp/view.html'),
+         name='Staff_CDP_Cycle_View'),
+    path('<int:company_id>/Staff-CDP/Cycle/<int:pk>/Staff/<int:staff_id>', StaffCDPCycleViewStaff.as_view(template_name='Site/CDP/staff_cdp/view_staff.html'),
+         name='Staff_CDP_Cycle_View_Staff'),
 ]

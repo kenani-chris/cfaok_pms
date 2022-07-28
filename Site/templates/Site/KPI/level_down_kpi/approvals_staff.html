@@ -1,0 +1,369 @@
+{% extends 'Site/KPI/level_down_kpi/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active" xmlns="http://www.w3.org/1999/html"><a href="{% url 'Site:KPI_LevelDown_Approvals' company_id %}">KPI Approvals</a></li>
+        <li class="breadcrumb-item active">PF {{ select_staff.staff_pf_number }}</li>
+    {% endblock %}
+    {% block page_title %}Staff KPI - {{ select_staff }}{% endblock %}
+    {% block content %}
+        <style>
+            input {
+                min-width: 120px;
+            }
+
+        </style>
+
+        <!-- KPI Form -->
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ select_staff }} pending KPIs</h5>
+
+                </div>
+                <div class="card-body" style="overflow-x: scroll">
+                    {% for kpi in kpi_approvals %}
+                        <div class="modal fade" id="modal-{{ kpi.approval_kpi.kpi_id }}">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">{{ kpi.approval_kpi.kpi_title }}</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form method="post" action="" id="form-{{ kpi.approval_kpi.kpi_id }}">
+                                                {% csrf_token %}
+                                    <div class="modal-body">
+
+                                        {% if kpi_type == "Monthly Target" %}
+                                            <table class="table table-bordered table-hover">
+                                                <tbody>
+                                                <tr>
+                                                    <th>
+                                                        Description
+                                                    </th>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_details }}
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                <tr class="bg-color2">
+                                                    <th>
+                                                        Status
+                                                    </th>
+                                                    <th>
+                                                        Units
+                                                    </th>
+                                                    <th>
+                                                        Function
+                                                    </th>
+                                                    <th>
+                                                        Weight
+                                                    </th>
+                                                    <th>
+
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_status }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_units }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_function }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_weight }}
+                                                    </td>
+                                                    <td>
+
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                            <div style="overflow-x: scroll">
+                                                <table class="table table-bordered table-hover">
+                                                    <thead>
+                                                    <tr class="bg-color1">
+                                                        <th></th>
+                                                        <th>Apr</th>
+                                                        <th>May</th>
+                                                        <th>Jun</th>
+                                                        <th>Jul</th>
+                                                        <th>Aug</th>
+                                                        <th>Sep</th>
+                                                        <th>Oct</th>
+                                                        <th>Nov</th>
+                                                        <th>Dec</th>
+                                                        <th>Jan</th>
+                                                        <th>Feb</th>
+                                                        <th>Mar</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <th>Target</th>
+                                                        <td>{{ kpi.approval_kpi.kpi_april_target }}</td>
+                                                        <td>{{ kpi.approval_kpi.kpi_may_target }}</td>
+                                                        <td>{{ kpi.approval_kpi.kpi_june_target }}</td>
+                                                        <td>{{ kpi.approval_kpi.kpi_july_target }}</td>
+                                                        <td>{{ kpi.approval_kpi.kpi_august_target }}</td>
+                                                        <td>{{ kpi.approval_kpi.kpi_september_target }}</td>
+                                                        <td>{{ kpi.approval_kpi.kpi_october_target }}</td>
+                                                        <td>{{ kpi.approval_kpi.kpi_november_target }}</td>
+                                                        <td>{{ kpi.approval_kpi.kpi_december_target }}</td>
+                                                        <td>{{ kpi.approval_kpi.kpi_january_target }}</td>
+                                                        <td>{{ kpi.approval_kpi.kpi_february_target }}</td>
+                                                        <td>{{ kpi.approval_kpi.kpi_march_target }}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        {% elif kpi_type == "BSC" %}
+                                            <table class="table table-bordered table-hover">
+                                                <tbody>
+                                                <tr>
+                                                    <th>
+                                                        Description
+                                                    </th>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_details }}
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                <tr class="bg-color2">
+                                                    <th>
+                                                        Pillar
+                                                    </th>
+                                                    <th>
+                                                        Units
+                                                    </th>
+                                                    <th>
+                                                        Function
+                                                    </th>
+                                                    <th>
+                                                        Calculation
+                                                    </th>
+                                                    <th>
+                                                        Weight
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_bsc_pillar }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_units }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_function }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_type }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_weight }}
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                            <table class="table table-bordered table-hover">
+                                                <thead class="bg-color1">
+                                                <tr>
+                                                    <th>S</th>
+                                                    <th>A</th>
+                                                    <th>B</th>
+                                                    <th>C</th>
+                                                    <th>D</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>{{ kpi.approval_kpi.kpi_bsc_s_target }}</td>
+                                                    <td>{{ kpi.approval_kpi.kpi_bsc_a_target }}</td>
+                                                    <td>{{ kpi.approval_kpi.kpi_bsc_b_target }}</td>
+                                                    <td>{{ kpi.approval_kpi.kpi_bsc_c_target }}</td>
+                                                    <td>{{ kpi.approval_kpi.kpi_bsc_d_target }}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        {% elif kpi_type == "BSC1" %}
+                                            <table class="table table-bordered table-hover">
+                                                <tbody>
+                                                <tr>
+                                                    <th>
+                                                        Description
+                                                    </th>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_details }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>
+                                                        Criteria
+                                                    </th>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_criteria }}
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                <tr class="bg-color2">
+                                                    <th>
+                                                        Target
+                                                    </th>
+                                                    <th>
+                                                        Units
+                                                    </th>
+                                                    <th>
+                                                        Function
+                                                    </th>
+                                                    <th>
+                                                        Calculation
+                                                    </th>
+                                                    <th>
+                                                        Weight
+                                                    </th>
+                                                    <th>
+                                                        Pillar
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_target }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_units }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_function }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_type }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_weight }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_bsc_pillar }}
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        {% else %}
+                                            <table class="table table-bordered table-hover">
+                                                <tbody>
+                                                <tr>
+                                                    <th>
+                                                        Description
+                                                    </th>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_details }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>
+                                                        Criteria
+                                                    </th>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_criteria }}
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                <tr class="bg-color2">
+                                                    <th>
+                                                        Target
+                                                    </th>
+                                                    <th>
+                                                        Units
+                                                    </th>
+                                                    <th>
+                                                        Function
+                                                    </th>
+                                                    <th>
+                                                        Calculation
+                                                    </th>
+                                                    <th>
+                                                        Weight
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_target }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_units }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_function }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_type }}
+                                                    </td>
+                                                    <td>
+                                                        {{ kpi.approval_kpi.kpi_weight }}
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        {% endif %}
+
+
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <a href="{% url 'Site:Staff_KPI_Approve' company_id select_staff.staff_id kpi.approval_kpi.kpi_id staff.staff_id 1 pms.pms_id kpi.approval_id %}" class="btn btn-success float-right">Approve</a>
+                                        <a href="{% url 'Site:Staff_KPI_Approve' company_id select_staff.staff_id kpi.approval_kpi.kpi_id staff.staff_id 0 pms.pms_id kpi.approval_id %}" class="btn btn-danger float-left">Reject</a>
+
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <table id="simpleTable" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>KPI</th>
+                            <th>Pillar</th>
+                            <th>Status</th>
+                            <th>Function</th>
+                            <th>Calculation</th>
+                            <th>Weight</th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for kpi in kpi_approvals %}
+                            <tr>
+                            <td><a href="#" class="btn-link" data-toggle="modal" data-target="#modal-{{ kpi.approval_kpi.kpi_id }}">{{ kpi.approval_kpi.kpi_title }}</a></td>
+                            <td class="bg-info">{{ kpi.approval_kpi.kpi_bsc_pillar }}</td>
+                            <td {% if kpi.kpi_status != "Approved" %}class="bg-warning"{% endif %}>{{ kpi.approval_kpi.kpi_status }}</td>
+                            <td>{{ kpi.approval_kpi.kpi_function }}</td>
+                            <td>{{ kpi.approval_kpi.kpi_type }}</td>
+                            <td>{{ kpi.approval_kpi.kpi_weight }}</td>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    {% endblock %}

@@ -5,36 +5,81 @@
     {% block page_title %}Profile{% endblock %}
     {% block content %}
 
+
         <div class="container-fluid">
-            <div class="card">
-                <div class="card-header">
-                    <h5>LogIn Account</h5>
+            <div class="row">
+                <div class="col-md-3">
+
+                    <div class="card card-primary card-outline">
+                        <div class="card-body box-profile">
+                            <h3 class="profile-username text-center">{{ account.staff_person.get_full_name }}</h3>
+                            <ul class="list-group list-group-unbordered mb-3">
+                                <li class="list-group-item">
+                                    <b>Username</b> <a class="float-right">{{ account.staff_person.username  }}</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>PF</b> <a class="float-right">{{ account.staff_pf_number }}</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Grade</b> <a class="float-right">{{ account.staff_grade }}</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Date Created</b> <a class="float-right">{{ account.staff_person.date_joined}}</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Last LogIn</b> <a class="float-right">{{ account.staff_person.last_login }}</a>
+                                </li>
+                            </ul>
+                            <a class="btn btn-success btn-block" href="{% url 'self_change_user_password' %}">Change password</a>
+                        </div>
+                    </div>
                 </div>
-                 <table id="simpleTable" class="table table-bordered table-hover">
-                      <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Superuser</th>
-                            <th>Last login</th>
-                            <th>Date Joined</th>
-                          </tr>
-                          </thead>
-                      <tbody>
-                        <tr>
-                            <td>{{ staff.staff_person.get_full_name }}</td>
-                            <td>{{ staff.staff_person.username }}</td>
-                            <td>{{ staff.staff_person.email }}</td>
-                            <td>{{ staff.staff_person.is_superuser }}</td>
-                            <td>{{ staff.staff_person.last_login }}</td>
-                            <td>{{ staff.staff_person.date_joined }}</td>
-                        </tr>
-                      </tbody>
-                 </table>
-                <br>
-                <a class="btn btn-success" href="{% url 'self_change_user_password' %}">Change password</a>
+
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-header p-2">
+                            Profile
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <th>Level</th>
+                                    <th>Name</th>
+                                    <th>Head</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Team</th>
+                                        <td>{{ team.level_name }}</td>
+                                        <td>{{ team.level_head }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>BU</th>
+                                        <td>{{ bu.level_name }}</td>
+                                        <td>{{ bu.level_head }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Company</th>
+                                        <td>{{ company.level_name }}</td>
+                                        <td>{{ company.level_head }}</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
+
+        </div>
+
+        <br>
+        <hr>
+        <br>
+        <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
                     <h5>Access Accounts</h5>

@@ -1,3 +1,4 @@
+import datetime
 from calendar import monthrange
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
@@ -304,6 +305,15 @@ class MyKPICreate(CreateView):
                          "It appears you have submitted a KPI ")
         if get_staff_level(staff) is not None:
             level = get_staff_level(staff)
+
+            kpi = KPI.objects.filter(kpi_staff=staff).latest('kpi_id')
+            approval = KPIApprovals()
+            approval.approval_status = "Pending"
+            approval.approval_kpi = kpi
+            approval.approval_head = level.level_head
+            approval.approval_submit_edit_date = datetime.datetime.now()
+            approval.save()
+
             notification_log("KPI", "None", level.level_head.staff_person.get_full_name(),
                              level.level_head.staff_person.email,
                              "Staff KPI: Submitted",
@@ -352,7 +362,25 @@ class MyKPIEdit(UpdateView):
         else:
             context['kpi_type'] = "Annual Target"
 
-        context["pillars"] = BSCPillar.objects.filter(pillar_pms=context['pms'])
+        if context['kpi_type'] == "BSC1":
+
+            max_kpis_pillar = get_bsc_application(context['staff'], context['pms'])[0]
+            min_kpis_pillar = get_bsc_application(context['staff'], context['pms'])[1]
+
+            pillars = BSCPillar.objects.filter(pillar_pms=context['pms'])
+            kpis = KPI.objects.filter(kpi_staff=context['staff'], kpi_pms=context['pms']).exclude(kpi_status="Rejected")
+            display_pillars = []
+
+            for pillar in pillars:
+                display_pillars.append(pillar)
+                max_no = max_kpis_pillar[pillar.pillar_name]
+                min_no = min_kpis_pillar[pillar.pillar_name]
+
+                if max_no is not None and min_no is not None and max_no >= min_no:
+                    if kpis.filter(kpi_bsc_pillar=pillar).count() >= max_no:
+                        display_pillars.remove(pillar)
+
+            context["pillars"] = display_pillars
 
         return context
 
@@ -377,6 +405,17 @@ class MyKPIEdit(UpdateView):
                          "It appears you have modified or populated results for KPI " + kpi.kpi_title)
         if get_staff_level(staff) is not None:
             level = get_staff_level(staff)
+
+            for existing_approvals in KPIApprovals.objects.filter(approval_kpi=kpi, approval_status="Pending").order_by('approval_id'):
+                KPIApprovals.objects.get(approval_id=existing_approvals.approval_id).delete()
+
+            approval = KPIApprovals()
+            approval.approval_status = "Pending"
+            approval.approval_kpi = kpi
+            approval.approval_head = level.level_head
+            approval.approval_submit_edit_date = datetime.datetime.now()
+            approval.save()
+
             notification_log("KPI", self.kwargs['pk'], level.level_head.staff_person.get_full_name(),
                              level.level_head.staff_person.email,
                              "Staff KPI: " + kpi.kpi_title,
@@ -720,6 +759,8 @@ class KPILevelDown(TemplateView):
             all_levels_down(level, levels_down)
         context['levels_down'] = levels_down
 
+        context['kpi_approvals_count'] = KPIApprovals.objects.filter(approval_status='Pending', approval_head=context['staff']).count()
+
         return context
 
 
@@ -750,6 +791,7 @@ class KPILevelDownDetail(DetailView):
                             calculate_overall_kpi_score(member.membership_staff,
                                                         context['pms'])])
         context['members'] = members
+        context['kpi_approvals_count'] = KPIApprovals.objects.filter(approval_status='Pending', approval_head=context['staff']).count()
 
         return context
 
@@ -769,10 +811,16 @@ class KPILevelDownDetailStaff(DetailView):
         kpi_type = KPIType.objects.filter(type_pms=context['pms'],
                                           type_category=get_staff_account(get_company(self.kwargs['company_id']),
                                                                           context['select_staff'].staff_person).staff_category)
+
+        context['kpi_approvals_count'] = KPIApprovals.objects.filter(approval_status='Pending', approval_head=context['staff']).count()
+
         if kpi_type:
             context['kpi_type'] = kpi_type.first().type_kpi
         else:
             context['kpi_type'] = "Annual Target"
+
+        approve_status = True
+        approve_message = ""
 
         for kpi in KPI.objects.filter(kpi_staff=context['select_staff'], kpi_pms=context['pms']):
             kpi_results.append([kpi, calculate_kpi_score(kpi, context['kpi_type'])])
@@ -783,15 +831,68 @@ class KPILevelDownDetailStaff(DetailView):
         return context
 
 
-def staff_kpi_approve(request, company_id, lev_id, staff_id, kpi_id, tl_id, pk):
+@method_decorator(login_required, name='dispatch')
+class KPILevelDownApprovals(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(KPILevelDownApprovals, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+
+        context['kpi_approvals_count'] = KPIApprovals.objects.filter(approval_status='Pending', approval_head=context['staff']).count()
+        kpi_approvals = KPIApprovals.objects.filter(approval_head=context['staff'], approval_status="Pending")
+        staff_with_pending_kpi = []
+        for staff in Staff.objects.filter(staff_company=context['staff'].staff_company, staff_active=True):
+            if kpi_approvals.filter(approval_kpi__kpi_staff=staff):
+                staff_with_pending_kpi.append([staff, kpi_approvals.filter(approval_kpi__kpi_staff=staff).count()])
+
+        context['staff_with_pending_kpi'] = staff_with_pending_kpi
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class KPILevelDownApprovalsStaff(DetailView):
+    model = Staff
+
+    def get_context_data(self, **kwargs):
+        context = super(KPILevelDownApprovalsStaff, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+
+        context['select_staff'] = get_object_or_404(Staff, staff_id=self.kwargs['pk'])
+        context['kpi_approvals'] = KPIApprovals.objects.filter(approval_status='Pending', approval_head=context['staff'], approval_kpi__kpi_staff=context['select_staff'])
+        context['kpi_approvals_count'] = KPIApprovals.objects.filter(approval_status='Pending', approval_head=context['staff']).count()
+
+        kpi_type = KPIType.objects.filter(type_pms=context['pms'],
+                                          type_category=get_staff_account(get_company(self.kwargs['company_id']),
+                                                                          context['select_staff'].staff_person).staff_category)
+
+        if kpi_type:
+            context['kpi_type'] = kpi_type.first().type_kpi
+        else:
+            context['kpi_type'] = "Annual Target"
+
+        return context
+
+def staff_kpi_approve(request, company_id, staff_id, kpi_id, tl_id, pk, pms_id, approval_id):
 
         tl = get_object_or_404(Staff, staff_id=tl_id)
+        staff = get_object_or_404(Staff, staff_id=staff_id)
         kpi = get_object_or_404(KPI, kpi_id=kpi_id)
-        print("kpi_saved before " + kpi.kpi_status)
+        old_approval = get_object_or_404(KPIApprovals, approval_id=approval_id)
+
+        stage_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT)
+        stage_pms = models.ForeignKey('PMS', on_delete=models.RESTRICT)
+        stages = (
+            ('Initial', 'Initial'),
+            ('Intermediate', 'Intermediate'),
+            ('Final', 'Final'),
+        )
+        stage_approval = models.CharField(max_length=15, choices=stages)
+
         staff_message = ""
         tl_message = ""
         if pk == 0:
             kpi.kpi_status = "Rejected"
+            old_approval.approval_status = "Approved"
             staff_message = "Your KPI '" + kpi.kpi_title + "' has been rejected by your team leader. Please " \
                                                            "review with your team leader " + \
                             tl.staff_person.get_full_name() + " before resubmitting"
@@ -799,19 +900,62 @@ def staff_kpi_approve(request, company_id, lev_id, staff_id, kpi_id, tl_id, pk):
                                                                      "" + kpi.kpi_staff.staff_person.get_full_name() + \
                          " please review with your team member before he/she resubmits"
         elif pk == 1:
-            kpi.kpi_status = "Approved"
-            staff_message = "Your KPI '" + kpi.kpi_title + "' has been approved by your team leader"
-            tl_message = "You have approved KPI '" + kpi.kpi_title + "' of your team member " \
+            old_approval.approval_status = "Approved"
+
+            stages = KPIApprovalStages.objects.filter(stage_pms__pms_id=pms_id)
+            if stages.filter(stage_category=staff.staff_category):
+                if stages.filter(stage_category=staff.staff_category).first().stage_approval != "Final":
+                    levels_up = []
+                    all_levels_up(get_staff_level(staff), levels_up)
+                    levels_up.remove(None)
+                    print(levels_up)
+                    new_tl = None
+                    for level in levels_up:
+                        if level is not None:
+                            if stages.filter(stage_category=level.level_head.staff_category, stage_approval="Final"):
+                                new_tl = level.level_head
+                                break
+
+                    if new_tl:
+                        kpi.kpi_status = "Pending"
+                        approval = KPIApprovals()
+                        approval.approval_kpi = kpi
+                        approval.approval_head = new_tl
+                        approval.approval_submit_edit_date = datetime.datetime.now()
+                        approval.approval_date = datetime.datetime.now()
+                        approval.approval_status = "Pending"
+                        approval.save()
+
+                        staff_message = "Your KPI '" + kpi.kpi_title + "' has been approved by your team leader and is escallated to " + new_tl.staff_person.get_full_name() + " for second approval"
+                        tl_message = "You have approved KPI '" + kpi.kpi_title + "' of your team member " \
+                                                                     "" + kpi.kpi_staff.staff_person.get_full_name() + " and is now escallated to " + new_tl.staff_person.get_full_name() + " for second approval"
+                        new_tl_message = tl.staff_person.get_full_name()  + " has approved KPI '" + kpi.kpi_title + "' of team member " \
+                                                                                   "" + kpi.kpi_staff.staff_person.get_full_name() + " and is now escallated to you for second approval"
+                        notification_log("KPI", kpi_id, tl.staff_person.get_full_name(), tl.staff_person.email, "KPI approval for - " + kpi.kpi_staff.staff_person.get_full_name(), new_tl_message)
+
+                    else:
+                        staff_message = "Your KPI '" + kpi.kpi_title + "' has been approved by your team leader but I'm having a problem escallting to for second approval, please seel HR assist"
+                        tl_message = "You have approved KPI '" + kpi.kpi_title + "' of your team member " \
                                                                      "" + kpi.kpi_staff.staff_person.get_full_name()
+                else:
+                    kpi.kpi_status = "Approved"
+                    staff_message = "Your KPI '" + kpi.kpi_title + "' has been approved by your team leader"
+                    tl_message = "You have approved KPI '" + kpi.kpi_title + "' of your team member " \
+                                                                         "" + kpi.kpi_staff.staff_person.get_full_name()
+            else:
+                kpi.kpi_status = "Approved"
+                staff_message = "Your KPI '" + kpi.kpi_title + "' has been approved by your team leader"
+                tl_message = "You have approved KPI '" + kpi.kpi_title + "' of your team member " \
+                                                                         "" + kpi.kpi_staff.staff_person.get_full_name()
 
         kpi.save()
-        print("kpi_saved after " + kpi.kpi_status)
+        old_approval.save()
 
         if staff_message.strip()!="":
             notification_log("KPI", kpi_id, tl.staff_person.get_full_name(), tl.staff_person.email, "KPI approval for - " + kpi.kpi_staff.staff_person.get_full_name(), tl_message)
             notification_log("KPI", kpi_id, kpi.kpi_staff.staff_person.get_full_name(), kpi.kpi_staff.staff_person.email, "KPI approval for - " + kpi.kpi_staff.staff_person.get_full_name(), staff_message)
 
-        return HttpResponseRedirect(reverse('Site:KPI_LevelDownDetailStaff', kwargs={'company_id': company_id, 'lev_id': lev_id, 'pk': staff_id}))
+        return HttpResponseRedirect(reverse('Site:KPI_LevelDown_Approvals_Staff', kwargs={'company_id': company_id, 'pk': staff_id}))
 
 
 def staff_kpi_results(request, company_id, lev_id, staff_id, pk):
@@ -2648,15 +2792,20 @@ class Profile(TemplateView):
         context = super(Profile, self).get_context_data()
         global_context(self.kwargs['company_id'], self.request.user, context)
         staff = context['staff']
+
+        context['account'] = staff
+        context['team'] = get_staff_level(staff)
+        context['bu'] = get_bu(staff)
+        context['company'] = get_company_used(staff)
         context['accounts'] = Staff.objects.filter(staff_person=staff.staff_person)
         context['memberships'] = LevelMembership.objects.filter(membership_staff=staff)
         members = []
-        heading = Level.objects.filter(level_head=context['staff'])
+        heading = Level.objects.filter(level_head=staff)
         for level in heading:
             members.append(LevelMembership.objects.filter(membership_level=level))
-
         context['heading_levels'] = heading
         context['heading_members'] = members
+
         return context
 
 
@@ -2746,3 +2895,153 @@ def communicate(request, company_id):
                              title, message)
 
     return HttpResponseRedirect(reverse('Site:Communication', kwargs={'company_id': company_id}))
+
+
+@method_decorator(login_required, name='dispatch')
+class CDPList(TemplateView):
+    model = CDPCycle
+    context_object_name = 'CDPCycle'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(CDPList, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+
+        cycles = CDPCycle.objects.filter(cycle_company=context['company'])
+        context['cycles'] = cycles
+        context['cycles_current'] = cycles.filter(cycle_start__lte=datetime.datetime.now(),
+                                                          cycle_end__gte=datetime.datetime.now())
+        context['cycles_future'] = cycles.filter(cycle_start__gt=datetime.datetime.now())
+        context['cycles_past'] = cycles.filter(cycle_end__lt=datetime.datetime.now())
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class CDPCycleView(DetailView):
+    model = CDPCycle
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(CDPCycleView, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        cycle = get_object_or_404(CDPCycle, cycle_id=self.kwargs['pk'])
+
+        if cycle.cycle_start <= datetime.datetime.now(
+                cycle.cycle_start.tzinfo) <= cycle.cycle_end:
+            context['cycle_status'] = True
+        else:
+            context['cycle_status'] = False
+
+        available_competencies = CompetencyAssignment.objects.filter(assignment_competency__competency_cycle=cycle, assignment_grade=context['staff'].staff_grade)
+        competencies = []
+        for competency in available_competencies:
+            if AppliedCompetency.objects.filter(applied_staff=context['staff'], applied_competency=competency.assignment_competency):
+                competencies.append([competency.assignment_competency, True])
+            else:
+                competencies.append([competency.assignment_competency, False])
+
+        context['competencies'] = competencies
+        applied_competencies = AppliedCompetency.objects.filter(applied_staff=context['staff'], applied_competency__competency_cycle=cycle).count()
+        if applied_competencies >= cycle.cycle_maximum_required_competency:
+            context['apply_new'] = False
+        else:
+            context['apply_new'] = True
+        context['applied_competencies'] = applied_competencies
+
+        return context
+
+
+def cdp_action(request, company_id, cycle_id, staff_id, comp_id, action):
+
+    if action == 1:
+        apply_competency = AppliedCompetency()
+        apply_competency.applied_competency = get_object_or_404(Competency, competency_id=comp_id)
+        apply_competency.applied_staff = get_object_or_404(Staff, staff_id=staff_id)
+        apply_competency.save()
+        message = "You have successfully added competency " + get_object_or_404(Competency, competency_id=comp_id).competency_name + " to your profile";
+    elif action == 0:
+        AppliedCompetency.objects.filter(applied_competency__competency_id=comp_id, applied_staff__staff_id=staff_id).delete()
+        message = "You have successfully removed competency " + get_object_or_404(Competency, competency_id=comp_id).competency_name + " from your profile";
+
+
+    notification_log("Notification", "None", request.user.get_full_name(), request.user.email, "CDP: Competency", message)
+
+    return HttpResponseRedirect(reverse('Site:CDP_Cycle_View', kwargs={'company_id': company_id, 'pk': cycle_id}))
+
+
+
+
+@method_decorator(login_required, name='dispatch')
+class StaffCDPList(TemplateView):
+    model = CDPCycle
+    context_object_name = 'CDPCycle'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(StaffCDPList, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+
+        cycles = CDPCycle.objects.filter(cycle_company=context['company'])
+        context['cycles'] = cycles
+        context['cycles_current'] = cycles.filter(cycle_start__lte=datetime.datetime.now(),
+                                                  cycle_end__gte=datetime.datetime.now())
+        context['cycles_future'] = cycles.filter(cycle_start__gt=datetime.datetime.now())
+        context['cycles_past'] = cycles.filter(cycle_end__lt=datetime.datetime.now())
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class StaffCDPCycleView(DetailView):
+    model = CDPCycle
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(StaffCDPCycleView, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        cycle = get_object_or_404(CDPCycle, cycle_id=self.kwargs['pk'])
+
+        if cycle.cycle_start <= datetime.datetime.now(
+                cycle.cycle_start.tzinfo) <= cycle.cycle_end:
+            context['cycle_status'] = True
+        else:
+            context['cycle_status'] = False
+
+
+        members = []
+        for level in Level.objects.filter(level_head=context['staff']):
+            print(level)
+            for member in LevelMembership.objects.filter(membership_level=level):
+                members.append([member.membership_staff, AppliedCompetency.objects.filter(applied_competency__competency_cycle=cycle, applied_staff=member.membership_staff).count()])
+
+        context['members'] = members
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class StaffCDPCycleViewStaff(DetailView):
+    model = CDPCycle
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(StaffCDPCycleViewStaff, self).get_context_data()
+        global_context(self.kwargs['company_id'], self.request.user, context)
+        cycle = get_object_or_404(CDPCycle, cycle_id=self.kwargs['pk'])
+
+        select_staff = get_object_or_404(Staff, staff_id=self.kwargs['staff_id'])
+
+        available_competencies = CompetencyAssignment.objects.filter(assignment_competency__competency_cycle=cycle, assignment_grade=select_staff.staff_grade)
+        competencies = []
+        for competency in available_competencies:
+            if AppliedCompetency.objects.filter(applied_staff=select_staff, applied_competency=competency.assignment_competency):
+                competencies.append([competency.assignment_competency, True])
+            else:
+                competencies.append([competency.assignment_competency, False])
+
+        context['competencies'] = competencies
+        applied_competencies = AppliedCompetency.objects.filter(applied_staff=select_staff, applied_competency__competency_cycle=cycle).count()
+        if applied_competencies >= cycle.cycle_maximum_required_competency:
+            context['apply_new'] = False
+        else:
+            context['apply_new'] = True
+        context['applied_competencies'] = applied_competencies
+        context['select_staff'] = select_staff
+
+        return context

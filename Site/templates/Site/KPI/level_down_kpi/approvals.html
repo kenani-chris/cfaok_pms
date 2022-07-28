@@ -1,0 +1,39 @@
+{% extends 'Site/KPI/level_down_kpi/default.html' %}
+
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'Site:KPI_LevelDown' company_id %}">Staff KPI</a></li>
+        <li class="breadcrumb-item active">{{ level.level_name }}</li>
+    {% endblock %}
+    {% block page_title %}{{ levelcategory.category_name }} KPI - Approvals{{ level.level_name }}{% endblock %}
+
+    {% block content %}
+
+        <!-- KPI Form -->
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Staff with Pending KPIs</h5>
+                </div>
+                 <table id="simpleTable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Staff</th>
+                            <th>Pending KPIs</th>
+                        </tr>
+                    </thead>
+                     <tbody>
+                        {% for staff in staff_with_pending_kpi %}
+                            <tr>
+                                <td><a href="{% url 'Site:KPI_LevelDown_Approvals_Staff' company_id staff.0.staff_id %}">{{ staff.0 }}</a></td>
+                                <td>{{ staff.1 }}</td>
+                            </tr>
+                        {% endfor %}
+
+
+                     </tbody>
+                 </table>
+            </div>
+        </div>
+
+    {% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'Site/CDP/staff_cdp/default.html' %}
+    {% block breadcrumb %}
+        <li class="breadcrumb-item active"><a href="{% url 'Site:Staff_CDP_List' company_id %}">CDP</a></li>
+        <li class="breadcrumb-item active">View</li>
+    {% endblock %}
+    {% block page_title %}Staff CDP - {{ cdpcycle.cycle_name }}{% endblock %}
+    {% block content %}
+
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-body">
+
+                     <table class="table table-bordered table-hover">
+                          <thead>
+                              <tr>
+                                  <th>Name</th>
+                                  <th>Status</th>
+                                  <th>Start</th>
+                                  <th>End</th>
+                                  <th>Minimum</th>
+                                  <th>Maximum</th>
+                              </tr>
+                              <tr>
+                                  <td>{{ cdpcycle.cycle_name }}</td>
+                                  <td>{% if cycle_status %}Active{% else %}InActive{% endif %}</td>
+                                  <td>{{ cdpcycle.cycle_start }}</td>
+                                  <td>{{ cdpcycle.cycle_end }}</td>
+                                  <td>{{ cdpcycle.cycle_minimum_required_competency }}</td>
+                                  <td>{{ cdpcycle.cycle_maximum_required_competency }}</td>
+                              </tr>
+
+                          </thead>
+                     </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-bordered" id="simpleTable">
+                        <thead>
+                            <th>Name</th>
+                            <th>Applied</th>
+                        </thead>
+                        <tbody>
+                            {% for member in members %}
+                                <tr>
+                                    <td><a href="{% url 'Site:Staff_CDP_Cycle_View_Staff' company_id cdpcycle.cycle_id member.0.staff_id %}">{{ member.0.staff_person.get_full_name }}</a></td>
+                                    <td>{{ member.1 }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    {% endblock %}

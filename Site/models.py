@@ -525,3 +525,54 @@ class PillarsApplications(models.Model):
     application_pillar = models.ForeignKey('BSCPillar', on_delete=models.RESTRICT, related_name="pillar_application_select_pillar")
     application_minimum_kpis = models.IntegerField()
     application_maximum_kpis = models.IntegerField()
+
+
+class KPIApprovals(models.Model):
+    approval_id = models.AutoField(primary_key=True)
+    approval_status = models.CharField(max_length=10, choices=KPI.status, default=None)
+    approval_head = models.ForeignKey('Staff', on_delete=models.RESTRICT)
+    approval_kpi = models.ForeignKey('KPI', on_delete=models.RESTRICT)
+    approval_submit_edit_date = models.DateTimeField(auto_now=False, default=None, null=True)
+    approval_date = models.DateTimeField(auto_now=False, null=True, blank=True)
+
+
+class KPIApprovalStages(models.Model):
+    stage_id = models.AutoField(primary_key=True)
+    stage_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT)
+    stage_pms = models.ForeignKey('PMS', on_delete=models.RESTRICT)
+    stages = (
+        ('Initial', 'Initial'),
+        ('Intermediate', 'Intermediate'),
+        ('Final', 'Final'),
+    )
+    stage_approval = models.CharField(max_length=15, choices=stages)
+
+
+class CDPCycle(models.Model):
+    cycle_id = models.AutoField(primary_key=True)
+    cycle_name = models.CharField(max_length=100, default=None)
+    cycle_minimum_required_competency = models.IntegerField()
+    cycle_maximum_required_competency = models.IntegerField()
+    cycle_start = models.DateTimeField(auto_now=False)
+    cycle_end = models.DateTimeField(auto_now=False)
+    cycle_company = models.ForeignKey('Company', on_delete=models.RESTRICT)
+
+
+class Competency(models.Model):
+    competency_id = models.AutoField(primary_key=True)
+    competency_name = models.CharField(max_length=100)
+    competency_description = models.TextField(blank=True, null=True)
+    competency_cycle = models.ForeignKey('CDPCycle', on_delete=models.RESTRICT)
+
+
+class CompetencyAssignment(models.Model):
+    assignment_id = models.AutoField(primary_key=True)
+    assignment_category = models.ForeignKey('LevelCategory', on_delete=models.RESTRICT, null=True, blank=True)
+    assignment_grade = models.ForeignKey('StaffGrades', on_delete=models.RESTRICT, null=True, blank=True)
+    assignment_competency = models.ForeignKey('Competency', on_delete=models.RESTRICT)
+
+
+class AppliedCompetency(models.Model):
+    applied_id = models.AutoField(primary_key=True)
+    applied_competency = models.ForeignKey('Competency', on_delete=models.RESTRICT)
+    applied_staff = models.ForeignKey('Staff', on_delete=models.RESTRICT)

@@ -276,6 +276,32 @@
               </p>
             </a>
           </li>
+            <li class="nav-item has-treeview menu-open">
+                <a href="#" class="nav-link bg-some-grey">
+                    <i class="nav-icon fa-solid fa-user-pilot"></i>
+                    <p>
+                        CDP
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'Site:CDP_List' company_id %}" class="nav-link">
+                    <i class="nav-icon fas fa-user"></i>
+                    <p>
+                        My CDP
+                    </p>
+                </a>
+            </li>
+            {% if staff_is_level_head %}
+                <li class="nav-item">
+                    <a href="{% url 'Site:Staff_CDP_List' company_id %}" class="nav-link">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Staff CDP
+                        </p>
+                    </a>
+                </li>
+            {% endif %}
           {% if staff_is_level_head or staff.staff_superuser is True or request.user.is_superuser  %}
           <li class="nav-item has-treeview menu-open">
             <a href="#" class="nav-link bg-some-grey">

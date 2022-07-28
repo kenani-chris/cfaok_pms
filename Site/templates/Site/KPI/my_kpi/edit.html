@@ -18,6 +18,7 @@
                 {{ form.kpi_staff.as_hidden }}
                 {{ form.kpi_pms.as_hidden }}
                 {{ form.kpi_submit_date.as_hidden }}
+                {{ form.kpi_status.as_hidden }}
 
                 {% if kpi_type == "Annual Target" %}
 
@@ -171,10 +172,7 @@
                         <div class="col-md-4">
                             Pillar
                             <select name="kpi_bsc_pillar" required>
-                                <option value="">------</option>
-                                {% for pillar in pillars %}
-                                    <option value="{{ pillar.pillar_id }}">{{ pillar }}</option>
-                                {% endfor %}
+                                <option value="{{ form.kpi_bsc_pillar.value }}" readonly>{{ kpi.kpi_bsc_pillar }}</option>
                             </select>
                         </div>
                     </div>

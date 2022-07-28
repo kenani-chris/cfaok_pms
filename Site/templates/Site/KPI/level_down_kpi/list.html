@@ -81,7 +81,7 @@
                         </tr>
                     </thead>
                      <tbody>
-                        {% for staff in members%}
+                        {% for staff in members %}
                             <tr>
                                 <td><a href="{% url 'Site:KPI_LevelDownDetailStaff' company_id level.level_id staff.0.staff_id %}">{{ staff.0 }}</a></td>
                                 <td>{{ staff.0.staff_pf_number }}</td>
@@ -91,7 +91,7 @@
                                     <td>{{ staff.1 }}</td>
                                 {% endif %}
                                 {% if staff.2 > 0 %}
-                                    <td class="bg-warning">{{ staff.1 }}</td>
+                                    <td class="bg-warning">{{ staff.2 }}</td>
                                 {% else %}
                                     <td>{{ staff.2 }}</td>
                                 {% endif %}
